@@ -1,4 +1,4 @@
--- form https://github.com/uleelx/FlatDB
+-- from https://github.com/uleelx/FlatDB
 local function isFile(path)
 	local f = io.open(path, "r")
 	if f then

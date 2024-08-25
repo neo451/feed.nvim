@@ -1,3 +1,4 @@
+local M = {}
 local Job = require("plenary.job")
 local flatdb = require("db")
 
@@ -7,9 +8,10 @@ local db = flatdb("./db")
 local xml2lua = require("xml")
 local handler = require("tree")
 
----fetch xml from source
+---fetch xml from source and load them into db
 ---@param url any
-local function get_contents(url, name)
+---@param name string # name of the source # TODO: remove?
+function M.update_feed(url, name)
 	Job:new({
 		command = "curl",
 		args = { url },
@@ -31,7 +33,6 @@ local function get_contents(url, name)
 			parser:parse(src)
 			for i, item in ipairs(hdlr.root.rss.channel.item) do
 				item.feed = hdlr.root.rss.channel.title
-				-- print(hdlr.root.rss.channel.title)
 				db[item.title] = item
 				table.insert(db[name], item.title)
 				table.insert(db.titles, item.title)
@@ -41,14 +42,4 @@ local function get_contents(url, name)
 	}):start() -- or start()
 end
 
-local tests = {
-	["少数派"] = "https://sspai.com/feed",
-	arch = "https://archlinux.org/feeds/news/",
-	["机核"] = "https://www.gcores.com/rss",
-	zig = "https://andrewkelley.me/rss.xml",
-	bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
-}
-
-for name, v in pairs(tests) do
-	get_contents(v, name)
-end
+return M

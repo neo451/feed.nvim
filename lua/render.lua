@@ -1,3 +1,5 @@
+local md = require("md")
+
 local M = {}
 local flatdb = require("db")
 local db = flatdb("./db")
@@ -24,7 +26,9 @@ local function render_item(item)
 	lines[4] = kv("Feed", item.feed)
 	lines[5] = kv("Link", item.link)
 	lines[6] = ""
-	lines[7] = item.description
+	for _, line in pairs(md.to_md(item.description)) do -- use a iterator for to_md
+		lines[#lines + 1] = line
+	end
 	return lines
 end
 
