@@ -12,8 +12,8 @@ local srcs = {
 local actions = {}
 
 function actions.update()
-	for name, v in pairs(srcs) do
-		fetch.update_feed(v, name)
+	for name, link in pairs(srcs) do
+		fetch.update_feed(link, name)
 	end
 end
 
@@ -30,10 +30,9 @@ vim.api.nvim_create_user_command("Rss", function(opts)
 	end
 end, { nargs = 1 })
 
-M.render_telescope = render.render_telescope
-
 function M.setup(config)
-	vim.keymap.set("n", "<leader>rs", M.render_telescope, { desc = "Show [R][s]s feed" })
+	vim.keymap.set("n", "<leader>rs", render.render_telescope, { desc = "Show [R][s]s feed" })
+	vim.keymap.set("n", "<leader>rr", render.render_flat, { desc = "Show [R][s]s feed" })
 end
 
 return M

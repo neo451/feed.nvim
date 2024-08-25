@@ -2,7 +2,7 @@ local M = {}
 local Job = require("plenary.job")
 local flatdb = require("db")
 
-local db = flatdb("./db")
+local db = flatdb("./data")
 
 -- TODO: test speed with tree-sitter parsing!
 local xml2lua = require("xml")
