@@ -21,7 +21,8 @@ local function load_page(path)
 	local ret
 	local f = io.open(path, "rb")
 	if f then
-		ret = vim.mpack.decode(f:read("*a"))
+		-- ret = vim.mpack.decode(f:read("*a"))
+		ret = loadstring(f:read("*a"))
 		f:close()
 	end
 	return ret
@@ -31,7 +32,7 @@ local function store_page(path, page)
 	if type(page) == "table" then
 		local f = io.open(path, "wb")
 		if f then
-			f:write(vim.mpack.encode(page))
+			f:write("return " .. vim.inspect(page))
 			f:close()
 			return true
 		end

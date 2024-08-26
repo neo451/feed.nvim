@@ -70,9 +70,28 @@ end
 local function add_tag()
 	local row = vim.api.nvim_win_get_cursor(0)[1]
 	local title = M.index[row]
-	local tags = db[title].tags
-	local new_tag = vim.fn.input("Tag: ")
-	tags[#tags + 1] = new_tag
+	local input = vim.fn.input("Tag: ")
+	table.insert(db[title].tags, input)
+	db:save()
+	M.render_index()
+end
+
+local tbl_find = function(tbl, val)
+	for i, v in ipairs(tbl) do
+		if v == val then
+			return i
+		end
+	end
+	return nil
+end
+
+local function remove_tag()
+	local row = vim.api.nvim_win_get_cursor(0)[1]
+	local title = M.index[row]
+	local input = vim.fn.input("Tag: ")
+	table.remove(db[title].tags, tbl_find(db[title].tags, input))
+	db:save()
+	M.render_index()
 end
 
 local function push_keymap(buf, lhs, rhs)
@@ -93,6 +112,7 @@ local function index_keymaps(buf)
 	push_keymap(buf, "y", link_to_clipboard)
 	push_keymap(buf, "q", "<cmd>bd<cr>")
 	push_keymap(buf, "+", add_tag)
+	push_keymap(buf, "-", remove_tag)
 end
 
 local function page_keymaps(buf)
@@ -120,9 +140,11 @@ local function process_tags(tags)
 	if tags == nil then
 		return ""
 	end
-	for _, tag in pairs(tags) do
+	for i, tag in pairs(tags) do
 		buffer[#buffer + 1] = tag
-		buffer[#buffer + 1] = ", "
+		if i ~= #tags then
+			buffer[#buffer + 1] = ", "
+		end
 	end
 	buffer[#buffer + 1] = ")"
 	return table.concat(buffer, "")
@@ -172,7 +194,7 @@ end
 M.index = nil
 
 ---render whole db as flat list
----@param cond filterFunc
+---@param cond filterFunc?
 function M.render_index(cond)
 	cond = cond or function()
 		return true
