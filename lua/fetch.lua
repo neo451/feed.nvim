@@ -1,8 +1,7 @@
 local M = {}
 local Job = require("plenary.job")
 local flatdb = require("db")
-
-local db = flatdb("./data")
+local db = flatdb("/home/n451/Plugins/rss.nvim/lua/data")
 
 -- TODO: test speed with tree-sitter parsing!
 local xml2lua = require("xml")
@@ -33,6 +32,7 @@ function M.update_feed(url, name)
 			parser:parse(src)
 			for i, item in ipairs(hdlr.root.rss.channel.item) do
 				item.feed = hdlr.root.rss.channel.title
+				item.tags = { "unread" } -- HACK:
 				db[item.title] = item
 				table.insert(db[name], item.title)
 				table.insert(db.titles, item.title)

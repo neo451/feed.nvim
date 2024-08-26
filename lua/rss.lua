@@ -4,10 +4,10 @@ local M = {}
 
 local srcs = {
 	["少数派"] = "https://sspai.com/feed",
-	arch = "https://archlinux.org/feeds/news/",
+	-- arch = "https://archlinux.org/feeds/news/",
 	["机核"] = "https://www.gcores.com/rss",
-	zig = "https://andrewkelley.me/rss.xml",
-	bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
+	-- zig = "https://andrewkelley.me/rss.xml",
+	-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
 }
 local actions = {}
 
@@ -32,7 +32,7 @@ end, { nargs = 1 })
 
 function M.setup(config)
 	vim.keymap.set("n", "<leader>rs", render.render_telescope, { desc = "Show [R][s]s feed" })
-	vim.keymap.set("n", "<leader>rr", render.render_flat, { desc = "Show [R][s]s feed" })
+	vim.keymap.set("n", "<leader>rr", render.render_index, { desc = "Show [R][s]s feed" })
 end
 
 return M
