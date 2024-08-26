@@ -25,6 +25,10 @@ end
 
 actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
 
+function actions.list_feeds()
+	print(vim.inspect(M._feeds))
+end
+
 function actions.update()
 	for name, link in pairs(M._feeds) do
 		fetch.update_feed(link, name)

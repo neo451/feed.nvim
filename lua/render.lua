@@ -28,7 +28,11 @@ local function format_item(item)
 	lines[4] = kv("Feed", item.feed)
 	lines[5] = kv("Link", item.link)
 	lines[6] = ""
-	lines[7] = item.description
+	if item["content:encoded"] then
+		lines[7] = item["content:encoded"]
+	else
+		lines[7] = item.description
+	end
 	return lines
 end
 
@@ -151,7 +155,9 @@ local function process_tags(tags)
 end
 
 local function format_title(title)
+	print(title)
 	vim.api.nvim_win_get_width(0) -- TODO:
+	print(vim.inspect(db[title]))
 	return string.format(
 		"%s %s    %s %s",
 		process_date(db[title].pubDate),
@@ -205,7 +211,8 @@ function M.render_index(cond)
 	local to_render = filter(db.titles, cond)
 	M.index = vim.deepcopy(to_render, true) -- HACK:
 	for i, title in ipairs(to_render) do
-		to_render[i] = format_title(title)
+		-- print(tostring(title))
+		to_render[i] = format_title(tostring(title))
 	end
 	render(to_render, bufs.index, highlight_index)
 	index_keymaps(bufs.index)

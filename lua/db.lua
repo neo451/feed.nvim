@@ -22,7 +22,7 @@ local function load_page(path)
 	local f = io.open(path, "rb")
 	if f then
 		-- ret = vim.mpack.decode(f:read("*a"))
-		ret = loadstring(f:read("*a"))
+		ret = loadstring(f:read("*a"))()
 		f:close()
 	end
 	return ret
