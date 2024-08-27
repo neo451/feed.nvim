@@ -1,17 +1,20 @@
 local M = {}
----@param buf integer
----@param lhs string
----@param rhs string | function
-function M.push_keymap(buf, lhs, rhs)
-	if type(rhs) == "string" then
-		vim.api.nvim_buf_set_keymap(buf, "n", lhs, rhs, { noremap = true, silent = true })
-	else
-		vim.api.nvim_buf_set_keymap(buf, "n", lhs, "", {
-			noremap = true,
-			silent = true,
-			callback = rhs,
-		})
+local utf8 = require("rss.utf8")
+
+local lpeg = vim.lpeg
+-- TODO: handle cjk .. all non-ascii, emojis??
+local hans = lpeg.C(lpeg.utfR(0x4E00, 0x9FFF) ^ 1)
+
+function M.str_len(str)
+	local len = 0
+	for _, c in utf8.codes(str) do
+		if hans:match(c) then
+			len = len + 2
+		else
+			len = len + 1
+		end
 	end
+	return len
 end
 
 local months =
@@ -24,11 +27,26 @@ function M.format_date(str, format)
 	return format:format(year, months[month], day)
 end
 
-local function process_title(str)
-	if #str < 30 then
-		return str .. string.rep(" ", 30 - #str)
+M.sub = function(str, startidx, endidx)
+	local buffer = {}
+	local len = 0
+	for _, c in utf8.codes(str) do
+		len = len + M.str_len(c) -- TODO: wasteful
+		buffer[#buffer + 1] = c
+		if len >= endidx then
+			return table.concat(buffer, "", 1, #buffer - 1)
+		end
+	end
+end
+
+function M.format_title(str, max_len)
+	max_len = max_len or 50
+	local len = M.str_len(str)
+	if len < max_len then
+		return str .. string.rep(" ", max_len - len)
 	else
-		return str:sub(1, 30)
+		str = M.sub(str, 1, max_len)
+		return str .. string.rep(" ", max_len - M.str_len(str))
 	end
 end
 
@@ -80,6 +98,21 @@ function M.filter(list, cond)
 		end
 	end
 	return filtered
+end
+
+---@param buf integer
+---@param lhs string
+---@param rhs string | function
+function M.push_keymap(buf, lhs, rhs)
+	if type(rhs) == "string" then
+		vim.api.nvim_buf_set_keymap(buf, "n", lhs, rhs, { noremap = true, silent = true })
+	else
+		vim.api.nvim_buf_set_keymap(buf, "n", lhs, "", {
+			noremap = true,
+			silent = true,
+			callback = rhs,
+		})
+	end
 end
 
 return M

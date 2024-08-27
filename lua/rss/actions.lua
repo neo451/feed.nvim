@@ -1,4 +1,5 @@
 local render = require("rss.render")
+local config = require("rss.config")
 local index_actions = {
 	leave_index = "<cmd>bd<cr>", --TODO: jump to the buffer before the index
 }
@@ -6,6 +7,10 @@ local entry_actions = {}
 
 function index_actions.open_browser()
 	vim.ui.open(render.current_entry().link)
+end
+
+function index_actions.open_w3m()
+	vim.cmd("W3m " .. render.current_entry().link)
 end
 
 function index_actions.open_entry()
@@ -18,8 +23,8 @@ function index_actions.open_split()
 	local row = vim.api.nvim_win_get_cursor(0)[1]
 	render.state.in_split = true
 	render.current_index = row
-	vim.cmd("split")
-	vim.cmd("wincmd j")
+	vim.cmd(config.split)
+	vim.cmd(config.split:find("v") and "wincmd k" or "wincmd j")
 	render.render_entry(row)
 end
 

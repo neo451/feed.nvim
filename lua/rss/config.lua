@@ -9,6 +9,7 @@ local default = {
 		open_entry = "<CR>",
 		open_split = "<M-CR>",
 		open_browser = "b",
+		open_w3m = "w",
 		link_to_clipboard = "y",
 		leave_index = "q",
 		add_tag = "+",
@@ -19,6 +20,8 @@ local default = {
 		next_entry = "}",
 		prev_entry = "{",
 	},
+	split = "13split",
+	max_title_len = 50,
 }
 
 local M = {}

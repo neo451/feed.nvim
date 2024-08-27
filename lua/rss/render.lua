@@ -68,12 +68,15 @@ end
 ---@return string
 local function format_title(title, format)
 	-- TODO: proper justify
-	format = format or "%s %s    %s %s"
+	format = format or "%s %s %s %s"
 	vim.api.nvim_win_get_width(0) -- TODO:
+	title = ut.format_title(title, config.max_title_len)
+	-- print(ut.str_len(title))
 	return string.format(
 		format,
 		ut.format_date(db[title].pubDate, config.date_format),
 		title,
+		-- title,
 		db[title].feed,
 		ut.format_tags(db[title].tags)
 	)
@@ -116,22 +119,22 @@ function M.render_telescope(opts)
 	opts = opts or {}
 
 	pickers
-			.new(opts, {
-				prompt_title = "Feeds",
-				finder = finders.new_table({
-					results = db.titles,
-				}),
-				attach_mappings = function(prompt_bufnr, map)
-					actions.select_default:replace(function()
-						actions.close(prompt_bufnr)
-						local selection = action_state.get_selected_entry()
-						render(format_entry(db[selection[1]]), M.buf.entry[2], ut.highlight_entry, true)
-					end)
-					return true
-				end,
-				sorter = conf.generic_sorter(opts), -- TODO: sort by date?
-			})
-			:find()
+		.new(opts, {
+			prompt_title = "Feeds",
+			finder = finders.new_table({
+				results = db.titles,
+			}),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local selection = action_state.get_selected_entry()
+					render(format_entry(db[selection[1]]), M.buf.entry[2], ut.highlight_entry, true)
+				end)
+				return true
+			end,
+			sorter = conf.generic_sorter(opts), -- TODO: sort by date?
+		})
+		:find()
 end
 
 return M
