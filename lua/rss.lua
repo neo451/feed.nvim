@@ -1,12 +1,14 @@
-local render = require("render")
-local fetch = require("fetch")
-local opml = require("opml")
+local render = require("rss.render")
+local fetch = require("rss.fetch")
+local opml = require("rss.opml")
+local config = require("rss.config")
+
 local M = {}
 
 M._feeds = {
-	-- ["少数派"] = "https://sspai.com/feed",
+	["少数派"] = "https://sspai.com/feed",
 	-- arch = "https://archlinux.org/feeds/news/",
-	-- ["机核"] = "https://www.gcores.com/rss",
+	["机核"] = "https://www.gcores.com/rss",
 	-- zig = "https://andrewkelley.me/rss.xml",
 	-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
 }
@@ -23,7 +25,7 @@ function actions.load_opml(file)
 	end
 end
 
-actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
+-- actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
 
 function actions.list_feeds()
 	print(vim.inspect(M._feeds))
@@ -48,9 +50,11 @@ vim.api.nvim_create_user_command("Rss", function(opts)
 	end
 end, { nargs = 1 })
 
-function M.setup(config)
-	vim.keymap.set("n", "<leader>rs", render.render_telescope, { desc = "Show [R][s]s feed" })
-	vim.keymap.set("n", "<leader>rr", render.render_index, { desc = "Show [R][s]s feed" })
+function M.setup(user_config)
+	config.resolve(user_config)
+	render.setup()
+	vim.keymap.set("n", "<leader>rt", render.render_telescope, { desc = "Show [R]ss feed in [T]elescope" })
+	vim.keymap.set("n", "<leader>rs", render.render_index, { desc = "Show [R][s]s feed" })
 end
 
 return M
