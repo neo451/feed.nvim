@@ -7,6 +7,7 @@ local default = {
 	---@type table<string, string | function>
 	index_keymaps = {
 		open_entry = "<CR>",
+		open_split = "<M-CR>",
 		open_browser = "b",
 		link_to_clipboard = "y",
 		leave_index = "q",
@@ -15,6 +16,8 @@ local default = {
 	},
 	entry_keymaps = {
 		back_to_index = "q",
+		next_entry = "}",
+		prev_entry = "{",
 	},
 }
 
