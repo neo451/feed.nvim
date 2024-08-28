@@ -1,8 +1,9 @@
 local M = { state = {}, index = nil }
 local flatdb = require("rss.db")
-local db = flatdb("/home/n451/Plugins/rss.nvim/lua/data")
 local config = require("rss.config")
+local db = flatdb(config.db_dir)
 local ut = require("rss.utils")
+local date = require("rss.date")
 
 local function kv(k, v)
 	return string.format("%s: %s", k, v)
@@ -25,7 +26,7 @@ end
 
 ---@param entry rss.entry
 ---@return table
-local function format_entry(entry)
+local function show_entry(entry)
 	local lines = {}
 	lines[1] = kv("Title", entry.title)
 	lines[2] = kv("Date", entry.pubDate)
@@ -66,32 +67,27 @@ end
 
 ---@param title string
 ---@return string
-local function format_title(title, format)
-	-- TODO: proper justify
+local function entry_name(title, format)
+	local entry = db[title]
 	format = format or "%s %s %s %s"
-	vim.api.nvim_win_get_width(0) -- TODO:
-	title = ut.format_title(title, config.max_title_len)
+	-- vim.api.nvim_win_get_width(0) -- TODO:
 	-- print(ut.str_len(title))
+	print(title)
 	return string.format(
 		format,
-		ut.format_date(db[title].pubDate, config.date_format),
-		title,
-		-- title,
-		db[title].feed,
-		ut.format_tags(db[title].tags)
+		tostring(date.new_from_entry(entry.pubDate)),
+		ut.format_title(entry.title, 50),
+		entry.feed,
+		ut.format_tags(entry.tags)
 	)
 end
 
 ---render whole db as flat list
----@param cond filterFunc?
-function M.render_index(cond)
-	cond = cond or function()
-		return true
-	end
-	local to_render = ut.filter(db.titles, cond)
-	M.index = vim.deepcopy(to_render, true) -- HACK:
-	for i, title in ipairs(to_render) do
-		to_render[i] = format_title(tostring(title))
+function M.render_index()
+	M.index = vim.deepcopy(db.titles, true) -- HACK:
+	local to_render = {}
+	for i, title in ipairs(db.titles) do
+		to_render[i] = entry_name(title)
 	end
 	render(to_render, M.buf.index, ut.highlight_index, true)
 end
@@ -102,7 +98,7 @@ function M.render_entry(index)
 	-- local prev = (index > 1) and db[M.index[index - 1]] or nil
 	-- local next = db[M.index[index + 1]]
 	-- render(format_entry(prev), M.buf.entry[1], ut.highlight_entry, false)
-	render(format_entry(entry), M.buf.entry[2], ut.highlight_entry, true)
+	render(show_entry(entry), M.buf.entry[2], ut.highlight_entry, true)
 	-- render(format_entry(next), M.buf.entry[3], ut.highlight_entry, false)
 end
 
@@ -128,7 +124,7 @@ function M.render_telescope(opts)
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
 					local selection = action_state.get_selected_entry()
-					render(format_entry(db[selection[1]]), M.buf.entry[2], ut.highlight_entry, true)
+					render(show_entry(db[selection[1]]), M.buf.entry[2], ut.highlight_entry, true)
 				end)
 				return true
 			end,

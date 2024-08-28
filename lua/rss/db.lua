@@ -76,15 +76,15 @@ pool.hack = db_funcs
 
 return setmetatable(pool, {
 	__mode = "kv",
-	__call = function(pool, path)
+	__call = function(self, path)
 		assert(isDir(path), path .. " is not a directory.")
-		if pool[path] then
-			return pool[path]
+		if self[path] then
+			return self[path]
 		end
 		local db = {}
 		setmetatable(db, mt)
-		pool[path] = db
-		pool[db] = path
+		self[path] = db
+		self[db] = path
 		return db
 	end,
 })

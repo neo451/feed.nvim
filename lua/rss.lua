@@ -4,6 +4,7 @@ local opml = require("rss.opml")
 local config = require("rss.config")
 local ut = require("rss.utils")
 local actions = require("rss.actions")
+local db = require("rss.db")
 
 local M = {}
 
@@ -30,18 +31,30 @@ end
 -- actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
 
 function autocmds.list_feeds()
-	print(vim.inspect(M._feeds))
+	print(vim.inspect(vim.tbl_keys(M._feeds)))
+end
+
+---@param tab table
+local function len(tab)
+	local len = 0
+	for k, _ in pairs(tab) do
+		len = len + 1
+	end
+	return len
 end
 
 function autocmds.update()
+	local n = 1
+	local len = len(M._feeds)
 	for name, link in pairs(M._feeds) do
-		fetch.update_feed(link, name)
+		fetch.update_feed(link, name, len, n)
+		n = n + 1
 	end
 end
 
 -- TODO: autocomp when using usrcmd
 function autocmds.update_feed(name)
-	fetch.update_feed(M._feeds[name], name)
+	fetch.update_feed(M._feeds[name], name, 1, 1)
 end
 
 vim.api.nvim_create_user_command("Rss", function(opts)
@@ -52,9 +65,16 @@ vim.api.nvim_create_user_command("Rss", function(opts)
 	end
 end, { nargs = 1 })
 
-function M.setup(user_config)
-	config.resolve(user_config)
+vim.api.nvim_create_autocmd("VimLeavePre", {
+	pattern = "*.md",
+	callback = function()
+		print("leave!")
+		db:save()
+		-- autocmds.update()
+	end,
+})
 
+local function prepare_bufs()
 	render.buf = {
 		index = vim.api.nvim_create_buf(false, true),
 		entry = {},
@@ -68,6 +88,12 @@ function M.setup(user_config)
 	for rhs, lhs in pairs(config.index_keymaps) do
 		ut.push_keymap(render.buf.index, lhs, actions.index[rhs])
 	end
+end
+
+function M.setup(user_config)
+	config.resolve(user_config)
+	prepare_bufs()
+
 	vim.keymap.set("n", "<leader>rt", render.render_telescope, { desc = "Show [R]ss feed in [T]elescope" })
 	vim.keymap.set("n", "<leader>rs", render.render_index, { desc = "Show [R][s]s feed" })
 end

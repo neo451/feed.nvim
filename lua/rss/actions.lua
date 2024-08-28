@@ -1,3 +1,5 @@
+--- Actions corespond to keymaps
+
 local render = require("rss.render")
 local config = require("rss.config")
 local index_actions = {

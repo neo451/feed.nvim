@@ -20,8 +20,13 @@ local default = {
 		next_entry = "}",
 		prev_entry = "{",
 	},
+	search = {
+		sort_order = "descending",
+		update_hook = {},
+	},
 	split = "13split",
-	max_title_len = 50,
+	-- max_title_len = 50,
+	db_dir = vim.fn.expand("~/.rss.nvim"),
 }
 
 local M = {}
@@ -35,6 +40,13 @@ setmetatable(M, {
 		return default[key]
 	end,
 })
+
+-- local function prepare_db()
+if vim.fn.isdirectory(M.db_dir) == 0 then
+	local path = vim.fn.expand(M.db_dir)
+	vim.fn.mkdir(path, "p")
+end
+-- end
 
 --- Merge the user configuration with the default values.
 ---@param config table<string, any> user configuration

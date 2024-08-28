@@ -1,5 +1,7 @@
 local M = {}
 local utf8 = require("rss.utf8")
+local url = require("rss.url")
+local F = require("plenary.functional")
 
 local lpeg = vim.lpeg
 -- TODO: handle cjk .. all non-ascii, emojis??
@@ -15,16 +17,6 @@ function M.str_len(str)
 		end
 	end
 	return len
-end
-
-local months =
-{ Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
-
----@param str string
----@return string
-function M.format_date(str, format)
-	local weekday, day, month, year, time, zone = str:match("([%a]+), (%d+) ([%a]+) (%d+) (%d+:%d+:%d+) ([%+%-]%d+)")
-	return format:format(year, months[month], day)
 end
 
 M.sub = function(str, startidx, endidx)
@@ -114,5 +106,93 @@ function M.push_keymap(buf, lhs, rhs)
 		})
 	end
 end
+
+function M.clamp(min, value, max)
+	return math.min(max, math.max(min, value))
+end
+
+function M.cycle(i, n)
+	return i % n == 0 and n or i % n
+end
+
+-- TODO:
+function M.looks_like_url(str)
+	return type(str) == "string" and not str:find("[ \n\t\r]") and (url.parse(str) ~= nil)
+end
+
+-- (defun elfeed-looks-like-url-p (string)
+--   "Return true if STRING looks like it could be a URL."
+--   (and (stringp string)
+--        (not (string-match-p "[ \n\t\r]" string))
+--        (not (null (url-type (url-generic-parse-url string))))))
+--
+-- (defun elfeed-format-column (string width &optional align)
+--   "Return STRING truncated or padded to WIDTH following ALIGNment.
+-- Align should be a keyword :left or :right."
+--   (if (<= width 0)
+--       ""
+--     (format (format "%%%s%d.%ds" (if (eq align :left) "-" "") width width)
+--             string)))
+--
+--
+
+--
+-- (defun elfeed-cleanup (name)
+--   "Trim trailing and leading spaces and collapse multiple spaces."
+--   (let ((trim (replace-regexp-in-string "[\f\n\r\t\v ]+" " " (or name ""))))
+--     (replace-regexp-in-string "^ +\\| +$" "" trim)))
+--
+-- (defun elfeed-parse-simple-iso-8601 (string)
+--   "Attempt to parse STRING as a simply formatted ISO 8601 date.
+-- Examples: 2015-02-22, 2015-02, 20150222"
+--   (let* ((re (cl-flet ((re-numbers (num) (format "\\([0-9]\\{%s\\}\\)" num)))
+--                (format "^%s-?%s-?%s?\\(T%s:%s:?%s?\\)?"
+--                        (re-numbers 4)
+--                        (re-numbers 2)
+--                        (re-numbers 2)
+--                        (re-numbers 2)
+--                        (re-numbers 2)
+--                        (re-numbers 2))))
+--          (matches (save-match-data
+--                     (when (string-match re string)
+--                       (cl-loop for i from 1 to 7
+--                                collect (let ((match (match-string i string)))
+--                                          (and match (string-to-number match))))))))
+--     (when matches
+--       (cl-multiple-value-bind (year month day _ hour min sec) matches
+--         (float-time (encode-time (or sec 0) (or min 0) (or hour 0)
+--                                  (or day 1) month year t))))))
+--
+-- (defun elfeed-new-date-for-entry (old-date new-date)
+--   "Decide entry date, given an existing date (nil for new) and a new date.
+-- Existing entries' dates are unchanged if the new date is not
+-- parseable. New entries with unparseable dates default to the
+-- current time."
+--   (or (elfeed-float-time new-date)
+--       old-date
+--       (float-time)))
+--
+-- (defun elfeed-float-time (date)
+--   "Like `float-time' but accept anything reasonable for DATE.
+-- Defaults to nil if DATE could not be parsed. Date is allowed to
+-- be relative to now (`elfeed-time-duration')."
+--   (cl-typecase date
+--     (string
+--      (let ((iso-8601 (elfeed-parse-simple-iso-8601 date)))
+--        (if iso-8601
+--            iso-8601
+--          (let ((duration (elfeed-time-duration date)))
+--            (if duration
+--                (- (float-time) duration)
+--              (let ((time (ignore-errors (date-to-time date))))
+--                ;; check if date-to-time failed, silently or otherwise
+--                (unless (or (null time) (equal time '(14445 17280)))
+--                  (float-time time))))))))
+--     (integer date)
+--     (otherwise nil)))
+
+-- print(os.date("%Y-%m-%d %H:%M:%S", os.time()))
+
+-- print("123" < "12")
 
 return M

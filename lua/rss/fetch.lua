@@ -1,6 +1,7 @@
 local M = {}
+local config = require("rss.config")
 local flatdb = require("rss.db")
-local db = flatdb("/home/n451/Plugins/rss.nvim/lua/data")
+local db = flatdb(config.db_dir)
 
 local xml2lua = require("xml")
 local handler = require("tree")
@@ -23,9 +24,11 @@ if not db.titles then
 end
 
 ---fetch xml from source and load them into db
----@param url any
+---@param url string
 ---@param name string # name of the source
-function M.update_feed(url, name)
+---@param total number # total number of feeds
+---@param index number # index of the feed
+function M.update_feed(url, name, total, index)
 	if not db[name] then
 		db[name] = {}
 	end
@@ -39,7 +42,6 @@ function M.update_feed(url, name)
 			local src = res.body
 			local root, feed = find_root(parse_xml(src))
 			for _, item in ipairs(root) do
-				-- print(vim.inspect(item))
 				item.feed = feed
 				item.tags = { unread = true } -- HACK:
 				db[item.title] = item
@@ -47,6 +49,7 @@ function M.update_feed(url, name)
 				table.insert(db.titles, item.title)
 			end
 			db:save()
+			print("rss.nvim: " .. name .. " loaded " .. index .. "/" .. total)
 		end,
 	})
 end
