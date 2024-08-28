@@ -25,12 +25,11 @@ end
 
 ---fetch xml from source and load them into db
 ---@param url string
----@param name string # name of the source
 ---@param total number # total number of feeds
 ---@param index number # index of the feed
-function M.update_feed(url, name, total, index)
-	if not db[name] then
-		db[name] = {}
+function M.update_feed(url, total, index)
+	if not db[url] then
+		db[url] = {}
 	end
 	local curl = require("rss.curl")
 	curl.get({
@@ -45,16 +44,13 @@ function M.update_feed(url, name, total, index)
 				item.feed = feed
 				item.tags = { unread = true } -- HACK:
 				db[item.title] = item
-				table.insert(db[name], item.title)
 				table.insert(db.titles, item.title)
 			end
 			db:save()
-			print("rss.nvim: " .. name .. " loaded " .. index .. "/" .. total)
+			print("rss.nvim: " .. "loaded " .. index .. "/" .. total)
 		end,
 	})
 end
-
--- M.update_feed("https://blog.cnbang.net/feed/", "lim")
 
 -- TODO:  vim.notify("feeds all loaded")
 -- TODO:  maybe use a process bar like fidget.nvim

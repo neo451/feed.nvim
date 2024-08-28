@@ -25,8 +25,17 @@ local default = {
 		update_hook = {},
 	},
 	split = "13split",
-	-- max_title_len = 50,
 	db_dir = vim.fn.expand("~/.rss.nvim"),
+	colorscheme = "catppuccin-latte",
+	max_title_length = 70,
+
+	feeds = {
+		["少数派"] = "https://sspai.com/feed",
+		-- arch = "https://archlinux.org/feeds/news/",
+		["机核"] = "https://www.gcores.com/rss",
+		-- zig = "https://andrewkelley.me/rss.xml",
+		-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
+	},
 }
 
 local M = {}

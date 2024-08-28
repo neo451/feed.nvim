@@ -8,14 +8,6 @@ local db = require("rss.db")
 
 local M = {}
 
-M._feeds = {
-	["少数派"] = "https://sspai.com/feed",
-	-- arch = "https://archlinux.org/feeds/news/",
-	["机核"] = "https://www.gcores.com/rss",
-	-- zig = "https://andrewkelley.me/rss.xml",
-	-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
-}
-
 local autocmds = {}
 
 function autocmds.load_opml(file)
@@ -24,38 +16,29 @@ function autocmds.load_opml(file)
 		local item = feed._attr
 		local title = item.title
 		local xmlUrl = item.xmlUrl
-		M._feeds[title] = xmlUrl
+		config.feeds[title] = xmlUrl
 	end
 end
 
 -- actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
 
 function autocmds.list_feeds()
-	print(vim.inspect(vim.tbl_keys(M._feeds)))
-end
-
----@param tab table
-local function len(tab)
-	local len = 0
-	for k, _ in pairs(tab) do
-		len = len + 1
-	end
-	return len
+	print(vim.inspect(vim.tbl_values(config.feeds)))
 end
 
 function autocmds.update()
 	local n = 1
-	local len = len(M._feeds)
-	for name, link in pairs(M._feeds) do
-		fetch.update_feed(link, name, len, n)
+	local len = vim.tbl_count(config.feeds)
+	for _, link in pairs(config.feeds) do
+		fetch.update_feed(link, len, n)
 		n = n + 1
 	end
 end
 
--- TODO: autocomp when using usrcmd
-function autocmds.update_feed(name)
-	fetch.update_feed(M._feeds[name], name, 1, 1)
-end
+-- TODO: autocomp names/url when using usrcmd
+-- function autocmds.update_feed(name)
+-- 	fetch.update_feed(config.feeds[name], name, 1, 1)
+-- end
 
 vim.api.nvim_create_user_command("Rss", function(opts)
 	if #opts.fargs > 1 then -- TODO:
@@ -92,6 +75,7 @@ end
 
 function M.setup(user_config)
 	config.resolve(user_config)
+	config.og_colorscheme = vim.cmd("colorscheme")
 	prepare_bufs()
 
 	vim.keymap.set("n", "<leader>rt", render.render_telescope, { desc = "Show [R]ss feed in [T]elescope" })

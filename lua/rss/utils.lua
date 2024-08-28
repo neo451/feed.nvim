@@ -2,15 +2,27 @@ local M = {}
 local utf8 = require("rss.utf8")
 local url = require("rss.url")
 local F = require("plenary.functional")
-
 local lpeg = vim.lpeg
+local C, utfR = lpeg.C, lpeg.utfR
+
 -- TODO: handle cjk .. all non-ascii, emojis??
-local hans = lpeg.C(lpeg.utfR(0x4E00, 0x9FFF) ^ 1)
+local fullwidth = C(
+	(
+		utfR(0x4E00, 0x9FFF)
+		+ utfR(0xFF10, 0xFF19)
+		+ utfR(0x3000, 0x303F)
+		+ utfR(0xFF01, 0xFF5E)
+		+ utfR(0x2000, 0x206F)
+		+ utfR(0xFF10, 0xFF19)
+		- utfR(0x201C, 0x201D)
+		- utfR(0x2026, 0x2026) --- TODO: find all exceptions
+	) ^ 1
+)
 
 function M.str_len(str)
 	local len = 0
 	for _, c in utf8.codes(str) do
-		if hans:match(c) then
+		if fullwidth:match(c) then
 			len = len + 2
 		else
 			len = len + 1
@@ -74,22 +86,6 @@ function M.highlight_index(buf)
 	for i = 0, len do
 		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, 10 })
 	end
-end
-
----@alias filterFunc fun(entry: rss.entry): boolean
-
--- function M.has_tag(title, tag)
--- 	return db[title][tag] ~= nil
--- end
-
-function M.filter(list, cond)
-	local filtered = {}
-	for _, title in ipairs(list) do
-		if cond(list) then
-			filtered[#filtered + 1] = title
-		end
-	end
-	return filtered
 end
 
 ---@param buf integer

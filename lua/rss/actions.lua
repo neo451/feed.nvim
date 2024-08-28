@@ -3,9 +3,14 @@
 local render = require("rss.render")
 local config = require("rss.config")
 local index_actions = {
-	leave_index = "<cmd>bd<cr>", --TODO: jump to the buffer before the index
+	-- leave_index = "<cmd>bd<cr>", --TODO: jump to the buffer before the index
 }
 local entry_actions = {}
+
+function index_actions.leave_index()
+	vim.cmd("bd")
+	vim.cmd("colorscheme " .. config.og_colorscheme)
+end
 
 function index_actions.open_browser()
 	vim.ui.open(render.current_entry().link)

@@ -52,9 +52,12 @@ local function render(lines, buf, callback, display)
 	if callback then
 		callback(buf)
 	end
-	if display then
-		vim.api.nvim_set_current_buf(buf)
-	end
+	vim.api.nvim_set_current_buf(buf)
+
+	vim.api.nvim_set_option_value("conceallevel", 0, { win = vim.api.nvim_get_current_win() })
+	-- vim.api.nvim_set_option_value("colorscheme", config.colorscheme, { win = vim.api.nvim_get_current_win() })
+	config.og_colorscheme = vim.cmd.colorscheme()
+	vim.cmd.colorscheme(config.colorscheme)
 	vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
 	vim.api.nvim_set_option_value("filetype", "markdown", { buf = buf })
 end
@@ -72,11 +75,11 @@ local function entry_name(title, format)
 	format = format or "%s %s %s %s"
 	-- vim.api.nvim_win_get_width(0) -- TODO:
 	-- print(ut.str_len(title))
-	print(title)
+	-- print(title)
 	return string.format(
 		format,
 		tostring(date.new_from_entry(entry.pubDate)),
-		ut.format_title(entry.title, 50),
+		ut.format_title(entry.title, config.max_title_length),
 		entry.feed,
 		ut.format_tags(entry.tags)
 	)
