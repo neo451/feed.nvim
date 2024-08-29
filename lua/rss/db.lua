@@ -39,7 +39,6 @@ local function load_page(path)
 	local ret
 	local f = io.open(path, "rb")
 	if f then
-		-- ret = vim.mpack.decode(f:read("*a"))
 		ret = loadstring(f:read("*a"))()
 		f:close()
 	end
@@ -100,7 +99,7 @@ pool.hack = db_funcs
 return setmetatable(pool, {
 	__mode = "kv",
 	__call = function(self, path)
-		assert(isDir(path), path .. " is not a directory.")
+		assert(vim.fn.isdirectory(path) == 1, path .. " is not a directory.")
 		if self[path] then
 			return self[path]
 		end

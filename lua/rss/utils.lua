@@ -61,7 +61,7 @@ function M.format_tags(tags)
 	tags = vim.tbl_keys(tags)
 	local buffer = { "(" }
 	if #tags == 0 then
-		return "()"
+		return ""
 	end
 	for i, tag in pairs(tags) do
 		buffer[#buffer + 1] = tag
@@ -101,10 +101,12 @@ function M.looks_like_url(str)
 	return type(str) == "string" and not str:find("[ \n\t\r]") and (url.parse(str) ~= nil)
 end
 
+local ns = vim.api.nvim_create_namespace("rss")
+
 local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
 local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
-vim.api.nvim_set_hl(0, "rss.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-vim.api.nvim_set_hl(0, "rss.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
+vim.api.nvim_set_hl(ns, "rss.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
+vim.api.nvim_set_hl(ns, "rss.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
 
 -- function M.set_text_bold(buf, start_line, start_col, end_col)
 -- 	local ns = vim.api.nvim_create_namespace("rss.bold")
@@ -119,7 +121,7 @@ vim.api.nvim_set_hl(0, "rss.light", { bold = true, fg = light_grp.fg, bg = light
 function M.highlight_entry(buf)
 	local len = { 6, 5, 7, 5, 5 }
 	for i = 0, 4 do
-		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, len[i + 1] })
+		vim.highlight.range(buf, ns, "Title", { i, 0 }, { i, len[i + 1] })
 	end
 end
 
@@ -127,8 +129,9 @@ end
 function M.highlight_index(buf)
 	local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
 	for i = 1, len do
-		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, 10 })
-		vim.api.nvim_buf_add_highlight(buf, 1, "rss.light", i, 0, -1)
+		-- vim.highlight.range(buf, ns, "Title", { i, 0 }, { i, 10 })
+		vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
+		vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", i, 0, -1)
 		-- vim.highlight.range(buf, 1, "rss.bold", { i, 0 }, { i, 10 })
 	end
 end

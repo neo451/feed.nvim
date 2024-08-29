@@ -19,8 +19,8 @@ local function parse_xml(src)
 end
 
 -- TODO: need this??
-if not db.titles then
-	db.titles = {}
+if not db.index then
+	db.index = {}
 end
 
 ---fetch xml from source and load them into db
@@ -41,13 +41,17 @@ function M.update_feed(url, total, index)
 			local src = res.body
 			local root, feed = find_root(parse_xml(src))
 			for _, item in ipairs(root) do
+				print(item.title)
 				item.feed = feed
 				item.tags = { unread = true } -- HACK:
 				db[item.title] = item
-				table.insert(db.titles, item.title)
+				table.insert(db.index, item.title)
 			end
 			db:save()
-			print("rss.nvim: " .. "loaded " .. index .. "/" .. total)
+			vim.schedule_wrap(function()
+				vim.notify(("[rss.nvim] [%d/%d] loaded %s"):format(index, total, feed))
+			end)()
+			-- vim.notify(("[rss.nvim] [%d/%d] loaded %s"):format(index, total, feed))
 		end,
 	})
 end

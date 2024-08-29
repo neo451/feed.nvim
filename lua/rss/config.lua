@@ -38,9 +38,9 @@ local default = {
 	max_title_length = 70,
 
 	feeds = {
-		["少数派"] = "https://sspai.com/feed",
-		-- arch = "https://archlinux.org/feeds/news/",
-		["机核"] = "https://www.gcores.com/rss",
+		{ "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
+		{ "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
+		"https://archlinux.org/feeds/news/",
 		-- zig = "https://andrewkelley.me/rss.xml",
 		-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
 	},

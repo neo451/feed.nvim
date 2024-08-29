@@ -1,4 +1,8 @@
-local M = { state = {}, index = nil }
+local M = {
+	state = {},
+	index = nil,
+}
+
 local flatdb = require("rss.db")
 local config = require("rss.config")
 local ut = require("rss.utils")
@@ -23,13 +27,13 @@ function M.get_entry(index)
 	return db[M.index[index]]
 end
 
----@param config rss.config
-local function set_options(config, buf)
-	for opt_name, value in pairs(config.win_options) do
-		vim.api.nvim_set_option_value(opt_name, value, { win = vim.api.nvim_get_current_win() })
+---@param buf integer
+local function set_options(buf)
+	for key, value in pairs(config.win_options) do
+		vim.api.nvim_set_option_value(key, value, { win = vim.api.nvim_get_current_win() })
 	end
-	for opt_name, value in pairs(config.buf_options) do
-		vim.api.nvim_set_option_value(opt_name, value, { buf = buf })
+	for key, value in pairs(config.buf_options) do
+		vim.api.nvim_set_option_value(key, value, { buf = buf })
 	end
 	config.og_colorscheme = vim.cmd.colorscheme()
 	vim.cmd.colorscheme(config.colorscheme)
@@ -45,15 +49,15 @@ function M.show(lines, buf, callback)
 	if callback then
 		callback(buf)
 	end
-	set_options(config, buf)
+	set_options(buf)
 end
 
 ---render whole db as flat list
 function M.show_index()
-	M.index = vim.deepcopy(db.titles, true) -- HACK:
+	M.index = vim.deepcopy(db.index, true) -- HACK:
 	local to_render = {}
 	to_render[1] = M.show_hint()
-	for i, title in ipairs(db.titles) do
+	for i, title in ipairs(db.index) do
 		to_render[i + 1] = tostring(db[title])
 	end
 	M.show(to_render, M.buf.index, ut.highlight_index)
@@ -63,8 +67,11 @@ end
 function M.show_entry(index)
 	local entry = db[M.index[index]]
 	M.show(ut.format_entry(entry), M.buf.entry[2], ut.highlight_entry)
+	entry.tags.unread = nil
+	db:save()
 end
 
+---@return string
 function M.show_hint()
 	return "Hint: <M-CR> open in split | <CR> open | + add_tag | - remove | ? help"
 end

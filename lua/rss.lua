@@ -28,11 +28,11 @@ function autocmds.list_feeds()
 end
 
 function autocmds.update()
-	local n = 1
-	local len = vim.tbl_count(config.feeds)
-	for _, link in pairs(config.feeds) do
-		fetch.update_feed(link, len, n)
-		n = n + 1
+	for i, link in ipairs(config.feeds) do
+		if type(link) == "table" then
+			link = link[1]
+		end
+		fetch.update_feed(link, #config.feeds, i)
 	end
 end
 
