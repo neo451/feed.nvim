@@ -1,6 +1,7 @@
 --- Default configuration.
 --- Provides fallback values not specified in the user config.
 
+---@class rss.config
 local default = {
 	date_format = "%s-%02d-%02d",
 	keymaps = {},
@@ -20,13 +21,20 @@ local default = {
 		next_entry = "}",
 		prev_entry = "{",
 	},
+	win_options = {
+		conceallevel = 0,
+	},
+	buf_options = {
+		filetype = "markdown", -- TODO: rss?
+		modifiable = false,
+	},
 	search = {
 		sort_order = "descending",
 		update_hook = {},
 	},
 	split = "13split",
 	db_dir = vim.fn.expand("~/.rss.nvim"),
-	colorscheme = "catppuccin-latte",
+	colorscheme = "kanagawa-lotus",
 	max_title_length = 70,
 
 	feeds = {

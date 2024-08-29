@@ -2,37 +2,38 @@
 
 local render = require("rss.render")
 local config = require("rss.config")
-local index_actions = {
-	-- leave_index = "<cmd>bd<cr>", --TODO: jump to the buffer before the index
-}
+local index_actions = {}
 local entry_actions = {}
 
+local function current_index()
+	local index = vim.api.nvim_win_get_cursor(0)[1] - 1
+	render.current_index = index
+	return index
+end
+
+-- leave_index = "<cmd>bd<cr>", --TODO: jump to the buffer before the index
 function index_actions.leave_index()
 	vim.cmd("bd")
 	vim.cmd("colorscheme " .. config.og_colorscheme)
 end
 
 function index_actions.open_browser()
-	vim.ui.open(render.current_entry().link)
+	vim.ui.open(render.get_entry(current_index()).link)
 end
 
 function index_actions.open_w3m()
-	vim.cmd("W3m " .. render.current_entry().link)
+	vim.cmd("W3m " .. render.get_entry(current_index()).link)
 end
 
 function index_actions.open_entry()
-	local row = vim.api.nvim_win_get_cursor(0)[1]
-	render.current_index = row
-	render.render_entry(row)
+	render.show_entry(current_index())
 end
 
 function index_actions.open_split()
-	local row = vim.api.nvim_win_get_cursor(0)[1]
 	render.state.in_split = true
-	render.current_index = row
 	vim.cmd(config.split)
 	vim.cmd(config.split:find("v") and "wincmd k" or "wincmd j")
-	render.render_entry(row)
+	render.show_entry(current_index())
 end
 
 function index_actions.link_to_clipboard()
@@ -43,13 +44,13 @@ function index_actions.add_tag()
 	local input = vim.fn.input("Tag: ")
 	render.current_entry().tags[input] = true
 	-- db:save() -- TODO: do it on exit or refresh
-	render.render_index() -- inefficient??
+	render.show_index() -- inefficient??
 end
 
 function index_actions.remove_tag()
 	local input = vim.fn.input("Tag: ")
 	render.current_entry().tags[input] = nil
-	render.render_index()
+	render.show_index()
 end
 
 function entry_actions.back_to_index()
@@ -65,7 +66,7 @@ function entry_actions.next_entry()
 		return
 	end
 	render.current_index = render.current_index + 1
-	render.render_entry(render.current_index)
+	render.show_entry(render.current_index)
 end
 
 -- TODO: properly do 'ring' navigation, ie. wrap around
@@ -74,7 +75,7 @@ function entry_actions.prev_entry()
 		return
 	end
 	render.current_index = render.current_index - 1
-	render.render_entry(render.current_index)
+	render.show_entry(render.current_index)
 end
 
 return { index = index_actions, entry = entry_actions }

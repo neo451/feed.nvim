@@ -1,4 +1,5 @@
 local M = {}
+local config = require("rss.config")
 local utf8 = require("rss.utf8")
 local url = require("rss.url")
 local F = require("plenary.functional")
@@ -73,22 +74,6 @@ function M.format_tags(tags)
 end
 
 ---@param buf integer
-function M.highlight_entry(buf)
-	local len = { 6, 5, 7, 5, 5 }
-	for i = 0, 4 do
-		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, len[i + 1] })
-	end
-end
-
----@param buf integer
-function M.highlight_index(buf)
-	local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
-	for i = 0, len do
-		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, 10 })
-	end
-end
-
----@param buf integer
 ---@param lhs string
 ---@param rhs string | function
 function M.push_keymap(buf, lhs, rhs)
@@ -114,6 +99,60 @@ end
 -- TODO:
 function M.looks_like_url(str)
 	return type(str) == "string" and not str:find("[ \n\t\r]") and (url.parse(str) ~= nil)
+end
+
+local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
+local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
+vim.api.nvim_set_hl(0, "rss.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
+vim.api.nvim_set_hl(0, "rss.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
+
+-- function M.set_text_bold(buf, start_line, start_col, end_col)
+-- 	local ns = vim.api.nvim_create_namespace("rss.bold")
+-- 	vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", start_line - 1, start_col, end_col)
+-- end
+--
+-- function M.set_text_light(buf, start_line, start_col, end_col)
+-- 	local ns = vim.api.nvim_create_namespace("rss.light")
+-- end
+
+---@param buf integer
+function M.highlight_entry(buf)
+	local len = { 6, 5, 7, 5, 5 }
+	for i = 0, 4 do
+		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, len[i + 1] })
+	end
+end
+
+---@param buf integer
+function M.highlight_index(buf)
+	local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
+	for i = 1, len do
+		vim.highlight.range(buf, 1, "Title", { i, 0 }, { i, 10 })
+		vim.api.nvim_buf_add_highlight(buf, 1, "rss.light", i, 0, -1)
+		-- vim.highlight.range(buf, 1, "rss.bold", { i, 0 }, { i, 10 })
+	end
+end
+
+local function kv(k, v)
+	return string.format("%s: %s", k, v)
+end
+
+---@param entry rss.entry
+---@return table
+function M.format_entry(entry)
+	local lines = {}
+	lines[1] = kv("Title", entry.title)
+	lines[2] = kv("Date", entry.pubDate)
+	lines[3] = kv("Author", entry.author or entry.feed)
+	lines[4] = kv("Feed", entry.feed)
+	lines[5] = kv("Link", entry.link)
+	lines[6] = ""
+	if entry["content:encoded"] then
+		lines[7] = entry["content:encoded"]
+	else
+		lines[7] = entry.description
+	end
+	return lines
 end
 
 -- (defun elfeed-looks-like-url-p (string)

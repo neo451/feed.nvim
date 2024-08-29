@@ -5,6 +5,7 @@ local config = require("rss.config")
 local ut = require("rss.utils")
 local actions = require("rss.actions")
 local db = require("rss.db")
+local telescope = require("rss.telescope")
 
 local M = {}
 
@@ -78,8 +79,8 @@ function M.setup(user_config)
 	config.og_colorscheme = vim.cmd("colorscheme")
 	prepare_bufs()
 
-	vim.keymap.set("n", "<leader>rt", render.render_telescope, { desc = "Show [R]ss feed in [T]elescope" })
-	vim.keymap.set("n", "<leader>rs", render.render_index, { desc = "Show [R][s]s feed" })
+	vim.keymap.set("n", "<leader>rt", telescope.show_telescope, { desc = "Show [R]ss feed in [T]elescope" })
+	vim.keymap.set("n", "<leader>rs", render.show_index, { desc = "Show [R][s]s feed" })
 end
 
 return M

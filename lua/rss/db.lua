@@ -1,4 +1,8 @@
 -- from https://github.com/uleelx/FlatDB
+
+local date = require("rss.date")
+local ut = require("rss.utils")
+local config = require("rss.config")
 local function isFile(path)
 	local f = io.open(path, "r")
 	if f then
@@ -17,6 +21,20 @@ local function isDir(path)
 	return false
 end
 
+---@param entry rss.entry
+---@return string
+local function entry_name(entry)
+	local format = "%s %s %s %s"
+	-- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
+	return string.format(
+		format,
+		tostring(date.new_from_entry(entry.pubDate)),
+		ut.format_title(entry.title, config.max_title_length),
+		entry.feed,
+		ut.format_tags(entry.tags)
+	)
+end
+
 local function load_page(path)
 	local ret
 	local f = io.open(path, "rb")
@@ -25,6 +43,11 @@ local function load_page(path)
 		ret = loadstring(f:read("*a"))()
 		f:close()
 	end
+	setmetatable(ret, {
+		__tostring = function(self)
+			return entry_name(self)
+		end,
+	})
 	return ret
 end
 
