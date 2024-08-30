@@ -42,11 +42,11 @@ local function load_page(path)
 		ret = loadstring(f:read("*a"))()
 		f:close()
 	end
-	setmetatable(ret, {
-		__tostring = function(self)
-			return entry_name(self)
-		end,
-	})
+	-- setmetatable(ret, {
+	-- 	__tostring = function(self)
+	-- 		return entry_name(self)
+	-- 	end,
+	-- })
 	return ret
 end
 
