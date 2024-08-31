@@ -16,7 +16,7 @@ local alnum = lpeg.alnum
 local punct = lpeg.punct
 
 local ws = S(" \t\n\r") ^ 0
-local text = (1 - P("<")) ^ 1
+local text = C((1 - P("<")) ^ 1)
 
 local name = C((alnum - punct) ^ 1) -- TODO: check spec
 local quoted_string = P('"') * C((1 - P('"')) ^ 0) * P('"')
@@ -51,19 +51,27 @@ local function parse_content(...)
 	end
 	local acc = {}
 	local last_key = nil
+	local as_array = nil
 	for _, v in pairs({ ... }) do
-		local key = vim.tbl_keys(v)[1]
-		if key == last_key then
-			if type(acc[key]) ~= "table" then
-				acc[key] = { acc[key] }
-			end
-			for _, val in pairs(v) do
-				table.insert(acc[key], val)
-			end
+		if type(v) == "string" then
+			table.insert(acc, v)
+			as_array = true
 		else
-			acc = vim.tbl_deep_extend("keep", acc, v)
+			local key = vim.tbl_keys(v)[1]
+			if key == last_key then
+				if type(acc[key]) ~= "table" then
+					acc[key] = { acc[key] }
+				end
+				for _, val in pairs(v) do
+					table.insert(acc[key], val)
+				end
+			elseif as_array then
+				table.insert(acc, v)
+			else
+				acc = vim.tbl_deep_extend("keep", acc, v)
+			end
+			last_key = key
 		end
-		last_key = key
 	end
 	return acc
 end
@@ -91,7 +99,7 @@ local content = V("content")
 local grammar = {
 	[1] = "document",
 	document = ws * XMLDecl ^ -1 * ws * element ^ 1 * ws / parse_document,
-	content = ws * (text + CDSect + (element ^ 0)) * ws / parse_content,
+	content = ws * (text + CDSect + element) ^ 0 * ws / parse_content,
 	element = ws * start_tag * content * end_tag / parse_element * ws,
 }
 

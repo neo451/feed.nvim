@@ -9,25 +9,30 @@ end)
 describe("nested elements", function()
 	it("should produce one table of k v pairs collected from all children", function()
 		local src = [[
-<channel>
-<title>arch</title>
-<link>https://archlinux.org/feeds/news/</link>
-</channel>
-]]
+	<channel>
+	<title>arch</title>
+	<link>https://archlinux.org/feeds/news/</link>
+	</channel>
+	]]
 
 		local src2 = [[
-<pre>
-<channel>
-		<title>arch</title>
-		<link>https://archlinux.org/feeds/news/</link>
-</channel>
-</pre>
-]]
+	<pre>
+	<channel>
+			<title>arch</title>
+			<link>https://archlinux.org/feeds/news/</link>
+	</channel>
+	</pre>
+	]]
 		assert.same({ channel = { title = "arch", link = "https://archlinux.org/feeds/news/" } }, xml.parse(src))
 		assert.same(
 			{ pre = { channel = { title = "arch", link = "https://archlinux.org/feeds/news/" } } },
 			xml.parse(src2)
 		)
+	end)
+	it("should treat text as element", function()
+		local src = [[<h1>zig <code>const std = @import("std")</code> by the way</h1>]]
+		local expected = { h1 = { "zig ", { code = 'const std = @import("std")' }, "by the way" } }
+		assert.same(expected, xml.parse(src))
 	end)
 end)
 
