@@ -11,16 +11,16 @@ local M = {}
 
 local autocmds = {}
 
-function autocmds.load_opml(file)
-	local feeds = opml.parse_opml(file)
-	for _, feed in ipairs(feeds) do
-		local item = feed._attr
-		local title = item.title
-		local xmlUrl = item.xmlUrl
-		config.feeds[title] = xmlUrl
-	end
-end
-
+-- function autocmds.load_opml(file)
+-- 	local feeds = opml.parse_opml(file)
+-- 	for _, feed in ipairs(feeds) do
+-- 		local item = feed._attr
+-- 		local title = item.title
+-- 		local xmlUrl = item.xmlUrl
+-- 		config.feeds[title] = xmlUrl
+-- 	end
+-- end
+--
 -- actions.load_opml("/home/n451/Plugins/rss.nvim/lua/list.opml")
 
 function autocmds.list_feeds()
@@ -29,9 +29,6 @@ end
 
 function autocmds.update()
 	for i, link in ipairs(config.feeds) do
-		if type(link) == "table" then
-			link = link[1]
-		end
 		fetch.update_feed(link, #config.feeds, i)
 	end
 end

@@ -14,23 +14,19 @@ local M = {
 	---List of functions to run immediately following a search buffer update.
 	---@type function[]
 	update_hook = config.search.update_hook, -- TODO:
-	sort_order = config.search.sort_order, -- TODO:
+	sort_order = config.search.sort_order,  -- TODO:
 }
 
---- 1. date tag, compare with current date
---- 2. = : title tag, fuzzy, regular expr
---- 3. search tag + / -
-
 ---@class rss.query
----@field after rss.date
----@field before rss.date
+---@field after rss.date #@
+---@field before rss.date #@
 ---@field must_have rss.pattern #+
 ---@field must_not_have rss.pattern #-
----@field matches rss.pattern
----@field not_matches rss.pattern
+---@field matches rss.pattern #~ =
+---@field not_matches rss.pattern #!
 ---@field feeds string
 ---@field not_feeds string
----@field limit string -- TODO:
+---@field limit number ##
 ---@field re rss.pattern #=
 
 ---@alias rss.pattern vim.regex | vim.lpeg.Pattern | string # regex

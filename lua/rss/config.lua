@@ -1,9 +1,11 @@
 --- Default configuration.
 --- Provides fallback values not specified in the user config.
 
+---@alias rss.feed { name: string, tags: string[] } | string
+
 ---@class rss.config
 local default = {
-	date_format = "%s-%02d-%02d",
+	date_format = "%s-%02d-%02d", -- TODO:
 	keymaps = {},
 	---@type table<string, string | function>
 	index_keymaps = {
@@ -37,12 +39,13 @@ local default = {
 	colorscheme = "kanagawa-lotus",
 	max_title_length = 70,
 
+	---@type rss.feed[]
 	feeds = {
 		{ "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
 		{ "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
 		"https://archlinux.org/feeds/news/",
-		-- zig = "https://andrewkelley.me/rss.xml",
-		-- bbc = "https://feeds.bbci.co.uk/news/world/rss.xml",
+		-- "https://andrewkelley.me/rss.xml",
+		-- "https://feeds.bbci.co.uk/news/world/rss.xml",
 	},
 }
 

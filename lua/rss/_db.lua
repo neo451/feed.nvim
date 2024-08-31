@@ -85,12 +85,15 @@ function db:save(path)
 	end
 end
 
+---@param dir string
 return function(dir)
-	if not vim.fn.isdirectory(dir) then
-		vim.fn.mkdir(dir, "p") -- necessary?
+	dir = vim.fn.expand(dir)
+	if vim.fn.isdirectory(dir) == 0 then
 		vim.fn.mkdir(dir .. "/data", "p")
-		vim.fn.writefile({ vim.inspect({ version = "0.1" }) }, dir .. "/index")
+		local res = vim.fn.writefile({ vim.inspect({ version = "0.1" }) }, dir .. "/index")
+		if res == -1 then
+			print("failed to write inde file")
+		end
 	end
-	setmetatable({ dir = dir, entries = {}, index = {}, index_handle = nil }, db)
-	return db
+	return setmetatable({ dir = dir, entries = {}, index = {}, index_handle = nil }, db)
 end
