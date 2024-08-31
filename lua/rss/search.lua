@@ -15,7 +15,7 @@ local M = {
 	---List of functions to run immediately following a search buffer update.
 	---@type function[]
 	update_hook = config.search.update_hook, -- TODO:
-	sort_order = config.search.sort_order, -- TODO:
+	sort_order = config.search.sort_order,  -- TODO:
 }
 
 ---@class rss.query
@@ -74,17 +74,10 @@ function M.valid_pattern(str)
 	return false
 end
 
----@param query rss.query
----@return fun(entry: rss.entry): boolean
-function Query(query)
-	return function(entry)
-		return true
-	end
-end
-
 ---@param entries rss.entry[]
 ---@param query rss.query
 ---@return rss.entry[]
-local function filter(entries, query) end
+local function filter(entries, query)
+end
 
 return M

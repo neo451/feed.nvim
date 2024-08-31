@@ -7,31 +7,6 @@ local bor = bit.bor
 local rshift = bit.rshift
 local lshift = bit.lshift
 
----@param fun_name string
----@param arg_types { [1]: unknown, [2]: string, [3]: boolean? }[] Array of argument, its expected type and whether it is optional.
----Usage:
----
---- ---@param s string
---- ---@param i number
---- ---@param j? number
---- function foo(s, i, j)
----   assertArgument("foo", {
----     { s, "string" },
----     { i, "number" },
----     { j, "number", true },
----   })
----   -- do something
---- end
-local function assertArgument(fun_name, arg_types)
-	local msg = "bad argument #%d to '%s' (%s expected, got %s)"
-	for i, v in ipairs(arg_types) do
-		local arg, expected_type, optional = v[1], v[2], v[3]
-		local got_type = type(arg)
-		if not (got_type == expected_type or optional and arg == nil) then
-			error(msg:format(i, fun_name, expected_type, got_type), 2)
-		end
-	end
-end
 
 ---The pattern (a string, not a function) "[\0-\x7F\xC2-\xF4][\x80-\xBF]*",
 ---which matches exactly one UTF-8 byte sequence, assuming that the subject is a valid UTF-8 string.
@@ -149,9 +124,7 @@ end
 ---@param s string
 ---@return function iterator
 function utf8.codes(s)
-	assertArgument("codes", {
-		{ s, "string" },
-	})
+	vim.validate({ s = { s, "string" } })
 
 	local i = 1
 	return function()
@@ -189,10 +162,10 @@ end
 ---@param j? integer end position. default=i
 ---@return integer code point
 function utf8.codepoint(s, i, j)
-	assertArgument("codepoint", {
-		{ s, "string" },
-		{ i, "number", true },
-		{ j, "number", true },
+	vim.validate({
+		s = { s, "string" },
+		i = { i, "number", true },
+		j = { j, "number", true },
 	})
 
 	i = normalize_range(s, i or 1)
@@ -246,10 +219,10 @@ end
 ---@return integer?
 ---@return integer?
 function utf8.len(s, i, j)
-	assertArgument("len", {
-		{ s, "string" },
-		{ i, "number", true },
-		{ j, "number", true },
+	vim.validate({
+		s = { s, "string" },
+		i = { i, "number", true },
+		j = { j, "number", true },
 	})
 
 	i = normalize_range(s, i or 1)
@@ -287,10 +260,10 @@ end
 ---@param i? integer start position. if n >= 0, default=1, otherwise default=#s+1
 ---@return integer?
 function utf8.offset(s, n, i)
-	assertArgument("offset", {
-		{ s, "string" },
-		{ n, "number" },
-		{ i, "number", true },
+	vim.validate({
+		s = { s, "string" },
+		n = { n, "number" },
+		i = { i, "number", true },
 	})
 
 	i = i or (n >= 0 and 1 or #s + 1)

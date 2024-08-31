@@ -38,7 +38,7 @@ function date:days_ago(num)
 end
 
 local months =
-	{ Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
+{ Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
 
 ---@param osdate table
 ---@return rss.date
@@ -64,16 +64,6 @@ end
 ---@return rss.date
 function M.new_from_int(time)
 	return M.new(os.date("*t", time))
-end
-
----@param str string
----@return rss.date
-function M.new_from_entry(str)
-	local weekday, day, month, year, hour, min, sec, zone =
-		str:match("([%a]+), (%d+) ([%a]+) (%d+) (%d+):(%d+):(%d+) ([%+%-]%d+)")
-	year, month, day = tonumber(year), tonumber(months[month]), tonumber(day)
-	hour, min, sec = tonumber(hour), tonumber(min), tonumber(sec)
-	return M.new({ year = year, month = month, day = day, hour = hour, min = min, sec = sec })
 end
 
 ---@param str string

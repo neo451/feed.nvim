@@ -15,7 +15,7 @@ local function load_page(path)
 	if not ok then
 		return "[rss.nvim]: wrong formated table!"
 	end
-	return res()
+	return res and res()
 end
 
 ---@param entry rss.entry

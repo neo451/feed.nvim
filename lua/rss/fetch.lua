@@ -1,11 +1,12 @@
-local M = {}
 local config = require("rss.config")
 local flatdb = require("rss._db")
-local db = flatdb(config.db_dir)
 local xml = require("rss.xml")
+local db = flatdb(config.db_dir)
+
+local M = {}
 
 ---fetch xml from source and load them into db
----@param feed string | table
+---@param feed rss.feed
 ---@param total number # total number of feeds
 ---@param index number # index of the feed
 function M.update_feed(feed, total, index)
