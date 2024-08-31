@@ -4,6 +4,7 @@ local config = require("rss.config")
 local date = require("rss.date")
 
 local M = {
+	search_filter = config.search.filter,
 	---"List of the entries currently on display."
 	---@type rss.entry[]
 	entries = {},
@@ -14,7 +15,7 @@ local M = {
 	---List of functions to run immediately following a search buffer update.
 	---@type function[]
 	update_hook = config.search.update_hook, -- TODO:
-	sort_order = config.search.sort_order,  -- TODO:
+	sort_order = config.search.sort_order, -- TODO:
 }
 
 ---@class rss.query

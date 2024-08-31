@@ -37,33 +37,38 @@ local function entry_name(entry)
 end
 
 local function load_page(path)
-	local ret
-	local f = io.open(path, "rb")
-	if f then
-		ret = loadstring(f:read("*a"))()
-		f:close()
-	end
-	setmetatable(ret, {
-		__tostring = function(self)
-			return entry_name(self)
-		end,
-	})
-	return ret
+	local f = table.concat(vim.fn.readfile(path))
+	return loadstring("return " .. f)()
 end
 
 ---@param entry rss.entry
 function db:add(entry)
 	local id = sha1(entry.link)
-	local content = entry["content:encoded"] or entry.description
-	table.insert(self.index, id)
-	self[id] = entry.description
+	entry.time = date.new_from_entry(entry.pubDate):absolute() -- TODO:
+	entry.id = id
+	-- local content = entry["content:encoded"] or entry.description
+	local content = entry.description
+	entry.description = nil
+	table.insert(self.index, entry)
+	vim.fn.writefile({ content }, self.dir .. "/data/" .. id)
 end
 
-function db:__index(id)
-	db.entries[id] = load_page(self.dir .. "/data/" .. id)
-	return rawget(db.entries, id)
-	-- if vim.fn.readfile
+---@param entry rss.entry
+function db:address(entry)
+	return self.dir .. "/data/" .. entry.id
 end
+
+function db:sort()
+	table.sort(self.index, function(a, b)
+		return a.time < b.time
+	end)
+end
+
+-- function db:__index(id)
+-- 	db.entries[id] = load_page(self.dir .. "/data/" .. id)
+-- 	return rawget(db.entries, id)
+-- 	-- if vim.fn.readfile
+-- end
 
 function db:iter()
 	local path = self.dir .. "/data/"
@@ -79,21 +84,23 @@ function db:map(f)
 	end
 end
 
-function db:save(path)
-	for k, v in pairs(db) do
-		store_page(self.dir .. "/" .. self.entries[k], path)
-	end
+---
+function db:save()
+	vim.fn.writefile({ vim.inspect(self.index) }, self.dir .. "/index", "b")
 end
+
+-- vim.inspect
 
 ---@param dir string
 return function(dir)
 	dir = vim.fn.expand(dir)
 	if vim.fn.isdirectory(dir) == 0 then
 		vim.fn.mkdir(dir .. "/data", "p")
-		local res = vim.fn.writefile({ vim.inspect({ version = "0.1" }) }, dir .. "/index")
+		local res = vim.fn.writefile({ vim.inspect({ version = "0.1" }) }, dir .. "/index", "b")
 		if res == -1 then
-			print("failed to write inde file")
+			print("failed to write index file")
 		end
 	end
-	return setmetatable({ dir = dir, entries = {}, index = {}, index_handle = nil }, db)
+	local index = load_page(dir .. "/index")
+	return setmetatable({ dir = dir, entries = {}, index = index, index_handle = nil }, db)
 end

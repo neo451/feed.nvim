@@ -14,22 +14,23 @@ function M.show_telescope(opts)
 	opts = opts or {}
 
 	pickers
-		.new(opts, {
-			prompt_title = "Feeds",
-			finder = finders.new_table({
-				results = db.titles,
-			}),
-			attach_mappings = function(prompt_bufnr, map)
-				actions.select_default:replace(function()
-					actions.close(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					render.show(render.format_entry(db[selection[1]]), render.buf.entry[2], ut.highlight_entry)
-				end)
-				return true
-			end,
-			sorter = conf.generic_sorter(opts), -- TODO: sort by date?
-		})
-		:find()
+			.new(opts, {
+				prompt_title = "Feeds",
+				-- previewer = false,
+				finder = finders.new_table({
+					results = db.index,
+				}),
+				attach_mappings = function(prompt_bufnr, map)
+					actions.select_default:replace(function()
+						actions.close(prompt_bufnr)
+						local selection = action_state.get_selected_entry()
+						render.show(render.format_entry(db[selection[1]]), render.buf.entry[2], ut.highlight_entry)
+					end)
+					return true
+				end,
+				sorter = conf.generic_sorter(opts), -- TODO: sort by date?
+			})
+			:find()
 end
 
 return M

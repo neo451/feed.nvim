@@ -4,10 +4,6 @@ local flatdb = require("rss.db")
 local db = flatdb(config.db_dir)
 local xml = require("rss.xml")
 
--- if not db.index then
--- 	db.index = {}
--- end
-
 ---fetch xml from source and load them into db
 ---@param url string
 ---@param total number # total number of feeds
@@ -16,7 +12,7 @@ function M.update_feed(url, total, index)
 	if not db[url] then
 		db[url] = {}
 	end
-	local curl = require "plenary.curl"
+	local curl = require("plenary.curl")
 	-- local curl = require("rss.curl")
 	curl.get({
 		url = url,

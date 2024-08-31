@@ -22,6 +22,7 @@ local db = flatdb(config.db_dir)
 ---@field title string
 ---@field feed string
 ---@field tags table<string, boolean>
+---@field id string
 
 function M.get_entry(index)
 	return db[M.index[index]]

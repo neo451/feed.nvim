@@ -62,15 +62,16 @@ local function prepare_bufs()
 	}
 	for i = 1, 3 do
 		render.buf.entry[i] = vim.api.nvim_create_buf(false, true)
-		for rhs, lhs in pairs(config.entry_keymaps) do
+		for rhs, lhs in pairs(config.keymaps.entry) do
 			ut.push_keymap(render.buf.entry[i], lhs, actions.entry[rhs])
 		end
 	end
-	for rhs, lhs in pairs(config.index_keymaps) do
+	for rhs, lhs in pairs(config.keymaps.index) do
 		ut.push_keymap(render.buf.index, lhs, actions.index[rhs])
 	end
 end
 
+---@param user_config rss.config
 function M.setup(user_config)
 	config.resolve(user_config)
 	config.og_colorscheme = vim.cmd("colorscheme")

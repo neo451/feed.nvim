@@ -7,9 +7,15 @@ local M = {}
 ---@field min number
 ---@field sec number
 ---@field from_now fun():number
+---@field absolute fun():number
 
 local date = { __class = "date" }
 date.__index = date
+
+--- get absolute time value
+function date:absolute()
+	return os.time(self)
+end
 
 function date:from_now()
 	return os.time() - os.time(self)

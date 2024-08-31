@@ -4,24 +4,28 @@
 ---@alias rss.feed { name: string, tags: string[] } | string
 
 ---@class rss.config
+---@field keymaps rss.keymap[]
 local default = {
 	date_format = "%s-%02d-%02d", -- TODO:
-	keymaps = {},
-	---@type table<string, string | function>
-	index_keymaps = {
-		open_entry = "<CR>",
-		open_split = "<M-CR>",
-		open_browser = "b",
-		open_w3m = "w",
-		link_to_clipboard = "y",
-		leave_index = "q",
-		add_tag = "+",
-		remove_tag = "-",
-	},
-	entry_keymaps = {
-		back_to_index = "q",
-		next_entry = "}",
-		prev_entry = "{",
+	---@alias rss.keymap table<string, string | function>
+	keymaps = {
+		---@type rss.keymap
+		index = {
+			open_entry = "<CR>",
+			open_split = "<M-CR>",
+			open_browser = "b",
+			open_w3m = "w",
+			link_to_clipboard = "y",
+			leave_index = "q",
+			add_tag = "+",
+			remove_tag = "-",
+		},
+		---@type rss.keymap
+		entry = {
+			back_to_index = "q",
+			next_entry = "}",
+			prev_entry = "{",
+		},
 	},
 	win_options = {
 		conceallevel = 0,
@@ -33,6 +37,7 @@ local default = {
 	search = {
 		sort_order = "descending",
 		update_hook = {},
+		filter = "@6-months-ago +unread",
 	},
 	split = "13split",
 	db_dir = vim.fn.expand("~/.rss.nvim"),
