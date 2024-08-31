@@ -1,19 +1,21 @@
 local M = {}
 local config = require("rss.config")
-local flatdb = require("rss.db")
+local flatdb = require("rss._db")
 local db = flatdb(config.db_dir)
 local xml = require("rss.xml")
 
 ---fetch xml from source and load them into db
----@param url string
+---@param feed string | table
 ---@param total number # total number of feeds
 ---@param index number # index of the feed
-function M.update_feed(url, total, index)
-	if not db[url] then
-		db[url] = {}
+function M.update_feed(feed, total, index)
+	local url
+	if type(feed) == "table" then
+		url = feed[1]
+	else
+		url = feed
 	end
-	local curl = require("plenary.curl")
-	-- local curl = require("rss.curl")
+	local curl = require("rss.curl")
 	curl.get({
 		url = url,
 		callback = function(res)
@@ -21,21 +23,18 @@ function M.update_feed(url, total, index)
 				return
 			end
 			local src = res.body
-			src = src:gsub("\n")
-			print(src)
-			-- local ast = xml.parse(src)
-			-- local root, feed = ast.channel.item, ast.channel.title
-			-- for _, item in ipairs(root) do
-			-- 	item.feed = feed
-			-- 	item.tags = { unread = true } -- HACK:
-			-- 	db[item.title] = item
-			-- 	table.insert(db.index, item.title)
-			-- end
-			-- db:save()
-			-- vim.schedule_wrap(function()
-			-- 	vim.notify(("[rss.nvim] [%d/%d] loaded %s"):format(index, total, feed))
-			-- end)()
-			-- vim.notify(("[rss.nvim] [%d/%d] loaded %s"):format(index, total, feed))
+			local ok, ast = pcall(xml.parse, src)
+			if not ok then
+				print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
+				return
+			end
+			local root, feed = ast.channel.item, ast.channel.title
+			for _, entry in ipairs(root) do
+				entry.feed = feed
+				entry.tags = { unread = true } -- HACK:
+				db:add(entry)
+			end
+			db:save()
 		end,
 	})
 end

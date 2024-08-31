@@ -3,10 +3,12 @@ local M = {
 	index = nil,
 }
 
-local flatdb = require("rss.db")
+-- local flatdb = require("rss.db")
+local flatdb = require("rss._db")
 local config = require("rss.config")
 local ut = require("rss.utils")
 local db = flatdb(config.db_dir)
+local date = require("rss.date")
 
 ---@class rss.render
 ---@field state table<string, boolean>
@@ -18,7 +20,7 @@ local db = flatdb(config.db_dir)
 ---@field author string
 ---@field description string
 ---@field link string
----@field pubDate string
+---@field pubDate integer
 ---@field title string
 ---@field feed string
 ---@field tags table<string, boolean>
@@ -53,15 +55,30 @@ function M.show(lines, buf, callback)
 	set_options(buf)
 end
 
+---@param entry rss.entry
+---@return string
+local function entry_name(entry)
+	local format = "%s %s %s %s"
+	-- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
+	return string.format(
+		format,
+		date.new_from_int(entry.pubDate),
+		-- tostring(date.new_from_entry(entry.pubDate)),
+		ut.format_title(entry.title, config.max_title_length),
+		entry.feed,
+		ut.format_tags(entry.tags)
+	)
+end
+
 ---render whole db as flat list
 function M.show_index()
-	M.index = vim.deepcopy(db.index, true) -- HACK:
-	local to_render = {}
-	to_render[1] = M.show_hint()
-	for i, title in ipairs(db.index) do
-		to_render[i + 1] = tostring(db[title])
+	-- M.index = vim.deepcopy(db.index, true) -- HACK:
+	local lines = {}
+	lines[1] = M.show_hint()
+	for i, entry in ipairs(db.index) do
+		lines[i + 1] = entry_name(entry)
 	end
-	M.show(to_render, M.buf.index, ut.highlight_index)
+	M.show(lines, M.buf.index, ut.highlight_index)
 end
 
 ---@param index integer

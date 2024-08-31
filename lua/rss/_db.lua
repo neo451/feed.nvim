@@ -1,6 +1,5 @@
 ---@class rss.db
----@field entries rss.entry[]
----@field index string[]
+---@field index rss.entry[]
 
 local ut = require("rss.utils")
 local config = require("rss.config")
@@ -9,20 +8,6 @@ local date = require("rss.date")
 
 local db = { __class = "rss.db" }
 db.__index = db
-
----@param entry rss.entry
----@return string
-local function entry_name(entry)
-	local format = "%s %s %s %s"
-	-- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
-	return string.format(
-		format,
-		tostring(date.new_from_entry(entry.pubDate)),
-		ut.format_title(entry.title, config.max_title_length),
-		entry.feed,
-		ut.format_tags(entry.tags)
-	)
-end
 
 local function load_page(path)
 	local f = table.concat(vim.fn.readfile(path))
@@ -43,7 +28,9 @@ function db:add(entry)
 	local content = entry.description
 	entry.description = nil
 	table.insert(self.index, entry)
-	vim.fn.writefile({ content }, self.dir .. "/data/" .. id)
+	vim.schedule_wrap(function()
+		vim.fn.writefile({ content }, self.dir .. "/data/" .. id)
+	end)
 end
 
 ---@param entry rss.entry
@@ -59,7 +46,9 @@ function db:sort()
 end
 
 function db:save()
-	vim.fn.writefile({ vim.inspect(self.index) }, self.dir .. "/index", "b")
+	vim.schedule_wrap(function()
+		vim.fn.writefile({ vim.inspect(self.index) }, self.dir .. "/index", "b")
+	end)
 end
 
 function db:blowup()

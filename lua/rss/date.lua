@@ -60,6 +60,12 @@ function M.new_from_str(str)
 	return M.new({ year = a, month = b, day = c })
 end
 
+---@param time integer
+---@return rss.date
+function M.new_from_int(time)
+	return M.new(os.date("*t", time))
+end
+
 ---@param str string
 ---@return rss.date
 function M.new_from_entry(str)
