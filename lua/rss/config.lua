@@ -6,7 +6,7 @@
 ---@class rss.config
 ---@field keymaps rss.keymap[]
 local default = {
-   date_format = "%s-%02d-%02d", -- TODO:
+   date_format = "%Y-%m-%d",
    ---@alias rss.keymap table<string, string | function>
    keymaps = {
       ---@type rss.keymap

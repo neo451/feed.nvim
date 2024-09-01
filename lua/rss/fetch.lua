@@ -1,8 +1,10 @@
 local config = require "rss.config"
 local flatdb = require "rss._db"
 local xml = require "rss.xml"
+local curl = require "rss.curl"
 -- local db = flatdb(config.db_dir)
-local db = flatdb ".rss.nvim.test"
+local db = flatdb "~.rss.nvim.test"
+local date = require "rss.date"
 
 local M = {}
 
@@ -15,7 +17,33 @@ local function get_root(ast, feed_type)
       return ast.items, ast.title
    elseif feed_type == "rss" then
       return ast.channel.item, ast.title
+   else
+      return {}, "nulllll"
    end
+end
+
+local date_tag = {
+   rss = "pubDate",
+   json = "date_published",
+}
+
+---@param entry table
+---@param feedtype rss.feed_type
+---@param feedname string
+---@return rss.entry
+local function unify(entry, feedtype, feedname)
+   local _date = entry[date_tag[feedtype]]
+   entry[date_tag[feedtype]] = nil
+   entry.time = date.new_from[feedtype](_date):absolute()
+   entry.feed = feedname
+   entry.tags = { unread = true } -- HACK:
+   if feedtype == "json" then
+      entry.link = entry.url
+      entry.url = nil
+      entry.description = entry.content_html
+      entry.content_html = nil
+   end
+   return entry
 end
 
 ---fetch xml from source and load them into db
@@ -29,7 +57,6 @@ function M.update_feed(feed, total, index)
    else
       url = feed
    end
-   local curl = require "rss.curl"
    curl.get {
       url = url,
       callback = function(res)
@@ -38,15 +65,14 @@ function M.update_feed(feed, total, index)
          end
          local src = res.body
          local ok, ast, feed_type = pcall(xml.parse_feed, src)
+         pp(ast)
          if not ok then -- FOR DEBUG
             print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
             return
          end
          local entries, feed_name = get_root(ast, feed_type)
          for _, entry in ipairs(entries) do
-            entry.feed = feed_name
-            entry.tags = { unread = true } -- HACK:
-            db:add(entry)
+            db:add(unify(entry, feed_type, feed_name))
          end
          db:save()
       end,

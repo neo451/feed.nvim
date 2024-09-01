@@ -26,13 +26,8 @@ end
 local function entry_name(entry)
    local format = "%s %s %s %s"
    -- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
-   return string.format(
-      format,
-      tostring(date.new_from_entry(entry.pubDate)),
-      ut.format_title(entry.title, config.max_title_length),
-      entry.feed,
-      ut.format_tags(entry.tags)
-   )
+   return string.format(format, tostring(date.new_from_rss(entry.pubDate)),
+      ut.format_title(entry.title, config.max_title_length), entry.feed, ut.format_tags(entry.tags))
 end
 
 local function load_page(path)

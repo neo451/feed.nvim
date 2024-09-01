@@ -118,7 +118,8 @@ local grammar = {
 
 ---parse feed fetch from source
 ---@param src string
----@return table, rss.feed_type
+---@return table
+---@return rss.feed_type
 function M.parse_feed(src)
    if json.is_json(src) then
       return json.parse_json(src), "json"

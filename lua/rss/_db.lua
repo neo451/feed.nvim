@@ -34,9 +34,8 @@ end
 ---@param entry rss.entry
 function db:add(entry)
    local id = sha1(entry.link)
-   entry.pubDate = date.new_from_entry(entry.pubDate):absolute() -- TODO:
-   -- pp(entry)
    entry.id = id
+   --- TODO: put the logic elsewhere
    -- local content = entry["content:encoded"] or entry.description
    local content = entry.description
    entry.description = nil
