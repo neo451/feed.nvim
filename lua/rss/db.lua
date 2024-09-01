@@ -1,107 +1,103 @@
--- from https://github.com/uleelx/FlatDB
+---@class rss.db
+---@field index rss.entry[]
 
-local date = require "rss.date"
 local ut = require "rss.utils"
 local config = require "rss.config"
-local function isFile(path)
-   local f = io.open(path, "r")
+local sha1 = require "rss.sha1"
+local date = require "rss.date"
+
+local db = { __class = "rss.db" }
+db.__index = db
+
+---@param path any
+---@return table | boolean
+local function load_page(path)
+   local f = io.open(path, "r"):read "*a"
    if f then
-      f:close()
-      return true
+      local ok, res = pcall(loadstring, "return " .. f)
+      if not ok then
+         return false
+      end
+      return res and res()
+   else
+      return false
    end
-   return false
 end
 
-local function isDir(path)
-   path = string.gsub(path .. "/", "//", "/")
-   local ok, err, code = os.rename(path, path)
-   if ok or code == 13 then
-      return true
+---@param path string
+---@return string | boolean
+local function load_file(path)
+   local f = io.open(path, "r"):read "*a"
+   f = f:gsub("\n", "")
+   if f then
+      return f
+   else
+      return false
    end
-   return false
+end
+
+---@param path string
+---@param content string
+---@return boolean
+local function save_file(path, content)
+   local f = io.open(path, "w")
+   if f then
+      f:write(content)
+      return true
+   else
+      return false
+   end
 end
 
 ---@param entry rss.entry
----@return string
-local function entry_name(entry)
-   local format = "%s %s %s %s"
-   -- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
-   return string.format(format, tostring(date.new_from_rss(entry.pubDate)),
-      ut.format_title(entry.title, config.max_title_length), entry.feed, ut.format_tags(entry.tags))
+function db:add(entry)
+   local id = sha1(entry.link)
+   entry.id = id
+   --- TODO: put the logic elsewhere
+   -- local content = entry["content:encoded"] or entry.description
+   local content = entry.description
+   entry.description = nil
+   table.insert(self.index, entry)
+   save_file(self.dir .. "/data/" .. id, content)
 end
 
-local function load_page(path)
-   local ret
-   local f = io.open(path, "rb")
-   if f then
-      ret = loadstring(f:read "*a")()
-      f:close()
+---@param entry rss.entry
+function db:address(entry)
+   return self.dir .. "/data/" .. entry.id
+end
+
+---sort index by time, descending
+function db:sort()
+   table.sort(self.index, function(a, b)
+      return a.pubDate > b.pubDate
+   end)
+end
+
+---@param entry rss.entry
+---@return table
+function db:get(entry)
+   return load_file(self.dir .. "/data/" .. entry.id)
+end
+
+function db:save()
+   save_file(self.dir .. "/index", vim.inspect(self.index))
+end
+
+function db:blowup()
+   vim.fn.delete(self.dir, "rf")
+end
+
+---@param dir string
+return function(dir)
+   dir = vim.fn.expand(dir)
+   if vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir)
    end
-   -- setmetatable(ret, {
-   -- 	__tostring = function(self)
-   -- 		return entry_name(self)
-   -- 	end,
-   -- })
-   return ret
-end
-
-local function store_page(path, page)
-   if type(page) == "table" then
-      local f = io.open(path, "wb")
-      if f then
-         f:write("return " .. vim.inspect(page))
-         f:close()
-         return true
-      end
+   if vim.fn.isdirectory(dir .. "/data") then
+      vim.fn.mkdir(dir .. "/data", "p")
    end
-   return false
+   local index_path = dir .. "/index"
+   local index = load_page(index_path)
+   index.version = "0.1" -- TODO: weirddd
+   return setmetatable({ dir = dir, index = index }, db)
 end
-
-local pool = {}
-
-local db_funcs = {
-   save = function(db, p)
-      if p then
-         if type(p) == "string" and type(db[p]) == "table" then
-            return store_page(pool[db] .. "/" .. p, db[p])
-         else
-            return false
-         end
-      end
-      for p, page in pairs(db) do
-         if not store_page(pool[db] .. "/" .. p, page) then
-            return false
-         end
-      end
-      return true
-   end,
-}
-
-local mt = {
-   __index = function(db, k)
-      if db_funcs[k] then
-         return db_funcs[k]
-      end
-      if isFile(pool[db] .. "/" .. k) then
-         db[k] = load_page(pool[db] .. "/" .. k)
-      end
-      return rawget(db, k)
-   end,
-}
-
-pool.hack = db_funcs
-
-return setmetatable(pool, {
-   __mode = "kv",
-   __call = function(self, path)
-      assert(vim.fn.isdirectory(path) == 1, path .. " is not a directory.")
-      if self[path] then
-         return self[path]
-      end
-      local db = {}
-      setmetatable(db, mt)
-      self[path] = db
-      self[db] = path
-      return db
-   end,
-})

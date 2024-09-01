@@ -1,4 +1,4 @@
-local ldb = require "rss._db"
+local ldb = require "rss.db"
 
 local path = "~/.rss.nvim.test"
 local db = ldb(path)
@@ -72,3 +72,11 @@ describe("sort", function()
       db:save()
    end)
 end)
+
+-- describe("get", function()
+--    local path = "~/.local/share/nvim/rss/.rss.nvim"
+--    local db = ldb(path)
+--    it("add rss.entry to index", function()
+--       pp(db:get(db.index[1]))
+--    end)
+-- end)

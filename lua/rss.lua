@@ -4,7 +4,8 @@ local opml = require "rss.opml"
 local config = require "rss.config"
 local ut = require "rss.utils"
 local actions = require "rss.actions"
-local db = require "rss.db"
+-- local db = require "rss.db"
+local flatdb = require "rss.db"
 local telescope = require "rss.telescope"
 
 local M = {}
@@ -46,14 +47,14 @@ vim.api.nvim_create_user_command("Rss", function(opts)
    end
 end, { nargs = 1 })
 
-vim.api.nvim_create_autocmd("VimLeavePre", {
-   pattern = "*.md",
-   callback = function()
-      print "leave!"
-      db:save()
-      -- autocmds.update()
-   end,
-})
+-- vim.api.nvim_create_autocmd("VimLeavePre", {
+--    pattern = "*.md",
+--    callback = function()
+--       print "leave!"
+--       db:save()
+--       -- autocmds.update()
+--    end,
+-- })
 
 local function prepare_bufs()
    render.buf = {
@@ -73,6 +74,7 @@ end
 
 ---@param user_config rss.config
 function M.setup(user_config)
+   flatdb(config.db_dir)
    config.resolve(user_config)
    config.og_colorscheme = vim.cmd "colorscheme"
    prepare_bufs()

@@ -1,9 +1,8 @@
 local config = require "rss.config"
-local flatdb = require "rss._db"
+local flatdb = require "rss.db"
 local xml = require "rss.xml"
 local curl = require "rss.curl"
--- local db = flatdb(config.db_dir)
-local db = flatdb "~.rss.nvim.test"
+local db = flatdb(config.db_dir)
 local date = require "rss.date"
 
 local M = {}
@@ -78,8 +77,6 @@ function M.update_feed(feed, total, index)
       end,
    }
 end
-
-M.update_feed "https://www.jsonfeed.org/feed.json"
 
 -- TODO:  vim.notify("feeds all loaded")
 -- TODO:  maybe use a process bar like fidget.nvim

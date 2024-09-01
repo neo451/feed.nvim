@@ -2,6 +2,7 @@ local M = {}
 local config = require "rss.config"
 local utf8 = require "rss.utf8"
 local url = require "rss.url"
+local date = require "rss.date"
 local F = require "plenary.functional"
 local lpeg = vim.lpeg
 local C, utfR = lpeg.C, lpeg.utfR
@@ -134,28 +135,6 @@ function M.highlight_index(buf)
       vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", i, 0, -1)
       -- vim.highlight.range(buf, 1, "rss.bold", { i, 0 }, { i, 10 })
    end
-end
-
-local function kv(k, v)
-   return string.format("%s: %s", k, v)
-end
-
----@param entry rss.entry
----@return table
-function M.format_entry(entry)
-   local lines = {}
-   lines[1] = kv("Title", entry.title)
-   lines[2] = kv("Date", entry.pubDate)
-   lines[3] = kv("Author", entry.author or entry.feed)
-   lines[4] = kv("Feed", entry.feed)
-   lines[5] = kv("Link", entry.link)
-   lines[6] = ""
-   if entry["content:encoded"] then
-      lines[7] = entry["content:encoded"]
-   else
-      lines[7] = entry.description
-   end
-   return lines
 end
 
 -- (defun elfeed-looks-like-url-p (string)

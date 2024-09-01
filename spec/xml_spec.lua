@@ -26,10 +26,7 @@ describe("nested elements", function()
 	</pre>
 	]]
       assert.same({ channel = { title = "arch", link = "https://archlinux.org/feeds/news/" } }, xml.parse(src))
-      assert.same(
-         { pre = { channel = { title = "arch", link = "https://archlinux.org/feeds/news/" } } },
-         xml.parse(src2)
-      )
+      assert.same({ pre = { channel = { title = "arch", link = "https://archlinux.org/feeds/news/" } } }, xml.parse(src2))
    end)
    it("should treat text as element", function()
       local src = [[<h1>zig <code>const std = @import("std")</code> by the way</h1>]]
@@ -88,12 +85,22 @@ describe("html", function()
 		]]
       assert.same({ { h1 = "hello world" }, { p = "this is so coollll" } }, xml.parse(src))
    end)
+
+   it("should parse html elements, mergaing attr and text into one table", function()
+      local ast = xml.parse [[<a href="https://jsonfeed.org/version/1.1">version 1.1</a>]]
+      local expected = {
+         a = {
+            [1] = "version 1.1",
+            href = "https://jsonfeed.org/version/1.1",
+         },
+      }
+      assert.same(expected, ast)
+   end)
 end)
 
 describe("opml", function()
    it("should parse an outline", function()
-      local outline =
-         [[<outline text="透明创业实验" title="透明创业实验" type="rss" xmlUrl="https://blog.t9t.io/atom.xml" htmlUrl="https://blog.t9t.io"/>]]
+      local outline = [[<outline text="透明创业实验" title="透明创业实验" type="rss" xmlUrl="https://blog.t9t.io/atom.xml" htmlUrl="https://blog.t9t.io"/>]]
       local expected = {
          outline = {
             text = "透明创业实验",

@@ -78,9 +78,13 @@ end
 local function parse_element(T, ele_or_text, _)
    if type(T) == "table" then
       if type(ele_or_text) == "table" then
+         -- return { [T] = ele_or_text }
          return vim.tbl_extend("keep", T, ele_or_text)
       else
-         -- TODO: possible?? if ele_or_text then end
+         if ele_or_text ~= "" then
+            local _, v = next(T)
+            table.insert(v, ele_or_text)
+         end
          return T
       end
    end
@@ -88,7 +92,6 @@ local function parse_element(T, ele_or_text, _)
 end
 
 local text = C((1 - P "<") ^ 1)
--- <!-- RSS generation done by 'Radio UserLand' on Fri, 13 Apr 2001 19:23:02 GMT -->
 local ws = S " \t\n\r" ^ 0
 
 local name = C((alnum - punct + ":") ^ 1) -- TODO: check spec

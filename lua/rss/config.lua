@@ -6,6 +6,7 @@
 ---@class rss.config
 ---@field keymaps rss.keymap[]
 local default = {
+   db_dir = "~/.local/share/nvim/rss",
    date_format = "%Y-%m-%d",
    ---@alias rss.keymap table<string, string | function>
    keymaps = {
@@ -40,15 +41,15 @@ local default = {
       filter = "@6-months-ago +unread",
    },
    split = "13split",
-   db_dir = "~/.rss.nvim.test",
    colorscheme = "kanagawa-lotus",
    max_title_length = 70,
 
    ---@type rss.feed[]
    feeds = {
-      { "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
-      { "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
-      "https://archlinux.org/feeds/news/",
+      "https://www.jsonfeed.org/feed.json",
+      -- { "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
+      -- { "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
+      -- "https://archlinux.org/feeds/news/",
       -- "https://andrewkelley.me/rss.xml",
       -- "https://feeds.bbci.co.uk/news/world/rss.xml",
    },
