@@ -1,4 +1,6 @@
 local xml = require("rss.xml")
+local sourced_file = require("plenary.debug_utils").sourced_filepath()
+local data_dir = vim.fn.fnamemodify(sourced_file, ":h:h") .. "/data/"
 
 describe("element", function()
 	it("should produce a table of k v pair", function()
@@ -49,7 +51,7 @@ end)
 describe("CData", function()
 	it("should treat CDate block as text", function()
 		local text =
-			[[<img src="https://image.gcores.com/0264adbd011a43624c087e3b9a4fea23-2048-1148.jpg?x-oss-process=image/resize,limit_1,m_fill,w_626,h_292/quality,q_90" /><p>为了庆祝《变形金刚》40周年，孩之宝与日本著名动画工作室扳机社（TRIGGER）合作，制作一部40周年特别纪念PV。</p><div>
+		[[<img src="https://image.gcores.com/0264adbd011a43624c087e3b9a4fea23-2048-1148.jpg?x-oss-process=image/resize,limit_1,m_fill,w_626,h_292/quality,q_90" /><p>为了庆祝《变形金刚》40周年，孩之宝与日本著名动画工作室扳机社（TRIGGER）合作，制作一部40周年特别纪念PV。</p><div>
 <figure><p>&lt;内嵌内容，请前往机核查看&gt;</p></figure></div><div>
 <figure><img src="https://image.gcores.com/d588b5fb102a3ef20443d6cb3c92a8c6-2048-1148.jpg?x-oss-process=image/resize,limit_1,m_lfit,w_700,h_2000/quality,q_90/watermark,image_d2F0ZXJtYXJrLnBuZw,g_se,x_10,y_10" alt=""></figure></div><div>
 <figure><img src="https://image.gcores.com/37023d7bac205fc3e6593a9f50c10852-2048-1148.jpg?x-oss-process=image/resize,limit_1,m_lfit,w_700,h_2000/quality,q_90/watermark,image_d2F0ZXJtYXJrLnBuZw,g_se,x_10,y_10" alt=""></figure></div><div>
@@ -78,19 +80,6 @@ describe("same name tags", function()
 	end)
 end)
 
-describe("acutual rss feed", function()
-	it("should produce simple lua table", function()
-		local line = vim.fn.readfile("test.xml")
-		local str = table.concat(line)
-		local ast = xml.parse(str)
-		-- print(vim.inspect(ast))
-		local description = "不止是游戏"
-		local generator = "http://rubyonrails.org/"
-		assert.same(description, ast.channel.description)
-		assert.same(generator, ast.channel.generator)
-	end)
-end)
-
 describe("html", function()
 	it("should parse html", function()
 		local src = [[
@@ -98,5 +87,92 @@ describe("html", function()
 <p>this is so coollll</p>
 		]]
 		assert.same({ { h1 = "hello world" }, { p = "this is so coollll" } }, xml.parse(src))
+	end)
+end)
+
+describe("opml", function()
+	it("should parse an outline", function()
+		local outline =
+		[[<outline text="透明创业实验" title="透明创业实验" type="rss" xmlUrl="https://blog.t9t.io/atom.xml" htmlUrl="https://blog.t9t.io"/>]]
+		local expected = {
+			outline = {
+				text = "透明创业实验",
+				title = "透明创业实验",
+				type = "rss",
+				xmlUrl = "https://blog.t9t.io/atom.xml",
+				htmlUrl = "https://blog.t9t.io"
+			}
+		}
+		assert.same(expected, xml.parse(outline))
+	end)
+	it("should parse full opml file", function()
+		local opml = [[
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+<head><title>中文独立博客列表</title></head>
+<body>
+<outline text="透明创业实验" title="透明创业实验" type="rss" xmlUrl="https://blog.t9t.io/atom.xml" htmlUrl="https://blog.t9t.io"/>
+<outline text="码农明明桑" title="码农明明桑" type="rss" xmlUrl="https://isming.me/index.xml" htmlUrl="https://isming.me"/>
+</body>
+</opml>
+]]
+		local actual = xml.parse(opml)
+		local expected = {
+			body = {
+				outline = {
+					{
+						htmlUrl = "https://isming.me",
+						text = "码农明明桑",
+						title = "码农明明桑",
+						type = "rss",
+						xmlUrl = "https://isming.me/index.xml"
+					},
+					htmlUrl = "https://blog.t9t.io",
+					text = "透明创业实验",
+					title = "透明创业实验",
+					type = "rss",
+					xmlUrl = "https://blog.t9t.io/atom.xml"
+				}
+			},
+			head = {
+				title = "中文独立博客列表"
+			},
+			opml = {
+				version = "1.0"
+			}
+		}
+		assert.same(expected, actual[2])
+	end)
+end)
+
+
+describe("acutual rss feed", function()
+	it("should produce simple lua table", function()
+		local str = vim.fn.readfile(data_dir .. "rss_example_2.0.xml")
+		str = table.concat(str)
+		local ast = xml.parse(str)
+		assert.same("2.0", ast[2].rss.version)
+
+		str = vim.fn.readfile(data_dir .. "rss_example_0.92.xml")
+		str = table.concat(str)
+		ast = xml.parse(str)
+		assert.same("0.92", ast[2].rss.version)
+
+		str = vim.fn.readfile(data_dir .. "rss_example_0.91.xml")
+		str = table.concat(str)
+		ast = xml.parse(str)
+		assert.same("0.91", ast[2].rss.version)
+	end)
+end)
+
+
+--- TODO:!!!!!!
+describe("acutual atom feed", function()
+	it("should produce simple lua table", function()
+		local str = vim.fn.readfile(data_dir .. "atom_example.xml")
+		str = table.concat(str)
+		local ast = xml.parse(str)
+		-- pp(ast)
+		-- assert.same("2.0", ast[2].rss.version)
 	end)
 end)

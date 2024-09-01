@@ -1,11 +1,17 @@
 local M = {}
 
-function M.parse_opml(file)
-	-- local hdlr = handler:new()
-	-- local parser = xml2lua.parser(hdlr)
-	-- local src = vim.fn.readfile(file)
-	-- parser:parse(table.concat(src, "\n"))
-	-- return hdlr.root.opml.body.outline.outline
+local xml = require "rss.xml"
+
+---get lua table from opml
+---@param path any
+function M.parse_opml(path)
+	path = vim.fn.expand(path)
+	local str = table.concat(vim.fn.readfile(path))
+	local ast = xml.parse(str)[2] -- discarded the xml decl tag, may need later
+	return ast.body.outline, ast.head.title
 end
+
+-- local list, _ = M.parse_opml("~/Plugins/rss.nvim/lua/list.opml")
+-- pp(list)
 
 return M

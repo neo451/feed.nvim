@@ -18,6 +18,19 @@ local function load_page(path)
 	return res and res()
 end
 
+---@param path string
+---@param content string
+---@return boolean
+local function save_file(path, content)
+	local f = io.open(path, "w")
+	if f then
+		f:write(content)
+		return true
+	else
+		return false
+	end
+end
+
 ---@param entry rss.entry
 function db:add(entry)
 	local id = sha1(entry.link)
@@ -28,9 +41,7 @@ function db:add(entry)
 	local content = entry.description
 	entry.description = nil
 	table.insert(self.index, entry)
-	vim.schedule_wrap(function()
-		vim.fn.writefile({ content }, self.dir .. "/data/" .. id)
-	end)
+	save_file(self.dir .. "/data/" .. id, content)
 end
 
 ---@param entry rss.entry
@@ -46,9 +57,7 @@ function db:sort()
 end
 
 function db:save()
-	vim.schedule_wrap(function()
-		vim.fn.writefile({ vim.inspect(self.index) }, self.dir .. "/index", "b")
-	end)
+	save_file(self.dir .. "/index", vim.inspect(self.index))
 end
 
 function db:blowup()

@@ -40,7 +40,7 @@ local default = {
 		filter = "@6-months-ago +unread",
 	},
 	split = "13split",
-	db_dir = "~/.rss.nvim",
+	db_dir = "~/.rss.nvim.test",
 	colorscheme = "kanagawa-lotus",
 	max_title_length = 70,
 

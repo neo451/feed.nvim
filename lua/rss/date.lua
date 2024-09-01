@@ -67,6 +67,16 @@ function M.new_from_int(time)
 end
 
 ---@param str string
+---@return rss.date
+function M.new_from_entry(str)
+	local weekday, day, month, year, hour, min, sec, zone =
+			str:match("([%a]+), (%d+) ([%a]+) (%d+) (%d+):(%d+):(%d+) ([%+%-]%d+)")
+	year, month, day = tonumber(year), tonumber(months[month]), tonumber(day)
+	hour, min, sec = tonumber(hour), tonumber(min), tonumber(sec)
+	return M.new({ year = year, month = month, day = day, hour = hour, min = min, sec = sec })
+end
+
+---@param str string
 ---@return ... rss.date
 function M.parse_date_filter(str)
 	local sep = string.find(str, "%-%-")
