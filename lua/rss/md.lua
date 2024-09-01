@@ -1,6 +1,9 @@
 ---@alias xml.ast table<string, string | table>
 
+local F = require "plenary.functional"
+
 local transforms = {
+   md = "%s",
    h1 = "# %s",
    h2 = "## %s",
    h3 = "### %s",
@@ -12,28 +15,47 @@ local transforms = {
    code = "`%s`",
    pre = "",
 }
-
----@param ast xml.ast
-local function to_md(ast)
-   if vim.islist(ast) then
-      error "only one root element is allowed"
-   end
-   local buffer = {}
-   for k, v in pairs(ast) do
-      if vim.islist(v) then
-         local buf = {}
-         for _, vv in ipairs(v) do
-            if type(vv) == "string" then
-               table.insert(buf, vv)
-            else
-               table.insert(buf, to_md(vv))
-            end
+local traverse_hashtable, traverse_array
+---@param t table<number, any>
+---@return string
+function traverse_array(t, is_root)
+   local buf = {}
+   for _, v in ipairs(t) do
+      if type(v) == "string" then
+         buf[#buf + 1] = v
+      elseif type(v) == "table" then
+         if vim.isarray(v) then
+            buf[#buf + 1] = traverse_array(v)
+         else
+            buf[#buf + 1] = traverse_hashtable(v)
          end
-         v = table.concat(buf, " ")
       end
-      table.insert(buffer, transforms[k]:format(v))
    end
-   return table.concat(buffer, " ")
+   return F.join(buf, is_root and "\n" or "")
 end
 
-return to_md
+local function format_code(v)
+   if type(v) == "string" then
+      return transforms.code:format(v)
+   else
+      return ("```%s\n%s\n```"):format(v.language, v[1]) -- ?
+   end
+end
+
+---@param t table<string, any>
+---@return string
+function traverse_hashtable(t)
+   local buf = {}
+   for k, v in pairs(t) do
+      buf[#buf + 1] = format_code(v)
+   end
+   return F.join(buf, "")
+end
+
+local xml = require "rss.xml"
+--
+-- local ast = xml.parse [[<code language="zig">const std = @import("std")</code>]]
+-- local ast = xml.parse [[<code>const std = @import("std")</code>]]
+-- print(traverse_hashtable(ast))
+
+return traverse_array
