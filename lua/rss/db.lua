@@ -2,40 +2,45 @@
 ---@field index rss.entry[]
 
 local ut = require "rss.utils"
-local config = require "rss.config"
 local sha1 = require "rss.sha1"
-local date = require "rss.date"
 
-local db = { __class = "rss.db" }
-db.__index = db
+local db_mt = { __class = "rss.db" }
+db_mt.__index = db_mt
+
+local function isFile(path)
+   local f = io.open(path, "r")
+   if f then
+      f:close()
+      return true
+   end
+   return false
+end
 
 ---@param path string
 ---@param content string
 local function save_file(path, content)
-   local f = io.open(path, "w")
-   return f and f:write(content)
+   local f = io.open(path, "wb")
+   if f then
+      f:write(content)
+      f:close()
+   end
 end
 
 ---@param path string
 ---@return string?
-local function load_file(path)
-   local f = io.open(path, "r")
-   return f and f:read("*a"):gsub("\n", "")
-end
-
----@param path string
----@return table?
-local function load_page(path)
-   local str = load_file(path)
-   if str then
-      local res = loadstring("return " .. str)
-      return res and res()
+local function get_file(path)
+   local ret
+   local f = io.open(path, "rb")
+   if f then
+      ret = f:read "*a"
+      f:close()
    end
+   return ret
 end
 
 ---@param id integer
 ---@return boolean
-function db:if_stored(id)
+function db_mt:if_stored(id)
    for p in vim.iter(vim.fs.dir(self.dir .. "/data/")) do
       if id == p then
          return true
@@ -45,42 +50,53 @@ function db:if_stored(id)
 end
 
 ---@param entry rss.entry
-function db:add(entry)
+function db_mt:add(entry)
    local id = sha1(entry.link)
    if self:if_stored(id) then
       -- print "duplicate keys!!!!"
       return
    end
    entry.id = id
-   local content = entry.description
+   local content
+   --- HACK: parser bug
+   if type(entry.description) == "table" then
+      content = entry.description[1]
+   else
+      content = entry.description
+   end
    entry.description = nil
+   content = content:gsub("\n", "")
    table.insert(self.index, entry)
    save_file(self.dir .. "/data/" .. id, content)
 end
 
 ---@param entry rss.entry
-function db:address(entry)
+function db_mt:address(entry)
    return self.dir .. "/data/" .. entry.id
 end
 
 ---sort index by time, descending
-function db:sort()
+function db_mt:sort()
    table.sort(self.index, function(a, b)
       return a.pubDate > b.pubDate
    end)
 end
 
+function db_mt:update_index()
+   self.index = loadfile(self.dir .. "/index")()
+end
+
 ---@param entry rss.entry
 ---@return table
-function db:get(entry)
-   return load_file(self.dir .. "/data/" .. entry.id)
+function db_mt:get(entry)
+   return get_file(self.dir .. "/data/" .. entry.id)
 end
 
-function db:save()
-   save_file(self.dir .. "/index", vim.inspect(self.index))
+function db_mt:save()
+   save_file(self.dir .. "/index", "return " .. vim.inspect(self.index))
 end
 
-function db:blowup()
+function db_mt:blowup()
    vim.fn.delete(self.dir, "rf")
 end
 
@@ -89,23 +105,35 @@ local index_header = { version = "0.1" }
 ---@param dir string
 ---@return table
 local function make_index(dir)
-   save_file(dir, vim.inspect(index_header))
+   save_file(dir, "return " .. vim.inspect(index_header))
    return index_header
 end
 
 ---@param dir string
-return function(dir)
+local function check_dir(dir)
    dir = vim.fn.expand(dir)
    if vim.fn.isdirectory(dir) == 0 then
       vim.fn.mkdir(dir)
    end
-   if vim.fn.isdirectory(dir .. "/data") then
+   if vim.fn.isdirectory(dir .. "/data") == 0 then
       vim.fn.mkdir(dir .. "/data", "p")
    end
    local index_path = dir .. "/index"
-   local index = load_page(index_path)
-   if not index then
-      index = make_index(index_path)
+   if not isFile(index_path) then
+      -- print("writing a new index file to " .. index_path)
+      make_index(index_path)
    end
-   return setmetatable({ dir = dir, index = index, ids = ids }, db)
 end
+
+---@param dir string
+local function db(dir)
+   dir = vim.fn.expand(dir)
+   local index_path = dir .. "/index"
+   local index = loadfile(index_path)()
+   return setmetatable({ dir = dir, index = index }, db_mt)
+end
+
+return {
+   db = db,
+   check_dir = check_dir,
+}

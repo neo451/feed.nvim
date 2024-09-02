@@ -6,7 +6,7 @@ local M = {
 local flatdb = require "rss.db"
 local config = require "rss.config"
 local ut = require "rss.utils"
-local db = flatdb(config.db_dir)
+local db = flatdb.db(config.db_dir)
 local date = require "rss.date"
 
 ---@class rss.render
@@ -25,6 +25,12 @@ local date = require "rss.date"
 ---@field tags table<string, boolean>
 ---@field id string
 ---@field time integer
+
+---@return rss.entry
+function M.current_entry()
+   local row = vim.api.nvim_win_get_cursor(0)[1]
+   return db.index[row - 1]
+end
 
 ---@param index integer
 ---@return rss.entry
@@ -92,6 +98,7 @@ end
 
 ---render whole db as flat list
 function M.show_index()
+   db:update_index()
    local lines = {}
    lines[1] = M.show_hint()
    for i, entry in ipairs(db.index) do

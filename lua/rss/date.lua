@@ -67,7 +67,7 @@ end
 
 local patterns = {}
 local months = { Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
-local weekdays = { Mon = 1, Tue = 2, Wen = 3, Thr = 4, Fri = 5, Sat = 6, Sun = 7 }
+local weekdays = { Mon = 1, Tue = 2, Wen = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7 }
 
 do
    local lpeg = vim.lpeg
@@ -80,10 +80,8 @@ do
    local digit = C(lpeg.digit ^ 1) / tonumber
    local col = P ":"
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
-   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws *
-   zone
-   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (1 - P "-") ^ 1 * P "-" * digit * P ":" *
-   digit
+   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
+   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (1 - P "-") ^ 1 * P "-" * digit * P ":" * digit
 end
 
 --- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 822, with the exception that the year may be expressed with two characters or four characters (four preferred).

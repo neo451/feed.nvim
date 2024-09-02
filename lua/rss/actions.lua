@@ -61,7 +61,7 @@ end
 function index_actions.add_tag()
    local input = vim.fn.input "Tag: "
    render.current_entry().tags[input] = true
-   -- db:save() -- TODO: do it on exit or refresh
+   -- db:save() -- TODO: do it on exit / or only if ":w" , make an option
    render.show_index() -- inefficient??
 end
 

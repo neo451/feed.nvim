@@ -1,33 +1,27 @@
-local ldb = require "rss.db"
-
+local flatdb = require "rss.db"
+local eq = assert.are.same
 local path = "~/.rss.nvim.test"
-local db = ldb(path)
-db:blowup()
+flatdb.check_dir(path)
+local db = flatdb.db(path)
 
 describe("initialize", function()
+   local path = "~/.rss.nvim.test"
+   local db = flatdb.db(path)
    it("should make parent dir and data dir in the passed in path", function()
-      local path = "~/.rss.nvim.test"
-      local db = ldb(path)
-      assert.same(1, vim.fn.isdirectory(db.dir))
+      eq(1, vim.fn.isdirectory(db.dir))
    end)
    it("should write an index file in the passed in path", function()
-      local path = "~/.rss.nvim.test"
-      local db = ldb(path)
-      assert.same(1, vim.fn.filereadable(db.dir .. "/index"))
+      eq(1, vim.fn.filereadable(db.dir .. "/index"))
    end)
 
    it("should read index file as a table in memory", function()
-      local path = "~/.rss.nvim.test"
-      local db = ldb(path)
-      assert.same({ version = "0.1" }, db.index)
+      assert(db.index.version == "0.1")
    end)
 end)
 
-db:blowup()
-
 describe("add", function()
    local path = "~/.rss.nvim.test"
-   local db = ldb(path)
+   local db = flatdb.db(path)
    it("add rss.entry to index", function()
       local entry = {
          link = "https://example.com",
@@ -40,17 +34,17 @@ describe("add", function()
       assert.same(1, #db.index)
       --TODO:
       local path_for_index_one = db:address(db.index[1])
-      -- print(path_for_index_one)
-      -- assert.same("zig is a programming language", vim.fn.readfile(path_for_index_one))
-      -- assert.same({ version = "0.1", entry }, loadstring("return " .. vim.fn.readfile(db.dir .. "/index")[1])())
+      print(path_for_index_one)
+      assert.same("zig is a programming language", vim.fn.readfile(path_for_index_one)[1])
+      entry.id = require "rss.sha1"(entry.link)
+      entry.description = nil
+      assert.same({ version = "0.1", entry }, loadfile(db.dir .. "/index")())
    end)
 end)
 
-db:blowup()
-
 describe("sort", function()
    local path = "~/.rss.nvim.test"
-   local db = ldb(path)
+   local db = flatdb.db(path)
    it("add rss.entry to index", function()
       db:add {
          link = "https://example.com",
@@ -72,11 +66,11 @@ describe("sort", function()
       db:save()
    end)
 end)
-
--- describe("get", function()
---    local path = "~/.local/share/nvim/rss/.rss.nvim"
---    local db = ldb(path)
---    it("add rss.entry to index", function()
---       pp(db:get(db.index[1]))
---    end)
--- end)
+--
+-- -- describe("get", function()
+-- --    local path = "~/.local/share/nvim/rss/.rss.nvim"
+-- --    local db = ldb(path)
+-- --    it("add rss.entry to index", function()
+-- --       pp(db:get(db.index[1]))
+-- --    end)
+-- -- end)

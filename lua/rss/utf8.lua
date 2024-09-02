@@ -1,6 +1,6 @@
 local utf8 = {}
 
-local bit = require "bit" -- luajit
+local bit = require "bit"
 
 local band = bit.band
 local bor = bit.bor
@@ -28,20 +28,20 @@ function utf8.char(...)
       elseif v < 0x800 then
          -- two-byte
          local b1 = bor(0xC0, band(rshift(v, 6), 0x1F)) -- 110x-xxxx
-         local b2 = bor(0x80, band(v, 0x3F)) -- 10xx-xxxx
+         local b2 = bor(0x80, band(v, 0x3F))            -- 10xx-xxxx
          buffer[i] = string.char(b1, b2)
       elseif v < 0x10000 then
          -- three-byte
          local b1 = bor(0xE0, band(rshift(v, 12), 0x0F)) -- 1110-xxxx
-         local b2 = bor(0x80, band(rshift(v, 6), 0x3F)) -- 10xx-xxxx
-         local b3 = bor(0x80, band(v, 0x3F)) -- 10xx-xxxx
+         local b2 = bor(0x80, band(rshift(v, 6), 0x3F))  -- 10xx-xxxx
+         local b3 = bor(0x80, band(v, 0x3F))             -- 10xx-xxxx
          buffer[i] = string.char(b1, b2, b3)
       else
          -- four-byte
          local b1 = bor(0xF0, band(rshift(v, 18), 0x07)) -- 1111-0xxx
          local b2 = bor(0x80, band(rshift(v, 12), 0x3F)) -- 10xx-xxxx
-         local b3 = bor(0x80, band(rshift(v, 6), 0x3F)) -- 10xx-xxxx
-         local b4 = bor(0x80, band(v, 0x3F)) -- 10xx-xxxx
+         local b3 = bor(0x80, band(rshift(v, 6), 0x3F))  -- 10xx-xxxx
+         local b4 = bor(0x80, band(v, 0x3F))             -- 10xx-xxxx
          buffer[i] = string.char(b1, b2, b3, b4)
       end
    end
@@ -193,7 +193,7 @@ function utf8.codepoint(s, i, j)
          -- multi-byte
          local b1 = s:byte(start_pos)
          b1 = band(lshift(b1, len + 1), 0xFF) -- e.g. 110x-xxxx -> xxxx-x000
-         b1 = lshift(b1, len * 5 - 7) -- >> len+1 and << (len-1)*6
+         b1 = lshift(b1, len * 5 - 7)         -- >> len+1 and << (len-1)*6
 
          local cp = 0
          for k = start_pos + 1, end_pos do

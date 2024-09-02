@@ -30,6 +30,7 @@ local default = {
    },
    win_options = {
       conceallevel = 0,
+      wrap = true,
    },
    buf_options = {
       filetype = "markdown", -- TODO: rss?
@@ -48,7 +49,7 @@ local default = {
    feeds = {
       "https://www.jsonfeed.org/feed.json",
       -- { "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
-      -- { "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
+      { "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
       -- "https://archlinux.org/feeds/news/",
       -- "https://andrewkelley.me/rss.xml",
       -- "https://feeds.bbci.co.uk/news/world/rss.xml",

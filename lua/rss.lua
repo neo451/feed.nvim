@@ -24,7 +24,6 @@ end
 ---@param user_config rss.config
 function M.setup(user_config)
    config.resolve(user_config)
-   local db = require "rss.db" (config.db_dir)
    config.og_colorscheme = vim.cmd "colorscheme" --TODO:??
    prepare_bufs()
 

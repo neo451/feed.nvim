@@ -2,7 +2,7 @@ local curl = require "plenary.curl"
 local config = require "rss.config"
 local xml = require "rss.xml"
 local date = require "rss.date"
-local db = require "rss.db" (config.db_dir)
+local db = require("rss.db").db(config.db_dir)
 
 local M = {}
 
@@ -14,7 +14,7 @@ local function get_root(ast, feed_type)
    if feed_type == "json" then
       return ast.items, ast.title
    elseif feed_type == "rss" then
-      return ast.channel.item, ast.title
+      return ast[2].channel.item, ast[2].channel.title
    else
       return {}, "nulllll"
    end
@@ -60,13 +60,14 @@ function M.update_feed(feed, total, index)
    end
    curl.get {
       url = url,
+      timeout = 50000,
       callback = function(res)
          if res.status ~= 200 then
             return
          end
-         local src = res.body
+         local src = (res.body):gsub("\n", "") -- HACK:
          local ok, ast, feed_type = pcall(xml.parse, src)
-         if not ok then -- FOR DEBUG
+         if not ok then                        -- FOR DEBUG
             print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
             return
          end

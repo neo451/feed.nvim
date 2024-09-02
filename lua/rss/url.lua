@@ -96,14 +96,12 @@ local function decode(str)
 end
 
 local function encode(str, legal)
-   return (
-      str:gsub("([^%w])", function(v)
-         if legal[v] then
-            return v
-         end
-         return string.upper(string.format("%%%02x", string.byte(v)))
-      end)
-   )
+   return (str:gsub("([^%w])", function(v)
+      if legal[v] then
+         return v
+      end
+      return string.upper(string.format("%%%02x", string.byte(v)))
+   end))
 end
 
 -- for query values, + can mean space if configured as such
@@ -347,12 +345,7 @@ function M:setAuthority(authority)
       -- domain
       if authority ~= "" and not self.host then
          local host = authority:lower()
-         if
-            string.match(host, "^[%d%a%-%.]+$") ~= nil
-            and string.sub(host, 0, 1) ~= "."
-            and string.sub(host, -1) ~= "."
-            and string.find(host, "%.%.") == nil
-         then
+         if string.match(host, "^[%d%a%-%.]+$") ~= nil and string.sub(host, 0, 1) ~= "." and string.sub(host, -1) ~= "." and string.find(host, "%.%.") == nil then
             self.host = host
          end
       end
