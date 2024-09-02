@@ -21,6 +21,9 @@ local fullwidth = C(
    ) ^ 1
 )
 
+---calculate actual displayed length in neovim, accounting for fullwidth cjk chars, and puncts
+---@param str string
+---@return integer
 function M.str_len(str)
    local len = 0
    for _, c in utf8.codes(str) do
@@ -33,7 +36,7 @@ function M.str_len(str)
    return len
 end
 
-M.sub = function(str, startidx, endidx)
+function M.sub(str, startidx, endidx)
    local buffer = {}
    local len = 0
    for _, c in utf8.codes(str) do
@@ -103,20 +106,10 @@ function M.looks_like_url(str)
 end
 
 local ns = vim.api.nvim_create_namespace "rss"
-
 local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
 local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
 vim.api.nvim_set_hl(ns, "rss.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
 vim.api.nvim_set_hl(ns, "rss.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
-
--- function M.set_text_bold(buf, start_line, start_col, end_col)
--- 	local ns = vim.api.nvim_create_namespace("rss.bold")
--- 	vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", start_line - 1, start_col, end_col)
--- end
---
--- function M.set_text_light(buf, start_line, start_col, end_col)
--- 	local ns = vim.api.nvim_create_namespace("rss.light")
--- end
 
 ---@param buf integer
 function M.highlight_entry(buf)
@@ -130,10 +123,8 @@ end
 function M.highlight_index(buf)
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
    for i = 1, len do
-      -- vim.highlight.range(buf, ns, "Title", { i, 0 }, { i, 10 })
       vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
       vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", i, 0, -1)
-      -- vim.highlight.range(buf, 1, "rss.bold", { i, 0 }, { i, 10 })
    end
 end
 
@@ -142,18 +133,7 @@ end
 --   (and (stringp string)
 --        (not (string-match-p "[ \n\t\r]" string))
 --        (not (null (url-type (url-generic-parse-url string))))))
---
--- (defun elfeed-format-column (string width &optional align)
---   "Return STRING truncated or padded to WIDTH following ALIGNment.
--- Align should be a keyword :left or :right."
---   (if (<= width 0)
---       ""
---     (format (format "%%%s%d.%ds" (if (eq align :left) "-" "") width width)
---             string)))
---
---
 
---
 -- (defun elfeed-cleanup (name)
 --   "Trim trailing and leading spaces and collapse multiple spaces."
 --   (let ((trim (replace-regexp-in-string "[\f\n\r\t\v ]+" " " (or name ""))))
@@ -180,36 +160,5 @@ end
 --         (float-time (encode-time (or sec 0) (or min 0) (or hour 0)
 --                                  (or day 1) month year t))))))
 --
--- (defun elfeed-new-date-for-entry (old-date new-date)
---   "Decide entry date, given an existing date (nil for new) and a new date.
--- Existing entries' dates are unchanged if the new date is not
--- parseable. New entries with unparseable dates default to the
--- current time."
---   (or (elfeed-float-time new-date)
---       old-date
---       (float-time)))
---
--- (defun elfeed-float-time (date)
---   "Like `float-time' but accept anything reasonable for DATE.
--- Defaults to nil if DATE could not be parsed. Date is allowed to
--- be relative to now (`elfeed-time-duration')."
---   (cl-typecase date
---     (string
---      (let ((iso-8601 (elfeed-parse-simple-iso-8601 date)))
---        (if iso-8601
---            iso-8601
---          (let ((duration (elfeed-time-duration date)))
---            (if duration
---                (- (float-time) duration)
---              (let ((time (ignore-errors (date-to-time date))))
---                ;; check if date-to-time failed, silently or otherwise
---                (unless (or (null time) (equal time '(14445 17280)))
---                  (float-time time))))))))
---     (integer date)
---     (otherwise nil)))
-
--- print(os.date("%Y-%m-%d %H:%M:%S", os.time()))
-
--- print("123" < "12")
 
 return M

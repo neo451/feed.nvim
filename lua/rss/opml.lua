@@ -3,7 +3,7 @@ local M = {}
 local xml = require "rss.xml"
 
 ---get lua table from opml
----@param path any
+---@param path string
 function M.parse_opml(path)
    path = vim.fn.expand(path)
    local str = table.concat(vim.fn.readfile(path))
