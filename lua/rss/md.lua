@@ -91,6 +91,7 @@ function traverse_hashtable(t)
    -- return F.join(t, "")
 end
 
+--- TODO: use html_lpeg.lua!!
 local xml = require "rss.xml"
 
 local to_walk = loadfile "/home/n451/Plugins/rss.nvim/data/html_to_md2.lua" ()
