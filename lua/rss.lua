@@ -1,6 +1,4 @@
 local render = require "rss.render"
-local fetch = require "rss.fetch"
-local opml = require "rss.opml"
 local config = require "rss.config"
 local ut = require "rss.utils"
 local actions = require "rss.actions"
@@ -26,7 +24,7 @@ end
 ---@param user_config rss.config
 function M.setup(user_config)
    config.resolve(user_config)
-   local db = require "rss.db"(config.db_dir)
+   local db = require "rss.db" (config.db_dir)
    config.og_colorscheme = vim.cmd "colorscheme" --TODO:??
    prepare_bufs()
 

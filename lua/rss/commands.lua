@@ -1,16 +1,15 @@
 local config = require "rss.config"
 local fetch = require "rss.fetch"
-local opml = require "rss.opml"
+local xml = require "rss.xml"
 
 local cmds = {}
 
 function cmds.load_opml(file)
-   local feeds = opml.parse_opml(file)
+   local feeds = xml.parse(file, { type = "opml" })[2].body.outline
    for _, feed in ipairs(feeds) do
-      local item = feed
-      local title = item.title
-      local xmlUrl = item.xmlUrl
-      config.feeds[title] = xmlUrl
+      local title = feed.title
+      local xmlUrl = feed.xmlUrl
+      table.insert(config.feeds, { xmlUrl, name = title })
    end
 end
 
@@ -19,6 +18,7 @@ function cmds.list_feeds()
 end
 
 function cmds.update()
+   -- print(#config.feeds)
    for i, link in ipairs(config.feeds) do
       fetch.update_feed(link, #config.feeds, i)
    end

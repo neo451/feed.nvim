@@ -48,7 +48,7 @@ end
 function db:add(entry)
    local id = sha1(entry.link)
    if self:if_stored(id) then
-      print "duplicate keys!!!!"
+      -- print "duplicate keys!!!!"
       return
    end
    entry.id = id

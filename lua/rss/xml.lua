@@ -5,8 +5,6 @@ local M = {}
 
 ---TODO: entities
 ---TODO: proper naming to spec
----TODO: test opml parsing
----TODO: id capture is weird, read more docs
 
 lpeg.locale(lpeg)
 local P = lpeg.P
@@ -117,30 +115,47 @@ local grammar = {
    element = ws * (comment + (start_tag * content * end_tag) + just_tag) / parse_element * ws,
 }
 
----@alias rss.feed_type "rss" | "atom" | "json"
-
----parse feed fetch from source
----@param src string
----@return table
----@return rss.feed_type
-function M.parse_feed(src)
-   if json.is_json(src) then
-      return json.parse_json(src), "json"
-   end
-   return M.parse(src), "rss" -- TODO: check atom or rss??
-end
-
 ---genric markup parseing
 ---@param src string
----@return table | string
-function M.parse(src)
+---@return table
+local function generic_parse(src)
    local rules = Ct(C(grammar))
    local res = rules:match(src)
    if not res then
-      return "failed to parse"
+      return { "failed to parse" }
    else
       return res[2]
    end
+end
+
+---check if json
+---@param str string
+---@return boolean
+local function is_json(str)
+   local ok = pcall(vim.json.decode, str)
+   return ok
+end
+
+---@alias rss.feed_type "rss" | "atom" | "json" | "opml"
+
+---@class rss.parse.opts
+---@field type rss.feed_type
+
+---parse feed fetch from source
+---@param src string
+---@param opts rss.parse.opts
+---@return table
+---@return rss.feed_type
+function M.parse(src, opts)
+   opts = vim.F.if_nil(opts, {})
+   if opts.type == "json" or is_json(src) then
+      return vim.json.decode(src), "json"
+   elseif opts.type == "opml" then
+      local path = vim.fn.expand(src)
+      local str = table.concat(vim.fn.readfile(path))
+      return generic_parse(str), "opml"
+   end
+   return generic_parse(src), "rss" -- TODO: check atom or rss??
 end
 
 return M
