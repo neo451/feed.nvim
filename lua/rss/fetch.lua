@@ -1,9 +1,8 @@
+local curl = require "plenary.curl"
 local config = require "rss.config"
-local flatdb = require "rss.db"
 local xml = require "rss.xml"
-local curl = require "rss.curl"
-local db = flatdb(config.db_dir)
 local date = require "rss.date"
+local db = require "rss.db" (config.db_dir)
 
 local M = {}
 
@@ -66,8 +65,7 @@ function M.update_feed(feed, total, index)
             return
          end
          local src = res.body
-         local ok, ast, feed_type = pcall(xml.parse_feed, src)
-         pp(ast)
+         local ok, ast, feed_type = pcall(xml.parse, src)
          if not ok then -- FOR DEBUG
             print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
             return
@@ -77,6 +75,7 @@ function M.update_feed(feed, total, index)
             db:add(unify(entry, feed_type, feed_name))
          end
          db:save()
+         print(("%d/%d"):format(index, total))
       end,
    }
 end
