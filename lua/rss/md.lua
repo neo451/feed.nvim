@@ -4,13 +4,19 @@ local F = require "plenary.functional"
 
 local transforms = {
    md = "%s",
-   h1 = "# %s",
-   h2 = "## %s",
-   h3 = "### %s",
-   h4 = "#### %s",
+   -- h1 = "# %s",
+   -- h2 = "## %s",
+   -- h3 = "### %s",
+   h4 = function(v)
+      return "#### " .. v[1]
+   end,
    h5 = "##### %s",
-   p = "  %s",
-   a = "[%s](%s)",
+   p = function(v)
+      return ("  %s"):format(v)
+   end,
+   a = function(v)
+      return ("[%s](%s)"):format(v[1], v.href)
+   end,
    -- code = [[```%s %s ```]],
    code = "`%s`",
    pre = "",
@@ -19,19 +25,21 @@ local traverse_hashtable, traverse_array
 ---@param t table<number, any>
 ---@return string
 function traverse_array(t, is_root)
-   local buf = {}
-   for _, v in ipairs(t) do
+   for i, v in ipairs(t) do
       if type(v) == "string" then
-         buf[#buf + 1] = v
       elseif type(v) == "table" then
          if vim.isarray(v) then
-            buf[#buf + 1] = traverse_array(v)
+            t[i] = traverse_array(v, false)
          else
-            buf[#buf + 1] = traverse_hashtable(v)
+            -- pp(v)
+            t[i] = traverse_hashtable(v)
          end
       end
    end
-   return F.join(buf, is_root and "\n" or "")
+   return t
+   -- return F.join(t, is_root and "\n" or "")
+
+   -- return F.join(buf, is_root and "\n" or "")
 end
 
 local function format_code(v)
@@ -42,20 +50,51 @@ local function format_code(v)
    end
 end
 
+--- TODO: parser still wrong, not parellel, order wrong
+---
+-- {
+--    p = {
+--       "So we developed JSON Feed, a format similar to ",
+--       {
+--          a = {
+--             "RSS",
+--             href = "http://cyber.harvard.edu/rss/rss.html",
+--          },
+--       },
+--       "and ",
+--       "but in JSON. It reflects the lessons learned from our years of work reading and publishing feeds.",
+--       a = { {
+--          "Atom",
+--          href = "https://tools.ietf.org/html/rfc4287",
+--       } },
+--    },
+
 ---@param t table<string, any>
 ---@return string
 function traverse_hashtable(t)
-   local buf = {}
+   -- local buf = {}
    for k, v in pairs(t) do
-      buf[#buf + 1] = format_code(v)
+      if vim.isarray(v) then
+         -- print(k, v)
+         t[k] = traverse_array(v, false)
+      else
+         print(k, v)
+         if k == "code" then
+            -- buf[#buf + 1] = format_code(v)
+            t[k] = format_code(v)
+         else
+            t[k] = transforms[k](v)
+         end
+      end
    end
-   return F.join(buf, "")
+   return t
+   -- return F.join(t, "")
 end
 
 local xml = require "rss.xml"
---
--- local ast = xml.parse [[<code language="zig">const std = @import("std")</code>]]
--- local ast = xml.parse [[<code>const std = @import("std")</code>]]
--- print(traverse_hashtable(ast))
+
+local to_walk = loadfile "/home/n451/Plugins/rss.nvim/data/html_to_md2.lua" ()
+
+pp(traverse_array(to_walk, true))
 
 return traverse_array
