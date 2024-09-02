@@ -9,52 +9,49 @@ local date = require "rss.date"
 local db = { __class = "rss.db" }
 db.__index = db
 
----@param path any
----@return table | boolean
-local function load_page(path)
-   local f = io.open(path, "r"):read "*a"
-   if f then
-      local ok, res = pcall(loadstring, "return " .. f)
-      if not ok then
-         return false
-      end
-      return res and res()
-   else
-      return false
-   end
-end
-
----@param path string
----@return string | boolean
-local function load_file(path)
-   local f = io.open(path, "r"):read "*a"
-   f = f:gsub("\n", "")
-   if f then
-      return f
-   else
-      return false
-   end
-end
-
 ---@param path string
 ---@param content string
----@return boolean
 local function save_file(path, content)
    local f = io.open(path, "w")
-   if f then
-      f:write(content)
-      return true
-   else
-      return false
+   return f and f:write(content)
+end
+
+---@param path string
+---@return string?
+local function load_file(path)
+   local f = io.open(path, "r")
+   return f and f:read("*a"):gsub("\n", "")
+end
+
+---@param path string
+---@return table?
+local function load_page(path)
+   local str = load_file(path)
+   if str then
+      local res = loadstring("return " .. str)
+      return res and res()
    end
+end
+
+---@param id integer
+---@return boolean
+function db:if_stored(id)
+   for p in vim.iter(vim.fs.dir(self.dir .. "/data/")) do
+      if id == p then
+         return true
+      end
+   end
+   return false
 end
 
 ---@param entry rss.entry
 function db:add(entry)
    local id = sha1(entry.link)
+   if self:if_stored(id) then
+      print "duplicate keys!!!!"
+      return
+   end
    entry.id = id
-   --- TODO: put the logic elsewhere
-   -- local content = entry["content:encoded"] or entry.description
    local content = entry.description
    entry.description = nil
    table.insert(self.index, entry)
@@ -87,6 +84,15 @@ function db:blowup()
    vim.fn.delete(self.dir, "rf")
 end
 
+local index_header = { version = "0.1" }
+
+---@param dir string
+---@return table
+local function make_index(dir)
+   save_file(dir, vim.inspect(index_header))
+   return index_header
+end
+
 ---@param dir string
 return function(dir)
    dir = vim.fn.expand(dir)
@@ -98,6 +104,8 @@ return function(dir)
    end
    local index_path = dir .. "/index"
    local index = load_page(index_path)
-   index.version = "0.1" -- TODO: weirddd
-   return setmetatable({ dir = dir, index = index }, db)
+   if not index then
+      index = make_index(index_path)
+   end
+   return setmetatable({ dir = dir, index = index, ids = ids }, db)
 end
