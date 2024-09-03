@@ -1,5 +1,7 @@
 local M = {
-   state = {},
+   state = {
+      rendered_once = nil, -- to keep track of when to render_index when using show_index command
+   },
    index = nil,
 }
 
@@ -14,17 +16,6 @@ local date = require "rss.date"
 ---@field curent_index integer
 ---@field current_entry fun(): table<string, any>
 ---@field show_entry fun(row: integer)
-
----@class rss.entry
----@field author string
----@field description string
----@field link string
----@field pubDate integer
----@field title string
----@field feed string
----@field tags table<string, boolean>
----@field id string
----@field time integer
 
 ---@return rss.entry
 function M.current_entry()
@@ -81,6 +72,7 @@ function M.format_entry(entry)
    return lines
 end
 
+--- TODO: move to entry.lua
 ---@param entry rss.entry
 ---@return string
 local function entry_name(entry)
@@ -105,6 +97,7 @@ function M.show_index()
       lines[i + 1] = entry_name(entry)
    end
    M.show(lines, M.buf.index, ut.highlight_index)
+   M.state.rendered_once = true
 end
 
 ---@param index integer

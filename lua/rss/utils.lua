@@ -128,6 +128,17 @@ function M.highlight_index(buf)
    end
 end
 
+---check if an usercommnad exists, so as a easy way to check if plugin exists
+---@param str any
+---@return boolean
+function M.check_command(str)
+   local global_commands = vim.api.nvim_get_commands {}
+   if global_commands[str] then
+      return true
+   end
+   return false
+end
+
 -- (defun elfeed-looks-like-url-p (string)
 --   "Return true if STRING looks like it could be a URL."
 --   (and (stringp string)

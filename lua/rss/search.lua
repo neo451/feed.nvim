@@ -15,7 +15,7 @@ local M = {
    ---List of functions to run immediately following a search buffer update.
    ---@type function[]
    update_hook = config.search.update_hook, -- TODO:
-   sort_order = config.search.sort_order, -- TODO:
+   sort_order = config.search.sort_order,   -- TODO:
 }
 
 ---@class rss.query
@@ -56,8 +56,6 @@ function M.parse_query(str)
    end
    return query
 end
-
---- TODO: see lpeg.re.lua
 
 ---check if a valid pattern
 ---@param str any

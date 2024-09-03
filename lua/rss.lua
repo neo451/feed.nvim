@@ -1,7 +1,7 @@
 local render = require "rss.render"
 local config = require "rss.config"
 local ut = require "rss.utils"
-local actions = require "rss.actions"
+local cmds = require("rss.commands").cmds
 
 local M = {}
 
@@ -13,11 +13,11 @@ local function prepare_bufs()
    for i = 1, 3 do
       render.buf.entry[i] = vim.api.nvim_create_buf(false, true)
       for rhs, lhs in pairs(config.keymaps.entry) do
-         ut.push_keymap(render.buf.entry[i], lhs, actions.entry[rhs])
+         ut.push_keymap(render.buf.entry[i], lhs, cmds[rhs])
       end
    end
    for rhs, lhs in pairs(config.keymaps.index) do
-      ut.push_keymap(render.buf.index, lhs, actions.index[rhs])
+      ut.push_keymap(render.buf.index, lhs, cmds[rhs])
    end
 end
 
@@ -29,6 +29,9 @@ function M.setup(user_config)
 
    vim.keymap.set("n", "<leader>rt", "<cmd>Telescope rss<cr>", { desc = "Show [R]ss feed in [T]elescope" })
    vim.keymap.set("n", "<leader>rs", render.show_index, { desc = "Show [R][s]s feed" })
+   if ut.check_command "Telescope" then
+      pcall(require("telescope").load_extension, "rss")
+   end
 end
 
 return M

@@ -12,20 +12,20 @@ local default = {
    keymaps = {
       ---@type rss.keymap
       index = {
-         open_entry = "<CR>",
-         open_split = "<M-CR>",
-         open_browser = "b",
-         open_w3m = "w",
+         show_entry = "<CR>",
+         show_in_split = "<M-CR>",
+         show_in_browser = "b",
+         show_in_w3m = "w",
          link_to_clipboard = "y",
-         leave_index = "q",
-         add_tag = "+",
-         remove_tag = "-",
+         quit_index = "q",
+         tag = "+",
+         untag = "-",
       },
       ---@type rss.keymap
       entry = {
-         back_to_index = "q",
-         next_entry = "}",
-         prev_entry = "{",
+         show_index = "q",
+         show_next = "}",
+         show_prev = "{",
       },
    },
    win_options = {

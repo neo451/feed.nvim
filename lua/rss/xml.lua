@@ -1,5 +1,4 @@
 local lpeg = vim.lpeg
-local json = require "rss.json"
 
 local M = {}
 
@@ -12,7 +11,6 @@ local V = lpeg.V
 local S = lpeg.S
 local C = lpeg.C
 local alnum = lpeg.alnum
-local punct = lpeg.punct
 
 local function parse_start_tag(T, ...)
    local tab = { ... }
@@ -32,14 +30,7 @@ local function parse_document(...)
    if select("#", ...) == 1 then
       return ...
    end
-   local tab = { ... }
-   --- HACK: to remove comments?
-   for i, t in ipairs(tab) do
-      if vim.tbl_isempty(t) then
-         table.remove(tab, i)
-      end
-   end
-   return tab
+   return { ... }
 end
 
 local function parse_content(...)
@@ -144,7 +135,7 @@ local grammar = P {
 }
 
 ---strip comments for a simpler tree
----@param str any
+---@param str string
 local function stripComments(str)
    str, _ = string.gsub(str, "<!--.-->", "")
    return str
@@ -178,11 +169,11 @@ end
 
 ---parse feed fetch from source
 ---@param src string
----@param opts rss.parse.opts
+---@param opts? {type : rss.feed_type, converter : "md" | "org" | "norg" }
 ---@return table
 ---@return rss.feed_type
 function M.parse(src, opts)
-   opts = vim.F.if_nil(opts, {})
+   opts = opts or {}
    if opts.type == "json" or is_json(src) then
       return vim.json.decode(src), "json"
    elseif opts.type == "opml" then

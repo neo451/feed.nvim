@@ -11,7 +11,7 @@ local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 
 local config = require "rss.config"
-local db = require "rss.db"(config.db_dir)
+local db = require("rss.db").db(config.db_dir)
 local render = require "rss.render"
 local ut = require "rss.utils"
 local date = require "rss.date"
@@ -39,7 +39,7 @@ end
 ---render whole db in telescope
 
 local function rss(opts)
-   local rss_picker = pickers
+   pickers
       .new(opts, {
          prompt_title = "Feeds",
          previewer = previewers.new_buffer_previewer {
