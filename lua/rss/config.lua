@@ -41,19 +41,15 @@ local default = {
       update_hook = {},
       filter = "@6-months-ago +unread",
    },
+   titles = {
+      right_justify = false,
+      max_length = 70,
+   },
    split = "13split",
    colorscheme = "kanagawa-lotus",
-   max_title_length = 70,
 
    ---@type rss.feed[]
-   feeds = {
-      "https://www.jsonfeed.org/feed.json",
-      -- { "https://sspai.com/feed", name = "少数派", tags = { "tech" } },
-      { "https://www.gcores.com/rss", name = "机核", tags = { "tech" } },
-      -- "https://archlinux.org/feeds/news/",
-      -- "https://andrewkelley.me/rss.xml",
-      -- "https://feeds.bbci.co.uk/news/world/rss.xml",
-   },
+   feeds = {},
 }
 
 local M = {}

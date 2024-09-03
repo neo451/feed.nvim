@@ -81,8 +81,7 @@ local function entry_name(entry)
    return string.format(
       format,
       tostring(date.new_from_int(entry.time)),
-      -- tostring(date.new_from_entry(entry.pubDate)),
-      ut.format_title(entry.title, config.max_title_length),
+      ut.format_title(entry.title, config.titles.max_length, config.titles.right_justify),
       entry.feed,
       ut.format_tags(entry.tags)
    )

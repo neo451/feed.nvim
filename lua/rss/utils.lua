@@ -1,61 +1,18 @@
 local M = {}
-local config = require "rss.config"
-local utf8 = require "rss.utf8"
 local url = require "rss.url"
-local date = require "rss.date"
-local F = require "plenary.functional"
-local lpeg = vim.lpeg
-local C, utfR = lpeg.C, lpeg.utfR
+local strings = require "plenary.strings"
 
--- TODO: handle cjk .. all non-ascii, emojis??
-local fullwidth = C(
-   (
-      utfR(0x4E00, 0x9FFF)
-      + utfR(0xFF10, 0xFF19)
-      + utfR(0x3000, 0x303F)
-      + utfR(0xFF01, 0xFF5E)
-      + utfR(0x2000, 0x206F)
-      + utfR(0xFF10, 0xFF19)
-      - utfR(0x201C, 0x201D)
-      - utfR(0x2026, 0x2026) --- TODO: find all exceptions
-   ) ^ 1
-)
-
----calculate actual displayed length in neovim, accounting for fullwidth cjk chars, and puncts
----@param str string
----@return integer
-function M.str_len(str)
-   local len = 0
-   for _, c in utf8.codes(str) do
-      if fullwidth:match(c) then
-         len = len + 2
-      else
-         len = len + 1
-      end
-   end
-   return len
-end
-
-function M.sub(str, startidx, endidx)
-   local buffer = {}
-   local len = 0
-   for _, c in utf8.codes(str) do
-      len = len + M.str_len(c) -- TODO: wasteful
-      buffer[#buffer + 1] = c
-      if len >= endidx then
-         return table.concat(buffer, "", 1, #buffer - 1)
-      end
-   end
-end
-
-function M.format_title(str, max_len)
-   max_len = max_len or 50
-   local len = M.str_len(str)
+---porperly align, justify and trucate the title
+---@param str any
+---@param max_len any
+---@param right_justify any
+---@return unknown
+function M.format_title(str, max_len, right_justify)
+   local len = vim.api.nvim_strwidth(str)
    if len < max_len then
-      return str .. string.rep(" ", max_len - len)
+      return strings.align_str(str, max_len, right_justify)
    else
-      str = M.sub(str, 1, max_len)
-      return str .. string.rep(" ", max_len - M.str_len(str))
+      return strings.align_str(strings.truncate(str, max_len), max_len, right_justify)
    end
 end
 
@@ -63,10 +20,10 @@ end
 ---@return string
 function M.format_tags(tags)
    tags = vim.tbl_keys(tags)
-   local buffer = { "(" }
    if #tags == 0 then
       return ""
    end
+   local buffer = { "(" }
    for i, tag in pairs(tags) do
       buffer[#buffer + 1] = tag
       if i ~= #tags then
