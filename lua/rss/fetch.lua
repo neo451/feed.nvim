@@ -27,7 +27,7 @@ local date_tag = {
 
 --- TODO: put the logic elsewhere
 -- local content = entry["content:encoded"] or entry.description
---
+
 ---@param entry table
 ---@param feedtype rss.feed_type
 ---@param feedname string
