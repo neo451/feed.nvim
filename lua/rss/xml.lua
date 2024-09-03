@@ -10,7 +10,6 @@ lpeg.locale(lpeg)
 local P = lpeg.P
 local V = lpeg.V
 local S = lpeg.S
-local Ct = lpeg.Ct
 local C = lpeg.C
 local alnum = lpeg.alnum
 local punct = lpeg.punct
@@ -34,6 +33,7 @@ local function parse_document(...)
       return ...
    end
    local tab = { ... }
+   --- HACK: to remove comments?
    for i, t in ipairs(tab) do
       if vim.tbl_isempty(t) then
          table.remove(tab, i)
@@ -90,41 +90,76 @@ local function parse_element(T, ele_or_text, _)
 end
 
 local text = C((1 - P "<") ^ 1)
-local ws = S " \t\n\r" ^ 0
+local ws = S " \t\n\r\f\v"
+local ws0 = ws ^ 0
+local ws1 = ws ^ 1
 
-local name = C((alnum - punct + ":") ^ 1) -- TODO: check spec
-local quoted_string = P '"' * C((1 - P '"') ^ 0) * P '"'
-local kv = ws * name * "=" * quoted_string * ws
+local name = (alnum + ":") ^ 1 -- TODO: check spec
+local q, sq = P '"', P "'"
 
-local end_tag = P "</" * name * P ">"
-local comment = "<!--" * (1 - P "-") ^ 0 * "-->"
+local qvalue = (q * C((1 - q) ^ 0) * q) + (sq * C((1 - sq) ^ 0) * sq)
+local kv = ws0 * C(name) * "=" * qvalue * ws0
 
-local start_tag = P "<" * ws * name * kv ^ 0 * P ">" / parse_start_tag
-local just_tag = P "<" * ws * name * kv ^ 0 * P "/>" / parse_start_tag
+local _qvalue = (q * (1 - q) ^ 0 * q) + (sq * (1 - sq) ^ 0 * sq)
+local _kv = ws0 * name * "=" * _qvalue * ws0
 
-local CData = C((1 - P "]]>") ^ 0)
-local CDSect = "<![CDATA[" * CData * "]]>"
-local XMLDecl = P "<?" * name * kv ^ 1 * P "?>" / parse_start_tag --HACK:
+local tagStart, tagEnd = P "<", P ">"
+local singleTagEnd, pairTagEnd = P "/>", P "</"
+
+local xmlDefStart, xmlDefEnd = P "<?", P "?>"
+local XMLDecl = xmlDefStart * name * ws1 * _kv ^ 1 * xmlDefEnd
+
+local commentStart, commentEnd = P "<!--", P "-->"
+local comment = commentStart * (1 - commentEnd) ^ 0 * commentEnd
+
+local CDATAStart, CDATAEnd = P "<![CDATA[", P "]]>"
+local CData = C((1 - CDATAEnd) ^ 0)
+local CDSect = CDATAStart * CData * CDATAEnd
+
+local end_tag = pairTagEnd * name * tagEnd
+
+local start_tag = tagStart * ws0 * C(name) * kv ^ 0 * tagEnd / parse_start_tag
+local just_tag = tagStart * ws0 * C(name) * kv ^ 0 * singleTagEnd / parse_start_tag
+
+local BOM = (P "\xEF\xBB\xBF") ^ -1
 
 local element = V "element"
 local content = V "content"
-local grammar = {
-   [1] = "document",
-   document = ws * XMLDecl ^ -1 * ws * element ^ 1 * ws / parse_document,
-   content = ws * (text + CDSect + element) ^ 0 * ws / parse_content,
-   element = ws * (comment + (start_tag * content * end_tag) + just_tag) / parse_element * ws,
+local tags = V "tags"
+local xml = V "xml"
+local html = V "html"
+
+local doctypeName = P "doctype" + P "DOCTYPE"
+local doctype = P "<!" * doctypeName * ws1 * kv ^ 1 * ws0 * P ">"
+
+local grammar = P {
+   [1] = "ml",
+   ml = BOM * ws0 * (xml + html) * ws0,
+   tags = ws0 * element ^ 1 * ws0 / parse_document,
+   xml = XMLDecl * ws0 * html,
+   html = doctype ^ -1 * tags,
+   -- document = ws0 * XMLDecl ^ -1 * ws0 * element ^ 1 * ws0 / parse_document,
+   content = ws0 * (text + CDSect + element) ^ 0 * ws0 / parse_content,
+   element = ws0 * (comment + (start_tag * content * end_tag) + just_tag) / parse_element * ws0,
 }
+
+---strip comments for a simpler tree
+---@param str any
+local function stripComments(str)
+   str, _ = string.gsub(str, "<!--.-->", "")
+   return str
+end
 
 ---genric markup parseing
 ---@param src string
 ---@return table
 local function generic_parse(src)
-   local rules = Ct(C(grammar))
-   local res = rules:match(src)
+   src = stripComments(src)
+   local res = grammar:match(src)
    if not res then
       return { "failed to parse" }
    else
-      return res[2]
+      return res
    end
 end
 
