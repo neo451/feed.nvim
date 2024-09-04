@@ -1,4 +1,4 @@
-local ut = require "rss.treedoc.utils"
+local ut = require "treedoc.utils"
 local html = {}
 
 html.attribute = function(node, src, rules)

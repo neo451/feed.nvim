@@ -1,10 +1,12 @@
 local M = {}
-local ut = require "rss.treedoc.utils"
+local ut = require "treedoc.utils"
 
 M.rules = {}
 
-M.rules.html = require "rss.treedoc.html"
-M.rules.xml = require "rss.treedoc.xml"
+M.rules.html = require "treedoc.html"
+M.rules.xml = require "treedoc.xml"
+
+-- IDEA: none-ls tidy for tidying markup??
 
 ---tree-sitter powered parser to turn html to simple lua table
 ---@param src string

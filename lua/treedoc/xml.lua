@@ -1,7 +1,8 @@
-local ut = require "rss.treedoc.utils"
+local ut = require "treedoc.utils"
 local xml = {}
 
 xml.prolog = ut.noop
+xml.comment = ut.noop
 
 xml.STag = function(node, src, _)
    local ret = { [ut.get_text(node:child(1), src)] = {} }
@@ -12,7 +13,7 @@ xml.STag = function(node, src, _)
    for i = 2, n - 2 do
       local child = node:child(i)
       if child:type() == "Attribute" then
-         local k, v = ut.get_text(child:child(0), src), ut.get_text(child:child(2), src)
+         local k, v = ut.get_text(child:child(0), src), ut.get_text(child:child(2), src):gsub('"', "")
          local _, V = next(ret)
          V[k] = v
       end
@@ -30,6 +31,9 @@ end
 xml.ETag = ut.noop
 
 xml.content = function(node, src, rules)
+   if not node then
+      return {}
+   end
    local ret = {}
    for child in node:iter_children() do
       local T = child:type()
@@ -62,7 +66,7 @@ xml.element = function(node, src, rules)
       if type(element) == "table" then
          for k, v in pairs(element) do
             if V[k] then
-               if type(V[k]) ~= "table" then
+               if not vim.isarray(V[k]) then --TODO:
                   V[k] = { V[k] }
                end
                table.insert(V[k], v)
@@ -71,7 +75,11 @@ xml.element = function(node, src, rules)
             end
          end
       else
-         ret[K] = element
+         if vim.tbl_isempty(ret[K]) then
+            ret[K] = element
+         else
+            table.insert(V, element)
+         end
       end
    end
    return ret
