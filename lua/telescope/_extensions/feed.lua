@@ -10,13 +10,13 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 
-local config = require "rss.config"
-local db = require("rss.db").db(config.db_dir)
-local render = require "rss.render"
-local ut = require "rss.utils"
-local date = require "rss.date"
+local config = require "feed.config"
+local db = require("feed.db").db(config.db_dir)
+local render = require "feed.render"
+local ut = require "feed.utils"
+local date = require "feed.date"
 
----@param entry rss.entry
+---@param entry feed.entry
 ---@return string
 local function entry_name(entry)
    local format = "%s %s %s %s"
@@ -36,9 +36,7 @@ for i, entry in ipairs(db.index) do
    lines[i] = entry_name(entry)
 end
 
----render whole db in telescope
-
-local function rss(opts)
+local function feed(opts)
    pickers
       .new(opts, {
          prompt_title = "Feeds",
@@ -74,6 +72,6 @@ return telescope.register_extension {
    setup = function(ext_config, usr_config) end,
    -- health = lp_health,
    exports = {
-      rss = rss,
+      feed = feed,
    },
 }

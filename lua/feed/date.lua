@@ -1,7 +1,7 @@
 local M = {}
-local config = require "rss.config"
+local config = require "feed.config"
 
----@alias rss.date osdate
+---@alias feed.date osdate
 
 local date = { __class = "date" }
 date.__index = date
@@ -34,22 +34,22 @@ function date:__tostring()
 end
 
 ---@param num integer
----@return rss.date
+---@return feed.date
 function date:days_ago(num)
    return M.new(os.date("*t", os.time(self) - num * 24 * 60 * 60))
 end
 
 ---@param osdate osdate
----@return rss.date
+---@return feed.date
 function M.new(osdate)
    return setmetatable(osdate, date)
 end
 
----@type rss.date
+---@type feed.date
 M.today = M.new(os.date "*t")
 
 ---@param str string
----@return rss.date
+---@return feed.date
 function M.new_from_str(str)
    local a, b, c = str:match "(%d+)-(%w+)-(%w+)"
    if not tonumber(b) then
@@ -60,7 +60,7 @@ function M.new_from_str(str)
 end
 
 ---@param time integer
----@return rss.date
+---@return feed.date
 function M.new_from_int(time)
    return M.new(os.date("*t", time))
 end
@@ -81,14 +81,16 @@ do
    local col = P ":"
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
    local min_and_sec = L.digit ^ 2 * P ":" * L.digit ^ 2 * P "-"
-   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
+   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws *
+   zone
    -- patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * ((R "09" + S "-:") ^ -7) * digit * P ":" * digit * R "AZ" ^ -1 -- ??
-   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" * digit * (R "AZ" ^ -1) -- ??
+   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" *
+   digit * (R "AZ" ^ -1)                                                                                                                          -- ??
 end
 
 --- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 822, with the exception that the year may be expressed with two characters or four characters (four preferred).
 ---@param str string
----@return rss.date?
+---@return feed.date?
 local function rfc822(str)
    local weekday, day, month, year, hour, min, sec, zone = patterns.RFC822:match(str)
    if not weekday then
@@ -98,7 +100,7 @@ local function rfc822(str)
 end
 
 ---@param str string
----@return rss.date?
+---@return feed.date?
 local function rfc3339(str)
    local year, month, day, hour, min, sec, patt_end = patterns.RFC3339:match(str)
    if not year then
@@ -113,8 +115,8 @@ M.new_from = {
 }
 
 ---@param str string
----@return rss.date
----@return rss.date
+---@return feed.date
+---@return feed.date
 function M.parse_date_filter(str)
    local sep = string.find(str, "%-%-")
    if not sep then

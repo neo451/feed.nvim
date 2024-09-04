@@ -5,26 +5,26 @@ local M = {
    index = nil,
 }
 
-local flatdb = require "rss.db"
-local config = require "rss.config"
-local ut = require "rss.utils"
+local flatdb = require "feed.db"
+local config = require "feed.config"
+local ut = require "feed.utils"
 local db = flatdb.db(config.db_dir)
-local date = require "rss.date"
+local date = require "feed.date"
 
----@class rss.render
+---@class feed.render
 ---@field state table<string, boolean>
 ---@field curent_index integer
 ---@field current_entry fun(): table<string, any>
 ---@field show_entry fun(row: integer)
 
----@return rss.entry
+---@return feed.entry
 function M.current_entry()
    local row = vim.api.nvim_win_get_cursor(0)[1]
    return db.index[row - 1]
 end
 
 ---@param index integer
----@return rss.entry
+---@return feed.entry
 function M.get_entry(index)
    return db.index[index]
 end
@@ -58,7 +58,7 @@ local function kv(k, v)
    return string.format("%s: %s", k, v)
 end
 
----@param entry rss.entry
+---@param entry feed.entry
 ---@return table
 function M.format_entry(entry)
    local lines = {}
@@ -73,7 +73,7 @@ function M.format_entry(entry)
 end
 
 --- TODO: move to entry.lua
----@param entry rss.entry
+---@param entry feed.entry
 ---@return string
 local function entry_name(entry)
    local format = "%s %s %s %s"

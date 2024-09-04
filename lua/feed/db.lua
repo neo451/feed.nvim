@@ -1,10 +1,9 @@
----@class rss.db
----@field index rss.entry[]
+---@class feed.db
+---@field index feed.entry[]
 
-local ut = require "rss.utils"
-local sha1 = require "rss.sha1"
+local sha1 = require "feed.sha1"
 
-local db_mt = { __class = "rss.db" }
+local db_mt = { __class = "feed.db" }
 db_mt.__index = db_mt
 
 local function isFile(path)
@@ -49,7 +48,7 @@ function db_mt:if_stored(id)
    return false
 end
 
----@param entry rss.entry
+---@param entry feed.entry
 function db_mt:add(entry)
    local id = sha1(entry.link)
    if self:if_stored(id) then
@@ -70,7 +69,7 @@ function db_mt:add(entry)
    save_file(self.dir .. "/data/" .. id, content)
 end
 
----@param entry rss.entry
+---@param entry feed.entry
 function db_mt:address(entry)
    return self.dir .. "/data/" .. entry.id
 end
@@ -86,7 +85,7 @@ function db_mt:update_index()
    self.index = loadfile(self.dir .. "/index")()
 end
 
----@param entry rss.entry
+---@param entry feed.entry
 ---@return table
 function db_mt:get(entry)
    return get_file(self.dir .. "/data/" .. entry.id)

@@ -1,9 +1,9 @@
 --- TODO: lazy load these ...
-local config = require "rss.config"
-local fetch = require "rss.fetch"
-local feedparser = require "rss.feedparser"
-local render = require "rss.render"
-local ut = require "rss.utils"
+local config = require "feed.config"
+local fetch = require "feed.fetch"
+local feedparser = require "feed.feedparser"
+local render = require "feed.render"
+local ut = require "feed.utils"
 
 local cmds = {}
 
@@ -80,8 +80,9 @@ end
 function cmds.quit_index()
    --TODO: jump to the buffer before the index
    --- TODO: check if in index
-   vim.cmd "bd"
-   vim.cmd("colorscheme " .. config.og_colorscheme)
+   vim.cmd "bp" -- TODO: this deleted the index buffer, along with the keymaps
+   vim.cmd("colorscheme " .. config.og_colorscheme) -- TODO:
+   render.rendered_once = false
 end
 
 --- entry buffer actions

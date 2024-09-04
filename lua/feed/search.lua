@@ -1,10 +1,10 @@
-local config = require "rss.config"
-local date = require "rss.date"
+local config = require "feed.config"
+local date = require "feed.date"
 
 local M = {
    search_filter = config.search.filter,
    ---"List of the entries currently on display."
-   ---@type rss.entry[]
+   ---@type feed.entry[]
    entries = {},
    --- TODO: "List of the entries currently on display."
    filter_history = {},
@@ -16,19 +16,19 @@ local M = {
    sort_order = config.search.sort_order,   -- TODO:
 }
 
----@class rss.query
----@field after rss.date #@
----@field before rss.date #@
----@field must_have rss.pattern #+
----@field must_not_have rss.pattern #-
----@field matches rss.pattern #~ =
----@field not_matches rss.pattern #!
+---@class feed.query
+---@field after feed.date #@
+---@field before feed.date #@
+---@field must_have feed.pattern #+
+---@field must_not_have feed.pattern #-
+---@field matches feed.pattern #~ =
+---@field not_matches feed.pattern #!
 ---@field feeds string
 ---@field not_feeds string
 ---@field limit number ##
----@field re rss.pattern #=
+---@field re feed.pattern #=
 
----@alias rss.pattern vim.regex | vim.lpeg.Pattern | string # regex
+---@alias feed.pattern vim.regex | vim.lpeg.Pattern | string # regex
 
 local filter_symbols = {
    ["+"] = "must_have",
@@ -38,7 +38,7 @@ local filter_symbols = {
 }
 
 ---@param str string
----@return rss.query
+---@return feed.query
 function M.parse_query(str)
    local query = { must_have = {}, must_not_have = {} }
    for q in vim.gsplit(str, " ") do
@@ -70,9 +70,9 @@ function M.valid_pattern(str)
    return false
 end
 
----@param entries rss.entry[]
----@param query rss.query
----@return rss.entry[]
+---@param entries feed.entry[]
+---@param query feed.query
+---@return feed.entry[]
 local function filter(entries, query) end
 
 return M

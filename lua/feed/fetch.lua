@@ -1,14 +1,14 @@
 local curl = require "plenary.curl"
-local config = require "rss.config"
-local feedparser = require "rss.feedparser"
-local date = require "rss.date"
-local db = require("rss.db").db(config.db_dir)
+local config = require "feed.config"
+local feedparser = require "feed.feedparser"
+local date = require "feed.date"
+local db = require("feed.db").db(config.db_dir)
 
 local M = {}
 
 ---@param ast table
----@param feed_type rss.feed_type
----@return rss.entry[]
+---@param feed_type feed.feedtype
+---@return feed.entry[]
 ---@return string
 local function get_root(ast, feed_type)
    if feed_type == "json" then
@@ -29,9 +29,9 @@ local date_tag = {
 -- local content = entry["content:encoded"] or entry.description
 
 ---@param entry table
----@param feedtype rss.feed_type
+---@param feedtype feed.feedtype
 ---@param feedname string
----@return rss.entry
+---@return feed.entry
 local function unify(entry, feedtype, feedname)
    local _date = entry[date_tag[feedtype]]
    entry[date_tag[feedtype]] = nil
@@ -48,7 +48,7 @@ local function unify(entry, feedtype, feedname)
 end
 
 ---fetch xml from source and load them into db
----@param feed rss.feed
+---@param feed feed.feed
 ---@param total number # total number of feeds
 ---@param index number # index of the feed
 function M.update_feed(feed, total, index)
@@ -67,8 +67,8 @@ function M.update_feed(feed, total, index)
          end
          local src = (res.body):gsub("\n", "") -- HACK:
          local ok, ast, feed_type = pcall(feedparser.parse, src)
-         if not ok then -- FOR DEBUG
-            print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
+         if not ok then                        -- FOR DEBUG
+            print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
             print(ast)
             return
          end

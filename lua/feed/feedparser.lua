@@ -9,16 +9,13 @@ local function is_json(str)
    return ok
 end
 
----@alias rss.feed_type "rss" | "atom" | "json" | "opml"
-
----@class rss.parse.opts
----@field type rss.feed_type
+---@alias feed.feedtype "rss" | "atom" | "json" | "opml"
 
 ---parse feed fetch from source
 ---@param src string
----@param opts? {type : rss.feed_type, converter : "md" | "org" | "norg" }
+---@param opts? {type : feed.feedtype, converter : "md" | "org" | "norg" }
 ---@return table
----@return rss.feed_type
+---@return feed.feedtype
 function M.parse(src, opts)
    opts = opts or {}
    if opts.type == "json" or is_json(src) then

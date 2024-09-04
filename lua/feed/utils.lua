@@ -1,5 +1,5 @@
 local M = {}
-local url = require "rss.url"
+local url = require "feed.url"
 local strings = require "plenary.strings"
 
 ---porperly align, justify and trucate the title
@@ -62,11 +62,11 @@ function M.looks_like_url(str)
    return type(str) == "string" and not str:find "[ \n\t\r]" and (url.parse(str) ~= nil)
 end
 
-local ns = vim.api.nvim_create_namespace "rss"
+local ns = vim.api.nvim_create_namespace "feed"
 local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
 local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
-vim.api.nvim_set_hl(ns, "rss.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-vim.api.nvim_set_hl(ns, "rss.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
+vim.api.nvim_set_hl(ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
+vim.api.nvim_set_hl(ns, "feed.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
 
 ---@param buf integer
 function M.highlight_entry(buf)
@@ -81,7 +81,7 @@ function M.highlight_index(buf)
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
    for i = 1, len do
       vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
-      vim.api.nvim_buf_add_highlight(buf, ns, "rss.bold", i, 0, -1)
+      vim.api.nvim_buf_add_highlight(buf, ns, "feed.bold", i, 0, -1)
    end
 end
 

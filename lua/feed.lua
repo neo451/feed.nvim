@@ -1,7 +1,7 @@
-local render = require "rss.render"
-local config = require "rss.config"
-local ut = require "rss.utils"
-local cmds = require("rss.commands").cmds
+local render = require "feed.render"
+local config = require "feed.config"
+local ut = require "feed.utils"
+local cmds = require("feed.commands").cmds
 
 local M = {}
 
@@ -21,16 +21,17 @@ local function prepare_bufs()
    end
 end
 
----@param user_config rss.config
+---@param user_config feed.config
 function M.setup(user_config)
    config.resolve(user_config)
    config.og_colorscheme = vim.cmd "colorscheme" --TODO:??
    prepare_bufs()
 
-   vim.keymap.set("n", "<leader>rt", "<cmd>Telescope rss<cr>", { desc = "Show [R]ss feed in [T]elescope" })
    vim.keymap.set("n", "<leader>rs", render.show_index, { desc = "Show [R][s]s feed" })
    if ut.check_command "Telescope" then
-      pcall(require("telescope").load_extension, "rss")
+      local ok = pcall(require("telescope").load_extension, "feed")
+      print(ok)
+      vim.keymap.set("n", "<leader>rt", "<cmd>Telescope feed<cr>", { desc = "Show [R]ss feed in [T]elescope" })
    end
 end
 
