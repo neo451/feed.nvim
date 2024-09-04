@@ -1,5 +1,3 @@
-local lpeg = vim.lpeg
-local ut = require "rss.utils"
 local config = require "rss.config"
 local date = require "rss.date"
 

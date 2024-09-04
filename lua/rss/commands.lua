@@ -1,7 +1,7 @@
 --- TODO: lazy load these ...
 local config = require "rss.config"
 local fetch = require "rss.fetch"
-local xml = require "rss.xml"
+local feedparser = require "rss.feedparser"
 local render = require "rss.render"
 local ut = require "rss.utils"
 
@@ -22,7 +22,7 @@ local cmds = {}
 ---load opml file to list of sources
 ---@param file string
 function cmds.load_opml(file)
-   local feeds = xml.parse(file, { type = "opml" })[2].body.outline
+   local feeds = feedparser.parse(file, { type = "opml" })
    for _, feed in ipairs(feeds) do
       local title = feed.title
       local xmlUrl = feed.xmlUrl

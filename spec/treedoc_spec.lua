@@ -17,7 +17,7 @@ local function xml(src)
    return treedoc.parse(src, { language = "xml" })
 end
 
-describe("xml element", function()
+describe("xml", function()
    it("should do simple elements", function()
       eq({ title = "arch by the way" }, xml("<title>arch by the way</title>")[1])
    end)
@@ -63,6 +63,7 @@ describe("acutual rss feed", function()
    it("should produce simple lua table", function()
       local str = readfile "rss_example_2.0.xml"
       local ast = xml(str)[1]
+      pp(ast)
       eq("2.0", ast.rss.version)
 
       str = readfile "rss_example_0.92.xml"
@@ -79,6 +80,16 @@ describe("acutual atom feed", function()
    it("should produce simple lua table", function()
       local str = readfile "atom_example.xml"
       local ast = xml(str)[1]
+      pp(ast)
       eq("http://www.w3.org/2005/Atom", ast.feed.xmlns)
+   end)
+end)
+
+describe("acutual opml list", function()
+   it("should produce simple lua table", function()
+      local str = readfile "opml_example.opml"
+      local ast = xml(str)[1]
+      eq("中文独立博客列表", ast.opml.head.title)
+      eq("1.0", ast.opml.version)
    end)
 end)

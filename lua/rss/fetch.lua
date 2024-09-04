@@ -1,6 +1,6 @@
 local curl = require "plenary.curl"
 local config = require "rss.config"
-local xml = require "rss.xml"
+local feedparser = require "rss.feedparser"
 local date = require "rss.date"
 local db = require("rss.db").db(config.db_dir)
 
@@ -14,9 +14,9 @@ local function get_root(ast, feed_type)
    if feed_type == "json" then
       return ast.items, ast.title
    elseif feed_type == "rss" then
-      return ast[2].channel.item, ast[2].channel.title
+      return ast.item, ast.title
    else
-      return {}, "nulllll"
+      return {}, "nulllll" --- TODO: test atom feeds!!!
    end
 end
 
@@ -66,9 +66,10 @@ function M.update_feed(feed, total, index)
             return
          end
          local src = (res.body):gsub("\n", "") -- HACK:
-         local ok, ast, feed_type = pcall(xml.parse, src)
-         if not ok then                        -- FOR DEBUG
+         local ok, ast, feed_type = pcall(feedparser.parse, src)
+         if not ok then -- FOR DEBUG
             print(("[rss.nvim] failed to parse %s"):format(feed.name or url))
+            print(ast)
             return
          end
          local entries, feed_name = get_root(ast, feed_type)
