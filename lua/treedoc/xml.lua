@@ -28,6 +28,10 @@ xml.CharData = function(node, src, _)
    end
 end
 
+xml.CDSect = function(node, src, _)
+   return ut.get_text(node:child(1), src)
+end
+
 xml.ETag = ut.noop
 
 xml.content = function(node, src, rules)

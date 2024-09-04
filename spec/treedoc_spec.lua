@@ -63,7 +63,6 @@ describe("acutual rss feed", function()
    it("should produce simple lua table", function()
       local str = readfile "rss_example_2.0.xml"
       local ast = xml(str)[1]
-      pp(ast)
       eq("2.0", ast.rss.version)
 
       str = readfile "rss_example_0.92.xml"
@@ -73,6 +72,10 @@ describe("acutual rss feed", function()
       str = readfile "rss_example_0.91.xml"
       ast = xml(str)[1]
       eq("0.91", ast.rss.version)
+
+      str = readfile "rss_real_zh_cdata.xml"
+      ast = xml(str)[1]
+      eq("2.0", ast.rss.version)
    end)
 end)
 
@@ -80,7 +83,6 @@ describe("acutual atom feed", function()
    it("should produce simple lua table", function()
       local str = readfile "atom_example.xml"
       local ast = xml(str)[1]
-      pp(ast)
       eq("http://www.w3.org/2005/Atom", ast.feed.xmlns)
    end)
 end)

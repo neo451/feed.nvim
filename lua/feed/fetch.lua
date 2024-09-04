@@ -14,7 +14,7 @@ local function get_root(ast, feed_type)
    if feed_type == "json" then
       return ast.items, ast.title
    elseif feed_type == "rss" then
-      return ast.item, ast.title
+      return ast.channel.item, ast.channel.title
    else
       return {}, "nulllll" --- TODO: test atom feeds!!!
    end
@@ -35,6 +35,7 @@ local date_tag = {
 local function unify(entry, feedtype, feedname)
    local _date = entry[date_tag[feedtype]]
    entry[date_tag[feedtype]] = nil
+   pp(_date)
    entry.time = date.new_from[feedtype](_date):absolute()
    entry.feed = feedname
    entry.tags = { unread = true } -- HACK:
@@ -67,12 +68,14 @@ function M.update_feed(feed, total, index)
          end
          local src = (res.body):gsub("\n", "") -- HACK:
          local ok, ast, feed_type = pcall(feedparser.parse, src)
-         if not ok then                        -- FOR DEBUG
+         if not ok then -- FOR DEBUG
             print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
             print(ast)
             return
          end
          local entries, feed_name = get_root(ast, feed_type)
+         print(feed_name)
+         -- pp(entries)
          for _, entry in ipairs(entries) do
             db:add(unify(entry, feed_type, feed_name))
          end

@@ -6,7 +6,7 @@
 ---@class rss.config
 ---@field keymaps rss.keymap[]
 local default = {
-   db_dir = "~/.local/share/nvim/rss",
+   db_dir = "~/.local/share/nvim/feed",
    date_format = "%Y-%m-%d",
    ---@alias rss.keymap table<string, string | function>
    keymaps = {

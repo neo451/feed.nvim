@@ -58,11 +58,11 @@ function db_mt:add(entry)
    entry.id = id
    local content
    --- HACK: parser bug
-   if type(entry.description) == "table" then
-      content = entry.description[1]
-   else
-      content = entry.description
-   end
+   -- if type(entry.description) == "table" then
+   --    content = entry.description[1]
+   -- else
+   content = entry.description
+   -- end
    entry.description = nil
    content = content:gsub("\n", "")
    table.insert(self.index, entry)
@@ -77,7 +77,7 @@ end
 ---sort index by time, descending
 function db_mt:sort()
    table.sort(self.index, function(a, b)
-      return a.pubDate > b.pubDate
+      return a.time > b.time
    end)
 end
 

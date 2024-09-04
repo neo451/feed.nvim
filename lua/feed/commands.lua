@@ -4,6 +4,7 @@ local fetch = require "feed.fetch"
 local feedparser = require "feed.feedparser"
 local render = require "feed.render"
 local ut = require "feed.utils"
+local db = require("feed.db").db(config.db_dir)
 
 local cmds = {}
 
@@ -123,6 +124,8 @@ function cmds.update()
    for i, link in ipairs(config.feeds) do
       fetch.update_feed(link, #config.feeds, i)
    end
+   db:sort() -- TODO:
+   db:save()
 end
 
 ---add a feed to database
