@@ -37,7 +37,6 @@ local function set_options(buf)
    for key, value in pairs(config.buf_options) do
       vim.api.nvim_set_option_value(key, value, { buf = buf })
    end
-   config.og_colorscheme = vim.cmd.colorscheme()
    vim.cmd.colorscheme(config.colorscheme)
 end
 
@@ -85,6 +84,23 @@ function M.entry_name(entry)
       entry.feed,
       ut.format_tags(entry.tags)
    )
+end
+
+---@param cmds feed.action[]
+function M.prepare_bufs(cmds)
+   M.buf = {
+      index = vim.api.nvim_create_buf(false, true),
+      entry = {},
+   }
+   for i = 1, 3 do
+      M.buf.entry[i] = vim.api.nvim_create_buf(false, true)
+      for rhs, lhs in pairs(config.keymaps.entry) do
+         ut.push_keymap(M.buf.entry[i], lhs, cmds[rhs])
+      end
+   end
+   for rhs, lhs in pairs(config.keymaps.index) do
+      ut.push_keymap(M.buf.index, lhs, cmds[rhs])
+   end
 end
 
 ---render whole db as flat list

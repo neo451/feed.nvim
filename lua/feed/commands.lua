@@ -13,12 +13,9 @@ local cmds = {}
 -- 2. add_feed: add to database
 -- 3. db_unload: not needed? file handles are just closed... but is that efficient?
 -- 4. load_opml: need to load locally
--- 5. show_next: done
--- 6. show_prev: done
--- 7. tag / untag: move here, save to db
--- 8. show: its a better name lol
--- 9. export_opml: locally ...
---
+-- 5. export_opml
+-- 6. tag / untag: save to db
+-- 7. show: its a better name lol
 
 ---load opml file to list of sources
 ---@param file string
@@ -58,6 +55,7 @@ function cmds.show_in_split()
 end
 
 function cmds.show_entry()
+   render.state.in_entry = true
    render.show_entry(current_index())
 end
 
@@ -81,22 +79,29 @@ end
 function cmds.quit_index()
    --TODO: jump to the buffer before the index
    --- TODO: check if in index
-   vim.cmd "bp" -- TODO: this deleted the index buffer, along with the keymaps
-   vim.cmd("colorscheme " .. config.og_colorscheme) -- TODO:
+   vim.cmd "bd"
+   vim.cmd.colorscheme(config.og_colorscheme)
    render.rendered_once = false
 end
 
 --- entry buffer actions
 function cmds.show_index()
-   if render.state.rendered_once then
-      if render.state.in_split then
-         vim.cmd "q"
-         render.state.in_split = false
+   if not render.state.in_entry then
+      if not render.buf.index then
+         print "reerer"
+         render.prepare_bufs(cmds)
       end
-   else
       render.show_index()
+   else
+      if render.state.rendered_once then
+         if render.state.in_split then
+            vim.cmd "q"
+            render.state.in_split = false
+         else
+            vim.api.nvim_set_current_buf(render.buf.index)
+         end
+      end
    end
-   vim.api.nvim_set_current_buf(render.buf.index)
 end
 
 function cmds.show_next()
