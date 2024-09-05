@@ -80,8 +80,8 @@ local function entry_name(entry)
    -- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
    return string.format(
       format,
-      tostring(date.new_from_int(entry.time)),
-      ut.format_title(entry.title, config.titles.max_length, config.titles.right_justify),
+      tostring(date.new_from_int(entry.time)), -- TODO: use width
+      ut.format_title(entry.title, config.layout.title.width, config.layout.title.right_justify),
       entry.feed,
       ut.format_tags(entry.tags)
    )

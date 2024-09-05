@@ -1,16 +1,15 @@
 --- Default configuration.
 --- Provides fallback values not specified in the user config.
 
----@alias rss.feed { name: string, tags: string[] } | string
+---@alias feed.feed { name: string, tags: string[] } | string
 
----@class rss.config
----@field keymaps rss.keymap[]
+---@class feed.config
+---@field keymaps feed.keymap[]
 local default = {
    db_dir = "~/.local/share/nvim/feed",
-   date_format = "%Y-%m-%d",
-   ---@alias rss.keymap table<string, string | function>
+   ---@alias feed.keymap table<string, string | function>
    keymaps = {
-      ---@type rss.keymap
+      ---@type feed.keymap
       index = {
          show_entry = "<CR>",
          show_in_split = "<M-CR>",
@@ -21,7 +20,7 @@ local default = {
          tag = "+",
          untag = "-",
       },
-      ---@type rss.keymap
+      ---@type feed.keymap
       entry = {
          show_index = "q",
          show_next = "}",
@@ -41,14 +40,20 @@ local default = {
       update_hook = {},
       filter = "@6-months-ago +unread",
    },
-   titles = {
-      right_justify = false,
-      max_length = 70,
+   layout = {
+      title = {
+         right_justify = false,
+         width = 70,
+      },
+      date = {
+         format = "%Y-%m-%d",
+         width = 10,
+      },
    },
    split = "13split",
    colorscheme = "kanagawa-lotus",
 
-   ---@type rss.feed[]
+   ---@type feed.feed[]
    feeds = {},
 }
 
@@ -63,13 +68,6 @@ setmetatable(M, {
       return default[key]
    end,
 })
-
--- local function prepare_db()
-if vim.fn.isdirectory(M.db_dir) == 0 then
-   local path = vim.fn.expand(M.db_dir)
-   vim.fn.mkdir(path, "p")
-end
--- end
 
 --- Merge the user configuration with the default values.
 ---@param config table<string, any> user configuration

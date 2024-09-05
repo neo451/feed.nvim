@@ -30,7 +30,7 @@ function date:format(format)
 end
 
 function date:__tostring()
-   return self:format(config.date_format)
+   return self:format(config.layout.date.format)
 end
 
 ---@param num integer
@@ -81,11 +81,9 @@ do
    local col = P ":"
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
    local min_and_sec = L.digit ^ 2 * P ":" * L.digit ^ 2 * P "-"
-   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws *
-   zone
+   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
    -- patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * ((R "09" + S "-:") ^ -7) * digit * P ":" * digit * R "AZ" ^ -1 -- ??
-   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" *
-   digit * (R "AZ" ^ -1)                                                                                                                          -- ??
+   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" * digit * (R "AZ" ^ -1) -- ??
 end
 
 --- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 822, with the exception that the year may be expressed with two characters or four characters (four preferred).

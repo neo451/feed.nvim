@@ -99,8 +99,8 @@ function cmds.show_index()
    vim.api.nvim_set_current_buf(render.buf.index)
 end
 
-function cmds.next_entry()
-   if render.current_index == #render.index then
+function cmds.show_next()
+   if render.current_index == #db.index then
       return
    end
    render.current_index = render.current_index + 1
@@ -108,7 +108,7 @@ function cmds.next_entry()
 end
 
 -- TODO: properly do 'ring' navigation, ie. wrap around
-function cmds.prev_entry()
+function cmds.show_prev()
    if render.current_index == 1 then
       return
    end
