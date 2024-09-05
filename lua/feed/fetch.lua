@@ -35,7 +35,6 @@ local date_tag = {
 local function unify(entry, feedtype, feedname)
    local _date = entry[date_tag[feedtype]]
    entry[date_tag[feedtype]] = nil
-   pp(_date)
    entry.time = date.new_from[feedtype](_date):absolute()
    entry.feed = feedname
    entry.tags = { unread = true } -- HACK:
@@ -48,42 +47,48 @@ local function unify(entry, feedtype, feedname)
    return entry
 end
 
+function M.fetch(url, timeout, callback)
+   curl.get {
+      url = url,
+      timeout = timeout,
+      callback = callback,
+   }
+end
+
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
 ---@param total number # total number of feeds
 ---@param index number # index of the feed
 function M.update_feed(feed, total, index)
+   local src
    local url
    if type(feed) == "table" then
       url = feed[1]
    else
       url = feed
    end
-   curl.get {
-      url = url,
-      timeout = 50000,
-      callback = function(res)
-         if res.status ~= 200 then
-            return
-         end
-         local src = (res.body):gsub("\n", "") -- HACK:
-         local ok, ast, feed_type = pcall(feedparser.parse, src)
-         if not ok then -- FOR DEBUG
-            print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
-            print(ast)
-            return
-         end
-         local entries, feed_name = get_root(ast, feed_type)
-         print(feed_name)
-         -- pp(entries)
-         for _, entry in ipairs(entries) do
-            db:add(unify(entry, feed_type, feed_name))
-         end
-         db:save()
-         print(("%d/%d"):format(index, total))
-      end,
-   }
+   local function callback(res)
+      if res.status ~= 200 then
+         return
+      end
+      src = (res.body):gsub("\n", "") -- HACK:
+      local ok, ast, feed_type = pcall(feedparser.parse, src)
+      if not ok then -- FOR DEBUG
+         print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
+         print(ast)
+         return
+      end
+      local entries, feed_name = get_root(ast, feed_type)
+      for _, entry in ipairs(entries) do
+         db:add(unify(entry, feed_type, feed_name))
+      end
+      db:save()
+      print(("%d/%d"):format(index, total))
+   end
+   M.fetch(url, 30000, callback)
 end
+
+-- M.update_feed "https://rsshub.app/whitehouse/briefing-room"
 
 -- TODO:  vim.notify("feeds all loaded")
 -- TODO:  maybe use a process bar like fidget.nvim
