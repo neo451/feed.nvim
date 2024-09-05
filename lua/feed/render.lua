@@ -75,7 +75,7 @@ end
 --- TODO: move to entry.lua
 ---@param entry feed.entry
 ---@return string
-local function entry_name(entry)
+function M.entry_name(entry)
    local format = "%s %s %s %s"
    -- vim.api.nvim_win_get_width(0) -- TODO: use this or related autocmd to truncate title
    return string.format(
@@ -93,7 +93,7 @@ function M.show_index()
    local lines = {}
    lines[1] = M.show_hint()
    for i, entry in ipairs(db.index) do
-      lines[i + 1] = entry_name(entry)
+      lines[i + 1] = M.entry_name(entry)
    end
    M.show(lines, M.buf.index, ut.highlight_index)
    M.state.rendered_once = true

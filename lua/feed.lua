@@ -35,4 +35,6 @@ function M.setup(user_config)
    end
 end
 
+local ok, err = pcall(require("telescope").load_extension, "feed")
+print(err)
 return M
