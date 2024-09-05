@@ -1,10 +1,28 @@
 local ut = require "treedoc.utils"
+
+---@alias treedoc.handler fun(node: TSNode, src: string): any
+
+---@type table<string, treedoc.handler>
 local xml = {}
 
-xml.prolog = ut.noop
-xml.comment = ut.noop
+local ENTITIES = {
+   ["&lt;"] = "<",
+   ["&gt;"] = ">",
+   ["&amp;"] = "&",
+   ["&apos;"] = "'",
+   ["&quot;"] = '"',
+   -- TODO:?
+}
 
-xml.STag = function(node, src, _)
+local noop = ut.noop
+
+--- TODO: auto use noop if not handled, and notify
+xml.prolog = noop
+xml.comment = noop
+xml._Misc = noop
+xml.ETag = noop
+
+xml.STag = function(node, src)
    local ret = { [ut.get_text(node:child(1), src)] = {} }
    local n = node:child_count()
    if n == 3 then
@@ -21,27 +39,28 @@ xml.STag = function(node, src, _)
    return ret
 end
 
-xml.CharData = function(node, src, _)
+xml.CharData = function(node, src)
    local text = ut.get_text(node, src)
    if text:find "%S" then
       return text
    end
 end
 
-xml.CDSect = function(node, src, _)
+xml.CDSect = function(node, src)
    return ut.get_text(node:child(1), src)
 end
 
-xml.ETag = ut.noop
-
-xml.content = function(node, src, rules)
+xml.content = function(node, src)
    if not node then
       return {}
    end
    local ret = {}
    for child in node:iter_children() do
       local T = child:type()
-      ret[#ret + 1] = rules[T](child, src, rules)
+      if not xml[T] then
+         print(ut.get_text(node, src), node:type(), node:child_count())
+      end
+      ret[#ret + 1] = xml[T](child, src)
    end
    if not ut.tree_contains(node, "element") then
       return { table.concat(ret) }
@@ -49,22 +68,20 @@ xml.content = function(node, src, rules)
    return ret
 end
 
-local ENTITIES = {
-   ["&lt;"] = "<",
-   ["&gt;"] = ">",
-   ["&amp;"] = "&",
-   ["&apos;"] = "'",
-   ["&quot;"] = '"',
-}
-
-xml.EntityRef = function(node, src, _)
+xml.EntityRef = function(node, src)
    local entity = ut.get_text(node, src)
    return ENTITIES[entity]
 end
 
-xml.element = function(node, src, rules)
-   local ret = rules.STag(node:child(0), src, rules)
-   local content = rules.content(node:child(1), src, rules)
+xml.element = function(node, src)
+   if node:child(0):type() == "EmptyElemTag" then
+      return xml.STag(node, src)
+   end
+   local ret = xml.STag(node:child(0), src)
+   if node:child(1):type() == "ETag" then
+      return ret -- Empty element
+   end
+   local content = xml.content(node:child(1), src)
    local K, V = next(ret)
    for _, element in ipairs(content) do
       if type(element) == "table" then

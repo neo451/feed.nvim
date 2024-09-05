@@ -19,6 +19,9 @@ function M.parse(src, opts)
    local iterator = vim.iter(root:iter_children())
    local collected = iterator:fold({}, function(acc, node)
       local T = node:type()
+      if not rules[T] then
+         print(T)
+      end
       acc[#acc + 1] = rules[T](node, src, rules)
       return acc
    end)

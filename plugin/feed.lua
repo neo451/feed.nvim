@@ -2,7 +2,7 @@ local config = require "feed.config"
 require("feed.db").check_dir(config.db_dir)
 
 -- TODO: enough for now, very few actions
-vim.api.nvim_create_user_command("Rss", function(opts)
+vim.api.nvim_create_user_command("Feed", function(opts)
    if #opts.fargs == 0 then
       require("feed.render").show_index()
    else

@@ -79,7 +79,6 @@ describe("acutual rss feed", function()
 
       str = readfile "rss_real_complex.xml"
       ast = xml(str)[1]
-      pp(ast)
       eq("2.0", ast.rss.version)
    end)
 end)

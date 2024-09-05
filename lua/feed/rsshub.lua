@@ -55,11 +55,6 @@ local function get_radar()
    return vim.json.decode(ret)
 end
 
-local radar = get_radar()
-
--- pp(radar["telegram.org"])
-local test = radar["diershoubing.com"]
-
 ---@param source any
 local function process_source(source)
    local name = source._name
@@ -67,11 +62,14 @@ local function process_source(source)
    local route = body[1].target
    return name, route
 end
-local _, route = process_source(test)
 
-local rss = gen_rss(nil, route, { category = "news" })
+local get_rss_feed = function(url)
+   local obj = get_radar()[url]
+   local name, route = process_source(obj)
+   return gen_rss(nil, route, { category = "news" })
+end
 
-print(rss)
+print(get_rss_feed "diershoubing.com")
 
 -- pp(get_radar())
 

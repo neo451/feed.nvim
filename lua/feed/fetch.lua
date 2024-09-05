@@ -72,6 +72,7 @@ function M.update_feed(feed, total, index)
          return
       end
       src = (res.body):gsub("\n", "") -- HACK:
+      print(src)
       local ok, ast, feed_type = pcall(feedparser.parse, src)
       if not ok then -- FOR DEBUG
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
