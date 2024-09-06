@@ -1,8 +1,6 @@
 ---@class feed.db
 ---@field index feed.entry[]
 
-local sha1 = require "feed.sha1"
-
 local db_mt = { __class = "feed.db" }
 db_mt.__index = db_mt
 
@@ -49,24 +47,14 @@ function db_mt:if_stored(id)
 end
 
 ---@param entry feed.entry
-function db_mt:add(entry)
-   local id = sha1(entry.link)
-   if self:if_stored(id) then
+---@param content string
+function db_mt:add(entry, content)
+   if self:if_stored(entry.id) then
       -- print "duplicate keys!!!!"
       return
    end
-   entry.id = id
-   local content
-   --- HACK: parser bug
-   -- if type(entry.description) == "table" then
-   --    content = entry.description[1]
-   -- else
-   content = entry.description
-   -- end
-   entry.description = nil
-   content = content:gsub("\n", "")
    table.insert(self.index, entry)
-   save_file(self.dir .. "/data/" .. id, content)
+   save_file(self.dir .. "/data/" .. entry.id, content)
 end
 
 ---@param entry feed.entry

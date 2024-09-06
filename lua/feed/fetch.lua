@@ -3,6 +3,7 @@ local config = require "feed.config"
 local feedparser = require "feed.feedparser"
 local date = require "feed.date"
 local db = require("feed.db").db(config.db_dir)
+local sha1 = require "feed.sha1"
 
 local M = {}
 
@@ -25,14 +26,13 @@ local date_tag = {
    json = "date_published",
 }
 
---- TODO: put the logic elsewhere
--- local content = entry["content:encoded"] or entry.description
-
 ---@param entry table
 ---@param feedtype feed.feedtype
 ---@param feedname string
 ---@return feed.entry
+---@return string # content to store on disk
 local function unify(entry, feedtype, feedname)
+   local content
    local _date = entry[date_tag[feedtype]]
    entry[date_tag[feedtype]] = nil
    entry.time = date.new_from[feedtype](_date):absolute()
@@ -40,11 +40,20 @@ local function unify(entry, feedtype, feedname)
    entry.tags = { unread = true } -- HACK:
    if feedtype == "json" then
       entry.link = entry.url
+      entry.id = sha1(entry.link)
       entry.url = nil
-      entry.description = entry.content_html
+      content = entry.content_html
+      content = content:gsub("\n", "") -- HACK:
       entry.content_html = nil
+   elseif feedtype == "rss" then
+      entry.link = entry.link
+      entry.id = sha1(entry.link)
+      content = entry["content:encoded"] or entry.description
+      content = content:gsub("\n", "") -- HACK:
+      entry["content:encoded"] = nil
+      entry.description = nil
    end
-   return entry
+   return entry, content
 end
 
 function M.fetch(url, timeout, callback)
@@ -72,7 +81,6 @@ function M.update_feed(feed, total, index)
          return
       end
       src = (res.body):gsub("\n", "") -- HACK:
-      print(src)
       local ok, ast, feed_type = pcall(feedparser.parse, src)
       if not ok then -- FOR DEBUG
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
@@ -89,9 +97,6 @@ function M.update_feed(feed, total, index)
    M.fetch(url, 30000, callback)
 end
 
--- M.update_feed "https://rsshub.app/whitehouse/briefing-room"
-
--- TODO:  vim.notify("feeds all loaded")
 -- TODO:  maybe use a process bar like fidget.nvim
 
 return M
