@@ -1,6 +1,0 @@
----@class feed.entry
----@field title string
----@field time integer
----@field feed string
----@field tags string[]
----@field link string

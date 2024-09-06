@@ -1,50 +1,19 @@
 local M = {}
 local url = require "feed.url"
-local strings = require "plenary.strings"
-
----porperly align, justify and trucate the title
----@param str any
----@param max_len any
----@param right_justify any
----@return unknown
-function M.format_title(str, max_len, right_justify)
-   local len = vim.api.nvim_strwidth(str)
-   if len < max_len then
-      return strings.align_str(str, max_len, right_justify)
-   else
-      return strings.align_str(strings.truncate(str, max_len), max_len, right_justify)
-   end
-end
-
----@param tags string[]
----@return string
-function M.format_tags(tags)
-   tags = vim.tbl_keys(tags)
-   if #tags == 0 then
-      return ""
-   end
-   local buffer = { "(" }
-   for i, tag in pairs(tags) do
-      buffer[#buffer + 1] = tag
-      if i ~= #tags then
-         buffer[#buffer + 1] = ", "
-      end
-   end
-   buffer[#buffer + 1] = ")"
-   return table.concat(buffer, "")
-end
 
 ---@param buf integer
 ---@param lhs string
 ---@param rhs string | function
-function M.push_keymap(buf, lhs, rhs)
+---@param desc string
+function M.push_keymap(buf, lhs, rhs, desc)
    if type(rhs) == "string" then
-      vim.api.nvim_buf_set_keymap(buf, "n", lhs, rhs, { noremap = true, silent = true })
+      vim.api.nvim_buf_set_keymap(buf, "n", lhs, rhs, { noremap = true, silent = true, desc = desc })
    else
       vim.api.nvim_buf_set_keymap(buf, "n", lhs, "", {
          noremap = true,
          silent = true,
          callback = rhs,
+         desc = desc,
       })
    end
 end

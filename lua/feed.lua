@@ -8,6 +8,8 @@ local M = {}
 ---@param user_config feed.config
 function M.setup(user_config)
    config.resolve(user_config)
+
+   require("feed.db").check_dir(config.db_dir)
    config.og_colorscheme = vim.g.colors_name
    render.prepare_bufs(cmds)
 

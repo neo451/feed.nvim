@@ -1,6 +1,3 @@
----@class feed.db
----@field index feed.entry[]
-
 local db_mt = { __class = "feed.db" }
 db_mt.__index = db_mt
 
@@ -37,7 +34,7 @@ end
 
 ---@param id integer
 ---@return boolean
-function db_mt:if_stored(id)
+function db_mt:is_stored(id)
    for p in vim.iter(vim.fs.dir(self.dir .. "/data/")) do
       if id == p then
          return true
@@ -49,7 +46,7 @@ end
 ---@param entry feed.entry
 ---@param content string
 function db_mt:add(entry, content)
-   if self:if_stored(entry.id) then
+   if self:is_stored(entry.id) then
       -- print "duplicate keys!!!!"
       return
    end
@@ -58,6 +55,7 @@ function db_mt:add(entry, content)
 end
 
 ---@param entry feed.entry
+---@return string
 function db_mt:address(entry)
    return self.dir .. "/data/" .. entry.id
 end

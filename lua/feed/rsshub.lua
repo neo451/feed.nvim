@@ -1,27 +1,18 @@
 local fetch = require("feed.fetch").fetch
 local config = require "feed.config"
 
-local function isFile(path)
-   local f = io.open(path, "r")
-   if f then
-      f:close()
-      return true
-   end
-   return false
-end
+local path = require "plenary.path"
 
-local dir = vim.fn.expand(config.db_dir)
+local radar = {
+   dir = path:new(config.db_dir .. "/rsshub.json"):expand(),
+}
 
-local function callback(res)
-   local src = res.body
-   local f = io.open(dir .. "/rsshub.json", "wb")
-   -- print(f)
-   if f then
-      f:write(src)
-      f:close()
-   else
-      print "failed to get rsshub.json"
+function radar:open()
+   local radar_handle = path:new(self.dir)
+   if not radar_handle:is_file() then
+      radar_handle:touch()
    end
+   return radar_handle
 end
 
 ---generate rss feed from an instance name and route
@@ -36,40 +27,30 @@ local function gen_rss(instance, route, params)
    return string.format("https://%s%s", instance, route)
 end
 
-local function fetch_radar()
+function radar:fetch()
+   local function callback(res)
+      local src = res.body
+      local f = radar:open()
+      f:write(src, "w")
+   end
    fetch("https://rsshub.app/api/radar/rules", 30000, callback)
 end
 
----
----@return string
-local function get_radar()
-   local path = dir .. "/rsshub.json"
-   local ret
-   if isFile(path) then
-      local f = io.open(path, "rb")
-      if f then
-         ret = f:read "*a"
-         f:close()
-      end
-   end
-   return vim.json.decode(ret)
-end
+-- ---@param source any
+-- local function process_source(source)
+--    local name = source._name
+--    local _, body = next(source)
+--    local route = body[1].target
+--    return name, route
+-- end
+--
+-- local get_rss_feed = function(url)
+--    local obj = radar:open()[url]
+--    local name, route = process_source(obj)
+--    return gen_rss(nil, route, { category = "news" })
+-- end
 
----@param source any
-local function process_source(source)
-   local name = source._name
-   local _, body = next(source)
-   local route = body[1].target
-   return name, route
-end
-
-local get_rss_feed = function(url)
-   local obj = get_radar()[url]
-   local name, route = process_source(obj)
-   return gen_rss(nil, route, { category = "news" })
-end
-
-print(get_rss_feed "diershoubing.com")
+-- print(get_rss_feed "diershoubing.com")
 
 -- pp(get_radar())
 

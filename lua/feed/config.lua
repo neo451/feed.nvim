@@ -1,8 +1,6 @@
 --- Default configuration.
 --- Provides fallback values not specified in the user config.
 
----@alias feed.feed { name: string, tags: string[] } | string
-
 ---@class feed.config
 ---@field keymaps feed.keymap[]
 local default = {
@@ -19,12 +17,14 @@ local default = {
          quit_index = "q",
          tag = "+",
          untag = "-",
+         which_key = "?",
       },
       ---@type feed.keymap
       entry = {
          show_index = "q",
          show_next = "}",
          show_prev = "{",
+         which_key = "?",
       },
    },
    win_options = {
