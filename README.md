@@ -1,4 +1,4 @@
-# feed.nvim
+ <h1 align="center">📻 feed.nvim</h1>
 
 [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json](https://www.jsonfeed.orgt) feed reader in neovim, leveraging the modern neovim features and plugin system, like [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter), [telescope](https://github.com/nvim-telescope/telescope.nvim) and [render-markdown.nvim](https://github.com/tadmccorkle/markdown.nvim)
 
@@ -10,7 +10,7 @@ This project is under heavy development, contributions are welcome!
 
 ### Minimal installation
 
-requires `nvim 0.10` and `curl` to be installed on your path.
+> requires `nvim 0.10` and `curl` to be installed on your path.
 
 Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
@@ -109,5 +109,9 @@ require("feed").setup{
 }
 ```
 ## Feed management
+
+TODO:
+
+## RssHub integration
 
 TODO:
