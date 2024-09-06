@@ -1,3 +1,4 @@
+local Path = require "plenary.path"
 local db_mt = { __class = "feed.db" }
 db_mt.__index = db_mt
 
@@ -87,26 +88,23 @@ end
 
 local index_header = { version = "0.1" }
 
----@param dir string
----@return table
-local function make_index(dir)
-   save_file(dir, "return " .. vim.inspect(index_header))
-   return index_header
-end
+-- TODO: support windows, but planery.path does not.. make pull request..
 
 ---@param dir string
-local function check_dir(dir)
-   dir = vim.fn.expand(dir)
-   if vim.fn.isdirectory(dir) == 0 then
-      vim.fn.mkdir(dir)
+local function prepare_db(dir)
+   dir = Path:new(dir):expand()
+   local dir_handle = Path:new(dir)
+   local data_dir_handle = Path:new(dir .. "/data")
+   if not dir_handle:is_dir() then
+      dir_handle:mkdir()
    end
-   if vim.fn.isdirectory(dir .. "/data") == 0 then
-      vim.fn.mkdir(dir .. "/data", "p")
+   if not data_dir_handle:is_dir() then
+      data_dir_handle:mkdir()
    end
-   local index_path = dir .. "/index"
-   if not isFile(index_path) then
-      -- print("writing a new index file to " .. index_path)
-      make_index(index_path)
+   local index_path = Path:new(dir .. "/index")
+   if not index_path:is_file() then
+      index_path:touch()
+      index_path:write("return " .. vim.inspect(index_header))
    end
 end
 
@@ -120,5 +118,5 @@ end
 
 return {
    db = db,
-   check_dir = check_dir,
+   prepare_db = prepare_db,
 }

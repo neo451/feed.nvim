@@ -9,7 +9,7 @@ local config = require "feed.config"
 ---@param right_justify boolean
 ---@return string
 function M.title(str, max_len, right_justify)
-   local len = vim.api.nvim_strwidth(str)
+   local len = strings.strdisplaywidth(str)
    if len < max_len then
       return strings.align_str(str, max_len, right_justify)
    else

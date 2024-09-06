@@ -1,22 +1,20 @@
-local render = require "feed.render"
-local config = require "feed.config"
-local ut = require "feed.utils"
-local cmds = require("feed.commands").cmds
-
 local M = {}
 
 ---@param user_config feed.config
 function M.setup(user_config)
+   local render = require "feed.render"
+   local config = require "feed.config"
+   local ut = require "feed.utils"
+   local cmds = require("feed.commands").cmds
+
    config.resolve(user_config)
 
-   require("feed.db").check_dir(config.db_dir)
+   require("feed.db").prepare_db(config.db_dir)
    config.og_colorscheme = vim.g.colors_name
    render.prepare_bufs(cmds)
 
-   vim.keymap.set("n", "<leader>rs", render.show_index, { desc = "Show [R][s]s feed" })
    if ut.check_command "Telescope" then
       pcall(require("telescope").load_extension, "feed")
-      vim.keymap.set("n", "<leader>rt", "<cmd>Telescope feed<cr>", { desc = "Show [R]ss feed in [T]elescope" })
    end
 
    vim.api.nvim_create_user_command("Feed", function(opts)
@@ -36,5 +34,13 @@ function M.setup(user_config)
       end,
    })
 end
+
+setmetatable(M, {
+   __index = function(self, k)
+      if not rawget(self, k) then
+         return rawget(require("feed.commands").cmds, k)
+      end
+   end,
+})
 
 return M

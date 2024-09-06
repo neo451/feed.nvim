@@ -11,7 +11,7 @@ This project is under heavy development, contributions are welcome!
 - 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.orgt) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - 🏪 pure lua database with no extra dependency
 - 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
-- 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn any link into a web feed
+- 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn (almost) any link into a web feed
 
 ## 🚀 Installation
 
