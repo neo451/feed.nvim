@@ -1,4 +1,4 @@
- <h1 align="center">📻 feed.nvim</h1>
+<h1 align="center"> 📻 feed.nvim </h1>
 
 [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json](https://www.jsonfeed.orgt) feed reader in neovim, leveraging the modern neovim features and plugin system, like [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter), [telescope](https://github.com/nvim-telescope/telescope.nvim) and [render-markdown.nvim](https://github.com/tadmccorkle/markdown.nvim)
 
