@@ -1,12 +1,19 @@
 <h1 align="center"> 📻 feed.nvim </h1>
 
-[rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json](https://www.jsonfeed.orgt) feed reader in neovim, leveraging the modern neovim features and plugin system, like [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter), [telescope](https://github.com/nvim-telescope/telescope.nvim) and [render-markdown.nvim](https://github.com/tadmccorkle/markdown.nvim)
+**feed.nvim** is a web feed reader in neovim, leveraging the modern neovim features and plugin system, like , [telescope](https://github.com/nvim-telescope/telescope.nvim) and [render-markdown.nvim](https://github.com/tadmccorkle/markdown.nvim)
 
 🚧 🚧 🚧 
 This project is under heavy development, contributions are welcome!
 🚧 🚧 🚧 
 
-## Installation
+## 🌟 Features
+
+- 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.orgt) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 🏪 pure lua database with no extra dependency
+- 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
+- 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn any link into a web feed
+
+## 🚀 Installation
 
 ### Minimal installation
 
@@ -43,7 +50,7 @@ require("nvim-treesitter.configs").setup({
 - For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
    - TODO: image
 
-## Usage
+## 🔖 Usage
 
 ### open feed.nvim
 - Use `Feed` command to open the default index, there will be three main kind of index:

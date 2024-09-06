@@ -160,7 +160,6 @@ end
 
 function cmds.which_key()
    local wk = require "which-key"
-   -- pp(wk)
    wk.show {
       buf = 0,
       ["local"] = true,
