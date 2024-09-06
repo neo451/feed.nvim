@@ -126,8 +126,19 @@ function cmds.list_feeds()
 end
 
 function cmds.update()
+   local ok, progress = pcall(require, "fidget.progress")
+   local handle
+   if not ok then
+      vim.notify "fidget not found" -- TODO: make a simple message printer if fidget not found...
+   else
+      handle = progress.handle.create {
+         title = "Feed update",
+         message = "fetching feeds...",
+         percentage = 0,
+      }
+   end
    for i, link in ipairs(config.feeds) do
-      fetch.update_feed(link, #config.feeds, i)
+      fetch.update_feed(link, #config.feeds, handle)
    end
    db:sort() -- TODO:
    db:save()

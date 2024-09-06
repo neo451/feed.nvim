@@ -67,8 +67,8 @@ end
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
 ---@param total number # total number of feeds
----@param index number # index of the feed
-function M.update_feed(feed, total, index)
+---@param handle ProgressHandle
+function M.update_feed(feed, total, handle)
    local src
    local url
    if type(feed) == "table" then
@@ -82,7 +82,7 @@ function M.update_feed(feed, total, index)
       end
       src = (res.body):gsub("\n", "") -- HACK:
       local ok, ast, feed_type = pcall(feedparser.parse, src)
-      if not ok then -- FOR DEBUG
+      if not ok then                  -- FOR DEBUG
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
          print(ast)
          return
@@ -92,7 +92,12 @@ function M.update_feed(feed, total, index)
          db:add(unify(entry, feed_type, feed_name))
       end
       db:save()
-      print(("%d/%d"):format(index, total))
+      if handle then
+         handle.percentage = handle.percentage + 100 / total
+         if handle.percentage == 100 then
+            handle:finish()
+         end
+      end
    end
    M.fetch(url, 30000, callback)
 end
