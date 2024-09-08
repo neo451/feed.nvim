@@ -1,3 +1,5 @@
+package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
+
 vim.treesitter.language.add("html", {
    path = vim.fn.expand "~/.local/share/nvim/lazy/nvim-treesitter/parser/html.so",
 })
@@ -7,7 +9,6 @@ vim.treesitter.language.add("xml", {
 })
 
 local treedoc = require "treedoc"
-local assert = require "luassert"
 local eq = assert.are.same
 
 local sourced_file = require("plenary.debug_utils").sourced_filepath()

@@ -104,7 +104,7 @@ local function prepare_db(dir)
    local index_path = Path:new(dir .. "/index")
    if not index_path:is_file() then
       index_path:touch()
-      index_path:write("return " .. vim.inspect(index_header))
+      index_path:write("return " .. vim.inspect(index_header), "w")
    end
 end
 

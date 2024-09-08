@@ -1,7 +1,9 @@
-local flatdb = require "rss.db"
+package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
+
+local flatdb = require "feed.db"
 local eq = assert.are.same
 local path = "~/.rss.nvim.test"
-flatdb.check_dir(path)
+flatdb.prepare_db(path)
 local db = flatdb.db(path)
 
 describe("initialize", function()
