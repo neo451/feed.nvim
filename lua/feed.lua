@@ -1,6 +1,6 @@
 local M = {}
 
----@param user_config feed.config
+---@param user_config feed.userConfig
 function M.setup(user_config)
   local config = require "feed.config"
   config.resolve(user_config)

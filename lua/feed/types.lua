@@ -31,4 +31,18 @@
 ---@field name string
 ---@field tags string[]
 
---- TODO: feed.config
+---@class feed.config
+---@field feeds string[]
+---@field keymaps feed.keymap[]
+---@field db_dir string
+---@field options table<string, table<string, any>>
+---@field layout table<string, table<string, any>>
+---@field search table<string, any>
+
+---@class feed.userConfig
+---@field feeds string[]
+---@field keymaps? feed.keymap[]
+---@field db_dir? string
+---@field options? table<string, table<string, any>>
+---@field layout? table<string, table<string, any>>
+---@field search? table<string, any>

@@ -19,14 +19,40 @@ local cmds = {}
 
 ---load opml file to list of sources
 ---@param file string
-function cmds.load_opml(file)
-   local feeds = feedparser.parse(file, { type = "opml" })
-   for _, feed in ipairs(feeds) do
-      local title = feed.title
-      local xmlUrl = feed.xmlUrl
-      table.insert(config.feeds, { xmlUrl, name = title })
+cmds.load_opml = {
+   impl = function(file)
+      local feeds = feedparser.parse(file, { type = "opml" })
+      for _, feed in ipairs(feeds) do
+         local title = feed.title
+         local xmlUrl = feed.xmlUrl
+         table.insert(config.feeds, { xmlUrl, name = title })
+      end
+   end,
+   complete = function(lead)
+      local tab = { "abc", "efg", "hijk" }
+      return vim.iter(tab):filter(function(t)
+         return t:find(lead) ~= nil
+      end)
+   end,
+}
+
+local function Fee(opts)
+   local fargs = opts.fargs
+   local sub_key = table.remove(fargs, 1)
+   local sub_cmd = cmds[sub_key]
+   if not sub_cmd then
+      vim.notify("Feed: Unknown command: " .. sub_key, vim.log.levels.ERROR)
    end
+   sub_cmd.impl(fargs, opts)
 end
+
+vim.api.nvim_create_user_command("Fee", Fee, {
+   nargs = "+",
+   desc = "Feed comp test",
+   complete = function(arg_lead, cmdline, _)
+      print(arg_lead)
+   end,
+})
 
 ---index buffer commands
 function cmds.show_in_browser()

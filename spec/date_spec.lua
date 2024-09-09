@@ -8,7 +8,6 @@ local tests = {
    { "@4-days-ago--2019-06-01", 23, 4 },
 }
 
-package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
 local M = require "feed.date"
 local eq = assert.same
 

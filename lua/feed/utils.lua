@@ -6,29 +6,7 @@ local url = require "feed.url"
 ---@param rhs string | function
 ---@param desc string
 function M.push_keymap(buf, lhs, rhs, desc)
-   if type(rhs) == "string" then
-      vim.api.nvim_buf_set_keymap(buf, "n", lhs, rhs, { noremap = true, silent = true, desc = desc })
-   else
-      vim.api.nvim_buf_set_keymap(buf, "n", lhs, "", {
-         noremap = true,
-         silent = true,
-         callback = rhs,
-         desc = desc,
-      })
-   end
-end
-
-function M.clamp(min, value, max)
-   return math.min(max, math.max(min, value))
-end
-
-function M.cycle(i, n)
-   return i % n == 0 and n or i % n
-end
-
--- TODO:
-function M.looks_like_url(str)
-   return type(str) == "string" and not str:find "[ \n\t\r]" and (url.parse(str) ~= nil)
+  vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, desc = desc, buffer = buf })
 end
 
 local ns = vim.api.nvim_create_namespace "feed"
@@ -39,30 +17,43 @@ vim.api.nvim_set_hl(ns, "feed.light", { bold = true, fg = light_grp.fg, bg = lig
 
 ---@param buf integer
 function M.highlight_entry(buf)
-   local len = { 6, 5, 7, 5, 5 }
-   for i = 0, 4 do
-      vim.highlight.range(buf, ns, "Title", { i, 0 }, { i, len[i + 1] })
-   end
+  local len = { 6, 5, 7, 5, 5 }
+  for i = 0, 4 do
+    vim.highlight.range(buf, ns, "Title", { i, 0 }, { i, len[i + 1] })
+  end
 end
 
 ---@param buf integer
 function M.highlight_index(buf)
-   local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
-   for i = 1, len do
-      vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
-      vim.api.nvim_buf_add_highlight(buf, ns, "feed.bold", i, 0, -1)
-   end
+  local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true)  -- TODO: api??
+  for i = 1, len do
+    vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
+    vim.api.nvim_buf_add_highlight(buf, ns, "feed.bold", i, 0, -1)
+  end
 end
 
 ---check if an usercommnad exists, so as a easy way to check if plugin exists
 ---@param str any
 ---@return boolean
 function M.check_command(str)
-   local global_commands = vim.api.nvim_get_commands {}
-   if global_commands[str] then
-      return true
-   end
-   return false
+  local global_commands = vim.api.nvim_get_commands {}
+  if global_commands[str] then
+    return true
+  end
+  return false
+end
+
+function M.clamp(min, value, max)
+  return math.min(max, math.max(min, value))
+end
+
+function M.cycle(i, n)
+  return i % n == 0 and n or i % n
+end
+
+-- TODO:
+function M.looks_like_url(str)
+  return type(str) == "string" and not str:find "[ \n\t\r]" and (url.parse(str) ~= nil)
 end
 
 -- (defun elfeed-looks-like-url-p (string)
