@@ -66,6 +66,9 @@ end
 
 ---render whole db as flat list
 function M.show_index()
+   if ut.check_command "ZenMode" then
+      vim.cmd "ZenMode"
+   end
    db:update_index()
    local lines = {}
    lines[1] = M.show_hint()

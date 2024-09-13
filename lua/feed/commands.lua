@@ -105,6 +105,9 @@ end
 function cmds.quit_index()
    --TODO: jump to the buffer before the index
    --- TODO: check if in index
+   if ut.check_command "ZenMode" then
+      vim.cmd "ZenMode"
+   end
    vim.cmd "bd"
    vim.cmd.colorscheme(config.og_colorscheme)
    render.rendered_once = false
