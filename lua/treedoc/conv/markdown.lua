@@ -1,5 +1,10 @@
 local convert
 
+---@alias Node { tag : string, [number] : Node | string, href : string, src : string, class : string }
+
+---@alias treedoc.nodehandler fun(node: Node, context: any): string?
+
+---@type table<string, treedoc.nodehandler>
 local md = {}
 
 setmetatable(md, {
@@ -50,17 +55,16 @@ md.ol = function(node)
    return table.concat(buf, "\n")
 end
 
+---like table.concat, buf converts node
+---@param node any
+---@param sep any
+---@return string
 local function concat_node(node, sep)
    sep = sep or " "
    local buf = {}
    for i, child in ipairs(node) do
-      if type(child) == "string" then
-         buf[i] = child
-      else
-         buf[i] = convert(child)
-      end
+      buf[i] = convert(child)
    end
-   buf[#buf + 1] = "\n"
    return table.concat(buf, sep)
 end
 
@@ -83,17 +87,14 @@ end
 md.html = md.p
 
 md.br = function(_)
-   -- return " "
    return "\n"
 end
+
 md.code = function(node)
    if node.class then
       return ("```%s\n%s\n```\n"):format(node.class:sub(10, #node.class), concat_node(node, "\n"))
    end
    return ("`%s`"):format(node[1])
-   --    return ([[```%s
-   -- %s
-   -- ```]]):format(node.lang, node[1])
 end
 
 md.em = function(node)
@@ -104,9 +105,7 @@ md.strong = function(node)
    return ("**%s**"):format(convert(node[1]))
 end
 
-md.script_element = function(_)
-   return
-end
+md.script_element = function(_) end
 
 ---@param t table | string
 function convert(t, ...)
