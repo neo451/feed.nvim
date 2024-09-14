@@ -43,13 +43,13 @@ local function unify(entry, feedtype, feedname)
       entry.id = sha1(entry.link)
       entry.url = nil
       content = entry.content_html
-      content = content:gsub("\n", "") -- HACK:
+      -- content = content:gsub("\n", "") -- HACK:
       entry.content_html = nil
    elseif feedtype == "rss" then
       entry.link = entry.link
       entry.id = sha1(entry.link)
       content = entry["content:encoded"] or entry.description
-      content = content:gsub("\n", "") -- HACK:
+      -- content = content:gsub("\n", "") -- HACK:
       entry["content:encoded"] = nil
       entry.description = nil
    end
@@ -80,9 +80,10 @@ function M.update_feed(feed, total, handle)
       if res.status ~= 200 then
          return
       end
-      src = (res.body):gsub("\n", "") -- HACK:
+      src = res.body
+      -- src = (res.body):gsub("\n", "")
       local ok, ast, feed_type = pcall(feedparser.parse, src)
-      if not ok then                  -- FOR DEBUG
+      if not ok then -- FOR DEBUG
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
          print(ast)
          return

@@ -1,10 +1,12 @@
 <h1 align="center"> 📻 feed.nvim </h1>
 
-**feed.nvim** is a web feed reader in neovim, leveraging the modern neovim features and plugin system, like , [telescope](https://github.com/nvim-telescope/telescope.nvim) and [render-markdown.nvim](https://github.com/tadmccorkle/markdown.nvim)
+**feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
-🚧 🚧 🚧 
+🚧 🚧 🚧
+
 This project is under heavy development, contributions are welcome!
-🚧 🚧 🚧 
+
+🚧 🚧 🚧
 
 ## 🌟 Features
 
@@ -22,49 +24,55 @@ This project is under heavy development, contributions are welcome!
 Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 lazy.nvim:
+
 ```lua
-{
+return {
     'noearc/feed.nvim',
     dependencies = { 
+      'https://github.com/stevearc/conform.nvim',
       'nvim-lua/plenary.nvim',
-      "nvim-treesitter/nvim-treesitter",
+      'nvim-treesitter/nvim-treesitter',
     }
     opts = {}
 }
 ```
+
 ```lua
 -- somewhere in your config that sets up nvim-treesitter, add these three filetypes to the ensure_installed list:
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter.configs").setup {
    ensure_installed = { "xml", "html", "markdown" },
-})
+}
 ```
 
 ### Optional Dependencies
 
 - For fuzzy finding your feeds and entries: get [telesope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-   - TODO: image
+  - TODO: image
 - For rendering entries beautifully in neovim: get [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
-   - TODO: image
+  - TODO: image
 - For nice UI for feed fetching progress, get [fidget.nvim](https://github.com/j-hui/fidget.nvim)
-   - TODO: image
+  - TODO: image
 - For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
-   - TODO: image
+  - TODO: image
 
 ## 🔖 Usage
 
 ### open feed.nvim
+
 - Use `Feed` command to open the default index, there will be three main kind of index:
-    - A `elfeed` style search buffer, everything is a flat list to be searched
-    - A `telescope` picker, good for searching through all your database or search `by feed` **TODO**
-    - A `tree` like menu, good for searching by feeds or tags **TODO**
+  - A `elfeed` style search buffer, everything is a flat list to be searched
+  - A `telescope` picker, good for searching through all your database or search `by feed` **TODO**
+  - A `tree` like menu, good for searching by feeds or tags **TODO**
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
 ### searching
+
 - Will support all the syntax of elfeed
 
 ## Customization
 
 these are the defaults, no need to copy, only set the ones you wish to change
+
 ```lua
 require("feed").setup{
    feeds = {
@@ -115,6 +123,7 @@ require("feed").setup{
    colorscheme = "default", -- add your preferred colorscheme for reading here
 }
 ```
+
 ## Feed management
 
 TODO:

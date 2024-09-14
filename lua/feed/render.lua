@@ -53,7 +53,7 @@ function M.prepare_bufs(cmds)
       entry = {},
    }
    for i = 1, 3 do
-      M.buf.entry[i] = vim.api.nvim_create_buf(false, false)
+      M.buf.entry[i] = vim.api.nvim_create_buf(false, true)
       for rhs, lhs in pairs(config.keymaps.entry) do
          ut.push_keymap(M.buf.entry[i], lhs, cmds[rhs], rhs)
       end
@@ -84,7 +84,7 @@ function M.show_entry(index)
    M.show(format.entry(entry, db:get(entry)), M.buf.entry[2], ut.highlight_entry)
    local ok, conform = pcall(require, "conform")
    if ok then
-      conform.format()
+      conform.format({bufnr = M.buf.entry[2], formatters = {"markdown", "injected" }})
    end
    entry.tags.unread = nil
    db:save()

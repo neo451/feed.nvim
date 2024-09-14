@@ -9,6 +9,7 @@ local md = {}
 
 setmetatable(md, {
    __index = function(t, k)
+      print(k)
       if not rawget(t, k) then
          return function(node)
             return "<<" .. node.tag .. ">>"
@@ -19,12 +20,12 @@ setmetatable(md, {
 
 for i = 1, 6 do
    md["h" .. i] = function(node)
-      return string.rep("#", i) .. " " .. convert(node[1]) .. "\n"
+      return "\n" .. string.rep("#", i) .. " " .. convert(node[1]) .. "\n"
    end
 end
 
 md.a = function(node)
-   return ("[%s](%s)"):format(node[1], node.href)
+   return ("[%s](%s)"):format(convert(node[1]), node.href)
 end
 
 md.div = function(node)
@@ -92,7 +93,7 @@ end
 
 md.code = function(node)
    if node.class then
-      return ("```%s\n%s\n```\n"):format(node.class:sub(10, #node.class), concat_node(node, "\n"))
+      return ("\n```%s\n%s\n```\n"):format(node.class:sub(10, #node.class), concat_node(node, " "))
    end
    return ("`%s`"):format(node[1])
 end
@@ -107,14 +108,19 @@ end
 
 md.script_element = function(_) end
 
+md.blockquote = function(node, _)
+   return "\n>  " .. concat_node(node) .. "\n"
+end
+
+-- TODO: proper color?
+md.span = function(node, _)
+   return convert(node[1])
+end
+
 ---@param t table | string
 function convert(t, ...)
    if type(t) == "string" then
       return t
-   end
-   if not md[t.tag] then
-      print(t.tag, "!!!")
-      print(vim.inspect(t))
    end
    return md[t.tag](t, ...)
 end
