@@ -2,9 +2,19 @@ local convert
 
 local md = {}
 
+setmetatable(md, {
+   __index = function(t, k)
+      if not rawget(t, k) then
+         return function(node)
+            return "<<" .. node.tag .. ">>"
+         end
+      end
+   end,
+})
+
 for i = 1, 6 do
    md["h" .. i] = function(node)
-      return string.rep("#", i) .. " " .. convert(node[1])
+      return string.rep("#", i) .. " " .. convert(node[1]) .. "\n"
    end
 end
 
@@ -20,23 +30,28 @@ md.div = function(node)
    return table.concat(buf, "\n")
 end
 
+md.pre = md.div
+
 md.ul = function(node)
-   local buf = {}
+   local buf = { "\n" }
    for i, li in ipairs(node) do
       buf[i] = convert(li)
    end
+   buf[#buf + 1] = "\n"
    return table.concat(buf, "\n")
 end
 
 md.ol = function(node)
-   local buf = {}
+   local buf = { "\n" }
    for i, li in ipairs(node) do
       buf[i] = convert(li, i)
    end
+   buf[#buf + 1] = "\n"
    return table.concat(buf, "\n")
 end
 
-local function concat_node(node)
+local function concat_node(node, sep)
+   sep = sep or " "
    local buf = {}
    for i, child in ipairs(node) do
       if type(child) == "string" then
@@ -45,7 +60,8 @@ local function concat_node(node)
          buf[i] = convert(child)
       end
    end
-   return table.concat(buf, " ")
+   buf[#buf + 1] = "\n"
+   return table.concat(buf, sep)
 end
 
 md.li = function(node, order)
@@ -57,7 +73,7 @@ md.li = function(node, order)
 end
 
 md.img = function(node)
-   return "![image](" .. node.src .. ")"
+   return "\n![image](" .. node.src .. ")\n"
 end
 
 md.p = function(node)
@@ -70,8 +86,10 @@ md.br = function(_)
    -- return " "
    return "\n"
 end
-
 md.code = function(node)
+   if node.class then
+      return ("```%s\n%s\n```\n"):format(node.class:sub(10, #node.class), concat_node(node, "\n"))
+   end
    return ("`%s`"):format(node[1])
    --    return ([[```%s
    -- %s
@@ -84,6 +102,10 @@ end
 
 md.strong = function(node)
    return ("**%s**"):format(convert(node[1]))
+end
+
+md.script_element = function(_)
+   return
 end
 
 ---@param t table | string

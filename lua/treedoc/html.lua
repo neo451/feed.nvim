@@ -62,6 +62,14 @@ html.element = function(node, src)
    return res
 end
 
+html.script_element = function(_, _)
+   return
+end
+
+html.erroneous_end_tag = function(_, _)
+   return
+end
+
 html.doctype = function(_, _, _) end
 
 return html
