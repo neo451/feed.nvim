@@ -125,10 +125,20 @@ md.blockquote = function(node, _)
    return "\n>  " .. concat_node(node) .. "\n"
 end
 
+md.iframe = function(node, _)
+   return node.src
+end
+
 -- TODO: proper color?
 md.span = function(node, _)
    return convert(node[1])
 end
+
+md.small = function(node, _)
+   return node[1]
+end
+
+md.b = md.small
 
 -- TODO: why not showing
 -- md.dl = function(node)

@@ -82,7 +82,7 @@ end
 
 xml.element = function(node, src)
    if node:child(0):type() == "EmptyElemTag" then
-      return xml.STag(node, src)
+      return xml.STag(node:child(0), src)
    end
    local ret = xml.STag(node:child(0), src)
    if node:child(1):type() == "ETag" then
