@@ -15,12 +15,19 @@ local ENTITIES = {
 }
 
 local noop = ut.noop
-
---- TODO: auto use noop if not handled, and notify
 xml.prolog = noop
 xml.comment = noop
 xml._Misc = noop
 xml.ETag = noop
+
+setmetatable(xml, {
+   __index = function(t, k)
+      if not rawget(t, k) then
+         print(k, " is not handle by the treedoc parser!!")
+         return noop
+      end
+   end,
+})
 
 xml.STag = function(node, src)
    local ret = { [ut.get_text(node:child(1), src)] = {} }

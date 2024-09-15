@@ -26,6 +26,9 @@ html.entity = function(node, src)
 end
 
 html.attribute = function(node, src)
+   if node:child_count() == 1 then
+      return ut.get_text(node, src)
+   end
    return ut.get_text(node:child(0), src), ut.get_text(node:child(2):child(1), src)
 end
 

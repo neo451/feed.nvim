@@ -84,7 +84,9 @@ function M.show_entry(index)
    M.show(format.entry(entry, db:get(entry)), M.buf.entry[2], ut.highlight_entry)
    local ok, conform = pcall(require, "conform")
    if ok then
-      conform.format({bufnr = M.buf.entry[2], formatters = {"markdown", "injected" }})
+      vim.api.nvim_set_option_value("modifiable", true, { buf = M.buf.entry[2] })
+      conform.format { bufnr = M.buf.entry[2] }
+      vim.api.nvim_set_option_value("modifiable", false, { buf = M.buf.entry[2] })
    end
    entry.tags.unread = nil
    db:save()

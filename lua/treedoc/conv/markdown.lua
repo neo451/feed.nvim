@@ -12,6 +12,7 @@ setmetatable(md, {
       print(k)
       if not rawget(t, k) then
          return function(node)
+            print(vim.inspect(node))
             return "<<" .. node.tag .. ">>"
          end
       end
@@ -77,6 +78,13 @@ md.li = function(node, order)
    end
 end
 
+md.figure = concat_node
+
+-- TODO: center this
+md.figcaption = function(node)
+   return concat_node(node, "\n") .. "\n"
+end
+
 md.img = function(node)
    return "\n![image](" .. node.src .. ")\n"
 end
@@ -89,6 +97,11 @@ md.html = md.p
 
 md.br = function(_)
    return "\n"
+end
+
+-- TODO:
+md.hr = function(_)
+   return "\n==================================================\n"
 end
 
 md.code = function(node)
@@ -115,6 +128,42 @@ end
 -- TODO: proper color?
 md.span = function(node, _)
    return convert(node[1])
+end
+
+-- TODO: why not showing
+-- md.dl = function(node)
+--    local buf = {}
+--    for i = #node, 2 do
+--       local title, desc = node[i], node[i + 1]
+--       buf[#buf + 1] = title[1]
+--       buf[#buf + 1] = "\n"
+--       buf[#buf + 1] = "    " .. desc[1]
+--       buf[#buf + 1] = "\n"
+--    end
+--    return table.concat(buf)
+-- end
+
+-- TODO: more robust rendering, handle very long lines
+md.table = function(node)
+   local buf = { "\n" }
+   local b = {}
+   local deli = { "|" }
+   for i, tr in ipairs(node) do
+      for _, t in ipairs(tr) do
+         b[#b + 1] = "| " .. (t[1] or " ")
+         if i == 1 then
+            deli[#deli + 1] = "--|"
+         end
+      end
+      b[#b + 1] = "|"
+      buf[#buf + 1] = table.concat(b)
+      if i == 1 then
+         buf[#buf + 1] = table.concat(deli)
+      end
+      b = {}
+   end
+   buf[#buf + 1] = "\n"
+   return table.concat(buf, "\n")
 end
 
 ---@param t table | string
