@@ -2,11 +2,12 @@ local ut = require "treedoc.utils"
 local html = {}
 
 local get_text = ut.get_text
+local noop = ut.noop
 
 setmetatable(html, {
    __index = function(t, k)
       if not rawget(t, k) then
-         print(k)
+         return noop
       end
    end,
 })

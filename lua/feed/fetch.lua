@@ -37,22 +37,20 @@ local function unify(entry, feedtype, feedname)
    entry[date_tag[feedtype]] = nil
    entry.time = date.new_from[feedtype](_date):absolute()
    entry.feed = feedname
-   entry.tags = { unread = true } -- HACK:
    if feedtype == "json" then
       entry.link = entry.url
       entry.id = sha1(entry.link)
       entry.url = nil
       content = entry.content_html
-      -- content = content:gsub("\n", "") -- HACK:
       entry.content_html = nil
    elseif feedtype == "rss" then
       entry.link = entry.link
       entry.id = sha1(entry.link)
       content = entry["content:encoded"] or entry.description
-      -- content = content:gsub("\n", "") -- HACK:
       entry["content:encoded"] = nil
       entry.description = nil
    end
+   entry.tags = { unread = true } -- HACK:
    return entry, content
 end
 

@@ -1,4 +1,5 @@
 local opml = {}
+
 local function outline(t)
    -- TODO: option to validate type using the data fetched
    return ([[<outline text="%s" title="%s" type="%s" xmlUrl="%s" htmlUrl="%s"/>]]):format(t.htmlUrl, t.title, t.title, t.type, t.xmlUrl)
