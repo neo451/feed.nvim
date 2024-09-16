@@ -1,0 +1,32 @@
+name: Push to Luarocks
+
+on:
+  push:
+    tags: # Will upload to luarocks.org when a tag is pushed
+      - "*"
+  pull_request: # Will test a local install without uploading to luarocks.org
+  workflow_dispatch:
+
+jobs:
+  luarocks-upload:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install C/C++ Compiler
+        uses: rlalik/setup-cpp-compiler@master
+        with:
+          compiler: clang-latest
+      # Required to build tree-sitter parsers
+      - name: Install tree-sitter CLI
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: tree-sitter-cli
+      - name: LuaRocks Upload
+        uses: nvim-neorocks/luarocks-tag-release@v7
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+        with:
+          dependencies: |
+            tree-sitter-xml
+            tree-sitter-markdown
+            tree-sitter-html
