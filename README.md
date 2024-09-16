@@ -21,15 +21,13 @@ This project is under heavy development, contributions are welcome!
 
 > requires `nvim 0.10` and `curl` to be installed on your path.
 
-Using [lazy.nvim](https://github.com/folke/lazy.nvim)
-
-lazy.nvim:
+Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 return {
     'noearc/feed.nvim',
     dependencies = { 
-      'https://github.com/stevearc/conform.nvim',
+      'stevearc/conform.nvim',
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
     }
@@ -43,6 +41,9 @@ require("nvim-treesitter.configs").setup {
    ensure_installed = { "xml", "html", "markdown" },
 }
 ```
+
+Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
+`Rocks install feed.nvim`
 
 ### Optional Dependencies
 
