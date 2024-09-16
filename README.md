@@ -67,6 +67,16 @@ require("nvim-treesitter.configs").setup {
 
 ### searching
 
+TODO:
+
+### Feed management
+
+TODO:
+
+### RssHub integration
+
+TODO:
+
 - Will support all the syntax of elfeed
 
 ## Customization
@@ -123,11 +133,3 @@ require("feed").setup{
    colorscheme = "default", -- add your preferred colorscheme for reading here
 }
 ```
-
-## Feed management
-
-TODO:
-
-## RssHub integration
-
-TODO:
