@@ -28,8 +28,11 @@
 ---@field show_index function
 
 ---@class feed.feed
----@field name string
----@field tags string[]
+---@field title string
+---@field link string
+---@field description string
+---@field entries feed.entry[]
+---@field published? integer # TODO: neccessary????
 
 ---@class feed.config
 ---@field feeds string[]

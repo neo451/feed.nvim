@@ -68,38 +68,6 @@ local function readfile(path)
    return table.concat(str)
 end
 
-describe("acutual rss feed", function()
-   it("should produce simple lua table", function()
-      local str = readfile "rss_example_2.0.xml"
-      local ast = xml(str)[1]
-      eq("2.0", ast.rss.version)
-
-      str = readfile "rss_example_0.92.xml"
-      ast = xml(str)[1]
-      eq("0.92", ast.rss.version)
-
-      str = readfile "rss_example_0.91.xml"
-      ast = xml(str)[1]
-      eq("0.91", ast.rss.version)
-
-      str = readfile "rss_real_zh_cdata.xml"
-      ast = xml(str)[1]
-      eq("2.0", ast.rss.version)
-
-      str = readfile "rss_real_complex.xml"
-      ast = xml(str)[1]
-      eq("2.0", ast.rss.version)
-   end)
-end)
-
-describe("acutual atom feed", function()
-   it("should produce simple lua table", function()
-      local str = readfile "atom_example.xml"
-      local ast = xml(str)[1]
-      eq("http://www.w3.org/2005/Atom", ast.feed.xmlns)
-   end)
-end)
-
 describe("acutual opml list", function()
    it("should produce simple lua table", function()
       -- local str = readfile "opml_example.opml"

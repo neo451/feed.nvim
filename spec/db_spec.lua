@@ -38,7 +38,7 @@ describe("add", function()
       local path_for_index_one = db:address(db.index[1])
       print(path_for_index_one)
       assert.same("zig is a programming language", vim.fn.readfile(path_for_index_one)[1])
-      entry.id = require "rss.sha1" (entry.link)
+      entry.id = require "rss.sha1"(entry.link)
       entry.description = nil
       assert.same({ version = "0.1", entry }, loadfile(db.dir .. "/index")())
    end)

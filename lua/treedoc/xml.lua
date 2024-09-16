@@ -19,6 +19,7 @@ xml.prolog = noop
 xml.comment = noop
 xml._Misc = noop
 xml.ETag = noop
+xml.CharRef = noop
 
 setmetatable(xml, {
    __index = function(t, k)

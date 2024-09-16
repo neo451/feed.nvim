@@ -29,6 +29,6 @@ end)
 describe("format", function()
    it("should default to print with configed format", function()
       local res = M.new_from.json "2010-02-07T14:04:00-05:00"
-      assert.same("1010-02-07", res:format "%Y-%m-%d")
+      assert.same("2010-02-07", res:format "%Y-%m-%d")
    end)
 end)

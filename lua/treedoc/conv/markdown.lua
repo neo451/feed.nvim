@@ -176,6 +176,10 @@ md.table = function(node)
    return table.concat(buf, "\n")
 end
 
+md.section = function(_)
+   return "\n"
+end
+
 ---@param t table | string
 function convert(t, ...)
    if type(t) == "string" then
