@@ -1,16 +1,27 @@
 local M = {}
 local config = require "feed.config"
 
----@alias feed.date osdate
+---@class feed.date
+---@field year integer
+---@field month integer
+---@field day integer
+---@field hour integer
+---@field min integer
+---@field sec integer
+---@field absolute fun(date: feed.date): feed.date
+---@field format fun(date: feed.date, format: string): feed.date
+---@field from_now fun(date: feed.date): integer
 
 local date = { __class = "date" }
 date.__index = date
 
 --- get absolute time value
+---@return integer
 function date:absolute()
    return os.time(self)
 end
 
+---@return integer
 function date:from_now()
    return os.time() - os.time(self)
 end
@@ -39,7 +50,7 @@ function date:days_ago(num)
    return M.new(os.date("*t", os.time(self) - num * 24 * 60 * 60))
 end
 
----@param osdate osdate
+---@param osdate table
 ---@return feed.date
 function M.new(osdate)
    return setmetatable(osdate, date)
@@ -82,7 +93,6 @@ do
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
    local min_and_sec = L.digit ^ 2 * P ":" * L.digit ^ 2 * P "-"
    patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
-   -- patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * ((R "09" + S "-:") ^ -7) * digit * P ":" * digit * R "AZ" ^ -1 -- ??
    patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" * digit * (R "AZ" ^ -1) -- ??
 end
 
@@ -100,7 +110,7 @@ end
 ---@param str string
 ---@return feed.date?
 local function rfc3339(str)
-   local year, month, day, hour, min, sec, patt_end = patterns.RFC3339:match(str)
+   local year, month, day, hour, min, sec, _ = patterns.RFC3339:match(str)
    if not year then
       return nil
    end
@@ -110,6 +120,7 @@ end
 M.new_from = {
    rss = rfc822,
    json = rfc3339,
+   atom = rfc3339,
 }
 
 ---@param str string

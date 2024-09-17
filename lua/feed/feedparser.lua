@@ -22,7 +22,7 @@ local function reify_entry(entry, feedtype, title)
       res.id = sha1(entry.link)
       res.feed = title
       res.title = entry.title
-      res.time = date.new_from.rss(entry.pubDate)
+      res.time = date.new_from.rss(entry.pubDate):absolute()
       res.content = entry["content:encoded"] or entry.description
       res.author = entry.author or title
    elseif feedtype == "json" then

@@ -1,5 +1,4 @@
 <h1 align="center"> 📻 feed.nvim </h1>
-
 **feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
 🚧 🚧 🚧

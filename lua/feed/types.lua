@@ -1,11 +1,18 @@
 ---@meta
 
+---@alias feed.action function
+
+---@class feed.feed
+---@field title string
+---@field link string
+---@field entries feed.entry[]
+
 ---@class feed.entry
 ---@field time integer
 ---@field id integer
 ---@field title string
 ---@field feed string
----@field tags string[]
+---@field tags table<string, boolean>
 ---@field link string
 ---@field author string
 
@@ -26,13 +33,6 @@
 ---@field current_entry fun(): table<string, any>
 ---@field show_entry fun(row: integer)
 ---@field show_index function
-
----@class feed.feed
----@field title string
----@field link string
----@field description string
----@field entries feed.entry[]
----@field published? integer # TODO: neccessary????
 
 ---@class feed.config
 ---@field feeds string[]

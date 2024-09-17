@@ -1,7 +1,6 @@
 --- TODO: lazy load these ...
 local config = require "feed.config"
 local fetch = require "feed.fetch"
-local feedparser = require "feed.feedparser"
 local render = require "feed.render"
 local ut = require "feed.utils"
 local db = require("feed.db").db(config.db_dir)
@@ -25,6 +24,7 @@ cmds.load_opml = {
    ---load opml file to list of sources
    ---@param file string
    impl = function(file)
+      local feedparser = require "feed.feedparser"
       local feeds = feedparser.parse(file, { type = "opml" })
       for _, feed in ipairs(feeds) do
          local title = feed.title
@@ -170,7 +170,7 @@ function cmds.update()
          percentage = 0,
       }
    end
-   for i, link in ipairs(config.feeds) do
+   for _, link in ipairs(config.feeds) do
       fetch.update_feed(link, #config.feeds, handle)
    end
    db:sort() -- TODO:
