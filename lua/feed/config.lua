@@ -55,7 +55,7 @@ local default = {
    ---@type string
    split = "13split",
    ---@type string
-   colorscheme = "kanagawa-lotus",
+   colorscheme = "morning",
 
    ---@type feed.feed[]
    feeds = {},
@@ -65,9 +65,7 @@ local default = {
 ---@class feed.config
 ---@field feed? feed.feed[]
 
-local user_config = type(vim.g.feed_config) == "function" and vim.g.feed_config() or vim.g.feed_config or {}
-
 ---@type feed.config
-local config = vim.tbl_deep_extend("force", default, user_config or {})
+local config = vim.tbl_deep_extend("force", default, vim.g.feed_config or {})
 
 return config

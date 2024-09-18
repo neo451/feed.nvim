@@ -22,8 +22,13 @@ local function reify_entry(entry, feedtype, title)
       res.id = sha1(entry.link)
       res.feed = title
       res.title = entry.title
-      res.time = date.new_from.rss(entry.pubDate):absolute()
-      res.content = entry["content:encoded"] or entry.description
+      local ok, time = pcall(function()
+         return date.new_from.rss(entry.pubDate):absolute()
+      end)
+      if ok then
+         res.time = time
+      end
+      res.content = entry["content:encoded"] or entry.description or ""
       res.author = entry.author or title
    elseif feedtype == "json" then
       res.link = entry.url
@@ -89,7 +94,7 @@ end
 ---@return feed.feedtype
 local function parse(src, opts)
    local ast, feedtype
-   opts = opts or {}
+   opts = opts or { reify = true }
    if opts.type == "json" or is_json(src) then
       ast, feedtype = vim.json.decode(src), "json"
    else
