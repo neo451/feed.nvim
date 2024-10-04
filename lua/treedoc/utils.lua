@@ -35,11 +35,22 @@ ut.list_unhandled_tags = function(p, rules)
    local path = Path:new(p)
    local str = path:read()
    local tab = vim.json.decode(str)
-   local target_rules = vim.iter(vim.tbl_keys(tab.rules))
-   target_rules = target_rules:filter(function(k)
-      return rules[k] == nil
-   end)
-   return target_rules:totable()
+   Pr(vim.tbl_keys(tab.rules))
+   -- local target_rules = vim.iter(vim.tbl_keys(tab.rules))
+   -- target_rules = target_rules:filter(function(k)
+   --    return rules[k] == nil
+   -- end)
+   -- return target_rules:totable()
 end
+
+ut.list_tostring = function(obj)
+   local buf = {}
+   for _, v in ipairs(obj.content) do
+      buf[#buf + 1] = tostring(v)
+   end
+   return ("%s [ %s ]"):format(obj.tag, table.concat(buf, " "))
+end
+
+ut.list_unhandled_tags "/home/n451/Plugins/feed.nvim/tree-sitter-html/src/grammar.json"
 
 return ut

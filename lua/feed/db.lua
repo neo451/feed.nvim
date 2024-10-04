@@ -2,15 +2,6 @@ local Path = require "plenary.path"
 local db_mt = { __class = "feed.db" }
 db_mt.__index = db_mt
 
-local function isFile(path)
-   local f = io.open(path, "r")
-   if f then
-      f:close()
-      return true
-   end
-   return false
-end
-
 ---@param path string
 ---@param content string
 local function save_file(path, content)
@@ -64,12 +55,20 @@ end
 ---sort index by time, descending
 function db_mt:sort()
    table.sort(self.index, function(a, b)
-      return a.time > b.time
+      if a.time and b.time then
+         return a.time > b.time
+      end
+      return true -- HACK:
    end)
 end
 
 function db_mt:update_index()
-   self.index = loadfile(self.dir .. "/index")()
+   local ok, res = pcall(loadfile, self.dir .. "/index")
+   if ok then
+      self.index = res()
+   else
+      print "failed to update index?"
+   end
 end
 
 ---@param entry feed.entry
@@ -87,6 +86,10 @@ function db_mt:blowup()
 end
 
 local index_header = { version = "0.1" }
+local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0"><head><title>feed_nvim_export</title></head><body>
+<outline text="neovim.io" title="neovim.io" type="rss" xmlUrl="https://neovim.io/news.xml" htmlUrl="https://neovim.io/news"/>
+</body></opml>]]
 
 -- TODO: support windows, but planery.path does not.. make pull request..
 
@@ -105,6 +108,11 @@ local function prepare_db(dir)
    if not index_path:is_file() then
       index_path:touch()
       index_path:write("return " .. vim.inspect(index_header), "w")
+   end
+   local opml_path = Path:new(dir .. "/feeds.opml")
+   if not opml_path:is_file() then
+      opml_path:touch()
+      opml_path:write(opml_template, "w")
    end
 end
 

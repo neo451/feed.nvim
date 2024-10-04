@@ -3,7 +3,7 @@ local strings = require "plenary.strings"
 local date = require "feed.date"
 local config = require "feed.config"
 local treedoc = require "treedoc"
-local conv = require "treedoc.conv.markdown"
+local conv = require "treedoc.writers.markdown"
 
 ---porperly align, justify and trucate the title
 ---@param str string
