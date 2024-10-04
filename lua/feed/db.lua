@@ -64,7 +64,10 @@ end
 ---sort index by time, descending
 function db_mt:sort()
    table.sort(self.index, function(a, b)
-      return a.time > b.time
+      if a.time and b.time then
+         return a.time > b.time
+      end
+      return true -- HACK:
    end)
 end
 

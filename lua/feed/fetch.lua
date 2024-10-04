@@ -7,7 +7,7 @@ local sha1 = require "feed.sha1"
 
 local M = {}
 
-function M.fetch(url, timeout, callback)
+local function fetch(url, timeout, callback)
    curl.get {
       url = url,
       timeout = timeout,
@@ -32,7 +32,7 @@ function M.update_feed(feed, total, handle)
          return
       end
       src = res.body
-      local ok, ast, feed_type = pcall(feedparser.parse, src)
+      local ok, ast = pcall(feedparser.parse, src)
       if not ok then -- FOR DEBUG
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
          print(ast)
@@ -52,7 +52,7 @@ function M.update_feed(feed, total, handle)
          end
       end
    end
-   M.fetch(url, 30000, callback)
+   fetch(url, 30000, callback)
 end
 
 -- TODO:  maybe use a process bar like fidget.nvim

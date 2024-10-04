@@ -173,7 +173,7 @@ function cmds.update()
    for _, link in ipairs(config.feeds) do
       fetch.update_feed(link, #config.feeds, handle)
    end
-   db:sort() -- TODO:
+   -- db:sort() -- TODO:
    db:save()
 end
 
@@ -202,6 +202,7 @@ end
 
 ---@param args string[]
 local function load_command(args)
+   Pr(args)
    local cmd = table.remove(args, 1)
    return cmds[cmd](unpack(args))
 end
