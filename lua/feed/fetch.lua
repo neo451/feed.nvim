@@ -1,9 +1,7 @@
 local curl = require "plenary.curl"
 local config = require "feed.config"
 local feedparser = require "feed.feedparser"
-local date = require "feed.date"
 local db = require("feed.db").db(config.db_dir)
-local sha1 = require "feed.sha1"
 
 local M = {}
 
@@ -23,7 +21,11 @@ function M.update_feed(feed, total, handle)
    local src
    local url
    if type(feed) == "table" then
-      url = feed[1]
+      if feed.xmlUrl then
+         url = feed.xmlUrl
+      else
+         url = feed[1]
+      end
    else
       url = feed
    end
@@ -38,6 +40,8 @@ function M.update_feed(feed, total, handle)
          print(ast)
          return
       end
+      ---@type feed.opml
+      config.opml_t:append(ast.title, nil, ast.link, url)
       local entries = ast.entries
       for _, entry in ipairs(entries) do
          local content = entry.content

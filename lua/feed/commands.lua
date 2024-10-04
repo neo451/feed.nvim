@@ -159,6 +159,7 @@ function cmds.list_feeds()
 end
 
 function cmds.update()
+   config.opml_t = require("feed.opml").import(config.opml)
    local ok, progress = pcall(require, "fidget.progress")
    local handle
    if not ok then
@@ -170,9 +171,15 @@ function cmds.update()
          percentage = 0,
       }
    end
+
+   if config.opml_t then
+      config.feeds = vim.list_extend(config.feeds, config.opml_t.outline) -- TODO: remove duplicates ...
+   end
+
    for _, link in ipairs(config.feeds) do
       fetch.update_feed(link, #config.feeds, handle)
    end
+
    -- db:sort() -- TODO:
    db:save()
 end

@@ -11,6 +11,23 @@ local function is_json(str)
    return ok
 end
 
+local function handle_atom_link(entry)
+   if not vim.islist(entry.link) then
+      return entry.link.href
+   end
+   -- TODO: read spec for the different link types
+   return entry.link[1].href
+end
+
+local function handle_atom_content(content)
+   if content.type == "html" then
+      return content[1]
+   else
+      -- TODO: treedoc power!
+      return "xhtml not supported now"
+   end
+end
+
 ---@param entry table
 ---@param feedtype string
 ---@param title string
@@ -35,10 +52,17 @@ local function reify_entry(entry, feedtype, title)
       res.id = sha1(entry.url)
       res.feed = title
       res.title = entry.title
-      res.time = date.new_from.json(entry.date_published)
+      res.time = date.new_from.json(entry.date_published):absolute()
       res.author = title
       res.content = entry.content_html
    elseif feedtype == "atom" then -- TODO: read spec!!!
+      res.link = handle_atom_link(entry)
+      res.id = sha1(res.link)
+      res.title = entry.title[1]
+      res.feed = title
+      res.time = date.new_from.atom(entry.published):absolute()
+      res.author = title
+      res.content = handle_atom_content(entry.content)
    end
    res.tags = { unread = true }
    return res
@@ -71,7 +95,8 @@ local function reify(ast, feedtype)
          res.entries[i] = reify_entry(v, "json", res.title)
       end
    elseif feedtype == "atom" then
-      res.title = ast.title
+      res.title = ast.title[1]
+      res.entries = {}
       for _, v in ipairs(ast.link) do
          if v.type and ut.looks_like_url(v.href) then -- HACK: check spec
             res.link = v.href

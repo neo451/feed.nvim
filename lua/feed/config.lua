@@ -59,11 +59,14 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
+
+   ---@type string
+   opml = "~/.local/share/nvim/feed/feeds.opml",
 }
 
---- TODO:
 ---@class feed.config
 ---@field feed? feed.feed[]
+---@field opml? string
 
 ---@type feed.config
 local config = vim.tbl_deep_extend("force", default, vim.g.feed_config or {})
