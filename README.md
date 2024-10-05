@@ -1,4 +1,12 @@
 <h1 align="center"> 📻 feed.nvim </h1>
+<p align="center">
+  <a href="https://github.com/neovim/neovim">
+    <img alt="Static Badge" src="https://img.shields.io/badge/neovim-version?style=for-the-badge&logo=neovim&label=%3E%3D%200.10&color=green">
+  </a>
+  <a href="https://github.com/neo451/feed.nvim">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
+  </a>
+</p>
 
 **feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
@@ -17,9 +25,15 @@ This project is under heavy development, contributions are welcome!
 
 ## 🚀 Installation
 
-### Minimal installation
+### Basic installation
 
 > requires `nvim 0.10` and `curl` to be installed on your path.
+
+Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
+
+```
+Rocks install feed.nvim
+```
 
 Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
@@ -28,6 +42,7 @@ return {
     'noearc/feed.nvim',
     dependencies = { 
       'stevearc/conform.nvim',
+      'j-hui/fidget.nvim',
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
     }
@@ -42,19 +57,11 @@ require("nvim-treesitter.configs").setup {
 }
 ```
 
-Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
-
-```
-Rocks install feed.nvim
-```
-
 ### Optional Dependencies
 
 - For fuzzy finding your feeds and entries: get [telesope.nvim](https://github.com/nvim-telescope/telescope.nvim)
   - TODO: image
 - For rendering entries beautifully in neovim: get [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
-  - TODO: image
-- For nice UI for feed fetching progress, get [fidget.nvim](https://github.com/j-hui/fidget.nvim)
   - TODO: image
 - For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
   - TODO: image
@@ -64,9 +71,8 @@ Rocks install feed.nvim
 ### basic usage
 
 - Use `Feed` command to open the default index, there will be three main kind of index:
-  - A `elfeed` style search buffer, everything is a flat list to be searched
-  - A `telescope` picker, good for searching through all your database or search `by feed` **TODO**
-  - A `tree` like menu, good for searching by feeds or tags **TODO**
+  - The `elfeed` style search buffer, everything is a flat list to be searched
+  - The `telescope` picker, good for searching through all your database or search `by feed`
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
 ### feed management
