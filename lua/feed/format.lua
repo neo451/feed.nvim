@@ -42,8 +42,8 @@ local function kv(k, v)
 end
 
 ---@param entry feed.entry
----@return table
-function M.entry(entry, content)
+---@return string
+function M.entry(entry)
    local lines = {}
    lines[1] = kv("Title", entry.title)
    lines[2] = kv("Date", date.new_from_int(entry.time))
@@ -51,11 +51,11 @@ function M.entry(entry, content)
    lines[4] = kv("Feed", entry.feed)
    lines[5] = kv("Link", entry.link)
    lines[6] = ""
-   local md = conv(treedoc.parse("<html>" .. content .. "</html>", { language = "html" })[1])
+   local md = conv(treedoc.parse("<html>" .. entry.content .. "</html>", { language = "html" })[1])
    for line in vim.gsplit(md, "\n") do
       lines[#lines + 1] = line
    end
-   return lines
+   return table.concat(lines, "\n")
 end
 
 ---@param entry feed.entry

@@ -115,13 +115,20 @@ local function reify_entry(entry, feedtype, title)
    return res
 end
 
+local function handle_rss_title(ast)
+   if type(ast.channel.title) == "table" and vim.tbl_isempty(ast.channel.title) then
+      return ast.channel.link
+   end
+   return ast.channel.title
+end
+
 ---walk the ast and retrive usefull info for all three types
 ---@param ast table
 ---@return feed.feed
 local function reify(ast, feedtype)
    local res = {}
    if feedtype == "rss" then
-      res.title = ast.channel.title
+      res.title = handle_rss_title(ast)
       res.link = ast.channel.link
       res.entries = {}
       for i, v in ipairs(make_sure_list(ast.channel.item)) do

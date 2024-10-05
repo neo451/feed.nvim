@@ -83,7 +83,8 @@ end
 ---@param index integer
 function M.show_entry(index)
    local entry = M.get_entry(index)
-   M.show(format.entry(entry, db:get(entry)), M.buf.entry, ut.highlight_entry)
+   local lines = vim.split(db:get(entry), "\n")
+   M.show(lines, M.buf.entry, ut.highlight_entry)
    apply_formatter(M.buf.entry)
    entry.tags.unread = nil
    db:save()
