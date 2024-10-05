@@ -1,7 +1,7 @@
 name: Release Please
 
 on:
-  merge:
+  push:
     branches:
       - main
       - master
