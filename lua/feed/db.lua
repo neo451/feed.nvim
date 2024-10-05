@@ -64,10 +64,10 @@ end
 
 function db_mt:update_index()
    local ok, res = pcall(loadfile, self.dir .. "/index")
-   if ok then
+   if ok and res then
       self.index = res()
    else
-      print "failed to update index?"
+      print("[feed.nvim]: failed to load index: ", ok)
    end
 end
 
@@ -118,9 +118,15 @@ end
 
 ---@param dir string
 local function db(dir)
+   local index
    dir = vim.fn.expand(dir)
    local index_path = dir .. "/index"
-   local index = loadfile(index_path)()
+   local ok, res = pcall(loadfile, index_path)
+   if ok and res then
+      index = res()
+   else
+      print("[feed.nvim]: failed to load index: ", ok)
+   end
    return setmetatable({ dir = dir, index = index }, db_mt)
 end
 

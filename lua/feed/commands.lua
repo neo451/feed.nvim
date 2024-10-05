@@ -11,10 +11,10 @@ local cmds = {}
 -- 1. unjam: stop the connection pool?
 -- 2. add_feed: add to database
 -- 3. db_unload: not needed? file handles are just closed... but is that efficient?
--- 4. load_opml: need to load locally
--- 5. export_opml
 -- 6. tag / untag: save to db
 -- 7. show: its a better name lol
+
+--- TODO: config.feeds and opml imported should be <link, table> to avoid dup
 
 ---load opml file to list of sources
 ---@param filepath string
@@ -24,6 +24,7 @@ function cmds.load_opml(filepath)
    local index_opml = opml.import(config.opml)
    vim.list_extend(index_opml.outline, outlines)
    index_opml:export(config.opml)
+   vim.list_extend(config.feeds, outlines)
 end
 
 ---index buffer commands
@@ -33,10 +34,11 @@ function cmds.show_in_browser()
 end
 
 function cmds.show_in_w3m()
+   local render = require "feed.render"
    if ut.check_command "W3m" then
       vim.cmd("W3m " .. render.current_entry().link)
    else
-      vim.notify "[rss.nvim]: need w3m.nvim installed"
+      vim.notify "[feed.nvim]: need w3m.nvim installed"
    end
 end
 
@@ -99,12 +101,11 @@ function cmds.show_index()
    config.og_colorscheme = vim.g.colors_name
    if not render.state.in_entry then
       if not render.buf.index then
-         print "reerer"
          render.prepare_bufs(cmds)
       end
       render.show_index()
    else
-      if render.state.rendered_once then
+      if render.state.index_rendered then
          if render.state.in_split then
             vim.cmd "q"
             render.state.in_split = false
@@ -117,6 +118,7 @@ end
 
 function cmds.show_next()
    local render = require "feed.render"
+   local db = require("feed.db").db(config.db_dir)
    if render.current_index == #db.index then
       return
    end
@@ -124,7 +126,6 @@ function cmds.show_next()
    render.show_entry(render.current_index)
 end
 
--- TODO: properly do 'ring' navigation, ie. wrap around
 function cmds.show_prev()
    local render = require "feed.render"
    if render.current_index == 1 then
@@ -176,7 +177,7 @@ function cmds:add_feed(str) end
 
 function cmds:telescope()
    if ut.check_command "Telescope" then
-      vim.cmd "Telescope rss"
+      vim.cmd "Telescope feed"
    end
 end
 

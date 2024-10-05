@@ -51,6 +51,4 @@ ut.list_tostring = function(obj)
    return ("%s [ %s ]"):format(obj.tag, table.concat(buf, " "))
 end
 
-ut.list_unhandled_tags "/home/n451/Plugins/feed.nvim/tree-sitter-html/src/grammar.json"
-
 return ut

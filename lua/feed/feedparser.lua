@@ -3,6 +3,53 @@ local date = require "feed.date"
 local sha1 = require "feed.sha1"
 local ut = require "feed.utils"
 
+local function make_sure_list(t)
+   if #t == 0 and not vim.islist(t) then
+      t = { t }
+   end
+   return t
+end
+
+local entry_validator_mt = {}
+
+local expected_types = {
+   title = "string",
+   link = "string",
+   id = "string",
+   feed = "string",
+   author = "string",
+   content = "string",
+   time = "number",
+}
+
+local default = {
+   title = "<>",
+   link = "<>",
+   id = "<>",
+   feed = "<>",
+   author = "<>",
+   content = "<>",
+   time = 222222,
+}
+
+-- function entry_validator_mt:__newindex(k, v)
+--    if not (type(v) == expected_types[k]) then
+--       print("expected " .. expected_types[k] .. " got: " .. type(v))
+--       rawset(self, k, default[k]) -- HACK:
+--    end
+--    rawset(self, k, v)
+-- end
+
+local function V(t)
+   return setmetatable(t, entry_validator_mt)
+end
+
+local function remove_meta(t)
+   local mt = getmetatable(t)
+   mt.__index = nil
+   return t
+end
+
 ---check if json
 ---@param str string
 ---@return boolean
@@ -66,13 +113,6 @@ local function reify_entry(entry, feedtype, title)
    end
    res.tags = { unread = true }
    return res
-end
-
-local function make_sure_list(t)
-   if #t == 0 and not vim.islist(t) then
-      t = { t }
-   end
-   return t
 end
 
 ---walk the ast and retrive usefull info for all three types
