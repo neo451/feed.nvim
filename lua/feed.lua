@@ -8,7 +8,6 @@ vim.api.nvim_create_user_command("Feed", function(opts)
    local ut = require "feed.utils"
    local cmds = require("feed.commands").cmds
 
-   -- config.og_colorscheme = vim.g.colors_name
    render.prepare_bufs(cmds)
 
    if ut.check_command "Telescope" then

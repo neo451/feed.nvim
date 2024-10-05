@@ -40,8 +40,6 @@ function M.update_feed(feed, total, handle)
          print(ast)
          return
       end
-      ---@type feed.opml
-      config.opml_t:append(ast.title, nil, ast.link, url)
       local entries = ast.entries
       for _, entry in ipairs(entries) do
          local content = entry.content

@@ -2,7 +2,9 @@
 
 ---@alias feed.action function
 
----@class feed.feed
+---@alias feed.feed feed._feed | table | string
+
+---@class feed._feed
 ---@field title string
 ---@field link string
 ---@field entries feed.entry[]
