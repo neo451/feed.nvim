@@ -1,4 +1,5 @@
 <h1 align="center"> 📻 feed.nvim </h1>
+
 **feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
 🚧 🚧 🚧
@@ -42,7 +43,10 @@ require("nvim-treesitter.configs").setup {
 ```
 
 Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
-`Rocks install feed.nvim`
+
+```
+Rocks install feed.nvim
+```
 
 ### Optional Dependencies
 
@@ -57,7 +61,7 @@ Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
 ## 🔖 Usage
 
-### open feed.nvim
+### basic usage
 
 - Use `Feed` command to open the default index, there will be three main kind of index:
   - A `elfeed` style search buffer, everything is a flat list to be searched
@@ -65,19 +69,20 @@ Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
   - A `tree` like menu, good for searching by feeds or tags **TODO**
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
-### searching
+### feed management
 
-TODO:
+- Use `Feed load_opml` to import your opml file
+- Use `Feed export_opml` to export your opml file to load in other readers
 
-### Feed management
+### feed searching and filtering
+
+- Will support all the syntax of elfeed
 
 TODO:
 
 ### RssHub integration
 
 TODO:
-
-- Will support all the syntax of elfeed
 
 ## Customization
 
