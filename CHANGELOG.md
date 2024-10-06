@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/neo451/feed.nvim/compare/v1.0.0...v1.0.1) (2024-10-06)
+
+
+### Bug Fixes
+
+* proper handling of atom links ([3fef37b](https://github.com/neo451/feed.nvim/commit/3fef37b6615aa47a418596a99c029733242ab99a))
+
 ## 1.0.0 (2024-10-05)
 
 
