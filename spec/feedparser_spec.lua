@@ -24,12 +24,6 @@ local check_feed = function(ast)
    assert.is_string(ast.link)
    assert.is_table(ast.entries)
    for _, v in ipairs(ast.entries) do
-      -- print(v.time)
-      -- print(v.id)
-      -- print(v.feed)
-      -- print(v.tags)
-      -- print(v.link)
-      -- print(v.author)
       assert.is_number(v.time)
       assert.is_string(v.id)
       assert.is_string(v.title)
@@ -62,7 +56,7 @@ describe("rss", function()
       res = m.parse(str, { reify = false })
       eq("2.0", res.version)
 
-      str = readfile "rss_example_atom_tags.xml"
+      str = readfile "rss_atom_tags.xml"
       res = m.parse(str, { reify = false })
       eq("2.0", res.version)
    end)
@@ -72,8 +66,9 @@ describe("rss", function()
       local ast = m.parse(str, { reify = true })
       check_feed(ast)
 
-      str = readfile "rss_example_atom_tags.xml"
-      ast = m.parse(str, { reify = true })
+      str = readfile "rss_atom_tags.xml"
+      ast, t = m.parse(str, { reify = true })
+      eq(t, "rss")
       check_feed(ast)
    end)
 end)
@@ -86,12 +81,12 @@ describe("atom", function()
    end)
    it("should reify to unified format", function()
       -- TODO: xhtml
-      -- local str = readfile "atom_example.xml"
-      -- local res = m.parse(str, { reify = true })
-      -- check_feed(res)
+      local str = readfile "atom_example.xml"
+      local res = m.parse(str, { reify = true }, "https://example.org")
+      check_feed(res)
 
       local str = readfile "atom_example2.xml"
-      local res = m.parse(str, { reify = true })
+      local res = m.parse(str, { reify = true }, "https://example.org")
       check_feed(res)
    end)
 end)

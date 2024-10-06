@@ -1,5 +1,5 @@
 local M = {}
-local url = require "feed.url"
+local URL = require "feed.url"
 
 ---@param buf integer
 ---@param lhs string
@@ -51,43 +51,22 @@ function M.cycle(i, n)
    return i % n == 0 and n or i % n
 end
 
--- TODO:
-function M.looks_like_url(str)
-   -- return type(str) == "string" and not str:find "[ \n\t\r]" and (url.parse(str) ~= nil)
-   return (url.parse(str) ~= nil)
+---@param base_url string | table
+---@param url string | table
+---@return string
+function M.url_resolve(base_url, url)
+   return tostring(URL.resolve(base_url, url))
 end
 
--- (defun elfeed-looks-like-url-p (string)
---   "Return true if STRING looks like it could be a URL."
---   (and (stringp string)
---        (not (string-match-p "[ \n\t\r]" string))
---        (not (null (url-type (url-generic-parse-url string))))))
-
--- (defun elfeed-cleanup (name)
---   "Trim trailing and leading spaces and collapse multiple spaces."
---   (let ((trim (replace-regexp-in-string "[\f\n\r\t\v ]+" " " (or name ""))))
---     (replace-regexp-in-string "^ +\\| +$" "" trim)))
---
--- (defun elfeed-parse-simple-iso-8601 (string)
---   "Attempt to parse STRING as a simply formatted ISO 8601 date.
--- Examples: 2015-02-22, 2015-02, 20150222"
---   (let* ((re (cl-flet ((re-numbers (num) (format "\\([0-9]\\{%s\\}\\)" num)))
---                (format "^%s-?%s-?%s?\\(T%s:%s:?%s?\\)?"
---                        (re-numbers 4)
---                        (re-numbers 2)
---                        (re-numbers 2)
---                        (re-numbers 2)
---                        (re-numbers 2)
---                        (re-numbers 2))))
---          (matches (save-match-data
---                     (when (string-match re string)
---                       (cl-loop for i from 1 to 7
---                                collect (let ((match (match-string i string)))
---                                          (and match (string-to-number match))))))))
---     (when matches
---       (cl-multiple-value-bind (year month day _ hour min sec) matches
---         (float-time (encode-time (or sec 0) (or min 0) (or hour 0)
---                                  (or day 1) month year t))))))
---
+---@param el table
+---@param base_uri string
+---@return string
+function M.url_rebase(el, base_uri)
+   local xml_base = el["xml:base"]
+   if not xml_base then
+      return base_uri
+   end
+   return tostring(M.url_resolve(xml_base, base_uri))
+end
 
 return M

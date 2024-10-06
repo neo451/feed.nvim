@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" title="XSL Formatting" href="/assets/xsl/rss.xsl" media="all" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title></title>
+        <description>
+          Xiaofei
+          欢迎大家使用RSS订阅
+        </description>
+        <link>https://xiaophy.com</link>
+        <atom:link href="https://xiaophy.com/feed.xml" rel="self" type="application/rss+xml" />
+        
+            <item>
+                <title>开放研究之所以可能(三)</title>
+                <description>&lt;p&gt;　　2021年5月21日,国家正式宣布全面脱贫,中国社会的发展消除了绝对贫困，一年来我也在几个城市走了一下，现在也暂时的稳定，安坐下来提笔，稍有恍惚。回忆起去年的想法以作二十年之约。&lt;/p&gt;
+
+&lt;p&gt;　　绝对贫困的大量消除，意味着许多人终于将自己在贫困中挣扎的双手解放出来，将这勤劳的双手放归到生产生活中去，这就是国家上下的生产力全面确认。其始终支撑这种前进的就是发展。&lt;/p&gt;
+
+&lt;p&gt;　　我自己生于1992年，生在市场经济改革方向的确立，第二次创业浪潮，现在我看到了在市场经济下社会的蓬勃发展。而2021年出生的这一代人，面对的则又是一个新的世界，感到他们多么地幸运，生产关系的调整潮涨潮落，无数人在其中起伏。&lt;/p&gt;
+
+&lt;p&gt;　　科学技术是全人类朴实的，没有阶级的，但科学技术发展背后，必然存在着其独特的经济结构。而当今世界，最为突出最为出彩的经济结构，就是所谓的中国特色社会主义下的市场经济。&lt;/p&gt;
+
+&lt;p&gt;　　管窥厘窥，自己来观科学研究工作，总觉得非但没有中特市场经济，连市场都没有。&lt;/p&gt;
+
+&lt;p&gt;　　甚至社会依然很多人认为,科学就是完全的无私奉献，完全的高尚行为，似要将科学本身替换为道德标准。其实是对科学研究工作本质的偏离，甚至可以说是宗教化的行为。科学研究依然是社会劳动的一部分，依然需要人力物力资源的分配与再分配。
+认为科研只会赔钱,市场为了牟利，一旦参与市场，科学就不复存在。所有人只会娱乐，所谓科学就是满身的痛苦，自然不会有什么市场。我想这也是对市场经济的宗教化，试图将市场经济尤其是中国的市场经济妖魔化。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“前者做了更前者的牺牲，自己无力生存，却苛责后者又来专做他的牺牲，毁灭了一些发展本身的能力”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　这种错误的认识，是我们没有认识到，市场经济作为当今世界主要的经济模式其本身的进步意义，更没有接受中国特色社会主义市场经济的存在和独特。另有一批人，认为我们国家的发展，是与其他国家趋同的，经过时间的积累我们也会发展的像西方国家一样，但我随意观历史发展，趋同只会是局部只会是暂时的。而倘若趋同反而错失了进步的机遇，麻痹了前进的勇气，就更要不得，丢了去。&lt;/p&gt;
+
+&lt;p&gt;　　那么按照现有的基本看法，随发展的要求而来，应运而生的科学研究活动即是两种，集中分配资源发展的计划经济和社会推手的市场经济。可是由于中特市场经济的存在，私有制与社会化大生产的矛盾被大大削弱，市场经济下的科学研究活动就面临着动力不足的挑战。失去了过剩驱动的市场经济虽然平稳发展，然而却缺乏了科学研究中最重要的试错和探索机会，这便是人们经常提及的所谓战争驱动(私有制社会生产过剩导致经济强冲突)的技术发展，及其背后的科学探索活动。&lt;/p&gt;
+
+&lt;p&gt;　　这时又不免提及科学与技术的区别，看来，科学本身其实即是文化和文明的部分，而技术本身则是人类与自然接洽的实践。就像我的桌面壁纸《雅典学院》一样，柏拉图指向理念世界，过去意为理念哲学，现代化身为科学，亚里士多德指向自然世界，过去意为自然哲学，现代化身为技术，实质上也有主客观之说。当然本人按结构主义来说，与之理解稍有不同，暂且按下不表。世界资本主义的发展，导致资本繁荣，其主推即为开放技术，而资本力盛，敏感于科学，所以主推开放技术开源技术等等，而富余力削弱开放科学；反观中特，资本初萌，敏感于技术，为求自保，主推利用技术相互搏杀，技术发展而开放不实，更无力顾睱开放之于科学。当然也有估计我们将更加敏感于科学，因而走向封闭，故，常无，欲以观其妙。&lt;/p&gt;
+
+&lt;p&gt;　　传统科学研究活动的组织协调方式，其特点必须与现在社会发展相配合，否则强势之下已有疲态，如遇重挫必显其颓。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;似乎，没有人还会太认真&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　资本主义靠资本驱动科学研究。资本主义靠资本来主力驱动科学研究，而由于消灭了私有制与社会化大生产的矛盾，中特社会主义，有其不同。&lt;/p&gt;
+
+&lt;p&gt;　　不论是Aaron Swartz还是SciHub，亦或是Pirate 。都很难继续前行，因为其经济关系未能融入现有框架，当然这也可能是他们的目的，然而所处社会情况反噬着他们的意志和经济生存状况。&lt;/p&gt;
+
+&lt;p&gt;　　还有现今高考的位置，也有碍于时代的困顿。为了所谓市场公平，还是削弱了培训行业，当然这也许是进步的，可又没那么自信，市场培育出来的教育补充难道都是该被压制的吗。&lt;/p&gt;
+
+&lt;p&gt;　　一个由名词转向动词的结构主义转换,也就是科技到开放研究的转变是将会发生的。这就是开放研究。就像今天市场经济所面对的结构化改革四大要素的变化，有劳动力、土地、资本、创新，相对应的则是开放研究的四个要素特点。研究时间，研究资料，可重复性，有效交流。研究时间对应传统科研的行政工作，形成新专业市场分工。生产资料，对应的传统研究中，不充分发展的市场，传统研究还停留在依靠和附着于其他社会基本要素的生产过程中，我想这实际上是无法调动人力物力的，充其量只是空的名誉和微薄的施舍罢了。可重复性则对应解决着传统研究中的权威人情机构小团体小圈子。而最重要的也就是科学研究的关键，有效交流，这对应着传统研究中的封闭交流。&lt;/p&gt;
+
+&lt;p&gt;　　开放研究消解着权威，又不断建立着权威，而且这权威所发挥的主要能力，竟然就是自我的消解，终于使结构发生变动，合作模式从单一的金字塔结构，找回多样的结构。似乎有趣地寻了后现代主义的妙处。制度变革,有死水一潭的。有自动变为灵活多样的自主创新,活动主体也从人际圈子,变为自由组合的团体或散装团体。&lt;/p&gt;
+
+&lt;p&gt;　　开放研究与传统研究相互影响，在逐渐发展为创造市场，当然现在，在科学界已经有许多人进入到这开放研究的萌芽状态。&lt;/p&gt;
+
+&lt;p&gt;　　在更广泛的社会中，将会出现类似服务型的公司，研究和企业二者相互促进。必可以创造新的市场，当然新的不意味着强壮的，而甚至可能是无法达成的。科学界的资本积累,形成新的特色。不论哪里，开放研究也会帮上忙，我的朋友虽不多，甚至未见，但相信在社会的各处均发挥着作用。&lt;/p&gt;
+
+&lt;p&gt;　　可以预言的是二十年后，也就是这些不在贫困的一代人，成长起来二十来岁时。通过这种创造需求引导需求的过程，最终会创造一个新的市场。事在人为吧。一类就是科学界,为代表的新型的开放研究的新牌型大学。另类就是现代服务县企业。的乐观主义的精神。希望能在这趟旅程中不断前行,希望能与二十年后,成长起来的新一代年轻朋友们,愉快地相遇，与你们并肩前行。&lt;/p&gt;
+
+&lt;p&gt;　　只要存在没有被满足的需要，就存在市场机会。这将不是强制性的，不是道德性的，而是通过新的市场结构的诞生，旧的需求被满足了，新的需求就会伴随而来。“我们虽不能说停顿便要灭亡，但较之进步，总是停顿与灭亡的路相近。”，社会之发展，各种因素相互促进，却从不会停顿的。始终饱有乐观的精神，去面对去探索。&lt;/p&gt;
+
+&lt;p&gt;　　读书时看到，“历史研究之于霍夫斯塔特，实在是一种表达人类情感的慰藉心灵的最佳实践方式”。若换做我自己的话来说，开放科学或者开放研究，对于我来说就是一种表达我内心，慰藉心灵和休息的最佳方式。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;麻辣有时要比干辣香。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　同时的是这个也是满足与时代发展要求。是我个人意义上的,我的社会性和我的尊严的张扬。你渴望得到社会的认可，这也是一种满足。即也是一种社会精神气质的一种反应,学术发展状况的一种可能性。当然也可能稍显无力或过早。但是这种积极的心态，心态和想法，实际上呢，终于依然始终属于社会中的进步部分，这使我开心。&lt;/p&gt;
+
+&lt;p&gt;　　历史相似之处不断上演，正一如霍夫斯塔特所持有的观点，我们目前所关注的新的主要矛盾，自然地由物质资源分配的数量，转向到整个社会性资源分配的质量。所将要发生的也可能将是社会地位不断变化的，对这种社会进步的牺牲的关怀，这也就是一种人文关怀。&lt;/p&gt;
+
+&lt;p&gt;每一次我在走动的时候，在看书的时候，或在发呆、书写的时候,都会产生各种各样的想法，或说念头。这种想法有的时候是无法通过文字及时记录下来,也就是说无法通过一个即刻的记录，总有个时间延长的过程。所以说我经常需要把想法整理，有时又是推倒掉，有时会被自己所写吓到。还好反观内容，实际犯了很多错误，使我稍感宽慰。原来还是自然的表达，多了些愚蠢，少了些冲动。&lt;/p&gt;
+
+&lt;p&gt;自己没有读很多书，只是随想到的，就放下字来，单薄了些。不过也没太多人在意，就写给自己做份纪念，跟随我自己之前的脚步。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Mon, 14 Jun 2021 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2021/06/14/thinking11.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2021/06/14/thinking11.html</guid>
+            </item>
+        
+            <item>
+                <title>开放研究是如何直面命题</title>
+                <description>&lt;p&gt;　　正如《西西弗斯》中加缪所言，自杀是一个哲学命题，这里将对这一命题的进行一点点讨论，以便对人们的一些想法进行一定的解释。
+为避免歧义，这里所指的自杀并非结束自己的生命，而是指一个人选择思想停滞的方式，也就是作为人类思想的一个特有行为来进行解读，缩小了讨论的范围，新命名为“自戕”。&lt;/p&gt;
+
+&lt;p&gt;　　首先介绍人类的一些思想的特质，如人拥有记忆，人有反思的能力，人的思维是可以通过反思进行自我调节和改变的等等。这时我们必须提到的是，社会中总有一些人认为社会的某些现象是无法改变甚至是轮回的，因此这些人认为这样的事情可以用一种思维理解就是“你必须这样做”或言“你只有这样做”，举例为吃苦的轮回问题，这些人认为“我吃过这样的苦，你只有也尝尝甚至尝个够才能明白”，这些人所为并不是为了这种苦头的避免而是认为这种苦头是轮回的是无法改变的，其实纵观社会的发展社会总是不断变化的不断发展的，正如马克思所言“一切现在的都是要灭亡的”，那么为什么这些人形成了“就是这样”的无法做任何改变的想法了呢？&lt;/p&gt;
+
+&lt;p&gt;　　分析可以得到，他们的思想选择了停滞，这种停滞一方面来自于自己的无办法另一方面来自外界的无帮助，似乎是可以理解的，然而，生命的本质就是在于不断地发展，更何况于有着思想的人类呢？所以这种停滞即违反了人的生命的初衷，违反了生命，而且是出于个体的主动，是有人自发地说“有些事情就是这样无法改变的”，正是走向了“自戕”，这是一种思维上的精神上的情感上的主动选择的思维停滞，因此我们这里用了双引符号。&lt;/p&gt;
+
+&lt;p&gt;　　这里可以进行一些讨论，因为这些话语并非是他们自己内心的自述，而是没完没了地灌输于他人还要说给别人听，如传统研究中所讲“只有问才行才能学到东西，只有你去问别人才有交流”，这当然是普遍发生的，可是上述这种“你只有这样做”等等的说法，由上一段的讨论后已经得出是一种“自戕”，那自己选择思想停滞就得了为何要说给别人听？这时候说给别人听了，其意义即”陪葬诉求“，这正是人矛盾的一面，明明是”自戕“却需要他人来一同见证，自己进行了选择不行非要拉别人一起垫背不可，这也正说明了从古至今所阻碍人类社会发展的封建意识形态为何可以一再地存续，“陪葬诉求”正是其传染性本身。&lt;/p&gt;
+
+&lt;p&gt;　　从上面所言可以看出，所谓“你只能怎样”正是“自戕”的疯狂所伴随的“陪葬诉求”，那么如何避免和转变这样恐怖的思维呢？这里当然，语言本身就反映了思维的框架，所谓“只能”或“你应该”完全是限定性的，而且是非常紧迫的限定，只要打破这一限定即可以找到新的思维。最简单直接的方式，就是换新的语言词汇，如“你可以”，“你尝试”，“你试着”，“你参考一下”，这种新的语言范式，虽然看起来简单而无趣，却实有本质的不同。开放研究所要采用的正是这样的语法。本质上这与冗余理论是相契合的，保证了对冗余存在的肯定，给发展(生命)留下了空间。开放研究的发展这是一个长期的过程，并且非常容易面临冲击，采用这种新的语言方式则是非常有帮助的。&lt;/p&gt;
+
+&lt;p&gt;　　当然有些人可能说，上面所讲的太极端了，比如“你只能这样做才可以”，即使“只能”一词是限定性的，可是具体的“这样做”本身，也不是完全限定的，也是可以想新的花样可以有丰富的细节。这种想法也是正确的，上面的讨论本身也不能陷入怪圈，成为一种新的限定性的办法，这不就回到出发点了吗？所以说，一旦你提出这种疑问，就说明你已经开始尝试上述讨论的思维过程了，参与即完成了一次思想交流。上面所讨论的所有东西，都是给予一个方法，这正揭示了开放研究的一些思想，也就是尽力地给予人们研究问题的科学方法，这一段的这个例子也即是说明了其重点不在研究内容而在于研究方法。你可以套用上述方法在很多的问题上，尤其希望在你遇到重大困难时绝不会孤立无援，在思想上能够助你一臂之力。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2019/02/22/thinking10.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2019/02/22/thinking10.html</guid>
+            </item>
+        
+            <item>
+                <title>试对开放研究的评论2</title>
+                <description>&lt;p&gt;AOD还有类似的机构都可以直接在网络上参与，CERN和LIGO等实验均有开放的数据&lt;/p&gt;
+
+&lt;p&gt;随着社会发展，越来越多的人将会走上终身学习的道路，而不断出现的新生儿们他们所接受的教育质量在不断提升，后来人学习领悟知识和创新的速度会不断提高，客观上导致比我们更小的年轻人正在光速追赶甚至很快就会在各方面超越，这恐怕是客观上将要发生的事情。比如在网上我有认识的小孩，现在刚刚上大一就已经对linux系统信手拈来就搞个桌面程序，他们的网络视野非常宽广。另外的话，就拿明年来说，2020年中国就要消灭绝对贫困，一个这样没有贫困人口的国家，在2020年中出生的小朋友们无疑是历史上的黄金一代，所谓的人工智能也不断涌现。面对这样的情况，先来人的我们必然面临淘汰，如果没有适当的淘汰机制则意味着冲突，在21世纪的今天冲突无疑不是我们所追求的，那么能化解和促进这样问题的，无疑就是开放研究。这也就是开放研究出现的客观情况，我想也是社会发展的必然。&lt;/p&gt;
+
+&lt;p&gt;可以看一下CERN的Opendata Portal，在17年的11月份左右就建立这样的系统了。CC0协议，是Opendata Portal 所采用的版权协议，恰巧从小米手机”小米CC“的翻译上我们也可以看到CC还可以翻译成Chic &amp;amp; Cool，很有趣。&lt;/p&gt;
+
+&lt;p&gt;现在刚开始有零星的尝试，随后继续发展到open notebook也是有可能的，等到那个时候，每个人都有机会开展自己的研究，那时又可以说物理学依然是科学界最为先锋的学科之一，这样也将会赢得历史的尊重。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Mon, 24 Dec 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/12/24/OR6.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/12/24/OR6.html</guid>
+            </item>
+        
+            <item>
+                <title>开放研究之所以可能(二)</title>
+                <description>&lt;p&gt;(不是引言)以下全文所讨论的错误系统其名字容易给人产生误导，晚上和同学聊天的过程中，同学指出逻辑上构建的系统并不是隐含着错误，而是逻辑系统本身是没有错误的，这种系统的描述可能无法完备，所以这里其实应将错误系统名字修改一下，为冗余系统。这是一个恰当的名字，但是由于下面内容均是参考，所以尊重作者以下依然成为错误系统，当然其实并没有什么错，而是有一些发展的可能，即冗余。&lt;/p&gt;
+
+&lt;p&gt;为了更好地了解和思考开放研究的可能性，这里引入一些概念来进行讨论，对科学研究过程中出现的一些问题进行所谓消避错，并且重新讨论消避错过程中的可信任问题。之所以看到错误系统这本书，只是闲来瞎逛碰到的&lt;/p&gt;
+
+&lt;p&gt;一、错误存在的判别规则和变动规律&lt;/p&gt;
+
+&lt;p&gt;1.定义与描述&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.1&lt;/strong&gt;  设 
+&lt;script type=&quot;math/tex&quot;&gt;S=[S_{0},S_{1}]&lt;/script&gt;,&lt;script type=&quot;math/tex&quot;&gt;K=\left \{ (x,y,z) | a \leqslant x \leqslant b, c\leqslant y \leqslant d, e\leqslant z \leqslant f \right \}&lt;/script&gt;,&lt;script type=&quot;math/tex&quot;&gt;Z=\left \{ z_{1},z_{2},,z_{n}\right \}&lt;/script&gt;,&lt;script type=&quot;math/tex&quot;&gt;M=\left \{m_{1},m_{2},,m_{i}\right \}&lt;/script&gt;,其中S是一个时间集，K是空间集，Z是专业组成的集，M是目的集. 显然，开放研究的发展是时间的函数.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.2&lt;/strong&gt;  这里定义规则，设G是一组规则,&lt;script type=&quot;math/tex&quot;&gt;D=S*Z*M*K&lt;/script&gt;,若映射&lt;script type=&quot;math/tex&quot;&gt;f:D\rightarrow G&lt;/script&gt;,则称f是错误判别规则函,简称规则函数,记为,
+  &lt;script type=&quot;math/tex&quot;&gt;G=f(D), G=f(s,k,z,m), G=G(s,k,z,m).&lt;/script&gt;
+  规则函数的理解:&lt;/p&gt;
+
+&lt;p&gt;a.&lt;script type=&quot;math/tex&quot;&gt;G=f(s,k_{0},z_{0},m_{0})=f(s).&lt;/script&gt;解释为,空间和领域和目的一定时,规则仅为时间的函数.&lt;/p&gt;
+
+&lt;p&gt;b.&lt;script type=&quot;math/tex&quot;&gt;G=f(s_{0},k,z_{0},m_{0})=f(k).&lt;/script&gt;解释为,时间和领域和目的一定时,规则仅为空间的函数.&lt;/p&gt;
+
+&lt;p&gt;c.&lt;script type=&quot;math/tex&quot;&gt;G=f(s_{0},k_{0},z_{0},m_{0})=f(k).&lt;/script&gt;解释为常数规则记为&lt;script type=&quot;math/tex&quot;&gt;G=G_{0}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.3&lt;/strong&gt;    义规则函数的运算律,有&lt;script type=&quot;math/tex&quot;&gt;G_{1}-G_{2}, G_{1}\wedge G_{2}, G_{1}\vee G_{2}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.4&lt;/strong&gt;    定义规则函数的交互作用,设&lt;script type=&quot;math/tex&quot;&gt;G_{1}&lt;/script&gt;和&lt;script type=&quot;math/tex&quot;&gt;G_{2}&lt;/script&gt;的论域分别为&lt;script type=&quot;math/tex&quot;&gt;U_{1}&lt;/script&gt;和&lt;script type=&quot;math/tex&quot;&gt;U_{2}&lt;/script&gt;,&lt;script type=&quot;math/tex&quot;&gt;U_{3}=U_{1}\vee U_{2}&lt;/script&gt;,G3是U3上规则函数,且有&lt;script type=&quot;math/tex&quot;&gt;G_{3}=G_{1} \vee G_{2}&lt;/script&gt;,若&lt;script type=&quot;math/tex&quot;&gt;\forall a \in U_{3}&lt;/script&gt;且对&lt;script type=&quot;math/tex&quot;&gt;G_{1},G_{2},G_{3}&lt;/script&gt;有错误值z1,z2,z3且&lt;script type=&quot;math/tex&quot;&gt;z_{3}=min[z_{1},z_{2}]&lt;/script&gt;,则称G1与G2对于论U3是无错误交互作用,否则有交互作用.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.5&lt;/strong&gt;   若p是一个命题,则称&lt;script type=&quot;math/tex&quot;&gt;\bar{p}&lt;/script&gt;称为p的非,记为-p,若对规则&lt;script type=&quot;math/tex&quot;&gt;G_{1}={g_{1},g_{2},...,g_{n}}有G_{2}={-g_{1},-g_{2},...,-g_{n}}&lt;/script&gt;,则记 &lt;script type=&quot;math/tex&quot;&gt;G_{2}=-G_{1}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;命题1.1&lt;/strong&gt;   规则的负满足&lt;script type=&quot;math/tex&quot;&gt;-(-G)=G&lt;/script&gt;,由此规则可以得到自由&lt;script type=&quot;math/tex&quot;&gt;L=G+(-G)&lt;/script&gt;.其实我们这里可以定义&lt;script type=&quot;math/tex&quot;&gt;0=L&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.6&lt;/strong&gt;   设G是U上一组无错误规则,若&lt;script type=&quot;math/tex&quot;&gt;\forall a \in U&lt;/script&gt;,a对于G的错误值是t,而对于U上任意一组无错误规则Gi的值是ti,且均有&lt;script type=&quot;math/tex&quot;&gt;t\leqslant t_{i}&lt;/script&gt;成立,则称G是U上一组完备规则,记为&lt;script type=&quot;math/tex&quot;&gt;\omega U(G)&lt;/script&gt;. 对这样的一组完备规则G,可称之为论域U上有资格的规则.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;定义1.7&lt;/strong&gt;   首先这里定义错误判别规则的等价,若有&lt;script type=&quot;math/tex&quot;&gt;G_{1}\leftarrow G_{2}, G_{1}\rightarrow G_{2}&lt;/script&gt;,则称G1与G2等价记作G1~G2.接上,若有两等价规则,且G1是G2的真子集,则G1优于G2,可以记作&lt;script type=&quot;math/tex&quot;&gt;G_{1}&amp;gt;G_{2}&lt;/script&gt;. 在论域U中,若G1在U上完备,G2在U上不完备,则G1优于G2,还有如果G1比G2更容易实施,则G1优于G2.&lt;/p&gt;
+
+&lt;p&gt;2.错误判别规则的建立或识别错误的模式.&lt;/p&gt;
+
+&lt;p&gt;二、错误系统的基本结构和特点
+1.基本特点
+层次等级性和多侧面性,也就是说错误系统中研究的对象是有层次有等级,反映出随着问题探讨的深度与方面,会呈现出不同的等级,反映出不同的侧面,像洋葱一样.
+2.错误系统的基本结构及拓铺
+串联型与连锁性
+并联型与扩缩性
+反馈型与循环性
+蕴含型与中心性&lt;/p&gt;
+
+&lt;p&gt;3.系统的基本分类
+整体错误系统
+因果错误系统
+错误系统的独立与联系
+循环错误&lt;/p&gt;
+
+&lt;p&gt;三、消避错的基本形式
+错误系统的结构变换&lt;/p&gt;
+
+&lt;p&gt;要素与打断
+产生与消除
+置换与增加&lt;/p&gt;
+
+&lt;p&gt;四、可信任问题的讨论
+论域与规则的变换&lt;/p&gt;
+
+&lt;p&gt;可信任问题的论域与规则&lt;/p&gt;
+
+&lt;p&gt;五、可计算与示例
+简单问题的计算与示例&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;以上内容参考自《错误系统》(郭开仲著)&lt;/em&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~未完待续~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Fri, 16 Nov 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/11/16/OR5.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/11/16/OR5.html</guid>
+            </item>
+        
+            <item>
+                <title>试对开放研究的评论1</title>
+                <description>&lt;blockquote&gt;
+  &lt;p&gt;(引言)为什么要有开放研究与开放科学两个名字呢？在我的小站里就写成是开放研究了，因为觉得“研究”二字既是名词也是动词，而开放科学是一个不断发展的概念，所以用动词“研究”来描述更有活力一些。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;一、同文艺评论的类比&lt;/p&gt;
+
+&lt;p&gt;　　我们在欣赏艺术作品时，难免会想这个作品的水平是怎么样的？这个作品相比于其他的有什么异同？有哪些优秀的方面？有什么历史渊源？长久以来的艺术形式太多，纷繁复杂，如何鉴赏艺术作品这一问题已经不单单是看的好看听着好听那样简单了，鉴赏家们逐渐引导人们建立了有效的评价方式，也就被称为_文艺评论_，其形式多种多样，有非常专业的方法。所以下面，同样地，对于开放研究这种富有个人特质的、每个人自由选择研究方式的活动，也可以试着对其进行一些评论，寻找其中的风格和特色，我想这将是非常有趣的，这也是对过往所看到的一些东西的梳理。&lt;/p&gt;
+
+&lt;p&gt;二、从几个人来看&lt;/p&gt;
+
+&lt;p&gt;　　首先，来看看，王垠。垠神所擅长似乎是编程语言的开发，他对计算机科学有很深入的了解，曾在数个顶尖的学校学习，并且在微软google英特尔都有工作经历。其为人谦虚，他曾经想把计算机的基本结构讲一讲，后来觉得水太深就放弃了，曾说自己实在不擅长写书，然而，他的博文已经写了100多篇，其实还有很多未收录的篇幅网络上有，这些内容放在一起已经成书而且是带着他的一部分人生来书写的，很了不起。他对自动驾驶的简单论断，一语中的，自动驾驶案的结案确是惊慌失措。&lt;/p&gt;
+
+&lt;p&gt;　　第2位，阮一峰。本博客就是从阮一峰的文章起步的，字里行间可见他对自由软件运动的信心，并持之以恒地写东西。&lt;/p&gt;
+
+&lt;p&gt;　　第3位，李杀。这一位写的东西，则像很多人写的东西有点读不懂，有点神经质有点重口味，但是从这里开始引起我注意的正是下面的内容，钱。&lt;/p&gt;
+
+&lt;p&gt;　　是的，李杀的网站下面有链接&lt;a href=&quot;https://www.patreon.com/&quot;&gt;patreon&lt;/a&gt;，他的网站是收费的；看一下王垠网站的二维码，也是收费；阮一峰的广告位？当然是收费的。可是他们的内容不是隐藏的，而是开放人人可读的，知识付费固然可取，然而人言可畏，“有不虞之誉，有求全之毁”。生活所迫，纷纷扰扰，开放研究者对金钱是如何看待的？“君子爱财，取之有道”，同样是选择方式做开放研究，这几位无疑做了最为大胆的探索。&lt;/p&gt;
+
+&lt;p&gt;三、个人特质与我们的生活&lt;/p&gt;
+
+&lt;p&gt;　　开放研究有一些基本想法，而究竟如何做？如何发展？不会有限定的答案，否则将违背了开放本身。可是总归从一些人身上，我们可以读到很多东西。传统研究将人视为历史和社会的部分，可是辩证不可违，其矛盾面在这样片面的观点下正茁壮成长，发展为人格特质，二者相互激励。开放研究正是遵循这一基本规律，其开放本质与人格特质相结合，从裁定和规范人创造的科学研究行为转变为以发展的眼光，允许各自选择方式方法进行科学研究。其实这一过程也正在我们各自的生活中发生着。&lt;/p&gt;
+
+&lt;p&gt;　　在全球化下，人们相互之间的沟通益深，行业在欢迎每个人加入，人工智能的出现也在帮助这方面的发展，比如grammar软件，可以用来做英语词汇纠错和简单的语法匹配，虽然高级功能是收费的，但其实普通功能就很好用了；还比如知识分享的社区，经过对信息的筛选可以训练其背后的人工智能，来更快地获取方法，当然对于信息分享的态度也都是各有办法，V2EX不允许删除历史记录，豆瓣知乎等无历史记录可随意更改；甚至包括音乐上的分享，有musescore这样的平台，将各自或写或听得的乐谱上传上来，还有google magenta和google主页上的编曲小游戏，人工智能可以辅助作曲非常有趣，这些音乐是开放的每个人都可以玩一下。&lt;/p&gt;
+
+&lt;p&gt;　　可以看到，在这样那样的平台下，人人可以选择自己分享知识方法的方式方法，这种特别即是直接反映和肯定了每个人的人格特质，使每个人都有机会把握自己的生活。&lt;/p&gt;
+
+&lt;p&gt;四、开放研究的有趣之处&lt;/p&gt;
+
+&lt;p&gt;　　3天之前，也就是19年3月12日，正值(WWW)万维网诞生30周年，蒂姆·伯纳斯·李提出互联网概念的初衷就是分享知识，然而出于对互联网健康发展的愿景，这位出生于1955年的英国勋爵再次重出江湖意图重振互联网。李勋爵重新建立了公司Inrupt，然后推行了[Contract of Web协议]和[SOLiD]的去中心化的新互联网服务，分别对应了守则和技术，当网速飞快提升，中心化趋势似成必然之时，依然坚守自己的道路。正好今天是315晚会，今年消费者所遇到的问题，正好就是印证了李勋爵的观点，而无疑他早早走在了大家的前面，计算机科学有这样的人在确实令人惊叹。&lt;/p&gt;
+
+&lt;p&gt;　　另外一个有趣的地方在于，所谓问题出在哪里？其实就如我这样普通人来说，又能提出什么问题呢？所谓出问题，最可怕的就是一大群人，他们早已知晓你的问题在哪里，甚至早已得到答案，然而他们不说不提，他们只是在旁边冷笑，常常会看到这种冷笑，这是非常之有趣的，这就是开放科学的一个有趣之处。当然可以看到做开放科学的人不会是这样的，他们多少要发一点声音，也许是帮助也许是无聊，甚至是胡闹，也可能是默不作声，但是他们报以理解，他们不会冷笑。&lt;/p&gt;
+
+&lt;p&gt;　　另外一个有趣的地方在于，所谓交流的概念？其实就如我这样普通人来说，又该如何参与交流呢？所谓交流，最可怕的就是一大群人，他们忘记了交流是相互的，从来交流都带着条件，条件呢又是不成文的规则(笑)，硬生生把交流搞成了单流，规则呢则是有趣的，目的呢是高端的游戏，谈笑间跳起娇柔扭捏的舞蹈。开放研究则不同，是无任何趣味可言的，游戏是绝然没有的，开放的交流先要做的是分享是共享，尽量排除双方的任何条件，双方主动参与，然而他们是奇怪的，在此基础上所谓分歧他们是不懂的，所谓创造也只是他们的心跳，所谓科学也只是他们的呼吸也没有在意，他们竟然也是不会笑的，他们只是下棋，棋面则是最后达成的合同，写成一份文件作为棋谱，名为协议。&lt;/p&gt;
+
+&lt;p&gt;　　当人们困惑之时，却极易发现开放研究的乐趣，就在于那些想要帮助我们的人，正在不遗余力地进行着奋斗，我们只要张开双臂拥抱他们就可以了，那么轻松那么自然。可是有些人，当邻居家煮了一些饺子敲敲门想让我们尝尝，我们却大叫，“什么意思？难道嘲笑我不会煮饺子吗？”，却因此而噤若寒蝉，莫非是一种高端的幽默吗？&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Wed, 24 Oct 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/10/24/OR4.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/10/24/OR4.html</guid>
+            </item>
+        
+            <item>
+                <title>高能物理实验展望</title>
+                <description>&lt;p&gt;高能物理实验目前虽然自己已经接触到了，但是由于仅仅是做实验数据统计分析，所以只是做了一个螺丝钉，久而久之极易忘却物理本身。这里试着快速抄一点东西看一看，以便使自己尽可能成为实验物理研究的一员。最近也看到是北京正负电子对撞机建成30周年，也祝愿中国的高能物理事业蒸蒸日上。
+在之前&lt;a href=&quot;http://chuansong.me/n/669376351760&quot;&gt;杨振宁的文章&lt;/a&gt;中我们可以看到，其对加速器物理不无悲观态度，提出应该探寻新型加速器的可能。自己懂不多，这里分成两种，一是新的技术旧的物理过程，二是探索新的物理过程。&lt;/p&gt;
+
+&lt;p&gt;##旧的对撞，新的加速器技术
+首先要提及的是旧的对撞是什么意思，也就是要看一看大体上世界上的对撞机都是什么基本粒子的对撞。
+旧的对撞也就是带电粒子通过电磁相互作用进行操纵后进行对撞，新的技术，则可以了解一下激光加速。&lt;/p&gt;
+
+&lt;p&gt;激光尾波场加速原理，有很大的加速梯度，粒子团簇中的粒子数目，发散角，能谱宽度都是重要的指标，目标是产生能量单色性好的电子束。大振幅静电波，等离子体波，等离子体电子密度，相速度与最大振幅有关。尾波场模式与激光脉冲长度有关&lt;/p&gt;
+
+&lt;p&gt;##新的对撞
+对撞的基本粒子与过去不同，这样的讨论有许多，如gamma-e，或者e-p，等等。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Sat, 13 Oct 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/10/13/ex1.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/10/13/ex1.html</guid>
+            </item>
+        
+            <item>
+                <title>试做名词解释</title>
+                <description>&lt;p&gt;这里试着对一些接触到的名词进行了解，避免因为专业词汇产生障碍，当然很多可能理解错误随着学习会再修改。这里绝不做科普，所以可能需要数学描述和公式的展示，或者易于了解的参考文献，但是碍于水平依然要之后修改。最近刚刚配置兼容了公式。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;连续区？共振区?原子核反应理论？&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;词源分析: Topology?
+拓扑topo一词的词源是“处所”的概念[希腊空间概念的发展]，后来发展为“空间”，而在数学中由于对空间的研究引申为“几何”，在对几何的分析中发现需要对几何进行刻画又有了“分类”的意思。计算机常用该词来描述网络的连接和分布情况。至于为何高能物理实验中对衰变道的描述要使用这词，首先想到的是分类的概念，即对粒子的衰变情况进行分类，而至于是否有说明衰变前后双方的数学空间有在连续的变换下不变的性质有可能。&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是龙格库塔方法?了解什么是Hough transform？霍夫变换
+可能是数值计算偏微分方程的一个算法，经过共形变换霍夫变换后，可用来帮助径迹拟合，得到更精确的结果。&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是龙格楞次矢量?
+想起来面试时候问到龙格库塔方法，我还以为是问隆格楞次矢量，我们都知道关于动量守恒的扩展，有角动量守恒，还有一个守恒的动量，中心立场下LRL矢量(拉普拉斯-隆格-楞次矢量)和哈密顿量対易。另外在量子力学中，在&lt;a href=&quot;https://www.zhihu.com/question/38127085/answer/75000258&quot;&gt;回答&lt;/a&gt;中，讨论有关薛定谔方程计算氢原子外自由电子体系简并自由度如果只考虑角动量，则为2l+1，因此单单角动量数学空间是不够的需要加入该LRL矢量，这时才得到了正确的简并度，也说明了LRL矢量的重要性，不应忽略。
+如果没有理解数学空间？那在21世纪的今天，所谓数学恐怕就白学了，忘记了就再看看吧&lt;a href=&quot;http://open.163.com/movie/2013/3/T/0/M8PTB0GHI_M8PTBUHT0.html&quot;&gt;数学之旅&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是轻子普适性?Lepton universal
+在标准模型拉氏量中，三代轻子与其他场的耦合均有相同的耦合常数，也就是参与相互作用的强度是相同的。实验上用比值来进行测量，和CP破坏的算式有些类似。&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是R值?&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是MCtruth信息?&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是Double Counting? 什么是Crossover概念?&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Double Counting 从名字上看就是数了两次，当产生两个不同的ExclusiveMC时，虽然看起来是不相同的物理衰变过程，但是如果其中的衰变有交叉的物理过程，则可能重复数了一次，这时我们要想办法减少一次以便和物理符合。
+(之前的错误理解)Crossover Background 有些类似，当研究两个不同的衰变时，由于这两个衰变之间有共轭的关系，则有可能一个衰变成为另一个衰变的本底，这个时候可以使用其中一个衰变的MC来对另一个过程进行检验，如出现峰值背景则有可能出现了交叉本底的情况。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是Hidden Charm？Open Charm?&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这个名字起的很有意思，这里来看看。首先这个是在粲物理中常用的名词，这里的Charm指粲夸克(c)，这两个名字指代不同的能区，能区的分界线由该能区粒子的衰变产物所描述，也就是D介子，D介子是携带粲夸克的最轻粒子，在此能区之上将会可能产生由粲夸克参与构成的粒子如可衰变为DDbar，在此能区之下所产生的粒子则难以包括粲夸克(DDbar产生不了了)，并且两个能区的衰变道不同是分开的。这个名字起的非常有趣，过度解读一下，可能是由于我们不知道这粲夸克去哪了所以我们说它藏起来了(Hidden)，能量转化竟然变成其他的夸克。当然我们现在知道并不一定如此，也有前述的能量阈值之上的粒子与之下的衰变发生较强的耦合，这种粒子我们称之为奇特态(exotic state)。&lt;/p&gt;
+
+&lt;p&gt;由此推想，还可以继续起名字，即Open Bottom，Hidden Bottom。在B物理中，存在同样的特殊的衰变产物，Upsilon介子，是携带b夸克的最轻的粒子，那么我们可以称可以产生Upsilon介子的能区为Open Bottom，能区之下难以产生则称之为Hidden Bottom。这里我们还可以注意的是，首次观测到的b夸克物质就是Upsilon介子，而首次观测到的粲夸克物质是J/psi粒子而不是D介子，这是由于D介子多由$D D\bar$能区产生，该能区高于J/psi粒子产生的能区，因而首次发现的含粲夸克的粒子即为J/psi粒子。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;了解什么是Fast Simulation？什么是Full simulation?&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;两个都是指粒子物理实验常用的随机模拟方法，其中Full Simulation非常厉害，基本上在建造实验装置前可以用它来进行很全面的模拟，可以对实验目标的可行性和设计方案给出一定的评估。原因就是，这个Full说明了它在进行模拟时，可以构造探测器的几何结构还可以配置其中的物质成分，当实验发生时可以用构造一个模拟系统，来利用现有的相互作用理论模拟其中的粒子发生相互作用的一些基本过程，可以考虑几何结构，就可以对实验设计的具体情况进行调整和评估。在探测器运行阶段，则如可以使用Geant4[https://linkinghub.elsevier.com/retrieve/pii/S0168900203013688]通过模拟来估计探测器响应，现在似乎已经出来Geant5了。&lt;/p&gt;
+
+&lt;p&gt;Fast Simulation，就是仅仅考虑了实验可能得到的结果，基于ROOT的TGenPhaseSpace来做简单的相空间模拟，对于探测器结构也基本用ROOT就可以做出，然后物理特性用Smear的方法，对预计的物理分布进行展宽，这样模拟考虑的没有Full那样全面，只能看看可行性，只用相空间产生的话有些实验可能不够，只是进行粗略的估计。
+当然其实这是做模拟的才明白，自己是做数据分析仅做了解。&lt;/p&gt;
+
+</description>
+                <pubDate>Thu, 19 Jul 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/07/19/method7.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/07/19/method7.html</guid>
+            </item>
+        
+            <item>
+                <title>如何问问题?</title>
+                <description>&lt;p&gt;什么是一个好问题？&lt;/p&gt;
+
+&lt;p&gt;想要搞清楚这个非常之难，是反映水平的直接方式，听报告自己没有问过问题，主要听听别人怎么问，这里只能管窥。一个好的问题，我想可以问该研究中关注的重点，有想法也可以提供帮助对策，也可以问及自己研究与该研究有交集的部分，如果能为听闻的所有人都有帮助也很不错，或者对该研究想法的延伸和见解。还有经验丰富的人对新手的关照和严格要求也是很好的问题，类似于围棋中的执导棋，例如有老师问过:分析中出现了运动学拟合，那么在运动学拟合之后粒子动量的“测量精度”是变好了？还是变坏了？答案是变好了，可能还要继续问其程度会约有多大能不能量化有没有百分比？还没有搞懂，需要待了解后再答。&lt;/p&gt;
+
+&lt;p&gt;可以问一些什么问题？&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;当然其实只要有问题想问就能问，不过不要’为了问’而问，要动脑子而不是走形式。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当探测相同的例子或衰变道时，如出现几个费曼图来表示多个物理过程在一起测量时，可以询问是否在实验中考虑了overlap。这是因为在散射截面的测量中，量子力学给出不同振幅的叠加会出现相干项，振幅不是平方相加的而是相加后再平方。而在实际的实验中，有时候这种overlap项是探测装置不容易捕获进行分析的，所以有时候需要进行特殊处理。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当拟合出来的不变质量谱出现明显不明“身份”的峰值，可以问一问是什么，涉及背景分析，一般好的研究都会了解每个峰值背景的贡献成分是什么，不会放着不管的，当然有时候是大家都知道就不说了，也可以问问身边的人。除此之外，看到的实验分布若有意料之外的形状改变(没错，应该在画出图之前先预想一下物理分布是什么样的)，都意味着实验探测对原物理分布做了修正，这种修正也是实验非常关心的，都是大家想要探讨清楚的内容。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Wed, 18 Jul 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/07/18/method6.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/07/18/method6.html</guid>
+            </item>
+        
+            <item>
+                <title>如何用ROOT做联合拟合？</title>
+                <description>&lt;p&gt;&lt;em&gt;“你本来不该知道这些的，可是现在我们没有更好的工具，所以得这样弄一下……”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做联合拟合？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;首先这里就是应用Roofit的例子(Tutorials)来学习做联合拟合(SimutaneousFit)，这是一个比较常用的东西，当利用多个衰变道来重建共同的共振态时，可能要share一些变量，这样在拟合中可以得到描述该共振态共同的变量值，进而完成拟合。&lt;/p&gt;
+
+&lt;p&gt;这里就试着来看看例子&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-coderay&quot;&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;首先这里是个声明，在总的ROOT体系里使用了[LGPL2.1协议](https://root.cern.ch/license)，这位WouterVerkerke贡献了该例子
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;//////////////////////////////////////////////////////////////////////////
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;//
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;// 'ORGANIZATION AND SIMULTANEOUS FITS' RooFit tutorial macro #501
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;//
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;// Using simultaneous p.d.f.s to describe simultaneous fits to multiple
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;// datasets
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;//
+&lt;span class=&quot;line-numbers&quot;&gt;  &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;// 07/2008 - Wouter Verkerke
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;//
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;/////////////////////////////////////////////////////////////////////////
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;// 头文件，名字起的很有代表性，大家用的程序要有编程规范，不然容易乱套
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;// 其实主要是需要编译时最需要，不过编译好久没有用了，现在我不太会了忘记了，一般找个MakeFile比较好
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;// CMake是用来写MakeFile的编译工具，很有意思，MakeFile用来指挥编译按步骤进行，CMake用来写指挥MakeFile如何写
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;#ifndef __CINT__
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooGlobalFunc.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;#endif
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;#include &amp;quot;RooRealVar.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooDataSet.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooGaussian.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooConstVar.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooChebychev.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooAddPdf.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n26&quot; name=&quot;n26&quot;&gt;26&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooSimultaneous.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n27&quot; name=&quot;n27&quot;&gt;27&lt;/a&gt;&lt;/span&gt;#include &amp;quot;RooCategory.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n28&quot; name=&quot;n28&quot;&gt;28&lt;/a&gt;&lt;/span&gt;#include &amp;quot;TCanvas.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n29&quot; name=&quot;n29&quot;&gt;29&lt;/a&gt;&lt;/span&gt;#include &amp;quot;TAxis.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n30&quot; name=&quot;n30&quot;&gt;30&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;#include &amp;quot;RooPlot.h&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n31&quot; name=&quot;n31&quot;&gt;31&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n32&quot; name=&quot;n32&quot;&gt;32&lt;/a&gt;&lt;/span&gt;// 命名空间，像一种局部用的目录，防止重名，当然没遇到重的所以暂时还不懂
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n33&quot; name=&quot;n33&quot;&gt;33&lt;/a&gt;&lt;/span&gt;using namespace RooFit ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n34&quot; name=&quot;n34&quot;&gt;34&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n35&quot; name=&quot;n35&quot;&gt;35&lt;/a&gt;&lt;/span&gt;void rf501_simultaneouspdf()
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n36&quot; name=&quot;n36&quot;&gt;36&lt;/a&gt;&lt;/span&gt;{
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n37&quot; name=&quot;n37&quot;&gt;37&lt;/a&gt;&lt;/span&gt;  // C r e a t e   m o d e l   f o r   p h y s i c s   s a m p l e
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n38&quot; name=&quot;n38&quot;&gt;38&lt;/a&gt;&lt;/span&gt;  // -------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n39&quot; name=&quot;n39&quot;&gt;39&lt;/a&gt;&lt;/span&gt;  // Create observables
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n40&quot; name=&quot;n40&quot;&gt;40&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // 这里首先定义了变量x用来构建实验分布的模型
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n41&quot; name=&quot;n41&quot;&gt;41&lt;/a&gt;&lt;/span&gt;  RooRealVar x(&amp;quot;x&amp;quot;,&amp;quot;x&amp;quot;,-8,8) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n42&quot; name=&quot;n42&quot;&gt;42&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n43&quot; name=&quot;n43&quot;&gt;43&lt;/a&gt;&lt;/span&gt;  // Construct signal pdf
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n44&quot; name=&quot;n44&quot;&gt;44&lt;/a&gt;&lt;/span&gt;  // 定义了信号的概率密度函数，这里有中心值、sigma自变量x一起构造高斯函数
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n45&quot; name=&quot;n45&quot;&gt;45&lt;/a&gt;&lt;/span&gt;  // 经常有听到拿“形状”，指的其实就是概率密度函数的形状
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n46&quot; name=&quot;n46&quot;&gt;46&lt;/a&gt;&lt;/span&gt;  RooRealVar mean(&amp;quot;mean&amp;quot;,&amp;quot;mean&amp;quot;,0,-8,8) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n47&quot; name=&quot;n47&quot;&gt;47&lt;/a&gt;&lt;/span&gt;  RooRealVar sigma(&amp;quot;sigma&amp;quot;,&amp;quot;sigma&amp;quot;,0.3,0.1,10) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n48&quot; name=&quot;n48&quot;&gt;48&lt;/a&gt;&lt;/span&gt;  RooGaussian gx(&amp;quot;gx&amp;quot;,&amp;quot;gx&amp;quot;,x,mean,sigma) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n49&quot; name=&quot;n49&quot;&gt;49&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n50&quot; name=&quot;n50&quot;&gt;50&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // Construct background pdf
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n51&quot; name=&quot;n51&quot;&gt;51&lt;/a&gt;&lt;/span&gt;  // 类似于前面构造二阶切比雪夫作为本底概率密度函数，a0和a1作为其中系数
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n52&quot; name=&quot;n52&quot;&gt;52&lt;/a&gt;&lt;/span&gt;  RooRealVar a0(&amp;quot;a0&amp;quot;,&amp;quot;a0&amp;quot;,-0.1,-1,1) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n53&quot; name=&quot;n53&quot;&gt;53&lt;/a&gt;&lt;/span&gt;  RooRealVar a1(&amp;quot;a1&amp;quot;,&amp;quot;a1&amp;quot;,0.004,-1,1) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n54&quot; name=&quot;n54&quot;&gt;54&lt;/a&gt;&lt;/span&gt;  RooChebychev px(&amp;quot;px&amp;quot;,&amp;quot;px&amp;quot;,x,RooArgSet(a0,a1)) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n55&quot; name=&quot;n55&quot;&gt;55&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n56&quot; name=&quot;n56&quot;&gt;56&lt;/a&gt;&lt;/span&gt;  // Construct composite pdf
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n57&quot; name=&quot;n57&quot;&gt;57&lt;/a&gt;&lt;/span&gt;  // 再次定义变量f，作为最后构造的物理分布模型的自变量，所得值为上两函数的和，用了RooArgList类
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n58&quot; name=&quot;n58&quot;&gt;58&lt;/a&gt;&lt;/span&gt;  RooRealVar f(&amp;quot;f&amp;quot;,&amp;quot;f&amp;quot;,0.2,0.,1.);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n59&quot; name=&quot;n59&quot;&gt;59&lt;/a&gt;&lt;/span&gt;  RooAddPdf model(&amp;quot;model&amp;quot;,&amp;quot;model&amp;quot;,RooArgList(gx,px),f);
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n60&quot; name=&quot;n60&quot;&gt;60&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n61&quot; name=&quot;n61&quot;&gt;61&lt;/a&gt;&lt;/span&gt;  // C r e a t e   m o d e l   f o r   c o n t r o l   s a m p l e
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n62&quot; name=&quot;n62&quot;&gt;62&lt;/a&gt;&lt;/span&gt;  // --------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n63&quot; name=&quot;n63&quot;&gt;63&lt;/a&gt;&lt;/span&gt;  // Construct signal pdf.
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n64&quot; name=&quot;n64&quot;&gt;64&lt;/a&gt;&lt;/span&gt;  // NOTE that sigma is shared with the signal sample model
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n65&quot; name=&quot;n65&quot;&gt;65&lt;/a&gt;&lt;/span&gt;  RooRealVar mean_ctl(&amp;quot;mean_ctl&amp;quot;,&amp;quot;mean_ctl&amp;quot;,-3,-8,8) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n66&quot; name=&quot;n66&quot;&gt;66&lt;/a&gt;&lt;/span&gt;  RooGaussian gx_ctl(&amp;quot;gx_ctl&amp;quot;,&amp;quot;gx_ctl&amp;quot;,x,mean_ctl,sigma) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n67&quot; name=&quot;n67&quot;&gt;67&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n68&quot; name=&quot;n68&quot;&gt;68&lt;/a&gt;&lt;/span&gt;  // Construct the background pdf
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n69&quot; name=&quot;n69&quot;&gt;69&lt;/a&gt;&lt;/span&gt;  RooRealVar a0_ctl(&amp;quot;a0_ctl&amp;quot;,&amp;quot;a0_ctl&amp;quot;,-0.1,-1,1) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n70&quot; name=&quot;n70&quot;&gt;70&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  RooRealVar a1_ctl(&amp;quot;a1_ctl&amp;quot;,&amp;quot;a1_ctl&amp;quot;,0.5,-0.1,1) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n71&quot; name=&quot;n71&quot;&gt;71&lt;/a&gt;&lt;/span&gt;  RooChebychev px_ctl(&amp;quot;px_ctl&amp;quot;,&amp;quot;px_ctl&amp;quot;,x,RooArgSet(a0_ctl,a1_ctl)) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n72&quot; name=&quot;n72&quot;&gt;72&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n73&quot; name=&quot;n73&quot;&gt;73&lt;/a&gt;&lt;/span&gt;  // Construct the composite model
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n74&quot; name=&quot;n74&quot;&gt;74&lt;/a&gt;&lt;/span&gt;  // 这里可以看到，不同的“形状”代表了不同的实验分布，分别反映了信号概率密度函数形状，探测器分辨等
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n75&quot; name=&quot;n75&quot;&gt;75&lt;/a&gt;&lt;/span&gt;  // 然后将他们“组合”也就是卷积在一起，来表达该物理过程我们想要了解的实验分布
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n76&quot; name=&quot;n76&quot;&gt;76&lt;/a&gt;&lt;/span&gt;  RooRealVar f_ctl(&amp;quot;f_ctl&amp;quot;,&amp;quot;f_ctl&amp;quot;,0.5,0.,1.) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n77&quot; name=&quot;n77&quot;&gt;77&lt;/a&gt;&lt;/span&gt;  RooAddPdf model_ctl(&amp;quot;model_ctl&amp;quot;,&amp;quot;model_ctl&amp;quot;,RooArgList(gx_ctl,px_ctl),f_ctl) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n78&quot; name=&quot;n78&quot;&gt;78&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n79&quot; name=&quot;n79&quot;&gt;79&lt;/a&gt;&lt;/span&gt;  // G e n e r a t e   e v e n t s   f o r   b o t h   s a m p l e s
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n80&quot; name=&quot;n80&quot;&gt;80&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // ---------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n81&quot; name=&quot;n81&quot;&gt;81&lt;/a&gt;&lt;/span&gt;  // Generate 1000 events in x and y from model
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n82&quot; name=&quot;n82&quot;&gt;82&lt;/a&gt;&lt;/span&gt;  RooDataSet *data = model.generate(RooArgSet(x),100) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n83&quot; name=&quot;n83&quot;&gt;83&lt;/a&gt;&lt;/span&gt;  RooDataSet *data_ctl = model_ctl.generate(RooArgSet(x),2000) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n84&quot; name=&quot;n84&quot;&gt;84&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n85&quot; name=&quot;n85&quot;&gt;85&lt;/a&gt;&lt;/span&gt;  // C r e a t e   i n d e x   c a t e g o r y   a n d   j o i n   s a m p l e s
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n86&quot; name=&quot;n86&quot;&gt;86&lt;/a&gt;&lt;/span&gt;  // ---------------------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n87&quot; name=&quot;n87&quot;&gt;87&lt;/a&gt;&lt;/span&gt;  // Define category to distinguish physics and control samples events
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n88&quot; name=&quot;n88&quot;&gt;88&lt;/a&gt;&lt;/span&gt;  // 这里定义了一个目录其中命名均为字符串，所以名字里面空格会识别为字符，所以要谨慎，加不加空格是两个名字
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n89&quot; name=&quot;n89&quot;&gt;89&lt;/a&gt;&lt;/span&gt;  RooCategory sample(&amp;quot;sample&amp;quot;,&amp;quot;sample&amp;quot;) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;strong&gt;&lt;a href=&quot;#n90&quot; name=&quot;n90&quot;&gt;90&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  sample.defineType(&amp;quot;physics&amp;quot;) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n91&quot; name=&quot;n91&quot;&gt;91&lt;/a&gt;&lt;/span&gt;  sample.defineType(&amp;quot;control&amp;quot;) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n92&quot; name=&quot;n92&quot;&gt;92&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n93&quot; name=&quot;n93&quot;&gt;93&lt;/a&gt;&lt;/span&gt;  // Construct combined dataset in (x,sample)
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n94&quot; name=&quot;n94&quot;&gt;94&lt;/a&gt;&lt;/span&gt;  // 将数据导入到RooDataSet里面，其中有目录Index(sample)，还有变量x，并将目录中的名字与数据集关联起来
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n95&quot; name=&quot;n95&quot;&gt;95&lt;/a&gt;&lt;/span&gt;  RooDataSet combData(&amp;quot;combData&amp;quot;,&amp;quot;combined data&amp;quot;,x,Index(sample),Import(&amp;quot;physics&amp;quot;,*data),Import(&amp;quot;control&amp;quot;,*data_ctl)) ;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n96&quot; name=&quot;n96&quot;&gt;96&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n97&quot; name=&quot;n97&quot;&gt;97&lt;/a&gt;&lt;/span&gt;  // C o n s t r u c t   a   s i m u l t a n e o u s   p d f   i n   ( x , s a m p l e )
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n98&quot; name=&quot;n98&quot;&gt;98&lt;/a&gt;&lt;/span&gt;  // -----------------------------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n99&quot; name=&quot;n99&quot;&gt;99&lt;/a&gt;&lt;/span&gt;  // Construct a simultaneous pdf using category sample as index
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n100&quot; name=&quot;n100&quot;&gt;100&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // 这里我们将之前定义的目录送入RooSimultaneous类中去，然后
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n101&quot; name=&quot;n101&quot;&gt;101&lt;/a&gt;&lt;/span&gt;  RooSimultaneous simPdf(&amp;quot;simPdf&amp;quot;,&amp;quot;simultaneous pdf&amp;quot;,sample) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n102&quot; name=&quot;n102&quot;&gt;102&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n103&quot; name=&quot;n103&quot;&gt;103&lt;/a&gt;&lt;/span&gt;  // 这里将之前定义的分布模型放到RooSimultaneous类的sample里面去，
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n104&quot; name=&quot;n104&quot;&gt;104&lt;/a&gt;&lt;/span&gt;  // Associate model with the physics state and model_ctl with the control state
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n105&quot; name=&quot;n105&quot;&gt;105&lt;/a&gt;&lt;/span&gt;  simPdf.addPdf(model,&amp;quot;physics&amp;quot;) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n106&quot; name=&quot;n106&quot;&gt;106&lt;/a&gt;&lt;/span&gt;  simPdf.addPdf(model_ctl,&amp;quot;control&amp;quot;) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n107&quot; name=&quot;n107&quot;&gt;107&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n108&quot; name=&quot;n108&quot;&gt;108&lt;/a&gt;&lt;/span&gt;  // 这里将数据进行拟合，拟合的目标物理分布的模型就是前面的
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n109&quot; name=&quot;n109&quot;&gt;109&lt;/a&gt;&lt;/span&gt;  // P e r f o r m   a   s i m u l t a n e o u s   f i t
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n110&quot; name=&quot;n110&quot;&gt;110&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // ---------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n111&quot; name=&quot;n111&quot;&gt;111&lt;/a&gt;&lt;/span&gt;  // Perform simultaneous fit of model to data and model_ctl to data_ctl
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n112&quot; name=&quot;n112&quot;&gt;112&lt;/a&gt;&lt;/span&gt;  simPdf.fitTo(combData) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n113&quot; name=&quot;n113&quot;&gt;113&lt;/a&gt;&lt;/span&gt;  // 到此为止，就完成了拟合的计算过程，其实已经结束了，只是不直观要画图
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n114&quot; name=&quot;n114&quot;&gt;114&lt;/a&gt;&lt;/span&gt;  // 可以看出，RooSimultaneous就是一个类中包含了多个模型，这些多个模型的公共参数用来描绘共同的一个物理分布。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n115&quot; name=&quot;n115&quot;&gt;115&lt;/a&gt;&lt;/span&gt;  // 这种多个模型，可以来自于不同衰变道，也可以来自于不同的样本如例子中随机产生的物理分布和控制样本。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n116&quot; name=&quot;n116&quot;&gt;116&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n117&quot; name=&quot;n117&quot;&gt;117&lt;/a&gt;&lt;/span&gt;  // P l o t   m o d e l   s l i c e s   o n   d a t a    s l i c e s
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n118&quot; name=&quot;n118&quot;&gt;118&lt;/a&gt;&lt;/span&gt;  // ----------------------------------------------------------------
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n119&quot; name=&quot;n119&quot;&gt;119&lt;/a&gt;&lt;/span&gt;  // Make a frame for the physics sample
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n120&quot; name=&quot;n120&quot;&gt;120&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // 画图的RooPlot，用来载入画图的内容，在这里定义了分bin
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n121&quot; name=&quot;n121&quot;&gt;121&lt;/a&gt;&lt;/span&gt;  RooPlot* frame1 = x.frame(Bins(30),Title(&amp;quot;Physics sample&amp;quot;)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n122&quot; name=&quot;n122&quot;&gt;122&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n123&quot; name=&quot;n123&quot;&gt;123&lt;/a&gt;&lt;/span&gt;  // Plot all data tagged as physics sample
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n124&quot; name=&quot;n124&quot;&gt;124&lt;/a&gt;&lt;/span&gt;  // 将数据画在上面定义的frame1中，并且通过Cut条件只看physics目录的内容
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n125&quot; name=&quot;n125&quot;&gt;125&lt;/a&gt;&lt;/span&gt;  combData.plotOn(frame1,Cut(&amp;quot;sample==sample::physics&amp;quot;)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n126&quot; name=&quot;n126&quot;&gt;126&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n127&quot; name=&quot;n127&quot;&gt;127&lt;/a&gt;&lt;/span&gt;  // Plot &amp;quot;physics&amp;quot; slice of simultaneous pdf.
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n128&quot; name=&quot;n128&quot;&gt;128&lt;/a&gt;&lt;/span&gt;  // NBL You _must_ project the sample index category with data using ProjWData
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n129&quot; name=&quot;n129&quot;&gt;129&lt;/a&gt;&lt;/span&gt;  // as a RooSimultaneous makes no prediction on the shape in the index category
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n130&quot; name=&quot;n130&quot;&gt;130&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  // and can thus not be integrated
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n131&quot; name=&quot;n131&quot;&gt;131&lt;/a&gt;&lt;/span&gt;  simPdf.plotOn(frame1,Slice(sample,&amp;quot;physics&amp;quot;),ProjWData(sample,combData)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n132&quot; name=&quot;n132&quot;&gt;132&lt;/a&gt;&lt;/span&gt;  // 这里可以看到是又画了一次，这次是单独画的本底用的kDashed的线，可以按后面给的方法搜索类型继续看
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n133&quot; name=&quot;n133&quot;&gt;133&lt;/a&gt;&lt;/span&gt;  simPdf.plotOn(frame1,Slice(sample,&amp;quot;physics&amp;quot;),Components(&amp;quot;px&amp;quot;),ProjWData(sample,combData),LineStyle(kDashed)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n134&quot; name=&quot;n134&quot;&gt;134&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n135&quot; name=&quot;n135&quot;&gt;135&lt;/a&gt;&lt;/span&gt;  // 定义第二个图的画图的frame
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n136&quot; name=&quot;n136&quot;&gt;136&lt;/a&gt;&lt;/span&gt;  // The same plot for the control sample slice
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n137&quot; name=&quot;n137&quot;&gt;137&lt;/a&gt;&lt;/span&gt;  RooPlot* frame2 = x.frame(Bins(30),Title(&amp;quot;Control sample&amp;quot;)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n138&quot; name=&quot;n138&quot;&gt;138&lt;/a&gt;&lt;/span&gt;  combData.plotOn(frame2,Cut(&amp;quot;sample==sample::control&amp;quot;)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n139&quot; name=&quot;n139&quot;&gt;139&lt;/a&gt;&lt;/span&gt;  simPdf.plotOn(frame2,Slice(sample,&amp;quot;control&amp;quot;),ProjWData(sample,combData)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n140&quot; name=&quot;n140&quot;&gt;140&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;  simPdf.plotOn(frame2,Slice(sample,&amp;quot;control&amp;quot;),Components(&amp;quot;px_ctl&amp;quot;),ProjWData(sample,combData),LineStyle(kDashed)) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n141&quot; name=&quot;n141&quot;&gt;141&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n142&quot; name=&quot;n142&quot;&gt;142&lt;/a&gt;&lt;/span&gt;  // 定义好画布，将前面的frame调用Draw()成员函数，就画图了
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n143&quot; name=&quot;n143&quot;&gt;143&lt;/a&gt;&lt;/span&gt;  TCanvas* c = new TCanvas(&amp;quot;rf501_simultaneouspdf&amp;quot;,&amp;quot;rf403_simultaneouspdf&amp;quot;,800,400);
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n144&quot; name=&quot;n144&quot;&gt;144&lt;/a&gt;&lt;/span&gt;  c-&amp;amp;gt;Divide(2) ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n145&quot; name=&quot;n145&quot;&gt;145&lt;/a&gt;&lt;/span&gt;  c-&amp;amp;gt;cd(1) ; gPad-&amp;amp;gt;SetLeftMargin(0.15) ; frame1-&amp;amp;gt;GetYaxis()-&amp;amp;gt;SetTitleOffset(1.4) ; frame1-&amp;amp;gt;Draw() ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n146&quot; name=&quot;n146&quot;&gt;146&lt;/a&gt;&lt;/span&gt;  c-&amp;amp;gt;cd(2) ; gPad-&amp;amp;gt;SetLeftMargin(0.15) ; frame2-&amp;amp;gt;GetYaxis()-&amp;amp;gt;SetTitleOffset(1.4) ; frame2-&amp;amp;gt;Draw() ;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n147&quot; name=&quot;n147&quot;&gt;147&lt;/a&gt;&lt;/span&gt;}
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n148&quot; name=&quot;n148&quot;&gt;148&lt;/a&gt;&lt;/span&gt;`&amp;lt;/pre&amp;gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n149&quot; name=&quot;n149&quot;&gt;149&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n150&quot; name=&quot;n150&quot;&gt;150&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;实际上，我们看完上面的内容就可以了解到**其实我们什么都没有做!**我们做的仅仅是:
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n151&quot; name=&quot;n151&quot;&gt;151&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n152&quot; name=&quot;n152&quot;&gt;152&lt;/a&gt;&lt;/span&gt;&amp;lt;pre&amp;gt;`头文件
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n153&quot; name=&quot;n153&quot;&gt;153&lt;/a&gt;&lt;/span&gt;函数{
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n154&quot; name=&quot;n154&quot;&gt;154&lt;/a&gt;&lt;/span&gt;  定义预期的多个模型model(RooAddPdf)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n155&quot; name=&quot;n155&quot;&gt;155&lt;/a&gt;&lt;/span&gt;  数据data(DataSet),按照样本目录加载
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n156&quot; name=&quot;n156&quot;&gt;156&lt;/a&gt;&lt;/span&gt;  调用联合拟合类(RooSimultaneous).fitTo(data)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n157&quot; name=&quot;n157&quot;&gt;157&lt;/a&gt;&lt;/span&gt;  画图,信号本底
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n158&quot; name=&quot;n158&quot;&gt;158&lt;/a&gt;&lt;/span&gt;}
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n159&quot; name=&quot;n159&quot;&gt;159&lt;/a&gt;&lt;/span&gt;`&amp;lt;/pre&amp;gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n160&quot; name=&quot;n160&quot;&gt;160&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n161&quot; name=&quot;n161&quot;&gt;161&lt;/a&gt;&lt;/span&gt;其他的当然也是类似，是计算机帮我们完成了这些操作，当然如涉及到其背后是如何工作的则要继续了解simultaneous背后的数学是如何工作的，比如具体的误差它是如何计算的？整体上参数是如何传递，计算是如何迭代的?编程?不存在的，可以放后去了解。这也学就是我们称之为脚本的原因吧，之所以使用脚本文件，就是相应的程序包提供了简易的借口，可以对应用的用户功能进行自定义。那么有没有办法不写这么多字呢好头大啊？有的，有的人用Python来自动写脚本，有的人直接用PyROOT。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n162&quot; name=&quot;n162&quot;&gt;162&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n163&quot; name=&quot;n163&quot;&gt;163&lt;/a&gt;&lt;/span&gt;**使用Vim**
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n164&quot; name=&quot;n164&quot;&gt;164&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n165&quot; name=&quot;n165&quot;&gt;165&lt;/a&gt;&lt;/span&gt;如何使用vim?
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n166&quot; name=&quot;n166&quot;&gt;166&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n167&quot; name=&quot;n167&quot;&gt;167&lt;/a&gt;&lt;/span&gt;这个实际上吧vim的手册简单看一下，然后了解一下计算机发展过程，“文本”这个概念是如何发展的，就可以更好地使用vim，我自己在两年用了杨振伟老师推荐的一个简单的vimrc文件[易水博客](http://easwy.com/)，还有重新编译了vim用来安装了[vim-snippets](https://github.com/cuixiaofei/vim-snippets)后，再没有怎么搞过了，我想snippets应该已经功能很强大了。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n168&quot; name=&quot;n168&quot;&gt;168&lt;/a&gt;&lt;/span&gt;想起来第一次用vim其实就和我小时候玩游戏一样，上来就键盘挨个按一遍，软件也是，把菜单打开所有按钮按一遍，这就是我从来看任何计算机相关东西的所谓“窍门”。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n169&quot; name=&quot;n169&quot;&gt;169&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n170&quot; name=&quot;n170&quot;&gt;170&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;**继续试着学ROOT有什么方便的方法？**
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n171&quot; name=&quot;n171&quot;&gt;171&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n172&quot; name=&quot;n172&quot;&gt;172&lt;/a&gt;&lt;/span&gt;如果有机会找人教，可以问一下别人，或者有人给脚本，就可以学的很快，因为大家公用的东西都是比较成熟的。在简单用了之后，还要继续学懂一些，或者看到别的ROOT脚本文件有时候发现看不懂，甚至受到了惊吓，下面的一点内容我们试着想一想办法。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n173&quot; name=&quot;n173&quot;&gt;173&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n174&quot; name=&quot;n174&quot;&gt;174&lt;/a&gt;&lt;/span&gt;首先想到的就是，看一看例子tutorial，ROOT官方带有许多的例子，只要稍加更改就可以学到很多东西，上面篇幅中做联合拟合的内容就是依据这样的方式来做的，下面还有。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n175&quot; name=&quot;n175&quot;&gt;175&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n176&quot; name=&quot;n176&quot;&gt;176&lt;/a&gt;&lt;/span&gt;一个是搜索使用的类的定义和继承关系，在网站这里[ClassIndex](https://root.cern.ch/doc/master/annotated.html)，比如可以试着搜索ProjWData这个成员，也可以在[ClassList](https://root.cern.ch/doc/master/annotated.html)用搜索框或者是按类找名字ctrl+f，这样搜索可以找到ROOT编程的详细内容。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n177&quot; name=&quot;n177&quot;&gt;177&lt;/a&gt;&lt;/span&gt;可以看到，其定义有两个如下：
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n178&quot; name=&quot;n178&quot;&gt;178&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n179&quot; name=&quot;n179&quot;&gt;179&lt;/a&gt;&lt;/span&gt;第一个定义可以看出，其可有两个变量，一是数据集RooDataSet(RooAbsData三个成员中的一个)，从下面的继承图可以清楚地了解到程序的调用关系，第二个可能用于分bin的问题，![](/assets/img/RooAbsData.png)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n180&quot; name=&quot;n180&quot;&gt;180&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n181&quot; name=&quot;n181&quot;&gt;181&lt;/a&gt;&lt;/span&gt;&amp;lt;pre&amp;gt;`RooFit::ProjWData  ( const RooAbsData &amp;amp;amp; projData,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n182&quot; name=&quot;n182&quot;&gt;182&lt;/a&gt;&lt;/span&gt;Bool_t  binData = kFALSE
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n183&quot; name=&quot;n183&quot;&gt;183&lt;/a&gt;&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n184&quot; name=&quot;n184&quot;&gt;184&lt;/a&gt;&lt;/span&gt;`&amp;lt;/pre&amp;gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n185&quot; name=&quot;n185&quot;&gt;185&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n186&quot; name=&quot;n186&quot;&gt;186&lt;/a&gt;&lt;/span&gt;从这里上下两个定义可以看出，ROOT软件包整体内部命名是十分规范的，我们在使用的时候也要尽量把变量函数名写的清楚易懂有一定的规范。如BES合作组的BOSS分析环境，可以查看BOSS定义的基本的类和继承图[BOSS Class Reference Documentation](http://bes3.to.infn.it/Boss/7.0.2/html/classes.html)，这里可以清楚看到很多分析中使用的内容。当然，如果有较为统一的规范是不容易的，因为在传统研究中各种不同群体都有可能产生各自内部的“独特语言系统”。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n187&quot; name=&quot;n187&quot;&gt;187&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n188&quot; name=&quot;n188&quot;&gt;188&lt;/a&gt;&lt;/span&gt;第二个定义可以看出，其可有三个变量，一是从数据集里取数据的方法(RooCategory是其中一个)，第二个见上，第三个可能用于分bin的问题
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n189&quot; name=&quot;n189&quot;&gt;189&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n190&quot; name=&quot;n190&quot;&gt;190&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;&amp;lt;pre&amp;gt;`RooFit::ProjWData  ( const RooArgSet &amp;amp;amp; projSet,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n191&quot; name=&quot;n191&quot;&gt;191&lt;/a&gt;&lt;/span&gt;const RooAbsData &amp;amp;amp; projData,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n192&quot; name=&quot;n192&quot;&gt;192&lt;/a&gt;&lt;/span&gt;Bool_t binData = kFALSE
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n193&quot; name=&quot;n193&quot;&gt;193&lt;/a&gt;&lt;/span&gt;)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n194&quot; name=&quot;n194&quot;&gt;194&lt;/a&gt;&lt;/span&gt;`&amp;lt;/pre&amp;gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n195&quot; name=&quot;n195&quot;&gt;195&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n196&quot; name=&quot;n196&quot;&gt;196&lt;/a&gt;&lt;/span&gt;可以看出我们这里使用了两次，一次第一个定义，一次第二个定义，并且没有用bin变量。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n197&quot; name=&quot;n197&quot;&gt;197&lt;/a&gt;&lt;/span&gt;这样我们通过查看这些的定义关系，有助于梳理清楚他们的调用关系，用起来就不会发怵。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n198&quot; name=&quot;n198&quot;&gt;198&lt;/a&gt;&lt;/span&gt;所谓计算机程序就是一大堆的相互调用，从ifelse编译一直调用到逻辑门基本不会出错，如果出现问题，就查看定义看哪里调用跑丢了，如果能够解决好把调用的类型放对了，一般程序都能正常运行，就像喂小猫一样。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n199&quot; name=&quot;n199&quot;&gt;199&lt;/a&gt;&lt;/span&gt;如果想要训练一下编程时候的脑子，其实有更直观一点的编程比如说用G语言LabVIEW，你可以看数据流，并且简单的编程结构也比较直观，实际应用也比较广泛，比如BESIII值班室的用户界面系统，可以看到很多都是使用LabVIEW编的。另外甚至可以通过一些软件也能训练，如[Zachronic](http://www.zachtronics.com)公司旗下的软件都很硬核，还有辅助学习各种编程语言的网站[酷代码](www.codingame.com)非常有趣，很全各种计算机语言都能找到。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n200&quot; name=&quot;n200&quot;&gt;200&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n201&quot; name=&quot;n201&quot;&gt;201&lt;/a&gt;&lt;/span&gt;可以在网上[ROOT Forum](https://root-forum.cern.ch)看别人遇到了什么问题，如果身边没人也可以试着问，还可以看看同行都在关心什么问题？
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n202&quot; name=&quot;n202&quot;&gt;202&lt;/a&gt;&lt;/span&gt;这里提供一个问问题模板[参考](https://root-forum.cern.ch/t/how-to-automatically-generate-classes-code/4667):
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n203&quot; name=&quot;n203&quot;&gt;203&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n204&quot; name=&quot;n204&quot;&gt;204&lt;/a&gt;&lt;/span&gt;&amp;lt;pre&amp;gt;`Hi,
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n205&quot; name=&quot;n205&quot;&gt;205&lt;/a&gt;&lt;/span&gt;I want to do sth.
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n206&quot; name=&quot;n206&quot;&gt;206&lt;/a&gt;&lt;/span&gt;I have learned &amp;quot;sth. or some class&amp;quot; which helps me in doing sth. This looks like it could help me but I don't know HOW.
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n207&quot; name=&quot;n207&quot;&gt;207&lt;/a&gt;&lt;/span&gt;I need to to do similar processing but for a different &amp;quot;sth.? dataset?&amp;quot;.
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n208&quot; name=&quot;n208&quot;&gt;208&lt;/a&gt;&lt;/span&gt;Could some body guide me to the Documentation or Tutorials for doing this?
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n209&quot; name=&quot;n209&quot;&gt;209&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n210&quot; name=&quot;n210&quot;&gt;210&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;Thanks
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n211&quot; name=&quot;n211&quot;&gt;211&lt;/a&gt;&lt;/span&gt;&amp;quot;yourname&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n212&quot; name=&quot;n212&quot;&gt;212&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n213&quot; name=&quot;n213&quot;&gt;213&lt;/a&gt;&lt;/span&gt;Sample: &amp;quot;your sample idea&amp;quot;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n214&quot; name=&quot;n214&quot;&gt;214&lt;/a&gt;&lt;/span&gt;Code:&amp;quot;your sample code&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;可以找一个改改用，也可以直接随便问(English)，毕竟是论坛嘛。主要是可以看看大家都在关心什么问题，可以了解一下。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Mon, 25 Jun 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/06/25/method5.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/06/25/method5.html</guid>
+            </item>
+        
+            <item>
+                <title>开放研究之所以可能(一)</title>
+                <description>&lt;p&gt;开放研究之所以可能(一)&lt;/p&gt;
+
+&lt;p&gt;开放研究？这是过去和现在很多人都做过的事情，这里放在一起想，
+得出下面的基本方向，是通过对开放研究类似活动的一种再次发现与总结。
+这里的“开放研究”是一个专有名词，并不是泛泛的“开放地研究”或者“开放的研究”&lt;/p&gt;
+
+&lt;p&gt;开放研究的基本方向：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;把实干放在开放研究的第一位，实干具体就是下面这些，&lt;/li&gt;
+  &lt;li&gt;对于任何人，不得干涉或要求其进行开放研究。&lt;/li&gt;
+  &lt;li&gt;肯定每个人都有做自然科学或社会科学研究的能力。&lt;/li&gt;
+  &lt;li&gt;尊重每人的个人守则，尊重对开放研究自由的定义。&lt;/li&gt;
+  &lt;li&gt;要选定协议编辑科学研究的内容进行传播，尤其对具体科学研究的方法进行开放。&lt;/li&gt;
+  &lt;li&gt;对一直以来的传统科学研究的资料，阐述其中隐藏的研究方法，进一步简化和开放。&lt;/li&gt;
+  &lt;li&gt;进一步阐述历史和文化，搞清楚开放研究的历史和现实意义。&lt;/li&gt;
+  &lt;li&gt;采取各种合作的方式和方法进行和发展开放研究。&lt;/li&gt;
+  &lt;li&gt;这里每一条均可以进行修改或删除，视情况而定。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Fri, 19 Jan 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/01/19/OR3.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/01/19/OR3.html</guid>
+            </item>
+        
+            <item>
+                <title>开放研究个人守则</title>
+                <description>&lt;p&gt;开放研究个人守则&lt;/p&gt;
+
+&lt;p&gt;1.&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Thu, 11 Jan 2018 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2018/01/11/OR2.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2018/01/11/OR2.html</guid>
+            </item>
+        
+            <item>
+                <title>什么是开放研究?</title>
+                <description>&lt;p&gt;&lt;strong&gt;什么是开放研究？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;科学的所指这里包括自然科学与社会科学，中国科学可能还不是最发达，很多人目前也和科学研究是接不上的。更进一步讲，可以说即使科学发达的国家(如现在欧美?)，这种发达也不是每个人所能触及的。&lt;/p&gt;
+
+&lt;p&gt;科学在的历史发展长河中更由那些聪明的人、有天赋的人、勤奋努力的人、富有的人、善于交际的人等等特别的一些人所主导和影响，这些人被称之为科学工作者或择其优者—科学家。&lt;/p&gt;
+
+&lt;p&gt;随着时代发展，人们不断将不断从旧的工作生活中脱离出来，投奔至新的生活，逐渐地，所谓科学研究，社会的对其需求相应会不断增大。&lt;/p&gt;
+
+&lt;p&gt;那么一系列的问题就随之而来，等待着我们解答：
+科学研究的基本方法是什么呢？有怎样的规律？
+科学研究与教育之间是怎样的关系呢？
+科学知识的传递与新知识的发现和运用又是怎样的过程呢？
+科学研究的方法是怎样演变的呢？要走向何处呢？&lt;/p&gt;
+
+&lt;p&gt;这些问题是当然是难以回答的。但可以看到传统研究的学术交流在其中是十分重要的，在17世纪，首先出现了学术期刊，就是用来科学工作者之间进行交流的。尔后不断有各种科学交流的活动产生，学术活动、团体、组织。直到现代，通讯工具的发展，各个科学研究团体的会议、组织，作为标志性的如开放期刊，预印本等开放获取的期刊不断出现，包括开放源代码的计算机技术发展，等等，都在促进着科学研究更加广泛深入的交流。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;开放研究的具体内容?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;开放研究(Open Research)或者叫开放科学(Opne Science)，是使得科学研究的方法和内容的全面传播成为可能的一种活动。&lt;/p&gt;
+
+&lt;p&gt;通过这一活动，鼓励出版机构出版开放获取人人可得的研究文献(open access)，鼓励科学工作者开放研究笔记(open notebook science)等等，并使得科学研究相关的资料获取成为每个人的可能。&lt;/p&gt;
+
+&lt;p&gt;更加具体的内容，如果有空闲还要继续了解和思考，这个博客所写的所有东西都会不断更新，开放研究中最重要的部分也莫过于开放研究笔记。
+破除只有科学工作者能够搞科学、只有科学工作者才会搞科学研究、只有科学工作者才配搞科学的片面认识。
+其实道理我们都懂，就是“授之以渔而非授之以鱼”。那么真正做起来可能吗？真的可能吗？
+那么何为科学本身呢？何为对科学的追求呢？如何实现呢是不是假大空的？难以回答&lt;/p&gt;
+
+&lt;p&gt;但是我想，现在有了一条新的道路愿意面对这些类似的问题，就是开放研究。开放研究希望能在传统研究的基础上增加一个维度。
+这就像是科学研究领域的极限运动，在“刀尖”上行走，一个不小心就出问题就会“摔死了”，如果把握的好，那么也许还能继续看到“明天中午za亮的太阳”。&lt;/p&gt;
+
+&lt;p&gt;对于一个人来说，这是一个可以直达科学研究大门的机会，自己从不认为只有那些特别的人才能进行科学研究，不是那些只有会的或擅长的人才能进行科学研究，况且历史上又那么多的大科学家并不是为了所谓“成就”来进行这一活动的，在今天的社会，这是有办法有可能有条件来创造机会，使得科学研究变得易于接近的。&lt;/p&gt;
+
+&lt;p&gt;现有科学研究的发展正在突飞猛进，我们可以相信，已经逐步有了科学研究的&lt;a href=&quot;http://paperscape.org&quot;&gt;基本地图&lt;/a&gt;，那么如何在这张地图上行走，能否有一个导航?能否可以指一个大致的方向来帮助容易迷路的人们，使迷途不再忧伤。&lt;/p&gt;
+
+&lt;p&gt;任何一个人当然都是无法进行这样的事情的，但是确实一直以来有许多人找到了这样的方向，他们在进行这开放科学的相关工作，这里也对他们致敬。&lt;/p&gt;
+
+&lt;p&gt;本是无意，将要收笔之时，才突然发现今天是2018年考研，作为纪念我就把上面写的东西发出去。&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Sun, 24 Dec 2017 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2017/12/24/OR1.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2017/12/24/OR1.html</guid>
+            </item>
+        
+            <item>
+                <title>文件修改忘记改了什么怎么办?使用git</title>
+                <description>&lt;p&gt;&lt;em&gt;”—-你本来不该知道这些的，可是现在我们没有更好的工具，所以得这样弄一下……”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;这里主要就是解决一个问题: 在平时对纯文本进行编辑时，不论这文本是程序代码还是文字，任何人都容易在编辑时出错，那么如何看出一个文件我们改了什么?什么时候改的？这时就要用到git这个工具，来做一下简单的版本控制。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-coderay&quot;&gt;&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;&lt;/span&gt;$ man git
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;&lt;/span&gt;当我们学习使用git时，查看命令最快的方法是用man命令，对每个命令都有人写好了标准的使用手册，还可以上网查阅相关资料，如[git官网](https://git-scm.com/)，如[高能所计算环境使用手册](http://afsapply.ihep.ac.cn/cchelp/zh/)，如[git Brief](https://devcharl.github.io/devcharl.github.io/2019/04/25/git_usage/)，当然现在”STFW”是十分方便的，后面的内容这里不厌其烦地详细写了一下。
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;&lt;/span&gt;这里介绍git的基本用法，只学学最简单的，另外还有github,gitpage,gitbook和其对应的国产软件将在之后再写写看。这是程序员们使用的基本工具，Linus Torwalds发起的版本控制软件，计算机科学快速分发共享的github正是于此建立。如同学所说去中心化的计算机科学的发展催化了开源，微软在收购github之后也正式高调加入了开源软件运动，这才有了.Net和c#的开源，这才使得如今在中美贸易战的情况下，我们中国人依然可以开发像[SeeSharp](https://github.com/SeeSharpOpenSource/SeeSharpTools)这样优秀(笑)的想要设法替代[NI LabVIEW](http://www.ni.com/zh-cn.html)的[行业软件](http://www.jytek.com/home)。
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt; &lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;&lt;/span&gt;git可以记录并显示文件的修改历史，还可以进行不同历史版本的比较，如果需要可以退回上次的修改。这里所讲都是deepin linux下的内容(简单!)，win操作系统的请自行百度。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;&lt;/span&gt;(自己之前都没有写下来该怎么用，还经常忘记，今天又发生了代码误删的情况所以这回要把git学会了)(2017年11月的某一天)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;&lt;/span&gt;首先是检查git的版本:
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;&lt;/span&gt;$git --version 
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;&lt;/span&gt;git version 1.8.2.1
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;下一步是了解基本概念，什么是git(也可以跳过直接看使用):
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;&lt;/span&gt;在Git中，每个版本库都叫做一个仓库（repository），每个仓库可以简单理解成一个目录，这个目录里面的所有文件都通过Git来实现版本管理，Git都能跟踪并记录在该目录下所有内容(子目录递归包含)发生的所有更新。假如我们现在建立一个仓库，仓库所在的这个目录中会有一个”.git”的文件夹(ls -al查看)。.git这个文件夹非常重要，所有的版本信息、更新记录，以及Git进行仓库管理的相关信息全都保存在这个文件夹里面。所以，想要删除该目录的git仓库设置，就删除该文件夹即可。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;&lt;/span&gt;接下来就是使用，主要就是如下命令按顺序试试，基本就会了:
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n26&quot; name=&quot;n26&quot;&gt;26&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n27&quot; name=&quot;n27&quot;&gt;27&lt;/a&gt;&lt;/span&gt;$git init //在当前目录(工作目录)初始化仓库
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n28&quot; name=&quot;n28&quot;&gt;28&lt;/a&gt;&lt;/span&gt;#已初始化空的 Git 仓库于 /home/cuixf/abc/.git/
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n29&quot; name=&quot;n29&quot;&gt;29&lt;/a&gt;&lt;/span&gt;$git status //此时查看工作目录状态，如果有文件会显示
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n30&quot; name=&quot;n30&quot;&gt;30&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;#位于分支 master
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n31&quot; name=&quot;n31&quot;&gt;31&lt;/a&gt;&lt;/span&gt;#
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n32&quot; name=&quot;n32&quot;&gt;32&lt;/a&gt;&lt;/span&gt;#初始提交
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n33&quot; name=&quot;n33&quot;&gt;33&lt;/a&gt;&lt;/span&gt;#
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n34&quot; name=&quot;n34&quot;&gt;34&lt;/a&gt;&lt;/span&gt;#未跟踪的文件:
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n35&quot; name=&quot;n35&quot;&gt;35&lt;/a&gt;&lt;/span&gt;#  （使用 &amp;quot;git add &amp;amp;lt;文件&amp;amp;gt;...&amp;quot; 以包含要提交的内容）
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n36&quot; name=&quot;n36&quot;&gt;36&lt;/a&gt;&lt;/span&gt;#
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n37&quot; name=&quot;n37&quot;&gt;37&lt;/a&gt;&lt;/span&gt;#  a.txt
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n38&quot; name=&quot;n38&quot;&gt;38&lt;/a&gt;&lt;/span&gt;#  a/
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n39&quot; name=&quot;n39&quot;&gt;39&lt;/a&gt;&lt;/span&gt;#
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n40&quot; name=&quot;n40&quot;&gt;40&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;#提交为空，但是存在尚未跟踪的文件（使用 &amp;quot;git add&amp;quot; 建立跟踪）
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n41&quot; name=&quot;n41&quot;&gt;41&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n42&quot; name=&quot;n42&quot;&gt;42&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n43&quot; name=&quot;n43&quot;&gt;43&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n44&quot; name=&quot;n44&quot;&gt;44&lt;/a&gt;&lt;/span&gt;$git add . //注意有个&amp;quot;.&amp;quot;，表示把&amp;quot;./&amp;quot;目录下的所有文件添加到Git里，建立工作空间Workspace，这时如果再次查看，&amp;quot;git status&amp;quot;可以看到新增了文件
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n45&quot; name=&quot;n45&quot;&gt;45&lt;/a&gt;&lt;/span&gt;$ git commit -m &amp;quot;test1&amp;quot; //这里提交工作目录的当前版本给Git，可以输入此次修改的注释信息如&amp;quot;test1&amp;quot;，可以看到所有文件提交成功:
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n46&quot; name=&quot;n46&quot;&gt;46&lt;/a&gt;&lt;/span&gt;#[master（根提交） 64f42d0] test1
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n47&quot; name=&quot;n47&quot;&gt;47&lt;/a&gt;&lt;/span&gt;# 3 files changed, 0 insertions(+), 0 deletions(-)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n48&quot; name=&quot;n48&quot;&gt;48&lt;/a&gt;&lt;/span&gt;# create mode 100644 a.txt
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n49&quot; name=&quot;n49&quot;&gt;49&lt;/a&gt;&lt;/span&gt;# create mode 100644 a/b.txt
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n50&quot; name=&quot;n50&quot;&gt;50&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;# create mode 100644 a/c/c.txt
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n51&quot; name=&quot;n51&quot;&gt;51&lt;/a&gt;&lt;/span&gt;git status //再次查看，发现目前版本提交完毕
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n52&quot; name=&quot;n52&quot;&gt;52&lt;/a&gt;&lt;/span&gt;#On branch master
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n53&quot; name=&quot;n53&quot;&gt;53&lt;/a&gt;&lt;/span&gt;#nothing to commit (working directory clean)
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n54&quot; name=&quot;n54&quot;&gt;54&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n55&quot; name=&quot;n55&quot;&gt;55&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n56&quot; name=&quot;n56&quot;&gt;56&lt;/a&gt;&lt;/span&gt;最主要的对文件修改历史进行比较，如果此时已经修改工作目录的文件，修改保存后，输入
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n57&quot; name=&quot;n57&quot;&gt;57&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n58&quot; name=&quot;n58&quot;&gt;58&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n59&quot; name=&quot;n59&quot;&gt;59&lt;/a&gt;&lt;/span&gt;$ git status //发现已经出现修改
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;strong&gt;&lt;a href=&quot;#n60&quot; name=&quot;n60&quot;&gt;60&lt;/a&gt;&lt;/strong&gt;&lt;/span&gt;$ git diff //即可显示修改了什么，会有++,--这样的符号也就是删减情况，另外还可以使用图形GUI界面(gitk命令)看，确认修改后先如上add然后commit即可保存当前版本
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n61&quot; name=&quot;n61&quot;&gt;61&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n62&quot; name=&quot;n62&quot;&gt;62&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n63&quot; name=&quot;n63&quot;&gt;63&lt;/a&gt;&lt;/span&gt;另外如果联网后，想要下载/上传自己的仓库到远程服务器，可以看git的命令(clone,push,pull?)，看看github的基本用法。
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n64&quot; name=&quot;n64&quot;&gt;64&lt;/a&gt;&lt;/span&gt;
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n65&quot; name=&quot;n65&quot;&gt;65&lt;/a&gt;&lt;/span&gt;```
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n66&quot; name=&quot;n66&quot;&gt;66&lt;/a&gt;&lt;/span&gt;$git clone/push/pull
+&lt;span class=&quot;line-numbers&quot;&gt;&lt;a href=&quot;#n67&quot; name=&quot;n67&quot;&gt;67&lt;/a&gt;&lt;/span&gt;```
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;继续学习，可以学习分支branch(git merge/rebase)，看看回滚(git reset/revert/checkout)，看看远程管理(git remote/tag)等等。&lt;/p&gt;
+
+&lt;p&gt;这些虽然说净是些程序员的东西，但是既然目前计算机科学做的很好，自由软件运动思想也很超前影响力很大，那么了解一下也是很好的。看纪录片&lt;a href=&quot;https://www.bilibili.com/video/av9512574/&quot;&gt;操作系统革命&lt;/a&gt;，很有意思，影片中观点讲述了自由软件运动整体的发展过程，其基本观点是讲，电脑如果受限于win这样的商业的操作系统，购买的电脑就像是租的，受制于微软这家企业，所以自由软件运动让买了电脑的人可以真正拥有自己的电脑，最终使个人电脑提供的各种计算资源回到了个人的手中。现在的开放研究运动其实也在很大程度上受到自由软件运动的启发，要将科学研究的创新劳动过程带回到人的本质上来。&lt;/p&gt;
+
+&lt;p&gt;当然物理学在开放研究方面一直做的都比较好，处在前沿位置&lt;a href=&quot;https://scoap3.org/what-is-scoap3/&quot;&gt;SCOAP&lt;/a&gt;，发展劲头一直都在继续&lt;a href=&quot;https://theconversation.com/how-the-insights-of-the-large-hadron-collider-are-being-made-open-to-everyone-70283&quot;&gt;How the insights of the Large Hadron Collider are being made open to
+everyone&lt;/a&gt;，未来的物理学发展可能超乎我们现在的想象。&lt;/p&gt;
+
+&lt;p&gt;参考1:&lt;a href=&quot;http://www.cnblogs.com/wilber2013/category/643754.html&quot;&gt;Git Step by Step&lt;/a&gt;
+参考2:&lt;a href=&quot;http://www.cnblogs.com/xiaoya901109/&quot;&gt;IronMan&lt;/a&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#FFFFFF&quot; width=&quot;200&quot;&gt;&lt;font color=&quot;#F0F0F0&quot;&gt;~~继续思考~~&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;br /&gt;&lt;table align=&quot;right&quot;&gt;&lt;td align=&quot;right&quot; bgcolor=&quot;#F5F5F5&quot; width=&quot;300&quot;&gt;&lt;font color=&quot;#000000&quot;&gt;-------开放研究之所以可能&lt;/font&gt;&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;
+</description>
+                <pubDate>Wed, 22 Nov 2017 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2017/11/22/method1.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2017/11/22/method1.html</guid>
+            </item>
+        
+            <item>
+                <title>开始篇</title>
+                <description>&lt;p&gt;本博客改编自https://liungkejin.github.io, 感谢&lt;a href=&quot;https://github.com/liungkejin/liungkejin.github.io&quot;&gt;梁窠金的个人博客&lt;/a&gt;带我入门。&lt;/p&gt;
+
+&lt;p&gt;小站源代码增加了一些说明，只需要修改名字和一些变量他人就可以重复使用，修改后存放于github，欢迎issues，继续修改中敬请期待～～&lt;/p&gt;
+
+&lt;p&gt;小站使用&lt;a href=&quot;http://jekyll.bootcss.com/&quot;&gt;jekyll&lt;/a&gt;还有&lt;a href=&quot;http://v3.bootcss.com&quot;&gt;bootstrap&lt;/a&gt;搭建!个人页面应用了 &lt;a href=&quot;http://ddbullfrog.github.io/resumecard/&quot;&gt;resumecard&lt;/a&gt;项目!&lt;/p&gt;
+
+&lt;p&gt;同时和粱窠金一样也要感谢&lt;a href=&quot;http://www.monkeysnatchbanana.com/&quot;&gt;Monkey Snatch Banana&lt;/a&gt; 博客，最初模板是人家的。其他模板将来可能会更新使用。&lt;/p&gt;
+
+&lt;p&gt;gitpage类似的主要写东西比较简洁直接进行表述，可以参考如&lt;a href=&quot;https://yifan92.github.io&quot;&gt;HEP note&lt;/a&gt;，如&lt;a href=&quot;http://www.yinwang.org/&quot;&gt;王垠博客&lt;/a&gt;。借鉴的博文还有: &lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html&quot;&gt;阮一峰&lt;/a&gt;，&lt;a href=&quot;https://blog.csdn.net/garfielder007/article/details/49992713&quot;&gt;garfielder007&lt;/a&gt;，&lt;a href=&quot;https://www.cnblogs.com/purediy/archive/2013/03/07/2948892.html&quot;&gt;雨知&lt;/a&gt;，也可以上&lt;a href=&quot;https://www.v2ex.com&quot;&gt;V站&lt;/a&gt;看看。当然STFW亦可。&lt;/p&gt;
+
+&lt;p&gt;小站现已更新，内容基本选用&lt;a href=&quot;https://creativecommons.org/licenses/&quot;&gt;CC-BY-SA&lt;/a&gt;协议，这一协议保证了本博客内容的版权。
+小站文档分为建档和更新档，建档与更新档不同，网站中直接看到的是更新时间(每篇文字独立更新!!!，找找&lt;a href=&quot;https://xiaophy.com/menu.html&quot;&gt;更新了什么?&lt;/a&gt;)，建档时间可在网页源码中查看，建档和修改历史需到github查看。&lt;/p&gt;
+
+&lt;p&gt;小站现已加入&lt;a href=&quot;https://github.com/timqian/chinese-independent-blogs&quot;&gt;中文独立博客列表&lt;/a&gt;，已更新支持RSS订阅和在线评论。电脑坏了一次丢失了大量的文件，不过还好，脑子并没有丢掉。&lt;/p&gt;
+
+&lt;p&gt;本小站博客的标题看起来只是一些最基础的东西，简直是个笑话，但是开放研究不注重分享内容而是方法，所以其中的所写其实是类似的东西如何有方法学习和继续发展，这样就符合了小站建立的初衷。&lt;/p&gt;
+
+&lt;p&gt;感谢 &lt;a href=&quot;https://github.com&quot;&gt;github&lt;/a&gt; 提供的 Github Pages 功能!&lt;/p&gt;
+
+</description>
+                <pubDate>Mon, 11 Sep 2017 00:00:00 +0800</pubDate>
+                <link>https://xiaophy.com/2017/09/11/Regetting-Started.html</link>
+                <guid isPermaLink="true">https://xiaophy.com/2017/09/11/Regetting-Started.html</guid>
+            </item>
+        
+    </channel>
+</rss>
