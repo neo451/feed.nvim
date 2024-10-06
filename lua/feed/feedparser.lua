@@ -10,46 +10,6 @@ local function make_sure_list(t)
    return t
 end
 
-local entry_validator_mt = {}
-
-local expected_types = {
-   title = "string",
-   link = "string",
-   id = "string",
-   feed = "string",
-   author = "string",
-   content = "string",
-   time = "number",
-}
-
-local default = {
-   title = "<>",
-   link = "<>",
-   id = "<>",
-   feed = "<>",
-   author = "<>",
-   content = "<>",
-   time = 222222,
-}
-
--- function entry_validator_mt:__newindex(k, v)
---    if not (type(v) == expected_types[k]) then
---       print("expected " .. expected_types[k] .. " got: " .. type(v))
---       rawset(self, k, default[k]) -- HACK:
---    end
---    rawset(self, k, v)
--- end
-
-local function V(t)
-   return setmetatable(t, entry_validator_mt)
-end
-
-local function remove_meta(t)
-   local mt = getmetatable(t)
-   mt.__index = nil
-   return t
-end
-
 ---check if json
 ---@param str string
 ---@return boolean
@@ -58,12 +18,31 @@ local function is_json(str)
    return ok
 end
 
-local function handle_atom_link(entry)
-   if not vim.islist(entry.link) then
-      return entry.link.href
+local function handle_rss_title(ast)
+   if type(ast.channel.title) == "table" and vim.tbl_isempty(ast.channel.title) then
+      return ast.channel.link
    end
-   -- TODO: read spec for the different link types
-   return entry.link[1].href
+   return ast.channel.title
+end
+
+local function handle_atom_link(ast, base)
+   if not vim.islist(ast.link) then
+      return ut.url_resolve(base, ast.link.href)
+   end
+   for _, v in ipairs(ast.link) do
+      if v.rel == "alternate" then
+         return ut.url_resolve(base, v.href)
+      end
+   end
+   return ut.url_resolve(base, ast.link[1].href) -- just in case..?
+end
+
+local function handle_atom_title(title)
+   if type(title) == "table" then
+      return title[1]
+   elseif type(title) == "string" then
+      return title
+   end
 end
 
 local function handle_atom_content(content)
@@ -78,8 +57,9 @@ end
 ---@param entry table
 ---@param feedtype string
 ---@param title string
+---@param base? string # base url
 ---@return feed.entry
-local function reify_entry(entry, feedtype, title)
+local function reify_entry(entry, feedtype, title, base)
    local res = {}
    if feedtype == "rss" then
       res.link = entry.link
@@ -102,10 +82,10 @@ local function reify_entry(entry, feedtype, title)
       res.time = date.new_from.json(entry.date_published):absolute()
       res.author = title
       res.content = entry.content_html
-   elseif feedtype == "atom" then -- TODO: read spec!!!
-      res.link = handle_atom_link(entry)
+   elseif feedtype == "atom" then
+      res.link = handle_atom_link(entry, base)
       res.id = sha1(res.link)
-      res.title = entry.title[1]
+      res.title = handle_atom_title(entry.title)
       res.feed = title
       res.time = date.new_from.atom(entry.published):absolute()
       res.author = title
@@ -115,17 +95,10 @@ local function reify_entry(entry, feedtype, title)
    return res
 end
 
-local function handle_rss_title(ast)
-   if type(ast.channel.title) == "table" and vim.tbl_isempty(ast.channel.title) then
-      return ast.channel.link
-   end
-   return ast.channel.title
-end
-
 ---walk the ast and retrive usefull info for all three types
 ---@param ast table
 ---@return feed.feed
-local function reify(ast, feedtype)
+local function reify(ast, feedtype, base_uri)
    local res = {}
    if feedtype == "rss" then
       res.title = handle_rss_title(ast)
@@ -142,16 +115,12 @@ local function reify(ast, feedtype)
          res.entries[i] = reify_entry(v, "json", res.title)
       end
    elseif feedtype == "atom" then
+      local root_base = ut.url_rebase(ast, base_uri)
       res.title = ast.title[1]
+      res.link = handle_atom_link(ast, root_base)
       res.entries = {}
-      for _, v in ipairs(ast.link) do
-         if v.type and ut.looks_like_url(v.href) then -- HACK: check spec
-            res.link = v.href
-         end
-      end
       for i, v in ipairs(make_sure_list(ast.entry)) do
-         res.entries[i] = reify_entry(v, "atom", res.title)
-         -- Pr(v)
+         res.entries[i] = reify_entry(v, "atom", res.title, root_base)
       end
    end
    return res
@@ -162,9 +131,9 @@ end
 ---parse feed fetch from source
 ---@param src string
 ---@param opts? {type : feed.feedtype, reify : boolean }
----@return table
+---@return table | feed.feed
 ---@return feed.feedtype
-local function parse(src, opts)
+local function parse(src, opts, base_uri)
    local ast, feedtype
    opts = opts or { reify = true }
    if opts.type == "json" or is_json(src) then
@@ -180,7 +149,7 @@ local function parse(src, opts)
       end
    end
    if opts.reify then
-      return reify(ast, feedtype), feedtype
+      return reify(ast, feedtype, base_uri), feedtype
    end
    return ast, feedtype
 end
