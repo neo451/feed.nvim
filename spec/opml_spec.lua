@@ -18,19 +18,21 @@ describe("opml obj", function()
 <opml version="1.0"><head><title>%s</title></head><body>
 <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
 </body></opml>]]
-      opml:append("world", "atom", "xxx", "xxxxx")
+      opml:append { text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
+      opml:append { text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
       assert.same(opml.outline[2].type, "atom")
+      assert.is_nil(opml.outline[3]) -- Avoids dup items
    end)
 
    it("should pprint a opml obj", function()
       local opml = M.import_s [[<?xml version="1.0" encoding="UTF-8"?>
-<opml version="1.0"><head><title>test opml</title></head><body>
-<outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-<outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-<outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-<outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-<outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-</body></opml>]]
+   <opml version="1.0"><head><title>test opml</title></head><body>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   </body></opml>]]
       assert.same(tostring(opml), "<OPML>name: test opml, size: 5")
    end)
 end)

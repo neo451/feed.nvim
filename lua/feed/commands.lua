@@ -14,17 +14,16 @@ local cmds = {}
 -- 6. tag / untag: save to db
 -- 7. show: its a better name lol
 
---- TODO: config.feeds and opml imported should be <link, table> to avoid dup
-
 ---load opml file to list of sources
 ---@param filepath string
 function cmds.load_opml(filepath)
    local opml = require "feed.opml"
    local outlines = opml.import(filepath).outline
    local index_opml = opml.import(config.opml)
-   vim.list_extend(index_opml.outline, outlines)
+   for _, v in ipairs(outlines) do
+      index_opml:append(v)
+   end
    index_opml:export(config.opml)
-   vim.list_extend(config.feeds, outlines)
 end
 
 ---index buffer commands
@@ -155,8 +154,9 @@ function cmds.update()
       }
    end
 
+   -- TODO: iterate over opml, identify unstored feeds, fetch current info, and store to local opml index
    if opml then
-      config.feeds = vim.list_extend(config.feeds, opml.outline) -- TODO: remove duplicates ...
+      config.feeds = vim.list_extend(config.feeds, opml.outline)
    end
 
    for _, link in ipairs(config.feeds) do

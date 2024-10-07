@@ -1,7 +1,7 @@
 local opml = {}
+local ut = require "feed.utils"
 
 local function format_outline(t)
-   -- TODO: option to validate type using the data fetched
    return ([[<outline text="%s" title="%s" type="%s" xmlUrl="%s" htmlUrl="%s"/>]]):format(t.title, t.title, t.type, t.xmlUrl, t.htmlUrl)
 end
 
@@ -25,12 +25,6 @@ mt.__tostring = function(self)
    return ("<OPML>name: %s, size: %d"):format(self.title, #self.outline)
 end
 
----@class feed.opml
----@field title string
----@field outline table
----@field export fun(self: feed.opml, topath: string?): string?
----@field append fun(self: feed.opml, title: string, type: string, htmlUrl: string, xmlUrl: string)
-
 ---@param frompath string
 ---@return feed.opml
 function opml.import(frompath)
@@ -39,12 +33,15 @@ function opml.import(frompath)
    local ast = treedoc.parse(src, { language = "xml" })[1]
    local outline = ast.opml.body.outline
    local title = ast.opml.head.title
-   if not vim.islist(outline) then
-      outline = { outline }
+   outline = ut.listify(outline)
+   local id = {}
+   for _, v in ipairs(outline) do
+      id[v.xmlUrl] = true
    end
    return setmetatable({
       outline = outline,
       title = title,
+      id = id,
    }, mt)
 end
 
@@ -54,12 +51,15 @@ function opml.import_s(str)
    local ast = treedoc.parse(str, { language = "xml" })[1]
    local outline = ast.opml.body.outline
    local title = ast.opml.head.title
-   if not vim.islist(outline) then
-      outline = { outline }
+   outline = ut.listify(outline)
+   local id = {}
+   for _, v in ipairs(outline) do
+      id[v.xmlUrl] = true
    end
    return setmetatable({
       outline = outline,
       title = title,
+      id = id,
    }, mt)
 end
 
@@ -80,12 +80,13 @@ function mt:export(topath)
    end
 end
 
----@param title string
----@param type string
----@param htmlUrl string
----@param xmlUrl string
-function mt:append(title, type, htmlUrl, xmlUrl)
-   self.outline[#self.outline + 1] = { text = title, title = title, type = type or "rss", htmlUrl = htmlUrl, xmlUrl = xmlUrl }
+---@param t table
+function mt:append(t)
+   if self.id[t.xmlUrl] then
+      return
+   end
+   self.id[t.xmlUrl] = true
+   self.outline[#self.outline + 1] = { text = t.title, title = t.title, type = t.type or "rss", htmlUrl = t.htmlUrl, xmlUrl = t.xmlUrl }
 end
 
 return opml
