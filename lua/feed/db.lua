@@ -1,6 +1,14 @@
 local Path = require "plenary.path"
 local db_mt = { __class = "feed.db" }
-db_mt.__index = db_mt
+db_mt.__index = function(self, k)
+   if not rawget(self, k) then
+      if rawget(db_mt, k) then
+         return db_mt[k]
+      elseif rawget(self.index, k) then
+         return self.index[k]
+      end
+   end
+end
 
 ---@param path string
 ---@param content string
@@ -36,12 +44,12 @@ function db_mt:is_stored(id)
 end
 
 ---@param entry feed.entry
----@param content string
-function db_mt:add(entry, content)
+function db_mt:add(entry)
    if self:is_stored(entry.id) then
-      -- print "duplicate keys!!!!"
       return
    end
+   local content = entry.content
+   entry.content = nil
    table.insert(self.index, entry)
    save_file(self.dir .. "/data/" .. entry.id, content)
 end
@@ -49,7 +57,13 @@ end
 ---@param entry feed.entry
 ---@return string
 function db_mt:address(entry)
-   return self.dir .. "/data/" .. entry.id
+   local data_dir
+   if self.dir:sub(-1, -1) == "/" then
+      data_dir = "data/"
+   else
+      data_dir = "/data/"
+   end
+   return self.dir .. data_dir .. entry.id
 end
 
 ---sort index by time, descending
@@ -72,9 +86,16 @@ function db_mt:update_index()
 end
 
 ---@param entry feed.entry
----@return table
+---@return string?
 function db_mt:get(entry)
    return get_file(self.dir .. "/data/" .. entry.id)
+end
+
+---@param index integer
+---@return string?
+function db_mt:at(index)
+   local entry = self.index[index]
+   return self:get(entry)
 end
 
 function db_mt:save()

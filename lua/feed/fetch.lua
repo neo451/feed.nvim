@@ -2,11 +2,11 @@ local curl = require "plenary.curl"
 local config = require "feed.config"
 local feedparser = require "feed.feedparser"
 local db = require("feed.db").db(config.db_dir)
-local format = require "feed.format"
 
 local M = {}
 
 local function fetch(url, timeout, callback)
+   -- TODO: pcall??? how to hanlde async errs?
    curl.get {
       url = url,
       timeout = timeout,
@@ -43,9 +43,7 @@ function M.update_feed(feed, total, handle)
       end
       local entries = ast.entries
       for _, entry in ipairs(entries) do
-         local content = format.entry(entry)
-         entry.content = nil
-         db:add(entry, content)
+         db:add(entry)
       end
       db:save()
       if handle then

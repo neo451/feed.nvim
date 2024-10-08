@@ -2,6 +2,7 @@ local treedoc = require "treedoc"
 local date = require "feed.date"
 local sha1 = require "feed.sha1"
 local ut = require "feed.utils"
+local format = require "feed.format"
 
 ---check if json
 ---@param str string
@@ -85,6 +86,7 @@ local function reify_entry(entry, feedtype, title, base)
       res.content = handle_atom_content(entry.content)
    end
    res.tags = { unread = true }
+   res.content = format.entry(res)
    return res
 end
 

@@ -1,25 +1,15 @@
-local M = {
-   state = {
-      rendered_once = nil, -- to keep track of when to render_index when using show_index command
-   },
+local M = {}
+
+---@type table<string, boolean>
+M.state = {
+   index_rendered = false,
+   in_split = false,
 }
 
 local config = require "feed.config"
 local db = require("feed.db").db(config.db_dir)
 local ut = require "feed.utils"
 local format = require "feed.format"
-
----@return feed.entry
-function M.get_entry_under_cursor()
-   local row = vim.api.nvim_win_get_cursor(0)[1]
-   return db.index[row - 1]
-end
-
----@param index integer
----@return feed.entry
-function M.get_entry(index)
-   return db.index[index]
-end
 
 ---@param buf integer
 local function set_options(buf)
@@ -59,8 +49,15 @@ function M.prepare_bufs(cmds)
    end
 end
 
----render whole db as flat list
 function M.show_index()
+   if M.state.index_rendered then
+      if M.state.in_split then
+         vim.cmd "q"
+         M.state.in_split = false
+      else
+         vim.api.nvim_set_current_buf(M.buf.index)
+      end
+   end
    db:update_index()
    local lines = {}
    lines[1] = M.show_hint()
@@ -82,12 +79,38 @@ end
 
 ---@param index integer
 function M.show_entry(index)
-   local entry = M.get_entry(index)
-   local lines = vim.split(db:get(entry), "\n")
+   if index == 0 then
+      return
+   end
+   M.current_index = index
+   local lines = vim.split(db:at(index), "\n")
    M.show(lines, M.buf.entry, ut.highlight_entry)
    apply_formatter(M.buf.entry)
-   entry.tags.unread = nil
+   db[index].tags.unread = nil
    db:save()
+end
+
+---return the entry from the filtered results
+---@param index integer
+---@return feed.entry?
+function M.get_entry(index)
+   if index == 0 then
+      return
+   end
+   return db[index] -- TODO:
+end
+
+---@return integer
+local function get_cursor_col()
+   return vim.api.nvim_win_get_cursor(0)[1] - 1
+end
+
+function M.get_entry_under_cursor()
+   return M.get_entry(get_cursor_col())
+end
+
+function M.show_entry_under_cursor()
+   return M.show_entry(get_cursor_col())
 end
 
 ---@return string

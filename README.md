@@ -18,7 +18,7 @@ This project is under heavy development, contributions are welcome!
 
 ## 🌟 Features
 
-- 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.orgt) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - 🏪 pure lua database with no extra dependency
 - 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
 - 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn (almost) any link into a web feed
@@ -144,3 +144,10 @@ require("feed").setup{
    colorscheme = "default", -- add your preferred colorscheme for reading here
 }
 ```
+
+## Related Projects
+
+- [elfeed](https://github.com/skeeto/elfeed)
+- [nvim-rss](https://github.com/EMPAT94/nvim-rss)
+- [vnews](https://github.com/danchoi/vnews)
+- [lua-feedparser](https://github.com/slact/lua-feedparser)
