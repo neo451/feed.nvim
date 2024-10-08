@@ -6,26 +6,30 @@
   <a href="https://github.com/neo451/feed.nvim">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
   </a>
+  <a href="https://github.com/neo451/feed.nvim/actions/workflows/busted.yml">
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/neo451/feed.nvim/busted.yml?style=for-the-badge&label=TESTS&color=green">
+  </a>
 </p>
 
 **feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
 🚧 🚧 🚧
 
-This project is under heavy development, contributions are welcome!
+*This project is in beta, many features are incomplete, but is already useable for most feeds, trying out and contributions are welcome!*
 
 🚧 🚧 🚧
 
 ## 🌟 Features
 
 - 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 📝 feeds converted to markdown/neorg for reading and storing
 - 🏪 pure lua database with no extra dependency
 - 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
 - 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn (almost) any link into a web feed
 
 ## 🚀 Installation
 
-### Basic installation
+### Basic Installation
 
 > requires `nvim 0.10` and `curl` to be installed on your path.
 
@@ -57,38 +61,41 @@ require("nvim-treesitter.configs").setup {
 }
 ```
 
-### Optional Dependencies
+### Health Check
+- run `:checkhealth feed` to see your installation status
+
+### Optional Integrations
 
 - For fuzzy finding your feeds and entries: get [telesope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-  - TODO: image
 - For rendering entries beautifully in neovim: get [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
-  - TODO: image
 - For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
-  - TODO: image
 
 ## 🔖 Usage
 
-### basic usage
+### Basic Usage
 
-- Use `Feed` command to open the default index, there will be three main kind of index:
+- Use `Feed` command to open the default index, there are two main kinds of index:
   - The `elfeed` style search buffer, everything is a flat list to be searched
   - The `telescope` picker, good for searching through all your database or search `by feed`
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
-### feed management
+### Feed Management
 
 - Use `Feed load_opml` to import your opml file
 - Use `Feed export_opml` to export your opml file to load in other readers
 
-### feed searching and filtering
+### Feed Searching
+- *To Be Implemented*
 
 - Will support all the syntax of elfeed
 
-TODO:
+### RssHub Integration
 
-### RssHub integration
+- *To Be Implemented*
 
-TODO:
+### Tiny Tiny Rss Integration
+
+- *To Be Implemented*
 
 ## Customization
 
