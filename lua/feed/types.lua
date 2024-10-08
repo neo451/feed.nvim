@@ -51,3 +51,9 @@
 ---@field options? table<string, table<string, any>>
 ---@field layout? table<string, table<string, any>>
 ---@field search? table<string, any>
+
+---@class feed.opml
+---@field title string
+---@field outline table
+---@field export fun(self: feed.opml, topath: string?): string?
+---@field append fun(self: feed.opml, t: table)

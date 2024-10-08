@@ -9,10 +9,11 @@ local md = {}
 
 setmetatable(md, {
    __index = function(t, k)
-      print(k)
       if not rawget(t, k) then
          return function(node)
-            print(vim.inspect(node))
+            if vim.g.treedoc_debug then
+               print(vim.inspect(node))
+            end
             return "<<" .. node.tag .. ">>"
          end
       end

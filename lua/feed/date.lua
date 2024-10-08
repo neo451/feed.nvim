@@ -130,7 +130,7 @@ function M.parse_date_filter(str)
    local sep = string.find(str, "%-%-")
    if not sep then
       str = string.sub(str, 2, #str)
-      return { after = M.new_from_str(str) }, M.today
+      return M.new_from_str(str), M.today
    else
       local start, stop = string.sub(str, 2, sep - 1), string.sub(str, sep + 2, #str)
       return M.new_from_str(start), M.new_from_str(stop)

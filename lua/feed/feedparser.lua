@@ -2,13 +2,7 @@ local treedoc = require "treedoc"
 local date = require "feed.date"
 local sha1 = require "feed.sha1"
 local ut = require "feed.utils"
-
-local function make_sure_list(t)
-   if #t == 0 and not vim.islist(t) then
-      t = { t }
-   end
-   return t
-end
+local format = require "feed.format"
 
 ---check if json
 ---@param str string
@@ -92,6 +86,7 @@ local function reify_entry(entry, feedtype, title, base)
       res.content = handle_atom_content(entry.content)
    end
    res.tags = { unread = true }
+   res.content = format.entry(res)
    return res
 end
 
@@ -104,14 +99,14 @@ local function reify(ast, feedtype, base_uri)
       res.title = handle_rss_title(ast)
       res.link = ast.channel.link
       res.entries = {}
-      for i, v in ipairs(make_sure_list(ast.channel.item)) do
+      for i, v in ipairs(ut.listify(ast.channel.item)) do
          res.entries[i] = reify_entry(v, "rss", res.title)
       end
    elseif feedtype == "json" then
       res.title = ast.title
       res.link = ast.feed_url
       res.entries = {}
-      for i, v in ipairs(make_sure_list(ast.items)) do
+      for i, v in ipairs(ut.listify(ast.items)) do
          res.entries[i] = reify_entry(v, "json", res.title)
       end
    elseif feedtype == "atom" then
@@ -119,7 +114,7 @@ local function reify(ast, feedtype, base_uri)
       res.title = ast.title[1]
       res.link = handle_atom_link(ast, root_base)
       res.entries = {}
-      for i, v in ipairs(make_sure_list(ast.entry)) do
+      for i, v in ipairs(ut.listify(ast.entry)) do
          res.entries[i] = reify_entry(v, "atom", res.title, root_base)
       end
    end

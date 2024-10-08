@@ -69,4 +69,9 @@ function M.url_rebase(el, base_uri)
    return tostring(M.url_resolve(xml_base, base_uri))
 end
 
+---make sure a table is a list insted of a map
+function M.listify(t)
+   return (#t == 0 and not vim.islist(t)) and { t } or t
+end
+
 return M
