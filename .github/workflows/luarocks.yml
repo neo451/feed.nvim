@@ -30,5 +30,6 @@ jobs:
             tree-sitter-xml
             tree-sitter-markdown
             tree-sitter-html
+            treedoc.nvim
             plenary.nvim
             conform.nvim
