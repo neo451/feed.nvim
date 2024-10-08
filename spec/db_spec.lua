@@ -1,4 +1,4 @@
-package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
+-- package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
 
 local flatdb = require "feed.db"
 local eq = assert.are.same
