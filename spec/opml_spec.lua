@@ -1,15 +1,18 @@
 local M = require "feed.opml"
 
 vim.treesitter.language.add("xml", {
-   path = vim.fn.expand "~/.local/share/nvim/lazy/nvim-treesitter/parser/xml.so",
+   path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
 })
+
+local sourced_file = require("plenary.debug_utils").sourced_filepath()
+local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
 
 describe("opml obj", function()
    it("should build a opml obj", function()
-      local opml = M.import "~/Plugins/feed.nvim/spec/data/opml_example.opml"
-      opml:export "/home/n451/Plugins/feed.nvim/exported_opml.opml"
+      local opml = M.import(data_dir .. "opml_example.opml")
+      opml:export(data_dir .. "exported_opml.opml")
       assert.are_string(opml:export())
-      local exported_opml = M.import "/home/n451/Plugins/feed.nvim/exported_opml.opml"
+      local exported_opml = M.import(data_dir .. "exported_opml.opml")
       assert.same(opml.title, exported_opml.title)
       assert.same(opml.outline, exported_opml.outline)
    end)
