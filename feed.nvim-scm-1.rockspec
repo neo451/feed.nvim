@@ -11,4 +11,8 @@ test_dependencies = {
    "nlua",
    "plenary.nvim",
    "treedoc.nvim",
+   "tree-sitter-markdown",
+   "tree-sitter-markdown_inline",
+   "tree-sitter-html",
+   "tree-sitter-xml",
 }

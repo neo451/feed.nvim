@@ -1,16 +1,14 @@
-package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
-
 local m = require "feed.feedparser"
 local eq = assert.are.same
 
 vim.treesitter.language.add("html", {
-   path = vim.fn.expand "~/.local/share/nvim/lazy/nvim-treesitter/parser/html.so",
+   path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-html/0.0.29-1/parser/html.so",
 })
 
 vim.treesitter.language.add("xml", {
-   path = vim.fn.expand "~/.local/share/nvim/lazy/nvim-treesitter/parser/xml.so",
+   path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
 })
-
+--
 local sourced_file = require("plenary.debug_utils").sourced_filepath()
 local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
 
