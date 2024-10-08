@@ -1,0 +1,15 @@
+local env = os.getenv "HOME"
+
+return {
+   _all = {
+      coverage = false,
+      lpath = ("lua/?.lua;lua/?/init.lua;%s/.luarocks/share/lua/5.1/?.lua;%s/.luarocks/share/lua/5.1/?/init.lua"):format(env, env),
+      lua = "~/.luarocks/bin/nlua",
+   },
+   default = {
+      verbose = true,
+   },
+   tests = {
+      verbose = true,
+   },
+}
