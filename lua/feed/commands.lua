@@ -16,6 +16,10 @@ local cmds = {}
 -- 2. add_feed: add to database
 -- 3. db_unload: not needed? file handles are just closed... but is that efficient?
 
+function cmds.blowup()
+   require "feed.db"(config.db_dir):blowup()
+end
+
 ---load opml file to list of sources
 ---@param filepath string
 function cmds.load_opml(filepath)
@@ -26,6 +30,11 @@ function cmds.load_opml(filepath)
       index_opml:append(v)
    end
    index_opml:export(opml_path)
+end
+
+function cmds.refresh()
+   local render = require "feed.render"
+   render.refresh()
 end
 
 ---index buffer commands
@@ -69,7 +78,7 @@ end
 function cmds.tag()
    local render = require "feed.render"
    local input = vim.fn.input "Tag: "
-   local db = require("feed.db").db(config.db_dir)
+   local db = require "feed.db"(config.db_dir)
    db[get_cursor_col()].tags[input] = true
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
    render.show_index() -- TODO: inefficient??, only rerender the one entry
@@ -78,7 +87,7 @@ end
 function cmds.untag()
    local render = require "feed.render"
    local input = vim.fn.input "Untag: "
-   local db = require("feed.db").db(config.db_dir)
+   local db = require "feed.db"(config.db_dir)
    db[get_cursor_col()].tags[input] = nil
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
    render.show_index() -- TODO: inefficient??, only rerender the one entry
@@ -102,7 +111,7 @@ end
 
 function cmds.show_next()
    local render = require "feed.render"
-   local db = require("feed.db").db(config.db_dir)
+   local db = require "feed.db"(config.db_dir)
    if render.current_index == #db.index then
       return
    end
@@ -122,7 +131,7 @@ function cmds.list_feeds()
 end
 
 function cmds.update()
-   local db = require("feed.db").db(config.db_dir)
+   local db = require "feed.db"(config.db_dir)
    local fetch = require "feed.fetch"
    local opml = require("feed.opml").import(opml_path)
    local ok, progress = pcall(require, "fidget.progress")
@@ -172,17 +181,4 @@ function cmds.which_key()
    }
 end
 
----@param args string[]
-local function load_command(args)
-   local cmd = table.remove(args, 1)
-   if type(cmds[cmd]) == "table" then
-      return cmds[cmd].impl(unpack(args))
-   elseif type(cmds[cmd]) == "function" then
-      return cmds[cmd](unpack(args))
-   end
-end
-
-return {
-   load_command = load_command,
-   cmds = cmds,
-}
+return cmds

@@ -12,6 +12,7 @@ local default = {
          show_in_split = "<M-CR>",
          show_in_browser = "b",
          show_in_w3m = "w",
+         refresh = "g",
          link_to_clipboard = "y",
          quit_index = "q",
          tag = "+",
@@ -32,7 +33,7 @@ local default = {
    },
    ---@type table<string, any>
    buf_options = {
-      filetype = "markdown", -- TODO: rss?
+      -- filetype = "", -- TODO: FeedBuffer?
       modifiable = false,
    },
    ---@type table<string, any>

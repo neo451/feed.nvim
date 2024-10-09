@@ -11,18 +11,17 @@ local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 local highlighter = require("telescope.previewers.utils").highlighter
 
-local config = require "feed.config"
-local db = require("feed.db").db(config.db_dir)
-local render = require "feed.render"
-local ut = require "feed.utils"
-local format = require "feed.format"
-
-local lines = {}
-for i, entry in ipairs(db.index) do
-   lines[i] = format.entry_name(entry)
-end
-
 local function feed(opts)
+   local config = require "feed.config"
+   local db = require("feed.db").db(config.db_dir)
+   local render = require "feed.render"
+   local format = require "feed.format"
+
+   local lines = {}
+   for i, entry in ipairs(db.index) do
+      lines[i] = format.entry_name(entry)
+   end
+
    pickers
       .new(opts, {
          prompt_title = "Feeds",
@@ -45,7 +44,7 @@ local function feed(opts)
                actions.close(prompt_bufnr)
                local selection = action_state.get_selected_entry()
                if not render.buf then
-                  render.prepare_bufs(require("feed.commands").cmds)
+                  render.prepare_bufs(require "feed.commands")
                end
                render.show_entry(selection.index)
             end)

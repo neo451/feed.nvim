@@ -1,16 +1,19 @@
 local curl = require "plenary.curl"
 local config = require "feed.config"
 local feedparser = require "feed.feedparser"
-local db = require("feed.db").db(config.db_dir)
+local db = require "feed.db"(config.db_dir)
 
 local M = {}
 
 local function fetch(url, timeout, callback)
-   -- TODO: pcall??? how to hanlde async errs?
    curl.get {
       url = url,
       timeout = timeout,
       callback = callback,
+      on_error = function(err)
+         print(err.message)
+         return err.message
+      end,
    }
 end
 
@@ -36,7 +39,7 @@ function M.update_feed(feed, total, handle)
       end
       src = res.body
       local ok, ast = pcall(feedparser.parse, src)
-      if not ok then -- FOR DEBUG
+      if not ok then
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
          print(ast)
          return
@@ -45,6 +48,7 @@ function M.update_feed(feed, total, handle)
       for _, entry in ipairs(entries) do
          db:add(entry)
       end
+      -- TODO: update the local ompl here
       db:save()
       if handle then
          handle.percentage = handle.percentage + 100 / total
@@ -53,9 +57,7 @@ function M.update_feed(feed, total, handle)
          end
       end
    end
-   fetch(url, 30000, callback)
+   fetch(url, 300, callback)
 end
-
--- TODO:  maybe use a process bar like fidget.nvim
 
 return M

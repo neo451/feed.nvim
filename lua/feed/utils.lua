@@ -14,6 +14,7 @@ local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
 local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
 vim.api.nvim_set_hl(ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
 vim.api.nvim_set_hl(ns, "feed.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
+M.ns = ns
 
 ---@param buf integer
 function M.highlight_entry(buf)
