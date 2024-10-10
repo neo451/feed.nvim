@@ -124,7 +124,7 @@ end
 
 ---@return string
 function M.show_hint()
-   return "Hint: <M-CR> open in split | <CR> open | + add_tag | - remove | ? help"
+   return "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help"
 end
 
 function M.refresh()
