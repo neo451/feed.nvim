@@ -141,17 +141,15 @@ end
 local function db(dir)
    local index
    dir = vim.fn.expand(dir)
+   prepare_db(dir)
    local index_path = dir .. "/index"
    local ok, res = pcall(loadfile, index_path)
    if ok and res then
       index = res()
    else
-      print("[feed.nvim]: failed to load index: ", ok)
+      print("[feed.nvim]: failed to load index: ", res)
    end
    return setmetatable({ dir = dir, index = index }, db_mt)
 end
 
-return {
-   db = db,
-   prepare_db = prepare_db,
-}
+return db

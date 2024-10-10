@@ -3,8 +3,7 @@
 local flatdb = require "feed.db"
 local eq = assert.are.same
 local path = "~/.rss.nvim.test/"
-flatdb.prepare_db(path)
-local db = flatdb.db(path)
+local db = flatdb(path)
 
 describe("initialize", function()
    it("should make parent dir and data dir in the passed in path", function()
@@ -42,8 +41,7 @@ end)
 
 describe("sort", function()
    db:blowup()
-   flatdb.prepare_db(path)
-   db = flatdb.db(path)
+   db = flatdb(path)
    it("add rss.entry to index", function()
       db:add {
          link = "https://example.com",

@@ -13,20 +13,20 @@ local M = {
    ---List of functions to run immediately following a search buffer update.
    ---@type function[]
    update_hook = config.search.update_hook, -- TODO:
-   sort_order = config.search.sort_order,   -- TODO:
+   sort_order = config.search.sort_order, -- TODO:
 }
 
 ---@class feed.query
----@field after feed.date #@
----@field before feed.date #@
----@field must_have feed.pattern #+
----@field must_not_have feed.pattern #-
----@field matches feed.pattern #~ =
----@field not_matches feed.pattern #!
----@field feeds string
----@field not_feeds string
----@field limit number ##
----@field re feed.pattern #=
+---@field after? feed.date #@
+---@field before? feed.date #@
+---@field must_have? string[]
+---@field must_not_have? string[] #-
+---@field matches? feed.pattern #~ =
+---@field not_matches? feed.pattern #!
+---@field feeds? string
+---@field not_feeds? string
+---@field limit? number ##
+---@field re? feed.pattern #=
 
 ---@alias feed.pattern vim.regex | vim.lpeg.Pattern | string # regex
 
@@ -70,9 +70,39 @@ function M.valid_pattern(str)
    return false
 end
 
+--- tag read should be default for empty tags
+
 ---@param entries feed.entry[]
 ---@param query feed.query
 ---@return feed.entry[]
-local function filter(entries, query) end
+---@return table<number, number>
+function M.filter(entries, query)
+   local iter = vim.iter(ipairs(entries))
+   local map_to_db_index = {}
+   return iter
+      :filter(function(_, v)
+         if query.must_not_have then
+            for _, t in ipairs(query.must_not_have) do
+               if v.tags[t] then
+                  return false
+               end
+            end
+         end
+         if query.must_have then
+            for _, t in ipairs(query.must_have) do
+               if v.tags[t] then
+                  return true
+               end
+            end
+         end
+         return false
+      end)
+      :fold({}, function(acc, k, v)
+         map_to_db_index[#acc + 1] = k
+         acc[#acc + 1] = v
+         return acc
+      end),
+      map_to_db_index
+end
 
 return M

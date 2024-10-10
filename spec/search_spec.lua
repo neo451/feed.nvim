@@ -11,3 +11,19 @@ describe("parse_query", function()
       assert.same(expected.before, query.before)
    end)
 end)
+
+describe("filter", function()
+   it("filter by tags", function()
+      local query = M.parse_query "+unread -star"
+      local index = {
+         { tags = { unread = true, star = true }, v = 1 },
+         { tags = { unread = true }, v = 2 },
+         { tags = { star = true }, v = 3 },
+         { tags = {}, v = 4 },
+         { tags = { unread = true }, v = 2 },
+      }
+      local res, map = M.filter(index, query)
+      assert.same({ index[2], index[5] }, res)
+      assert.same({ [1] = 2, [2] = 5 }, map)
+   end)
+end)

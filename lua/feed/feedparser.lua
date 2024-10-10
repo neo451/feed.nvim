@@ -48,6 +48,22 @@ local function handle_atom_content(content)
    end
 end
 
+local function handle_rss_content(entry)
+   --- rss content is always plain text?
+   local function handle_self_closing(t)
+      if type(t) == "table" then
+         return ""
+      end
+      return t
+   end
+   if entry["content:encoded"] then
+      return handle_self_closing(entry["content:encoded"])
+   elseif entry.description then
+      return handle_self_closing(entry.description)
+   end
+   return ""
+end
+
 ---@param entry table
 ---@param feedtype string
 ---@param title string
@@ -66,7 +82,7 @@ local function reify_entry(entry, feedtype, title, base)
       if ok then
          res.time = time
       end
-      res.content = entry["content:encoded"] or entry.description or ""
+      res.content = handle_rss_content(entry)
       res.author = entry.author or title
    elseif feedtype == "json" then
       res.link = entry.url
@@ -86,7 +102,10 @@ local function reify_entry(entry, feedtype, title, base)
       res.content = handle_atom_content(entry.content)
    end
    res.tags = { unread = true }
-   res.content = format.entry(res)
+   local ok, md = pcall(format.entry, res)
+   if ok then
+      res.content = md
+   end
    return res
 end
 
