@@ -33,7 +33,7 @@ local default = {
    },
    ---@type table<string, any>
    buf_options = {
-      -- filetype = "", -- TODO: FeedBuffer?
+      filetype = "markdown", -- TODO: FeedBuffer?
       modifiable = false,
    },
    ---@type table<string, any>

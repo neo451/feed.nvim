@@ -5,11 +5,19 @@ local db = require "feed.db"(config.db_dir)
 
 local M = {}
 
-local function fetch(url, timeout, callback)
+local function check_rsshub(_)
+   return false -- TODO:
+end
+
+local function fetch(url, timeout, callback, is_rsshub)
+   if is_rsshub == nil then
+      is_rsshub = check_rsshub(url)
+   end
    curl.get {
       url = url,
       timeout = timeout,
       callback = callback,
+      query = is_rsshub and { format = "json" } or nil,
       on_error = function(err)
          print(err.message)
          return err.message
@@ -57,7 +65,7 @@ function M.update_feed(feed, total, handle)
          end
       end
    end
-   fetch(url, 300, callback)
+   fetch(url, 300, callback, nil) --TODO:
 end
 
 return M

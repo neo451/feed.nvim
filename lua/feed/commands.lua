@@ -5,6 +5,11 @@ local og_buffer
 
 local opml_path = config.db_dir .. "/feeds.opml" --TODO: ///
 
+local db = require "feed.db"(config.db_dir)
+local render = require "feed.render"
+local opml = require "feed.opml"
+local fetch = require "feed.fetch"
+
 -- IDEAS:
 -- show random entry
 -- show entry from (feed, url, tag, fuzzy find)
@@ -17,13 +22,12 @@ local cmds = {}
 -- 3. db_unload: not needed? file handles are just closed... but is that efficient?
 
 function cmds.blowup()
-   require "feed.db"(config.db_dir):blowup()
+   db:blowup()
 end
 
 ---load opml file to list of sources
 ---@param filepath string
 function cmds.load_opml(filepath)
-   local opml = require "feed.opml"
    local outlines = opml.import(filepath).outline
    local index_opml = opml.import(opml_path)
    for _, v in ipairs(outlines) do
@@ -33,18 +37,15 @@ function cmds.load_opml(filepath)
 end
 
 function cmds.refresh()
-   local render = require "feed.render"
    render.refresh()
 end
 
 ---index buffer commands
 function cmds.show_in_browser()
-   local render = require "feed.render"
    vim.ui.open(render.get_entry_under_cursor().link)
 end
 
 function cmds.show_in_w3m()
-   local render = require "feed.render"
    if ut.check_command "W3m" then
       vim.cmd("W3m " .. render.get_entry_under_cursor().link)
    else
@@ -53,7 +54,6 @@ function cmds.show_in_w3m()
 end
 
 function cmds.show_in_split()
-   local render = require "feed.render"
    render.state.in_split = true
    vim.cmd(config.split)
    vim.cmd(config.split:find "v" and "wincmd k" or "wincmd j")
@@ -61,13 +61,11 @@ function cmds.show_in_split()
 end
 
 function cmds.show_entry()
-   local render = require "feed.render"
    render.state.in_entry = true
    render.show_entry_under_cursor()
 end
 
 function cmds.link_to_clipboard()
-   local render = require "feed.render"
    vim.fn.setreg("+", render.get_entry_under_cursor().link)
 end
 ---@return integer
@@ -76,18 +74,14 @@ local function get_cursor_col()
 end
 
 function cmds.tag()
-   local render = require "feed.render"
    local input = vim.fn.input "Tag: "
-   local db = require "feed.db"(config.db_dir)
    db[get_cursor_col()].tags[input] = true
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
    render.show_index() -- TODO: inefficient??, only rerender the one entry
 end
 
 function cmds.untag()
-   local render = require "feed.render"
    local input = vim.fn.input "Untag: "
-   local db = require "feed.db"(config.db_dir)
    db[get_cursor_col()].tags[input] = nil
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
    render.show_index() -- TODO: inefficient??, only rerender the one entry
@@ -95,7 +89,6 @@ end
 
 --- entry buffer actions
 function cmds.show_index()
-   local render = require "feed.render"
    og_colorscheme = vim.g.colors_name
    og_buffer = vim.api.nvim_get_current_buf()
    render.show_index()
@@ -110,8 +103,6 @@ function cmds.quit_index()
 end
 
 function cmds.show_next()
-   local render = require "feed.render"
-   local db = require "feed.db"(config.db_dir)
    if render.current_index == #db.index then
       return
    end
@@ -119,7 +110,6 @@ function cmds.show_next()
 end
 
 function cmds.show_prev()
-   local render = require "feed.render"
    if render.current_index == 1 then
       return
    end
@@ -131,9 +121,6 @@ function cmds.list_feeds()
 end
 
 function cmds.update()
-   local db = require "feed.db"(config.db_dir)
-   local fetch = require "feed.fetch"
-   local opml = require("feed.opml").import(opml_path)
    local ok, progress = pcall(require, "fidget.progress")
    local handle
    if not ok then
@@ -147,8 +134,9 @@ function cmds.update()
    end
 
    -- TODO: iterate over opml, identify unstored feeds, fetch current info, and store to local opml index
-   if opml then
-      config.feeds = vim.list_extend(config.feeds, opml.outline)
+   local feeds = opml.import(config.db_dir .. "/feeds.opml")
+   if feeds then
+      vim.list_extend(config.feeds, feeds.outline)
    end
 
    for _, link in ipairs(config.feeds) do

@@ -13,7 +13,7 @@ local highlighter = require("telescope.previewers.utils").highlighter
 
 local function feed(opts)
    local config = require "feed.config"
-   local db = require("feed.db").db(config.db_dir)
+   local db = require "feed.db"(config.db_dir)
    local render = require "feed.render"
    local format = require "feed.format"
 
