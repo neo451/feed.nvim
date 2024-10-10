@@ -25,15 +25,19 @@ local function set_options(buf)
    for key, value in pairs(config.buf_options) do
       vim.api.nvim_set_option_value(key, value, { buf = buf })
    end
-   vim.cmd.colorscheme(config.colorscheme)
 end
 
 ---@param cmds table<string, feed.action>
 function M.prepare_bufs(cmds)
+   if M.buf then
+      return
+   end
    M.buf = {
       index = vim.api.nvim_create_buf(false, true),
       entry = vim.api.nvim_create_buf(false, true),
    }
+   vim.api.nvim_buf_set_name(M.buf.index, "FeedIndex")
+   vim.api.nvim_buf_set_name(M.buf.entry, "FeedEntry")
    for rhs, lhs in pairs(config.keymaps.entry) do
       ut.push_keymap(M.buf.entry, lhs, cmds[rhs], rhs)
    end

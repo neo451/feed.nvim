@@ -33,17 +33,6 @@ function M.highlight_index(buf)
    end
 end
 
----check if an usercommnad exists, so as a easy way to check if plugin exists
----@param str any
----@return boolean
-function M.check_command(str)
-   local global_commands = vim.api.nvim_get_commands {}
-   if global_commands[str] then
-      return true
-   end
-   return false
-end
-
 function M.clamp(min, value, max)
    return math.min(max, math.max(min, value))
 end
