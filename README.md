@@ -43,8 +43,9 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 return {
-    'noearc/feed.nvim',
-    dependencies = { 
+    'neo451/feed.nvim',
+    dependencies = {
+      'neo451/treedoc.nvim',
       'stevearc/conform.nvim',
       'j-hui/fidget.nvim',
       'nvim-lua/plenary.nvim',
