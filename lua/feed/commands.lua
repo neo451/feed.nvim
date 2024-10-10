@@ -1,5 +1,4 @@
 local config = require "feed.config"
-local ut = require "feed.utils"
 local og_colorscheme
 local og_buffer
 
@@ -46,10 +45,9 @@ function cmds.show_in_browser()
 end
 
 function cmds.show_in_w3m()
-   if ut.check_command "W3m" then
-      vim.cmd("W3m " .. render.get_entry_under_cursor().link)
-   else
-      vim.notify "[feed.nvim]: need w3m.nvim installed"
+   local ok, _ = pcall(vim.cmd, "W3m " .. render.get_entry_under_cursor().link)
+   if not ok then
+      vim.notify "[feed.nvim]: need w3m.vim installed"
    end
 end
 
@@ -63,6 +61,11 @@ end
 function cmds.show_entry()
    render.state.in_entry = true
    render.show_entry_under_cursor()
+end
+
+function cmds.quite_entry()
+   render.state.in_entry = false
+   render.show_index()
 end
 
 function cmds.link_to_clipboard()
@@ -89,21 +92,21 @@ end
 
 --- entry buffer actions
 function cmds.show_index()
+   pcall(vim.cmd, "ZenMode")
    og_colorscheme = vim.g.colors_name
    og_buffer = vim.api.nvim_get_current_buf()
+   vim.cmd.colorscheme(config.colorscheme)
    render.show_index()
 end
 
 function cmds.quit_index()
-   if ut.check_command "ZenMode" then
-      vim.cmd "ZenMode"
-   end
+   pcall(vim.cmd, "ZenMode")
    vim.api.nvim_set_current_buf(og_buffer)
    vim.cmd.colorscheme(og_colorscheme)
 end
 
 function cmds.show_next()
-   if render.current_index == #db.index then
+   if render.current_index == #db.index then -- TODO: wrong
       return
    end
    render.show_entry(render.current_index + 1)
@@ -155,9 +158,7 @@ function cmds.update_feed(name) end
 
 --- **INTEGRATIONS**
 function cmds:telescope()
-   if ut.check_command "Telescope" then
-      vim.cmd "Telescope feed"
-   end
+   pcall(vim.cmd, "Telescope feed")
 end
 
 function cmds.which_key()

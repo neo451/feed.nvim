@@ -17,9 +17,7 @@ vim.api.nvim_create_user_command("Feed", function(opts)
       end
    end
 
-   if ut.check_command "Telescope" then
-      pcall(require("telescope").load_extension, "feed")
-   end
+   pcall(require("telescope").load_extension, "feed")
 
    if #opts.fargs == 0 then
       load_command { "show_index" }

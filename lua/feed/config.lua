@@ -20,7 +20,7 @@ local default = {
          which_key = "?",
       },
       entry = {
-         show_index = "q",
+         quite_entry = "q",
          show_next = "}",
          show_prev = "{",
          which_key = "?",
