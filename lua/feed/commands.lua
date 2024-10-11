@@ -8,18 +8,12 @@ local db = require "feed.db"(config.db_dir)
 local render = require "feed.render"
 local opml = require "feed.opml"
 local fetch = require "feed.fetch"
-local ut = require "feed.utils"
-
--- IDEAS:
--- show random entry
--- show entry from (feed, url, tag, fuzzy find)
 
 local cmds = {}
 
 -- TODO:
--- 1. unjam: stop the connection pool?
--- 2. add_feed: add to database
--- 3. db_unload: not needed? file handles are just closed... but is that efficient?
+-- 1. add/update feed
+-- 2. show random entry
 
 function cmds.blowup()
    db:blowup()
@@ -36,6 +30,11 @@ function cmds.load_opml(filepath)
    index_opml:export(opml_path)
 end
 
+function cmds.export_opml(filepath)
+   local index_opml = opml.import(config.db_dir .. "/feeds.opml")
+   index_opml:export(filepath)
+end
+
 function cmds.refresh()
    render.refresh()
 end
@@ -43,16 +42,7 @@ end
 ---index buffer commands
 function cmds.show_in_browser()
    local link = render.get_entry_under_cursor().link
-   if ut.is_wsl() then
-      vim.system({ "explorer.exe", link }, { text = true }, function(obj)
-         print(obj.code)
-         print(obj.signal)
-         print(obj.stdout)
-         print(obj.stderr)
-      end)
-   else
-      vim.ui.open(link)
-   end
+   vim.ui.open(link)
 end
 
 function cmds.show_in_w3m()
@@ -63,25 +53,27 @@ function cmds.show_in_w3m()
 end
 
 function cmds.show_in_split()
-   render.state.in_split = true
    vim.cmd(config.layout.split)
-   vim.cmd(config.layout.split:find "v" and "wincmd k" or "wincmd j")
+   render.state.in_split = true
    render.show_entry_under_cursor()
 end
 
 function cmds.show_entry()
-   render.state.in_entry = true
    render.show_entry_under_cursor()
 end
 
 function cmds.quite_entry()
-   render.state.in_entry = false
+   if render.state.in_split then
+      vim.cmd "q"
+      vim.api.nvim_set_current_buf(render.buf.index)
+   end
    render.show_index()
 end
 
 function cmds.link_to_clipboard()
    vim.fn.setreg("+", render.get_entry_under_cursor().link)
 end
+
 ---@return integer
 local function get_cursor_col()
    return vim.api.nvim_win_get_cursor(0)[1] - 1
@@ -103,7 +95,9 @@ end
 
 --- entry buffer actions
 function cmds.show_index()
-   pcall(vim.cmd.ZenMode)
+   if config.zenmode then
+      pcall(vim.cmd.ZenMode)
+   end
    og_colorscheme = vim.g.colors_name
    og_buffer = vim.api.nvim_get_current_buf()
    vim.cmd.colorscheme(config.colorscheme)
@@ -111,7 +105,9 @@ function cmds.show_index()
 end
 
 function cmds.quit_index()
-   pcall(vim.cmd.ZenMode)
+   if config.zenmode then
+      pcall(vim.cmd.ZenMode)
+   end
    vim.api.nvim_set_current_buf(og_buffer)
    vim.cmd.colorscheme(og_colorscheme)
 end
@@ -179,6 +175,10 @@ function cmds.which_key()
       ["local"] = true,
       loop = true,
    }
+end
+
+function cmds.urlview()
+   pcall(vim.cmd.UrlView, { args = { "buffer", "action=system" } })
 end
 
 return cmds

@@ -5,25 +5,26 @@
 local default = {
    ---@type string
    db_dir = "~/.local/share/nvim/feed",
-   ---@type { index : table<string, string | function> }
+   ---@type { index : table<string, string | function>, entry : table<string, string | function> }
    keymaps = {
       index = {
-         show_entry = "<CR>",
-         show_in_split = "<M-CR>",
-         show_in_browser = "b",
-         show_in_w3m = "w",
-         refresh = "r",
-         link_to_clipboard = "y",
-         quit_index = "q",
-         tag = "+",
-         untag = "-",
-         which_key = "?",
+         ["<CR>"] = "show_entry",
+         ["<M-CR>"] = "show_in_split",
+         ["+"] = "tag",
+         ["-"] = "untag",
+         ["?"] = "which_key",
+         b = "show_in_browser",
+         w = "show_in_w3m",
+         r = "refresh",
+         y = "link_to_clipboard",
+         q = "quit_index",
       },
       entry = {
-         quite_entry = "q",
-         show_next = "}",
-         show_prev = "{",
-         which_key = "?",
+         ["}"] = "show_next",
+         ["{"] = "show_prev",
+         ["?"] = "which_key",
+         u = "urlview",
+         q = "quite_entry",
       },
    },
    ---@type table<string, any>
@@ -60,6 +61,9 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
+
+   ---@type boolean
+   zenmode = false,
 }
 
 ---@type feed.config | nil

@@ -4,7 +4,7 @@ local URL = require "feed.url"
 ---@param buf integer
 ---@param lhs string
 ---@param rhs string | function
----@param desc string
+---@param desc? string
 function M.push_keymap(buf, lhs, rhs, desc)
    vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, desc = desc, buffer = buf })
 end
