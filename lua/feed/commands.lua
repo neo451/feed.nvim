@@ -126,6 +126,10 @@ function cmds.show_prev()
    render.show_entry(render.current_index - 1)
 end
 
+function cmds.urlview()
+   require "feed.urlview"(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), ""))
+end
+
 function cmds.list_feeds()
    print(vim.inspect(vim.tbl_values(config.feeds)))
 end
@@ -175,10 +179,6 @@ function cmds.which_key()
       ["local"] = true,
       loop = true,
    }
-end
-
-function cmds.urlview()
-   pcall(vim.cmd.UrlView, { args = { "buffer", "action=system" } })
 end
 
 return cmds
