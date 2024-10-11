@@ -17,6 +17,8 @@
 
 *This project is in beta, many features are incomplete, but is already useable for most feeds, trying out and contributions are welcome!*
 
+*see [roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
+
 🚧 🚧 🚧
 
 ## 🌟 Features
