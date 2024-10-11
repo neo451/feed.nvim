@@ -5,14 +5,14 @@
 local default = {
    ---@type string
    db_dir = "~/.local/share/nvim/feed",
-   ---@type table<table, table<string, string | function>>
+   ---@type { index : table<string, string | function> }
    keymaps = {
       index = {
          show_entry = "<CR>",
          show_in_split = "<M-CR>",
          show_in_browser = "b",
          show_in_w3m = "w",
-         refresh = "g",
+         refresh = "r",
          link_to_clipboard = "y",
          quit_index = "q",
          tag = "+",
@@ -52,9 +52,9 @@ local default = {
          format = "%Y-%m-%d",
          width = 10,
       },
+      ---@type string
+      split = "13split",
    },
-   ---@type string
-   split = "13split",
    ---@type string
    colorscheme = "morning",
 
@@ -62,12 +62,10 @@ local default = {
    feeds = {},
 }
 
----@class feed.config
----@field feeds? feed.feed[]
----@field colorscheme? string
----@field split? string
+---@type feed.config | nil
+vim.g.feed = vim.g.feed
 
 ---@type feed.config
-local config = vim.tbl_deep_extend("force", default, vim.g.feed_config or {})
+local config = vim.tbl_deep_extend("force", default, vim.g.feed or {})
 
 return config

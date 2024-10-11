@@ -83,7 +83,7 @@ local weekdays = { Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
 do
    local lpeg = vim.lpeg
    local C, P, S, R = lpeg.C, lpeg.P, lpeg.S, lpeg.R
-   L = lpeg.locale()
+   local L = lpeg.locale()
    local ws = L.space
    local alpha = C(L.alpha ^ 1) / function(str)
       return months[str] and months[str] or weekdays[str]
@@ -92,15 +92,15 @@ do
    local col = P ":"
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
    local min_and_sec = L.digit ^ 2 * P ":" * L.digit ^ 2 * P "-"
-   patterns.RFC822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
-   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * P ":" * digit * (R "AZ" ^ -1) -- ??
+   patterns.RFC2822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
+   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * (P ":" ^ -1) * (digit ^ -1) * (R "AZ" ^ -1)
 end
 
---- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 822, with the exception that the year may be expressed with two characters or four characters (four preferred).
+--- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 2822, with the exception that the year may be expressed with two characters or four characters (four preferred).
 ---@param str string
 ---@return feed.date?
-local function rfc822(str)
-   local weekday, day, month, year, hour, min, sec, zone = patterns.RFC822:match(str)
+local function rfc2822(str)
+   local weekday, day, month, year, hour, min, sec, _ = patterns.RFC2822:match(str) -- TODO: handle zone?
    if not weekday then
       return nil
    end
@@ -118,7 +118,7 @@ local function rfc3339(str)
 end
 
 M.new_from = {
-   rss = rfc822,
+   rss = rfc2822,
    json = rfc3339,
    atom = rfc3339,
 }

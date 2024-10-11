@@ -8,6 +8,7 @@ local db = require "feed.db"(config.db_dir)
 local render = require "feed.render"
 local opml = require "feed.opml"
 local fetch = require "feed.fetch"
+local ut = require "feed.utils"
 
 -- IDEAS:
 -- show random entry
@@ -41,11 +42,21 @@ end
 
 ---index buffer commands
 function cmds.show_in_browser()
-   vim.ui.open(render.get_entry_under_cursor().link)
+   local link = render.get_entry_under_cursor().link
+   if ut.is_wsl() then
+      vim.system({ "explorer.exe", link }, { text = true }, function(obj)
+         print(obj.code)
+         print(obj.signal)
+         print(obj.stdout)
+         print(obj.stderr)
+      end)
+   else
+      vim.ui.open(link)
+   end
 end
 
 function cmds.show_in_w3m()
-   local ok, _ = pcall(vim.cmd, "W3m " .. render.get_entry_under_cursor().link)
+   local ok, _ = pcall(vim.cmd.W3m, render.get_entry_under_cursor().link)
    if not ok then
       vim.notify "[feed.nvim]: need w3m.vim installed"
    end
@@ -53,8 +64,8 @@ end
 
 function cmds.show_in_split()
    render.state.in_split = true
-   vim.cmd(config.split)
-   vim.cmd(config.split:find "v" and "wincmd k" or "wincmd j")
+   vim.cmd(config.layout.split)
+   vim.cmd(config.layout.split:find "v" and "wincmd k" or "wincmd j")
    render.show_entry_under_cursor()
 end
 
@@ -92,7 +103,7 @@ end
 
 --- entry buffer actions
 function cmds.show_index()
-   pcall(vim.cmd, "ZenMode")
+   pcall(vim.cmd.ZenMode)
    og_colorscheme = vim.g.colors_name
    og_buffer = vim.api.nvim_get_current_buf()
    vim.cmd.colorscheme(config.colorscheme)
@@ -100,7 +111,7 @@ function cmds.show_index()
 end
 
 function cmds.quit_index()
-   pcall(vim.cmd, "ZenMode")
+   pcall(vim.cmd.ZenMode)
    vim.api.nvim_set_current_buf(og_buffer)
    vim.cmd.colorscheme(og_colorscheme)
 end
@@ -158,7 +169,7 @@ function cmds.update_feed(name) end
 
 --- **INTEGRATIONS**
 function cmds:telescope()
-   pcall(vim.cmd, "Telescope feed")
+   pcall(vim.cmd.Telescope, "feed")
 end
 
 function cmds.which_key()

@@ -64,4 +64,14 @@ function M.listify(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end
 
+function M.is_wsl()
+   local file = "/proc/sys/fs/binfmt_misc/WSLInterop"
+   local f = io.open(file)
+   if f then
+      return true
+   else
+      return false
+   end
+end
+
 return M

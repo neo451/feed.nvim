@@ -63,12 +63,16 @@ require("nvim-treesitter.configs").setup {
 ```
 
 ### Health Check
+
 - run `:checkhealth feed` to see your installation status
 
 ### Optional Integrations
 
+*these integrations are very immature and are not the priority of development, but they are really cool for sure. these are just some suggestions, contributions are welcome!*
+
 - For fuzzy finding your feeds and entries: get [telesope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - For rendering entries beautifully in neovim: get [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+- For more browser-like reading: get [w3m.vim](https://github.com/yuratomo/w3m.vim)
 - For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
 
 ## 🔖 Usage
@@ -86,6 +90,7 @@ require("nvim-treesitter.configs").setup {
 - Use `Feed export_opml` to export your opml file to load in other readers
 
 ### Feed Searching
+
 - *To Be Implemented*
 
 - Will support all the syntax of elfeed
@@ -100,27 +105,29 @@ require("nvim-treesitter.configs").setup {
 
 ## Customization
 
-these are the defaults, no need to copy, only set the ones you wish to change
+- these are the defaults, no need to copy, only set the ones you wish to change
 
 ```lua
 require("feed").setup{
+   db_dir = "~/.local/share/nvim/feed",
+   colorscheme = "default", -- add your preferred colorscheme for reading here
    feeds = {
         { "https://neovim.io/news.xml", name = "neovim", tags = {"tech", "vim", "news"} -- a simple url pasted here is also fine
    }, -- this is where all your feeds go
-   db_dir = "~/.local/share/nvim/feed",
    keymaps = {
       index = {
          show_entry = "<CR>",
          show_in_split = "<M-CR>",
          show_in_browser = "b",
          show_in_w3m = "w",
+         refresh1= "r",
          link_to_clipboard = "y",
          quit_index = "q",
          tag = "+",
          untag = "-",
       },
       entry = {
-         show_index = "q",
+         quite_entry = "q",
          show_next = "}",
          show_prev = "{",
       },
@@ -147,9 +154,8 @@ require("feed").setup{
          format = "%Y-%m-%d",
          width = 10,
       },
+      split = "13split",
    },
-   split = "13split",
-   colorscheme = "default", -- add your preferred colorscheme for reading here
 }
 ```
 

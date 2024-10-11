@@ -2,7 +2,6 @@ local M = {}
 
 vim.api.nvim_create_user_command("Feed", function(opts)
    local render = require "feed.render"
-   local ut = require "feed.utils"
    local cmds = require "feed.commands"
 
    render.prepare_bufs(cmds)
@@ -34,6 +33,11 @@ end, {
       end, cmds_list)
    end,
 })
+
+---@param config feed.config
+M.setup = function(config)
+   vim.g.feed = config
+end
 
 setmetatable(M, {
    __index = function(self, k)
