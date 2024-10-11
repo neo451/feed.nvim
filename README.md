@@ -110,43 +110,48 @@ require("nvim-treesitter.configs").setup {
 - these are the defaults, no need to copy, only set the ones you wish to change
 
 ```lua
-require("feed").setup{
+require"feed".setup{
+   ---@type string
    db_dir = "~/.local/share/nvim/feed",
-   colorscheme = "default", -- add your preferred colorscheme for reading here
-   feeds = {
-        { "https://neovim.io/news.xml", name = "neovim", tags = {"tech", "vim", "news"} -- a simple url pasted here is also fine
-   }, -- this is where all your feeds go
+   ---@type { index : table<string, string | function>, entry : table<string, string | function> }
    keymaps = {
       index = {
-         show_entry = "<CR>",
-         show_in_split = "<M-CR>",
-         show_in_browser = "b",
-         show_in_w3m = "w",
-         refresh1= "r",
-         link_to_clipboard = "y",
-         quit_index = "q",
-         tag = "+",
-         untag = "-",
+         ["<CR>"] = "show_entry",
+         ["<M-CR>"] = "show_in_split",
+         ["+"] = "tag",
+         ["-"] = "untag",
+         ["?"] = "which_key",
+         b = "show_in_browser",
+         w = "show_in_w3m",
+         r = "refresh",
+         y = "link_to_clipboard",
+         q = "quit_index",
       },
       entry = {
-         quite_entry = "q",
-         show_next = "}",
-         show_prev = "{",
+         ["}"] = "show_next",
+         ["{"] = "show_prev",
+         ["?"] = "which_key",
+         u = "urlview",
+         q = "quite_entry",
       },
    },
+   ---@type table<string, any>
    win_options = {
       conceallevel = 0,
       wrap = true,
    },
+   ---@type table<string, any>
    buf_options = {
-      filetype = "markdown",
+      filetype = "markdown", -- TODO: FeedBuffer?
       modifiable = false,
    },
+   ---@type table<string, any>
    search = {
       sort_order = "descending",
       update_hook = {},
       filter = "@6-months-ago +unread",
    },
+   ---@type table<string, any>
    layout = {
       title = {
          right_justify = false,
@@ -156,8 +161,17 @@ require("feed").setup{
          format = "%Y-%m-%d",
          width = 10,
       },
+      ---@type string
       split = "13split",
    },
+   ---@type string
+   colorscheme = "morning",
+
+   ---@type feed.feed[]
+   feeds = {},
+
+   ---@type boolean
+   zenmode = false,
 }
 ```
 

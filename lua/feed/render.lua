@@ -38,11 +38,13 @@ function M.prepare_bufs(cmds)
    }
    vim.api.nvim_buf_set_name(M.buf.index, "FeedIndex")
    vim.api.nvim_buf_set_name(M.buf.entry, "FeedEntry")
-   for rhs, lhs in pairs(config.keymaps.entry) do
-      ut.push_keymap(M.buf.entry, lhs, cmds[rhs], rhs)
+   for lhs, rhs in pairs(config.keymaps.entry) do
+      rhs = (type(rhs) == "function") and rhs or cmds[rhs]
+      ut.push_keymap(M.buf.entry, lhs, rhs)
    end
-   for rhs, lhs in pairs(config.keymaps.index) do
-      ut.push_keymap(M.buf.index, lhs, cmds[rhs], rhs)
+   for lhs, rhs in pairs(config.keymaps.index) do
+      rhs = (type(rhs) == "function") and rhs or cmds[rhs]
+      ut.push_keymap(M.buf.index, lhs, rhs)
    end
 end
 
