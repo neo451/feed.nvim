@@ -36,24 +36,17 @@
 ---@field show_entry fun(row: integer)
 ---@field show_index function
 
----@class feed.config
----@field feeds string[]
----@field keymaps feed.keymap[]
----@field db_dir string
----@field options table<string, table<string, any>>
----@field layout table<string, table<string, any>>
----@field search table<string, any>
-
----@class feed.userConfig
----@field feeds string[]
----@field keymaps? feed.keymap[]
----@field db_dir? string
----@field options? table<string, table<string, any>>
----@field layout? table<string, table<string, any>>
----@field search? table<string, any>
-
 ---@class feed.opml
 ---@field title string
 ---@field outline table
 ---@field export fun(self: feed.opml, topath: string?): string?
 ---@field append fun(self: feed.opml, t: table)
+
+---@class feed.config
+---@field feeds? feed.feed[]
+---@field colorscheme? string
+---@field split? string
+---@field keymaps? { index : table<string, string | function>, entry : table<string, string | function> }
+---@field db_dir? string
+---@field layout? table
+vim.g.feed = vim.g.feed

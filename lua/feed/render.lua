@@ -107,7 +107,7 @@ function M.get_entry(buf_idx)
    if buf_idx == 0 then
       return
    end
-   return entries_on_display[buf_idx] -- TODO:
+   return db[buf_idx] -- TODO:
 end
 
 ---@return integer
