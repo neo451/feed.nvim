@@ -64,13 +64,14 @@ function M.listify(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end
 
-function M.is_wsl()
-   local file = "/proc/sys/fs/binfmt_misc/WSLInterop"
-   local f = io.open(file)
-   if f then
-      return true
+---@return integer
+function M.get_cursor_col()
+   local config = require "feed.config"
+   local col = vim.api.nvim_win_get_cursor(0)[1]
+   if config.layout.header then
+      return col - 1
    else
-      return false
+      return col
    end
 end
 

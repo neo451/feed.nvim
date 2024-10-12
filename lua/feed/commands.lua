@@ -1,13 +1,12 @@
 local config = require "feed.config"
-local og_colorscheme
-local og_buffer
-
-local opml_path = config.db_dir .. "/feeds.opml" --TODO: ///
-
 local db = require "feed.db"(config.db_dir)
 local render = require "feed.render"
 local opml = require "feed.opml"
 local fetch = require "feed.fetch"
+local ut = require "feed.utils"
+
+local opml_path = config.db_dir .. "/feeds.opml" --TODO: ///
+local og_colorscheme, og_buffer
 
 local cmds = {}
 
@@ -74,23 +73,22 @@ function cmds.link_to_clipboard()
    vim.fn.setreg("+", render.get_entry_under_cursor().link)
 end
 
----@return integer
-local function get_cursor_col()
-   return vim.api.nvim_win_get_cursor(0)[1] - 1
-end
-
 function cmds.tag()
-   local input = vim.fn.input "Tag: "
-   db[get_cursor_col()].tags[input] = true
-   db:save() -- TODO: do it on exit / or only if ":w" , make an option
-   render.show_index() -- TODO: inefficient??, only rerender the one entry
+   local buf_idx = ut.get_cursor_col()
+   vim.ui.input({ prompt = "Tag: " }, function(input)
+      if input and input ~= "" then
+         render.tag(buf_idx, input)
+      end
+   end)
 end
 
 function cmds.untag()
-   local input = vim.fn.input "Untag: "
-   db[get_cursor_col()].tags[input] = nil
-   db:save() -- TODO: do it on exit / or only if ":w" , make an option
-   render.show_index() -- TODO: inefficient??, only rerender the one entry
+   local buf_idx = ut.get_cursor_col()
+   vim.ui.input({ prompt = "Untag: " }, function(input)
+      if input and input ~= "" then
+         render.untag(buf_idx, input)
+      end
+   end)
 end
 
 --- entry buffer actions
@@ -127,9 +125,10 @@ function cmds.show_prev()
 end
 
 function cmds.urlview()
-   require "feed.urlview"(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), ""))
+   require "feed.urlview"(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"))
 end
 
+-- TODO: better view
 function cmds.list_feeds()
    print(vim.inspect(vim.tbl_values(config.feeds)))
 end
