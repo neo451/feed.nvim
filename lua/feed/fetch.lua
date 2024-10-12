@@ -1,7 +1,6 @@
 local curl = require "plenary.curl"
-local config = require "feed.config"
 local feedparser = require "feed.feedparser"
-local db = require "feed.db"(config.db_dir)
+local db = require "feed.db"
 
 local M = {}
 

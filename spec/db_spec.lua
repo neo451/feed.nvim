@@ -1,9 +1,9 @@
 -- package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
 
-local flatdb = require "feed.db"
+local config = require "feed.config"
+config.db_dir = "~/.feed.nvim.test/"
+local db = require "feed.db"
 local eq = assert.are.same
-local path = "~/.rss.nvim.test/"
-local db = flatdb(path)
 
 describe("initialize", function()
    it("should make parent dir and data dir in the passed in path", function()
@@ -41,8 +41,11 @@ end)
 
 describe("sort", function()
    db:blowup()
-   db = flatdb(path)
-   it("add rss.entry to index", function()
+   db:update_index()
+   print(vim.inspect(db.index))
+   -- db:update_index()
+   -- db = flatdb(path)
+   it("sort entry by time", function()
       db:add {
          link = "https://example.com",
          title = "1111",

@@ -1,5 +1,5 @@
 local config = require "feed.config"
-local db = require "feed.db"(config.db_dir)
+local db = require "feed.db"
 local render = require "feed.render"
 local opml = require "feed.opml"
 local fetch = require "feed.fetch"
@@ -93,7 +93,7 @@ end
 
 --- entry buffer actions
 function cmds.show_index()
-   if config.zenmode then
+   if config.integrations.zenmode then
       pcall(vim.cmd.ZenMode)
    end
    og_colorscheme = vim.g.colors_name
@@ -103,7 +103,7 @@ function cmds.show_index()
 end
 
 function cmds.quit_index()
-   if config.zenmode then
+   if config.integrations.zenmode then
       pcall(vim.cmd.ZenMode)
    end
    vim.api.nvim_set_current_buf(og_buffer)

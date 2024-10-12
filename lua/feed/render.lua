@@ -12,7 +12,7 @@ M.state = {
 local entries_on_display, map_to_db_index
 
 local config = require "feed.config"
-local db = require "feed.db"(config.db_dir)
+local db = require "feed.db"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local search = require "feed.search"
