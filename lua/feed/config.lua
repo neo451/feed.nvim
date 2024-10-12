@@ -55,6 +55,7 @@ local default = {
       },
       ---@type string
       split = "13split",
+      header = "show_hint", -- TODO: placeholder set to nil
    },
    ---@type string
    colorscheme = "morning",

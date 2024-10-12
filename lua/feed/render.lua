@@ -72,7 +72,7 @@ function M.show_index(refresh)
       entries_on_display, map_to_db_index = search.filter(db.index, { must_have = { "unread" } })
    end
    local lines = {}
-   lines[1] = M.show_hint()
+   lines[1] = M.show_hint() -- TODO: config.layout.header
    for i, entry in ipairs(entries_on_display) do
       lines[i + 1] = format.entry_name(entry)
    end
@@ -126,6 +126,20 @@ function M.show_entry_under_cursor()
    local buf_idx = vim.api.nvim_win_get_cursor(0)[1] - 1
    local db_idx = map_to_db_index[buf_idx]
    M.show_entry(db_idx)
+end
+
+function M.tag(buf_idx, input)
+   local idx = map_to_db_index[buf_idx]
+   db[idx].tags[input] = true
+   db:save() -- TODO: do it on exit / or only if ":w" , make an option
+   M.refresh()
+end
+
+function M.untag(buf_idx, input)
+   local idx = map_to_db_index[buf_idx]
+   db[idx].tags[input] = nil
+   db:save() -- TODO: do it on exit / or only if ":w" , make an option
+   M.refresh()
 end
 
 ---@return string

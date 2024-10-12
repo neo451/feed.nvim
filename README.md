@@ -67,12 +67,7 @@ require("nvim-treesitter.configs").setup {
 
 ### Optional Integrations
 
-*these integrations are very immature and are not the priority of development, but they are really cool for sure. these are just some suggestions, contributions are welcome!*
-
-- For fuzzy finding your feeds and entries: get [telesope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- For rendering entries beautifully in neovim: get [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim)
-- For more browser-like reading: get [w3m.vim](https://github.com/yuratomo/w3m.vim)
-- For nice keymap hints, get [which-key.nvim](https://github.com/folke/which-key.nvim)
+- see [wiki/Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
 
 ## 🔖 Usage
 
