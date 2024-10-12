@@ -107,7 +107,7 @@ require("nvim-treesitter.configs").setup {
 ```lua
 require"feed".setup{
    ---@type string
-   db_dir = "~/.local/share/nvim/feed",
+   db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type { index : table<string, string | function>, entry : table<string, string | function> }
    keymaps = {
       index = {
@@ -164,9 +164,6 @@ require"feed".setup{
 
    ---@type feed.feed[]
    feeds = {},
-
-   ---@type boolean
-   zenmode = false,
 }
 ```
 
