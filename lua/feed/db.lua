@@ -1,4 +1,41 @@
 local Path = require "plenary.path"
+local path_ensured = false
+local config = require "feed.config"
+
+local index_header = { version = "0.1" }
+local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0"><head><title>feed_nvim_export</title></head><body>
+<outline text="neovim.io" title="neovim.io" type="rss" xmlUrl="https://neovim.io/news.xml" htmlUrl="https://neovim.io/news"/>
+</body></opml>]]
+
+---@param dir string
+local function prepare_db(dir)
+   dir = vim.fs.normalize(config.db_dir)
+   local dir_handle = Path:new(dir)
+   if not dir_handle:is_dir() then
+      dir_handle:mkdir()
+   end
+   local data_dir_handle = Path:new(dir .. "/data")
+   if not dir_handle:is_dir() then
+      dir_handle:mkdir()
+   end
+   if not data_dir_handle:is_dir() then
+      data_dir_handle:mkdir()
+   end
+   local index_path = Path:new(dir .. "/index")
+   if not index_path:is_file() then
+      index_path:touch()
+      index_path:write("return " .. vim.inspect(index_header), "w")
+   end
+   local opml_path = Path:new(dir .. "/feeds.opml")
+   if not opml_path:is_file() then
+      opml_path:touch()
+      opml_path:write(opml_template, "w")
+   end
+   path_ensured = true
+   return dir
+end
+
 local db_mt = { __class = "feed.db" }
 db_mt.__index = function(self, k)
    if not rawget(self, k) then
@@ -76,13 +113,20 @@ function db_mt:sort()
    end)
 end
 
-function db_mt:update_index()
-   local ok, res = pcall(loadfile, self.dir .. "/index")
-   if ok and res then
-      self.index = res()
-   else
-      print("[feed.nvim]: failed to load index: ", ok)
+local function update_index(dir)
+   if not path_ensured then
+      dir = prepare_db(config.db_dir)
    end
+   local ok, res = pcall(dofile, dir .. "/index")
+   if ok and res then
+      return res
+   else
+      error("[feed.nvim]: failed to load index: " .. res)
+   end
+end
+
+function db_mt:update_index()
+   self.index = update_index(self.dir)
 end
 
 ---@param entry feed.entry
@@ -104,52 +148,10 @@ end
 
 function db_mt:blowup()
    vim.fn.delete(self.dir, "rf")
+   path_ensured = false
 end
 
-local index_header = { version = "0.1" }
-local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
-<opml version="1.0"><head><title>feed_nvim_export</title></head><body>
-<outline text="neovim.io" title="neovim.io" type="rss" xmlUrl="https://neovim.io/news.xml" htmlUrl="https://neovim.io/news"/>
-</body></opml>]]
+local dir = prepare_db(config.db_dir)
+local index = update_index(dir)
 
--- TODO: support windows, but planery.path does not.. make pull request..
-
----@param dir string
-local function prepare_db(dir)
-   dir = Path:new(dir):expand()
-   local dir_handle = Path:new(dir)
-   local data_dir_handle = Path:new(dir .. "/data")
-   if not dir_handle:is_dir() then
-      dir_handle:mkdir()
-   end
-   if not data_dir_handle:is_dir() then
-      data_dir_handle:mkdir()
-   end
-   local index_path = Path:new(dir .. "/index")
-   if not index_path:is_file() then
-      index_path:touch()
-      index_path:write("return " .. vim.inspect(index_header), "w")
-   end
-   local opml_path = Path:new(dir .. "/feeds.opml")
-   if not opml_path:is_file() then
-      opml_path:touch()
-      opml_path:write(opml_template, "w")
-   end
-end
-
----@param dir string
-local function db(dir)
-   local index
-   dir = vim.fn.expand(dir)
-   prepare_db(dir)
-   local index_path = dir .. "/index"
-   local ok, res = pcall(loadfile, index_path)
-   if ok and res then
-      index = res()
-   else
-      print("[feed.nvim]: failed to load index: ", res)
-   end
-   return setmetatable({ dir = dir, index = index }, db_mt)
-end
-
-return db
+return setmetatable({ dir = dir, index = index }, db_mt)

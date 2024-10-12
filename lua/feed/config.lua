@@ -4,7 +4,7 @@
 ---@class feed._config
 local default = {
    ---@type string
-   db_dir = "~/.local/share/nvim/feed",
+   db_dir = vim.fn.stdpath "data" .. "/feed",
    ---@type { index : table<string, string | function>, entry : table<string, string | function> }
    keymaps = {
       index = {
@@ -62,9 +62,10 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
-
-   ---@type boolean
-   zenmode = false,
+   integrations = {
+      ---@type boolean
+      zenmode = false,
+   },
 }
 
 ---@type feed.config | nil

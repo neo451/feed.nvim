@@ -50,3 +50,14 @@
 ---@field db_dir? string
 ---@field layout? table
 vim.g.feed = vim.g.feed
+
+---@class feed.date
+---@field year integer
+---@field month integer
+---@field day integer
+---@field hour integer
+---@field min integer
+---@field sec integer
+---@field absolute fun(date: feed.date): feed.date
+---@field format fun(date: feed.date, format: string): feed.date
+---@field from_now fun(date: feed.date): integer
