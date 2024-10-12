@@ -2,6 +2,7 @@
 
 local inline_query = vim.treesitter.query.parse("markdown_inline", [[(inline_link)@link]])
 local auto_query = vim.treesitter.query.parse("markdown_inline", [[(uri_autolink)@link]])
+local image_query = vim.treesitter.query.parse("markdown_inline", [[(image)@image]])
 
 local get_root = function(str)
    local parser = vim.treesitter.get_string_parser(str, "markdown_inline")
@@ -11,20 +12,33 @@ end
 local get_text = vim.treesitter.get_node_text
 
 local function markdown_links(str)
+   local i = 1
+   local image_links = vim.iter(image_query:iter_captures(get_root(str), str))
+      :map(function(_, node)
+         local link = get_text(node:child(5), str)
+         local text = "image" .. i
+         i = i + 1
+         return text, link
+      end)
+      :totable()
    local inline_links = vim.iter(inline_query:iter_captures(get_root(str), str))
       :map(function(_, node)
          local text = get_text(node:child(1), str)
+         if text == "image" then
+            return nil, nil
+         end
          local link = get_text(node:child(4), str)
          return text, link
       end)
       :totable()
    local autolinks = vim.iter(auto_query:iter_captures(get_root(str), str))
       :map(function(_, node)
-         local text = get_text(node, str):sub(2, -2)
-         return text, text
+         local link = get_text(node, str):sub(2, -2)
+         return link, link
       end)
       :totable()
-   return vim.list_extend(inline_links, autolinks)
+   vim.list_extend(inline_links, autolinks)
+   return vim.list_extend(inline_links, image_links)
 end
 
 local urlview = function(str)
