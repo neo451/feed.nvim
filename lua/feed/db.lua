@@ -72,7 +72,7 @@ end
 ---@param id integer
 ---@return boolean
 function db_mt:is_stored(id)
-   for p in vim.iter(vim.fs.dir(self.dir .. "/data/")) do
+   for p in vim.fs.dir(self.dir .. "/data/") do
       if id == p then
          return true
       end

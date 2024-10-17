@@ -27,7 +27,7 @@ end
 ---@param buf integer
 function M.highlight_index(buf)
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
-   for i = 1, len do
+   for i = 0, len do
       vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
       vim.api.nvim_buf_add_highlight(buf, ns, "feed.bold", i, 0, -1)
    end
@@ -66,13 +66,7 @@ end
 
 ---@return integer
 function M.get_cursor_col()
-   local config = require "feed.config"
-   local col = vim.api.nvim_win_get_cursor(0)[1]
-   if config.layout.header then
-      return col - 1
-   else
-      return col
-   end
+   return vim.api.nvim_win_get_cursor(0)[1]
 end
 
 return M

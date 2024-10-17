@@ -72,6 +72,7 @@ end
 local function reify_entry(entry, feedtype, title, base)
    local res = {}
    if feedtype == "rss" then
+      -- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
       res.link = entry.link
       res.id = sha1(entry.link)
       res.feed = title
@@ -105,6 +106,8 @@ local function reify_entry(entry, feedtype, title, base)
    local ok, md = pcall(format.entry, res)
    if ok then
       res.content = md
+   else
+      print(md)
    end
    return res
 end

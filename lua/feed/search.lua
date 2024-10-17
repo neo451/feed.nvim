@@ -2,18 +2,18 @@ local config = require "feed.config"
 local date = require "feed.date"
 
 local M = {
-   search_filter = config.search.filter,
-   ---"List of the entries currently on display."
-   ---@type feed.entry[]
-   entries = {},
-   --- TODO: "List of the entries currently on display."
-   filter_history = {},
-   ---@type integer
-   last_update = 0,
-   ---List of functions to run immediately following a search buffer update.
-   ---@type function[]
-   update_hook = config.search.update_hook, -- TODO:
-   sort_order = config.search.sort_order, -- TODO:
+   -- search_filter = config.search.filter,
+   -- ---"List of the entries currently on display."
+   -- ---@type feed.entry[]
+   -- entries = {},
+   -- --- TODO: "List of the entries currently on display."
+   -- filter_history = {},
+   -- ---@type integer
+   -- last_update = 0,
+   -- ---List of functions to run immediately following a search buffer update.
+   -- ---@type function[]
+   -- update_hook = config.search.update_hook, -- TODO:
+   -- sort_order = config.search.sort_order, -- TODO:
 }
 
 ---@class feed.query
@@ -94,8 +94,9 @@ function M.filter(entries, query)
                   return true
                end
             end
+            return false
          end
-         return false
+         return true
       end)
       :fold({}, function(acc, k, v)
          map_to_db_index[#acc + 1] = k

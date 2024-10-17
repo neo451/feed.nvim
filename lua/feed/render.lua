@@ -1,6 +1,6 @@
 local M = {}
 
----@type table<string, boolean>
+---@type table<string, any>
 M.state = {
    index_rendered = false,
    in_split = false,
@@ -16,19 +16,11 @@ local db = require "feed.db"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local search = require "feed.search"
+local urlview = require "feed.urlview"
 
----@param buf integer
-local function set_options(buf)
-   for key, value in pairs(config.win_options) do
-      vim.api.nvim_set_option_value(key, value, { win = vim.api.nvim_get_current_win() })
-   end
-   for key, value in pairs(config.buf_options) do
-      vim.api.nvim_set_option_value(key, value, { buf = buf })
-   end
-end
+--- TODO: index and buffer should have their own window
 
----@param cmds table<string, feed.action>
-function M.prepare_bufs(cmds)
+function M.prepare_bufs()
    if M.buf then
       return
    end
@@ -38,14 +30,6 @@ function M.prepare_bufs(cmds)
    }
    vim.api.nvim_buf_set_name(M.buf.index, "FeedIndex")
    vim.api.nvim_buf_set_name(M.buf.entry, "FeedEntry")
-   for lhs, rhs in pairs(config.keymaps.entry) do
-      rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-      ut.push_keymap(M.buf.entry, lhs, rhs)
-   end
-   for lhs, rhs in pairs(config.keymaps.index) do
-      rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-      ut.push_keymap(M.buf.index, lhs, rhs)
-   end
 end
 
 ---@param lines string[]
@@ -58,7 +42,6 @@ function M.show(lines, buf, callback)
    if callback then
       callback(buf)
    end
-   set_options(buf)
 end
 
 ---@param refresh boolean?
@@ -72,79 +55,67 @@ function M.show_index(refresh)
       entries_on_display, map_to_db_index = search.filter(db.index, { must_have = { "unread" } })
    end
    local lines = {}
-   lines[1] = M.show_hint() -- TODO: config.layout.header
    for i, entry in ipairs(entries_on_display) do
-      lines[i + 1] = format.entry_name(entry)
+      lines[i] = format.entry_name(entry)
    end
    M.show(lines, M.buf.index, ut.highlight_index)
    M.state.index_rendered = true
 end
 
-local function apply_formatter(buf)
-   local ok, conform = pcall(require, "conform")
-   if ok then
-      vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
-      conform.format { bufnr = buf }
-      vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
-   end
-end
+---@class feed.entry_opts
+---@field db_idx? integer
+---@field row_idx? integer # will default to cursor row
 
----@param db_idx integer
-function M.show_entry(db_idx)
-   if db_idx == 0 then
-      return
-   end
-   M.current_index = db_idx
-   local lines = vim.split(db:at(db_idx), "\n")
+---@param opts? feed.entry_opts
+function M.show_entry(opts)
+   local _, db_idx, row_idx = M.get_entry(opts)
+   M.current_index = row_idx
+   local raw_str = db:at(db_idx)
+   local lines, urls = urlview(vim.split(raw_str, "\n"))
+   M.state.urls = urls
    M.show(lines, M.buf.entry, ut.highlight_entry)
-   apply_formatter(M.buf.entry)
    db[db_idx].tags.unread = nil
    db:save()
 end
 
----return the entry from the filtered results
----@param buf_idx integer
----@return feed.entry?
-function M.get_entry(buf_idx)
-   if buf_idx == 0 then
-      return
-   end
-   return db[buf_idx] -- TODO:
+function M.get_entry(opts)
+   opts = opts or {}
+   local row_idx = opts.row_idx or vim.api.nvim_win_get_cursor(0)[1]
+   local db_idx = opts.db_idx or map_to_db_index[row_idx]
+   return db[db_idx], db_idx, row_idx
 end
 
 ---@return integer
-local function cursor_to_db_index()
-   local idx = vim.api.nvim_win_get_cursor(0)[1] - 1
+function M.cursor_to_db_index()
+   local idx = vim.api.nvim_win_get_cursor(0)[1]
    return map_to_db_index[idx]
 end
 
-function M.get_entry_under_cursor()
-   return M.get_entry(cursor_to_db_index())
+---@return integer
+function M.buf_to_db_index(buf_idx)
+   return map_to_db_index[buf_idx]
 end
 
-function M.show_entry_under_cursor()
-   local buf_idx = vim.api.nvim_win_get_cursor(0)[1] - 1
-   local db_idx = map_to_db_index[buf_idx]
-   M.show_entry(db_idx)
+function M.get_entry_under_cursor()
+   return M.get_entry(M.cursor_to_db_index())
 end
 
 function M.tag(buf_idx, input)
    local idx = map_to_db_index[buf_idx]
    db[idx].tags[input] = true
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
-   M.refresh()
 end
 
 function M.untag(buf_idx, input)
    local idx = map_to_db_index[buf_idx]
    db[idx].tags[input] = nil
    db:save() -- TODO: do it on exit / or only if ":w" , make an option
-   M.refresh()
 end
 
+---TODO: option to show more useful hints like last updated, unread/read
 ---@return string
 function M.show_hint()
-   return "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help"
+   vim.wo[0].winbar = config.layout.header
 end
 
 function M.refresh()

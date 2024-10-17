@@ -23,6 +23,9 @@ local function fetch(url, timeout, callback, is_rsshub)
       end,
    }
 end
+local config = require "feed.config"
+local opml = require "feed.opml"
+local feeds = opml.import(config.db_dir .. "/feeds.opml")
 
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
@@ -44,8 +47,10 @@ function M.update_feed(feed, total, handle)
       if res.status ~= 200 then
          return
       end
-      src = res.body
+      src = res.body:gsub("\n", "")
       local ok, ast = pcall(feedparser.parse, src)
+      feeds:append { xmlUrl = url, htmlUrl = ast.link, title = ast.title, text = ast.title }
+      feeds:export(config.db_dir .. "/feeds.opml")
       if not ok then
          print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
          print(ast)
