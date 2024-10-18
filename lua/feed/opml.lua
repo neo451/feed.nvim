@@ -16,7 +16,6 @@ local function format_root(title, contents)
 end
 
 local treedoc = require "treedoc"
-local Path = require "plenary.path"
 
 local mt = { __type = "opml" }
 mt.__index = mt
@@ -25,41 +24,23 @@ mt.__tostring = function(self)
    return ("<OPML>name: %s, size: %d"):format(self.title, #self.outline)
 end
 
----@param frompath string
+---@param src string
 ---@return feed.opml
-function opml.import(frompath)
-   local path = Path:new(Path:new(frompath):expand())
-   local src = path:read()
+function opml.import(src)
    local ast = treedoc.parse(src, { language = "xml" })[1]
    local outline = ast.opml.body.outline
    local title = ast.opml.head.title
    outline = ut.listify(outline)
-   local id = {}
-   for _, v in ipairs(outline) do
-      id[v.xmlUrl] = true
+   local id, names = {}, {}
+   for i, v in ipairs(outline) do
+      id[v.xmlUrl] = i
+      names[v.title] = i
    end
    return setmetatable({
       outline = outline,
       title = title,
       id = id,
-   }, mt)
-end
-
----@param str string
----@return feed.opml
-function opml.import_s(str)
-   local ast = treedoc.parse(str, { language = "xml" })[1]
-   local outline = ast.opml.body.outline
-   local title = ast.opml.head.title
-   outline = ut.listify(outline)
-   local id = {}
-   for _, v in ipairs(outline) do
-      id[v.xmlUrl] = true
-   end
-   return setmetatable({
-      outline = outline,
-      title = title,
-      id = id,
+      names = names,
    }, mt)
 end
 
@@ -73,20 +54,32 @@ function mt:export(topath)
    end
    local str = format_root(self.title, table.concat(buf, "\n"))
    if topath then
-      local path = Path:new(Path:new(topath):expand())
-      path:write(str, "w")
-   else
-      return str
+      local file = io.open(topath, "w")
+      if file then
+         file:write(str)
+         file:close()
+      end
+   end
+end
+
+---@param name string
+function mt:lookup(name)
+   local idx = self.names[name]
+   if idx then
+      return self.outline[idx]
    end
 end
 
 ---@param t table
 function mt:append(t)
    if self.id[t.xmlUrl] then
+      local idx = self.id[t.xmlUrl]
+      self.outline[idx] = { text = t.title, title = t.title, type = t.type or "rss", htmlUrl = t.htmlUrl, xmlUrl = t.xmlUrl }
       return
    end
-   self.id[t.xmlUrl] = true
    self.outline[#self.outline + 1] = { text = t.title, title = t.title, type = t.type or "rss", htmlUrl = t.htmlUrl, xmlUrl = t.xmlUrl }
+   self.id[t.xmlUrl] = #self.outline
+   self.names[t.title] = #self.outline
 end
 
 return opml

@@ -45,6 +45,11 @@ end
 ---@param url string | table
 ---@return string
 function M.url_resolve(base_url, url)
+   if not base_url then
+      if url then
+         return tostring(url)
+      end
+   end
    return tostring(URL.resolve(base_url, url))
 end
 
@@ -65,8 +70,23 @@ function M.listify(t)
 end
 
 ---@return integer
-function M.get_cursor_col()
+function M.get_cursor_row()
    return vim.api.nvim_win_get_cursor(0)[1]
+end
+
+--- Telescope Wrapper around vim.notify
+---@param funname string: name of the function that will be
+---@param opts table: opts.level string, opts.msg string, opts.once bool
+function M.notify(funname, opts)
+   opts.once = vim.F.if_nil(opts.once, false)
+   local level = vim.log.levels[opts.level]
+   if not level then
+      error("Invalid error level", 2)
+   end
+   local notify_fn = opts.once and vim.notify_once or vim.notify
+   notify_fn(string.format("[feed.%s]: %s", funname, opts.msg), level, {
+      title = "feed.nvim",
+   })
 end
 
 return M

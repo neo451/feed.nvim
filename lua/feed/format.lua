@@ -3,6 +3,7 @@ local strings = require "plenary.strings"
 local date = require "feed.date"
 local config = require "feed.config"
 local treedoc = require "treedoc"
+-- local _treedoc = require "_treedoc"
 local conv = require "treedoc.writers.markdown"
 
 ---porperly align, justify and trucate the title
@@ -51,6 +52,7 @@ function M.entry(entry)
    lines[4] = kv("Feed", entry.feed)
    lines[5] = kv("Link", entry.link)
    lines[6] = ""
+   -- local md = _treedoc.write(_treedoc.read(entry.content, "html"), "markdown")
    local md = conv(treedoc.parse("<html>" .. entry.content .. "</html>", { language = "html" })[1])
    for line in vim.gsplit(md, "\n") do
       lines[#lines + 1] = line

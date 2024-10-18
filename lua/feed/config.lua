@@ -13,6 +13,7 @@ local default = {
          ["+"] = "tag",
          ["-"] = "untag",
          ["?"] = "which_key",
+         s = "search",
          b = "show_in_browser",
          w = "show_in_w3m",
          r = "refresh",
@@ -44,6 +45,7 @@ local default = {
       ---@type table<string, any>
       opts = {
          conceallevel = 0,
+         concealcursor = "nvc",
          wrap = true,
          number = false,
          relativenumber = false,
@@ -67,6 +69,10 @@ local default = {
    },
    ---@type string
    colorscheme = "morning",
+
+   search = {
+      default_query = "@6-months-ago +unread",
+   },
 
    ---@type feed.feed[]
    feeds = {},

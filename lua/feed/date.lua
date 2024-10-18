@@ -36,8 +36,26 @@ end
 ---@param num integer
 ---@return feed.date
 function date:days_ago(num)
-   return M.new(os.date("*t", os.time(self) - num * 24 * 60 * 60))
+   local new = vim.deepcopy(M.today, true)
+   new.day = new.day - num
+   return new
 end
+
+function date:years_ago(num)
+   local new = vim.deepcopy(M.today, true)
+   new.year = new.year - num
+   return new
+end
+
+function date:months_ago(num)
+   local new = vim.deepcopy(M.today, true)
+   new.month = new.month - num
+   return new
+end
+
+date.day_ago = date.days_ago
+date.year_ago = date.years_ago
+date.month_ago = date.months_ago
 
 ---@param osdate table
 ---@return feed.date
@@ -119,10 +137,10 @@ function M.parse_date_filter(str)
    local sep = string.find(str, "%-%-")
    if not sep then
       str = string.sub(str, 2, #str)
-      return M.new_from_str(str), M.today
+      return M.new_from_str(str):absolute(), M.today:absolute()
    else
       local start, stop = string.sub(str, 2, sep - 1), string.sub(str, sep + 2, #str)
-      return M.new_from_str(start), M.new_from_str(stop)
+      return M.new_from_str(start):absolute(), M.new_from_str(stop):absolute()
    end
 end
 

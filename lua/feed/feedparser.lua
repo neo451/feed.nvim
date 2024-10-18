@@ -120,13 +120,15 @@ local function reify(ast, feedtype, base_uri)
    if feedtype == "rss" then
       res.title = handle_rss_title(ast)
       res.link = ast.channel.link
+      res.desc = ast.channel.subtitle or res.title
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.channel.item)) do
          res.entries[i] = reify_entry(v, "rss", res.title)
       end
    elseif feedtype == "json" then
       res.title = ast.title
-      res.link = ast.feed_url
+      res.link = ast.home_page_url or ast.feed_url
+      res.desc = ast.description or res.title
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.items)) do
          res.entries[i] = reify_entry(v, "json", res.title)
@@ -134,6 +136,7 @@ local function reify(ast, feedtype, base_uri)
    elseif feedtype == "atom" then
       local root_base = ut.url_rebase(ast, base_uri)
       res.title = ast.title[1]
+      res.desc = res.title -- TODO:
       res.link = handle_atom_link(ast, root_base)
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.entry)) do

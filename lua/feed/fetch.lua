@@ -1,6 +1,7 @@
 local curl = require "plenary.curl"
 local feedparser = require "feed.feedparser"
 local db = require "feed.db"
+local ut = require "feed.utils"
 
 local M = {}
 
@@ -23,14 +24,11 @@ local function fetch(url, timeout, callback, is_rsshub)
       end,
    }
 end
-local config = require "feed.config"
-local opml = require "feed.opml"
-local feeds = opml.import(config.db_dir .. "/feeds.opml")
 
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
----@param total number # total number of feeds
----@param handle ProgressHandle
+---@param total? number # total number of feeds
+---@param handle? ProgressHandle
 function M.update_feed(feed, total, handle)
    local src
    local url
@@ -49,22 +47,26 @@ function M.update_feed(feed, total, handle)
       end
       src = res.body:gsub("\n", "")
       local ok, ast = pcall(feedparser.parse, src)
-      feeds:append { xmlUrl = url, htmlUrl = ast.link, title = ast.title, text = ast.title }
-      feeds:export(config.db_dir .. "/feeds.opml")
       if not ok then
-         print(("[feed.nvim] failed to parse %s"):format(feed.name or url))
-         print(ast)
+         print(("failed to parse %s"):format(type(feed) == "table" and (feed.name or feed.title) or url))
+         -- print("fetch", {
+         --    msg = ("failed to parse %s"):format(type(feed) == "table" and (feed.name or feed.title) or url),
+         --    level = "INFO",
+         -- })
          return
       end
       local entries = ast.entries
       for _, entry in ipairs(entries) do
          db:add(entry)
       end
-      -- TODO: update the local ompl here
-      db:save()
+      -- TODO: check if info changed then update feed
+      db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = ast.title, text = ast.desc }
+      db:save { update_feed = true }
       if handle then
          handle.percentage = handle.percentage + 100 / total
          if handle.percentage == 100 then
+            db.index.lastUpdated = os.time()
+            db:save()
             handle:finish()
          end
       end

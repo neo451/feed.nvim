@@ -44,9 +44,12 @@ local function feed()
          },
          attach_mappings = function(prompt_bufnr)
             actions.select_default:replace(function()
+               -- local filtered = action_state.get_current_picker(prompt_bufnr).sorter._discard_state.filtered
                actions.close(prompt_bufnr)
                local selection = action_state.get_selected_entry()
-               render.show_entry { db_index = selection.index }
+               -- TODO: update M.on_display
+               render.on_display = db.index
+               render.show_entry { row_idx = selection.index, untag = false }
             end)
             return true
          end,
