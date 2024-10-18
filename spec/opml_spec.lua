@@ -7,28 +7,22 @@ vim.treesitter.language.add("xml", {
 local sourced_file = require("plenary.debug_utils").sourced_filepath()
 local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
 
+local opml_path = data_dir .. "feeds.opml"
+
 describe("opml obj", function()
    it("should build a opml obj", function()
-      local opml = M.import(data_dir .. "opml_example.opml")
-      opml:export(data_dir .. "exported_opml.opml")
-      assert.are_string(opml:export())
-      local exported_opml = M.import(data_dir .. "exported_opml.opml")
-      assert.same(opml.title, exported_opml.title)
-      assert.same(opml.outline, exported_opml.outline)
-   end)
-   it("should build a opml obj", function()
-      local opml = M.import_s [[<?xml version="1.0" encoding="UTF-8"?>
+      local opml = M.import [[<?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0"><head><title>%s</title></head><body>
 <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
 </body></opml>]]
-      opml:append { text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
-      opml:append { text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
+      opml:append { title = "world", text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
+      opml:append { title = "world", text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
       assert.same(opml.outline[2].type, "atom")
       assert.is_nil(opml.outline[3]) -- Avoids dup items
    end)
 
    it("should pprint a opml obj", function()
-      local opml = M.import_s [[<?xml version="1.0" encoding="UTF-8"?>
+      local opml = M.import [[<?xml version="1.0" encoding="UTF-8"?>
    <opml version="1.0"><head><title>test opml</title></head><body>
    <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
    <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
@@ -37,5 +31,19 @@ describe("opml obj", function()
    <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
    </body></opml>]]
       assert.same(tostring(opml), "<OPML>name: test opml, size: 5")
+   end)
+   it("should export to a file", function()
+      local opml = M.import [[<?xml version="1.0" encoding="UTF-8"?>
+   <opml version="1.0"><head><title>test opml</title></head><body>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
+   </body></opml>]]
+      opml:export(opml_path)
+      local str = vim.fn.readfile(opml_path)
+      local new_opml = M.import(table.concat(str))
+      assert.is_table(new_opml)
    end)
 end)

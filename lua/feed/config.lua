@@ -5,49 +5,59 @@
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath "data" .. "/feed",
-   ---@type { index : table<string, string | function>, entry : table<string, string | function> }
-   keymaps = {
-      index = {
+
+   index = {
+      keys = {
          ["<CR>"] = "show_entry",
          ["<M-CR>"] = "show_in_split",
          ["+"] = "tag",
          ["-"] = "untag",
          ["?"] = "which_key",
+         s = "search",
          b = "show_in_browser",
          w = "show_in_w3m",
          r = "refresh",
          y = "link_to_clipboard",
          q = "quit_index",
       },
-      entry = {
+      ---@type table<string, any>
+      opts = {
+         conceallevel = 0,
+         wrap = false,
+         number = false,
+         relativenumber = false,
+         modifiable = false,
+      },
+   },
+
+   entry = {
+      keys = {
+         ["<CR>"] = "show_entry",
          ["}"] = "show_next",
          ["{"] = "show_prev",
          ["?"] = "which_key",
+         ["+"] = "tag",
+         ["-"] = "untag",
          u = "urlview",
-         q = "quite_entry",
+         gx = "open_url",
+         q = "quit_entry",
       },
-   },
-   ---@type table<string, any>
-   win_options = {
-      conceallevel = 0,
-      wrap = true,
-   },
-   ---@type table<string, any>
-   buf_options = {
-      filetype = "markdown", -- TODO: FeedBuffer?
-      modifiable = false,
-   },
-   ---@type table<string, any>
-   search = {
-      sort_order = "descending",
-      update_hook = {},
-      filter = "@6-months-ago +unread",
+      ---@type table<string, any>
+      opts = {
+         conceallevel = 0,
+         concealcursor = "nvc",
+         wrap = true,
+         number = false,
+         relativenumber = false,
+         modifiable = false,
+         filetype = "markdown",
+      },
    },
    ---@type table<string, any>
    layout = {
       title = {
          right_justify = false,
-         width = 70,
+         width = 80,
       },
       date = {
          format = "%Y-%m-%d",
@@ -55,16 +65,28 @@ local default = {
       },
       ---@type string
       split = "13split",
-      header = "show_hint", -- TODO: placeholder set to nil
+      header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- TODO: placeholder set to nil
    },
    ---@type string
    colorscheme = "morning",
 
+   search = {
+      default_query = "@6-months-ago +unread",
+   },
+
    ---@type feed.feed[]
    feeds = {},
    integrations = {
-      ---@type boolean
-      zenmode = false,
+      telescope = {},
+      zenmode = {
+         window = {
+            width = 0.85, -- width will be 85% of the editor width
+         },
+         -- callback where you can add custom code when the Zen window opens
+         on_open = function(win) end,
+         -- callback where you can add custom code when the Zen window closes
+         on_close = function() end,
+      },
    },
 }
 

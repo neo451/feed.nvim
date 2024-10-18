@@ -1,10 +1,7 @@
 local M = {}
 
 vim.api.nvim_create_user_command("Feed", function(opts)
-   local render = require "feed.render"
    local cmds = require "feed.commands"
-
-   render.prepare_bufs(cmds)
 
    ---@param args string[]
    local function load_command(args)
@@ -17,6 +14,7 @@ vim.api.nvim_create_user_command("Feed", function(opts)
    end
 
    pcall(require("telescope").load_extension, "feed")
+   pcall(require("telescope").load_extension, "feed_grep")
 
    if #opts.fargs == 0 then
       load_command { "show_index" }

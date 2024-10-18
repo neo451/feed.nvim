@@ -72,6 +72,7 @@ end
 local function reify_entry(entry, feedtype, title, base)
    local res = {}
    if feedtype == "rss" then
+      -- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
       res.link = entry.link
       res.id = sha1(entry.link)
       res.feed = title
@@ -105,6 +106,8 @@ local function reify_entry(entry, feedtype, title, base)
    local ok, md = pcall(format.entry, res)
    if ok then
       res.content = md
+   else
+      print(md)
    end
    return res
 end
@@ -117,13 +120,15 @@ local function reify(ast, feedtype, base_uri)
    if feedtype == "rss" then
       res.title = handle_rss_title(ast)
       res.link = ast.channel.link
+      res.desc = ast.channel.subtitle or res.title
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.channel.item)) do
          res.entries[i] = reify_entry(v, "rss", res.title)
       end
    elseif feedtype == "json" then
       res.title = ast.title
-      res.link = ast.feed_url
+      res.link = ast.home_page_url or ast.feed_url
+      res.desc = ast.description or res.title
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.items)) do
          res.entries[i] = reify_entry(v, "json", res.title)
@@ -131,6 +136,7 @@ local function reify(ast, feedtype, base_uri)
    elseif feedtype == "atom" then
       local root_base = ut.url_rebase(ast, base_uri)
       res.title = ast.title[1]
+      res.desc = res.title -- TODO:
       res.link = handle_atom_link(ast, root_base)
       res.entries = {}
       for i, v in ipairs(ut.listify(ast.entry)) do

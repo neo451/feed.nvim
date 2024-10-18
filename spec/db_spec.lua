@@ -1,5 +1,6 @@
--- package.path = package.path .. ";/home/n451/.local/share/nvim/lazy/plenary.nvim/lua/?.lua"
-
+vim.treesitter.language.add("xml", {
+   path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
+})
 local config = require "feed.config"
 config.db_dir = "~/.feed.nvim.test/"
 local db = require "feed.db"
@@ -35,45 +36,50 @@ describe("add", function()
       entry.description = nil
       local saved_entry = entry
       saved_entry.content = nil
-      assert.same({ version = "0.1", entry }, loadfile(db.dir .. "/index")())
+      assert.same({ version = "0.1", entry, ids = { ["1234567"] = 1 } }, loadfile(db.dir .. "/index")())
    end)
 end)
-
-describe("sort", function()
-   db:blowup()
-   db:update_index()
-   print(vim.inspect(db.index))
-   -- db:update_index()
-   -- db = flatdb(path)
-   it("sort entry by time", function()
-      db:add {
-         link = "https://example.com",
-         title = "1111",
-         id = "1111",
-         time = 1233,
-         content = "early",
-      }
-      db:add {
-         link = "https://example2.com",
-         title = "2222",
-         id = "2222",
-         time = 1234,
-         content = "late",
-      }
-      assert.same("1111", db.index[1].title)
-      assert.same("2222", db.index[2].title)
-      db:sort()
-      assert.same("1111", db.index[2].title)
-      assert.same("2222", db.index[1].title)
-   end)
-end)
-
+--
+-- describe("sort", function()
+--    db:blowup()
+--    db:update_index()
+--    it("sort entry by time", function()
+--       assert.same("1111", db[1].title)
+--       assert.same("2222", db[2].title)
+--       db:sort()
+--       assert.same("1111", db[2].title)
+--       assert.same("2222", db[1].title)
+--    end)
+-- end)
+--
 describe("at", function()
+   db:add {
+      link = "https://example.com",
+      title = "1111",
+      id = "1111",
+      time = 1233,
+      content = "early",
+   }
+   db:add {
+      link = "https://example2.com",
+      title = "2222",
+      id = "2222",
+      time = 1234,
+      content = "late",
+   }
    it("get content of feed.entry by index", function()
       eq("early", db:at(2))
    end)
    it("get obj of feed.entry by index", function()
       assert.is_table(db[2])
+   end)
+end)
+
+describe("lookup", function()
+   it("do efficient lookup by id", function()
+      local entry = db.index[#db.index]
+      local id = entry.id
+      assert.same(entry, db:lookup(id))
       db:blowup() -- rm the local test db
    end)
 end)

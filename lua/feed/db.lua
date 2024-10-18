@@ -1,8 +1,11 @@
 local Path = require "plenary.path"
 local path_ensured = false
 local config = require "feed.config"
+local opml = require "feed.opml"
 
-local index_header = { version = "0.1" }
+--- TODO: move feeds index here, and store with index
+
+local index_header = { version = "0.1", ids = {} }
 local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0"><head><title>feed_nvim_export</title></head><body>
 <outline text="neovim.io" title="neovim.io" type="rss" xmlUrl="https://neovim.io/news.xml" htmlUrl="https://neovim.io/news"/>
@@ -58,7 +61,7 @@ local function save_file(path, content)
 end
 
 ---@param path string
----@return string?
+---@return string
 local function get_file(path)
    local ret
    local f = io.open(path, "rb")
@@ -72,12 +75,7 @@ end
 ---@param id integer
 ---@return boolean
 function db_mt:is_stored(id)
-   for p in vim.iter(vim.fs.dir(self.dir .. "/data/")) do
-      if id == p then
-         return true
-      end
-   end
-   return false
+   return self.index.ids[id]
 end
 
 ---@param entry feed.entry
@@ -88,29 +86,22 @@ function db_mt:add(entry)
    local content = entry.content
    entry.content = nil
    table.insert(self.index, entry)
+   self.index.ids[entry.id] = #self.index
    save_file(self.dir .. "/data/" .. entry.id, content)
+end
+
+---@param id string
+---@return feed.entry
+function db_mt:lookup(id)
+   local idx = self.index.ids[id]
+   return self.index[idx]
 end
 
 ---@param entry feed.entry
 ---@return string
 function db_mt:address(entry)
-   local data_dir
-   if self.dir:sub(-1, -1) == "/" then
-      data_dir = "data/"
-   else
-      data_dir = "/data/"
-   end
+   local data_dir = "/data/"
    return self.dir .. data_dir .. entry.id
-end
-
----sort index by time, descending
-function db_mt:sort()
-   table.sort(self.index, function(a, b)
-      if a.time and b.time then
-         return a.time > b.time
-      end
-      return true -- HACK:
-   end)
 end
 
 local function update_index(dir)
@@ -142,7 +133,11 @@ function db_mt:at(index)
    return self:get(entry)
 end
 
-function db_mt:save()
+function db_mt:save(opts)
+   opts = opts or {}
+   if opts.update_feed then
+      self.feeds:export(self.dir .. "/feeds.opml")
+   end
    save_file(self.dir .. "/index", "return " .. vim.inspect(self.index))
 end
 
@@ -153,5 +148,11 @@ end
 
 local dir = prepare_db(config.db_dir)
 local index = update_index(dir)
+local str = get_file(dir .. "/feeds.opml")
+local feeds = opml.import(str)
 
-return setmetatable({ dir = dir, index = index }, db_mt)
+return setmetatable({
+   dir = dir,
+   index = index,
+   feeds = feeds,
+}, db_mt)

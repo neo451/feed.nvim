@@ -1,54 +1,49 @@
-local config = require "feed.config"
 local date = require "feed.date"
 
-local M = {
-   search_filter = config.search.filter,
-   ---"List of the entries currently on display."
-   ---@type feed.entry[]
-   entries = {},
-   --- TODO: "List of the entries currently on display."
-   filter_history = {},
-   ---@type integer
-   last_update = 0,
-   ---List of functions to run immediately following a search buffer update.
-   ---@type function[]
-   update_hook = config.search.update_hook, -- TODO:
-   sort_order = config.search.sort_order, -- TODO:
-}
+local M = {}
 
 ---@class feed.query
 ---@field after? feed.date #@
 ---@field before? feed.date #@
----@field must_have? string[]
+---@field must_have? string[] #+
 ---@field must_not_have? string[] #-
----@field matches? feed.pattern #~ =
----@field not_matches? feed.pattern #!
----@field feeds? string
----@field not_feeds? string
+---@field feeds? string #=
 ---@field limit? number ##
----@field re? feed.pattern #=
+---@field re? feed.pattern[]
+
+---TODO: !
 
 ---@alias feed.pattern vim.regex | vim.lpeg.Pattern | string # regex
 
 local filter_symbols = {
    ["+"] = "must_have",
    ["-"] = "must_not_have",
-   ["="] = "re",
+   [""] = "re",
    ["@"] = "date",
 }
 
 ---@param str string
 ---@return feed.query
 function M.parse_query(str)
-   local query = { must_have = {}, must_not_have = {} }
+   local query = {}
    for q in vim.gsplit(str, " ") do
-      -- print(q)
-      local kind = filter_symbols[q:sub(1, 1)]
+      local kind = filter_symbols[q:sub(1, 1)] or "re"
       if kind == "date" then
          query.after, query.before = date.parse_date_filter(q)
+      elseif kind == "re" then
+         if not query.re then
+            query.re = {}
+         end
+         table.insert(query.re, vim.regex(q .. "\\c"))
       elseif kind == "must_have" then
+         if not query.must_have then
+            query.must_have = {}
+         end
          table.insert(query.must_have, q:sub(2))
       elseif kind == "must_not_have" then
+         if not query.must_not_have then
+            query.must_not_have = {}
+         end
          table.insert(query.must_not_have, q:sub(2))
       end
    end
@@ -70,6 +65,38 @@ function M.valid_pattern(str)
    return false
 end
 
+local function check(v, query)
+   local res = true
+   -- TODO: logic wrong!!!
+   if query.re then
+      for _, reg in ipairs(query.re) do
+         if not reg:match_str(v.title) then -- TODO: make case-insensetive
+            return false
+         end
+      end
+   end
+   if query.after then
+      if v.time < query.after or v.time > query.before then
+         return false
+      end
+   end
+   if query.must_have then
+      for _, t in ipairs(query.must_have) do
+         if not v.tags[t] then
+            return false
+         end
+      end
+   end
+   if query.must_not_have then
+      for _, t in ipairs(query.must_not_have) do
+         if v.tags[t] then
+            return false
+         end
+      end
+   end
+   return res
+end
+
 --- tag read should be default for empty tags
 
 ---@param entries feed.entry[]
@@ -77,32 +104,22 @@ end
 ---@return feed.entry[]
 ---@return table<number, number>
 function M.filter(entries, query)
-   local iter = vim.iter(ipairs(entries))
-   local map_to_db_index = {}
-   return iter
-      :filter(function(_, v)
-         if query.must_not_have then
-            for _, t in ipairs(query.must_not_have) do
-               if v.tags[t] then
-                  return false
-               end
-            end
-         end
-         if query.must_have then
-            for _, t in ipairs(query.must_have) do
-               if v.tags[t] then
-                  return true
-               end
-            end
-         end
-         return false
-      end)
-      :fold({}, function(acc, k, v)
-         map_to_db_index[#acc + 1] = k
-         acc[#acc + 1] = v
-         return acc
-      end),
-      map_to_db_index
+   local tbl = vim.deepcopy(entries, true)
+   local map_to_db_index, res = {}, {}
+   for i, v in ipairs(tbl) do
+      if check(v, query) then
+         res[#res + 1] = v
+         map_to_db_index[#map_to_db_index + 1] = i
+      end
+   end
+   -- table.sort(res, function(a, b)
+   --    if a.time and b.time then
+   --       return a.time > b.time
+   --    else
+   --       return true
+   --    end
+   -- end)
+   return res, map_to_db_index -- TODO: wrong
 end
 
 return M

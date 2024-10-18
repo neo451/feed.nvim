@@ -7,6 +7,7 @@
 ---@class feed._feed
 ---@field title string
 ---@field link string
+---@field desc string
 ---@field entries feed.entry[]
 
 ---@class feed.entry
@@ -17,6 +18,7 @@
 ---@field tags table<string, boolean>
 ---@field link string
 ---@field author string
+---@field content string
 
 ---@class feed.db
 ---@field index feed.entry[]
@@ -39,6 +41,7 @@
 ---@class feed.opml
 ---@field title string
 ---@field outline table
+---@field names table
 ---@field export fun(self: feed.opml, topath: string?): string?
 ---@field append fun(self: feed.opml, t: table)
 
