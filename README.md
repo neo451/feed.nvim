@@ -88,9 +88,12 @@ require("nvim-treesitter.configs").setup {
 
 ### Feed Searching
 
-- *To Be Implemented*
+1. DSL query
+  - *WIP*: Will support all the syntax of elfeed, for now see [elfeed](https://github.com/skeeto/elfeed/tree/master?tab=readme-ov-file#filter-syntax)'s description.
+  - use `s` in index buffer to filter your feeds, currently suports: regex, must_have(`+`), must_not_have(`-`), and date(`@`).
 
-- Will support all the syntax of elfeed
+2. Live grep
+  - use `Feed grep` to use telescope's `live_grep` (requires `ripgrep`) to do fulltext search accross your database.
 
 ### RssHub Integration
 
@@ -107,50 +110,63 @@ require("nvim-treesitter.configs").setup {
 ```lua
 require"feed".setup{
    ---@type string
-   db_dir = vim.fn.stdpath("data") .. "/feed",
-   ---@type { index : table<string, string | function>, entry : table<string, string | function> }
-   keymaps = {
-      index = {
+   db_dir = vim.fn.stdpath "data" .. "/feed",
+   ---@type string
+   colorscheme = "morning",
+
+   index = {
+      ---@type table<string, string | function>
+      keys = {
          ["<CR>"] = "show_entry",
          ["<M-CR>"] = "show_in_split",
          ["+"] = "tag",
          ["-"] = "untag",
          ["?"] = "which_key",
+         s = "search",
          b = "show_in_browser",
          w = "show_in_w3m",
          r = "refresh",
          y = "link_to_clipboard",
          q = "quit_index",
       },
-      entry = {
+      ---@type table<string, any>
+      opts = {
+         conceallevel = 0,
+         wrap = false,
+         number = false,
+         relativenumber = false,
+         modifiable = false,
+      },
+   },
+
+   entry = {
+      ---@type table<string, string | function>
+      keys = {
+         ["<CR>"] = "show_entry",
          ["}"] = "show_next",
          ["{"] = "show_prev",
          ["?"] = "which_key",
+         ["+"] = "tag",
+         ["-"] = "untag",
          u = "urlview",
-         q = "quite_entry",
+         gx = "open_url",
+         q = "quit_entry",
       },
-   },
-   ---@type table<string, any>
-   win_options = {
-      conceallevel = 0,
-      wrap = true,
-   },
-   ---@type table<string, any>
-   buf_options = {
-      filetype = "markdown", -- TODO: FeedBuffer?
-      modifiable = false,
-   },
-   ---@type table<string, any>
-   search = {
-      sort_order = "descending",
-      update_hook = {},
-      filter = "@6-months-ago +unread",
+      ---@type table<string, any>
+      opts = {
+         conceallevel = 0,
+         wrap = true,
+         number = false,
+         relativenumber = false,
+         modifiable = false,
+         filetype = "markdown",
+      },
    },
    ---@type table<string, any>
    layout = {
       title = {
          right_justify = false,
-         width = 70,
+         width = 80,
       },
       date = {
          format = "%Y-%m-%d",
@@ -158,13 +174,18 @@ require"feed".setup{
       },
       ---@type string
       split = "13split",
+      header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- To be implemented
    },
-   ---@type string
-   colorscheme = "morning",
+
+   search = {
+      default_query = "@6-months-ago +unread",
+   },
 
    ---@type feed.feed[]
    feeds = {},
+   integrations = {}, -- To be implemented
 }
+
 ```
 
 ## Related Projects
