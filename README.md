@@ -41,20 +41,10 @@ Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 Rocks install feed.nvim
 ```
 
-Using [lazy.nvim](https://github.com/folke/lazy.nvim):
+Using [lazy.nvim](https://github.com/folke/lazy.nvim), with `luarocks` support:
 
 ```lua
-return {
-    'neo451/feed.nvim',
-    dependencies = {
-      'neo451/treedoc.nvim',
-      'stevearc/conform.nvim',
-      'j-hui/fidget.nvim',
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
-    }
-    opts = {}
-}
+return {　'neo451/feed.nvim',　opts = {}　}
 ```
 
 ```lua
@@ -63,6 +53,9 @@ require("nvim-treesitter.configs").setup {
    ensure_installed = { "xml", "html", "markdown" },
 }
 ```
+
+for others see: [wiki/Manual-installation](https://github.com/neo451/feed.nvim/wiki/Manual-installation)
+
 
 ### Health Check
 
@@ -78,7 +71,7 @@ require("nvim-treesitter.configs").setup {
 
 - Use `Feed` command to open the default index, there are two main kinds of index:
   - The `elfeed` style search buffer, everything is a flat list to be searched
-  - The `telescope` picker, good for searching through all your database or search `by feed`
+  - The `telescope` picker, good for fulltext search accross all your database
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
 ### Feed Management
