@@ -1,6 +1,6 @@
 local treedoc = require "treedoc"
 local date = require "feed.date"
-local sha1 = require "feed.sha1"
+local sha1 = require "sha1"
 local ut = require "feed.utils"
 local format = require "feed.format"
 
