@@ -17,7 +17,7 @@ end)
 describe("filter", function()
    it("return identical if query empty", function()
       local index = {
-         { tags = { unread = true, star = true }, v = 1 },
+         { tags = { unread = true, star = true }, time = 1 },
       }
       local res = M.filter(index, {})
       assert.same(index, res)
@@ -26,15 +26,14 @@ describe("filter", function()
    it("filter by tags", function()
       local query = M.parse_query "+unread -star"
       local index = {
-         { tags = { unread = true, star = true }, v = 1 },
-         { tags = { unread = true }, v = 2 },
-         { tags = { star = true }, v = 3 },
-         { tags = {}, v = 4 },
-         { tags = { unread = true }, v = 2 },
+         { tags = { unread = true, star = true }, time = 1 },
+         { tags = { unread = true }, time = 2 },
+         { tags = { star = true }, time = 3 },
+         { tags = {}, time = 4 },
+         { tags = { unread = true }, time = 2 },
       }
-      local res, map = M.filter(index, query)
+      local res = M.filter(index, query)
       assert.same({ index[2], index[5] }, res)
-      assert.same({ [1] = 2, [2] = 5 }, map)
    end)
 
    it("filter by date", function()
@@ -45,22 +44,20 @@ describe("filter", function()
          { time = date.today:days_ago(1):absolute(), v = 1 },
          { time = date.today:absolute(), v = 0 },
       }
-      local res, map = M.filter(index, query)
-      assert.same({ index[3], index[4] }, res)
-      assert.same({ [1] = 3, [2] = 4 }, map)
+      local res = M.filter(index, query)
+      assert.same({ index[4], index[3] }, res)
    end)
 
    it("filter by regex", function()
       local query = M.parse_query "Neo vim"
       local index = {
-         { title = "Neovim is awesome" },
-         { title = "neovim is lowercase" },
-         { title = "Vim is awesome" },
-         { title = "vim is lowercase" },
-         { title = "bim is not a thing" },
+         { title = "Neovim is awesome", time = 1 },
+         { title = "neovim is lowercase", time = 1 },
+         { title = "Vim is awesome", time = 1 },
+         { title = "vim is lowercase", time = 1 },
+         { title = "bim is not a thing", time = 1 },
       }
-      local res, map = M.filter(index, query)
+      local res = M.filter(index, query)
       assert.same({ index[1], index[2] }, res)
-      assert.same({ [1] = 1, [2] = 2 }, map)
    end)
 end)
