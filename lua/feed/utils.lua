@@ -1,5 +1,5 @@
 local M = {}
-local URL = require "feed.url"
+local URL = require "net.url"
 
 ---@param buf integer
 ---@param lhs string

@@ -1,23 +1,29 @@
-local opml = {}
+local M = {}
 local ut = require "feed.utils"
+local xml = require "feed.xml"
 
+local format = string.format
+local concat = table.concat
+
+local outline_format = [[<outline text="%s" title="%s" type="%s" xmlUrl="%s" htmlUrl="%s"/>]]
+local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0"><head><title>%s</title></head><body>
+%s
+</body></opml>]]
+
+---@param t table
+---@return string
 local function format_outline(t)
-   return ([[<outline text="%s" title="%s" type="%s" xmlUrl="%s" htmlUrl="%s"/>]]):format(t.title, t.title, t.type, t.xmlUrl, t.htmlUrl)
+   return format(outline_format, t.title, t.title, t.type, t.xmlUrl, t.htmlUrl)
 end
 
 ---@param title string
 ---@param contents string
 local function format_root(title, contents)
-   local str = ([[<?xml version="1.0" encoding="UTF-8"?>
-<opml version="1.0"><head><title>%s</title></head><body>
-%s
-</body></opml>]]):format(title, contents)
-   return str
+   return format(root_format, title, contents)
 end
 
-local treedoc = require "treedoc"
-
-local mt = { __type = "opml" }
+local mt = { __class = "feed.opml" }
 mt.__index = mt
 
 mt.__tostring = function(self)
@@ -26,15 +32,25 @@ end
 
 ---@param src string
 ---@return feed.opml
-function opml.import(src)
-   local ast = treedoc.parse(src, { language = "xml" })[1]
+function M.import(src)
+   local ast = xml.parse(src)
    local outline = ast.opml.body.outline
    local title = ast.opml.head.title
    outline = ut.listify(outline)
    local id, names = {}, {}
    for i, v in ipairs(outline) do
-      id[v.xmlUrl] = i
-      names[v.title] = i
+      if v.xmlUrl then
+         id[v.xmlUrl] = i
+         if v.title then
+            names[v.title] = i
+         end
+      else
+         ut.notify("opml", {
+            level = "INFO",
+            msg = ("failed to import feed %s"):format(v.title or v.text or v.htmlUrl),
+         })
+         table.remove(outline, i)
+      end
    end
    return setmetatable({
       outline = outline,
@@ -52,7 +68,7 @@ function mt:export(topath)
    for _, v in ipairs(entries) do
       buf[#buf + 1] = format_outline(v)
    end
-   local str = format_root(self.title, table.concat(buf, "\n"))
+   local str = format_root(self.title, concat(buf, "\n"))
    if topath then
       local file = io.open(topath, "w")
       if file then
@@ -70,16 +86,23 @@ function mt:lookup(name)
    end
 end
 
----@param t table
-function mt:append(t)
-   if self.id[t.xmlUrl] then
-      local idx = self.id[t.xmlUrl]
-      self.outline[idx] = { text = t.title, title = t.title, type = t.type or "rss", htmlUrl = t.htmlUrl, xmlUrl = t.xmlUrl }
+---@param v table
+function mt:append(v)
+   if self.id[v.xmlUrl] then
+      local idx = self.id[v.xmlUrl]
+      self.outline[idx] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
       return
    end
-   self.outline[#self.outline + 1] = { text = t.title, title = t.title, type = t.type or "rss", htmlUrl = t.htmlUrl, xmlUrl = t.xmlUrl }
-   self.id[t.xmlUrl] = #self.outline
-   self.names[t.title] = #self.outline
+   if not v.xmlUrl then
+      ut.notify("opml", {
+         level = "INFO",
+         msg = ("failed to import feed %s"):format(v.title or v.text or v.htmlUrl),
+      })
+      return
+   end
+   self.outline[#self.outline + 1] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
+   self.id[v.xmlUrl] = #self.outline
+   self.names[v.title] = #self.outline
 end
 
-return opml
+return M

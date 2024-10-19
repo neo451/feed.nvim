@@ -245,8 +245,6 @@ local live_grep = function(opts)
                })
             end,
          },
-         -- TODO: It would be cool to use `--json` output for this
-         -- and then we could get the highlight positions directly.
          sorter = sorters.highlighter_only(opts),
 
          attach_mappings = function(prompt_bufnr, map)

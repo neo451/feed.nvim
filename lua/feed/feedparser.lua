@@ -1,6 +1,6 @@
-local treedoc = require "treedoc"
+local xml = require "feed.xml"
 local date = require "feed.date"
-local sha1 = require "feed.sha1"
+local sha1 = require "sha1"
 local ut = require "feed.utils"
 local format = require "feed.format"
 
@@ -159,7 +159,7 @@ local function parse(src, opts, base_uri)
    if opts.type == "json" or is_json(src) then
       ast, feedtype = vim.json.decode(src), "json"
    else
-      local body = treedoc.parse(src, { language = "xml" })[1]
+      local body = xml.parse(src)
       if opts.type == "rss" or body.rss then
          ast, feedtype = body.rss, "rss"
       elseif opts.type == "atom" or body.feed then

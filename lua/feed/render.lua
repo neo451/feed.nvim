@@ -4,12 +4,12 @@ local M = {}
 M.state = {
    index_rendered = false,
    in_split = false,
+   on_display = {},
+   query_history = {},
 }
 
 -- TODO: line by line update
 -- TODO: custom file type: FeedIndx, FeedEntry(ts -> markdown/norg)
-
-M.on_display = {}
 
 local db = require "feed.db"
 local ut = require "feed.utils"
@@ -103,7 +103,7 @@ function M.tag(row_idx, input)
    local entry = db:lookup(id)
    if entry then
       entry.tags[input] = true
-      db:save() -- TODO: do it on exit / or only if ":w" , make an option
+      db:save()
    end
 end
 
@@ -112,7 +112,7 @@ function M.untag(row_idx, input)
    local entry = db:lookup(id)
    if entry then
       entry.tags[input] = nil
-      db:save() -- TODO: do it on exit / or only if ":w" , make an option
+      db:save()
    end
 end
 

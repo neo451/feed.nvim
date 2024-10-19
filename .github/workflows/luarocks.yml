@@ -28,6 +28,7 @@ jobs:
         with:
           dependencies: |
             sha1
+            net-url
             treedoc.nvim
             plenary.nvim
             conform.nvim

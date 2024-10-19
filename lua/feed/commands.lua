@@ -12,6 +12,7 @@ local cmds = {}
 
 if not render.state.query then
    render.state.query_string = config.search.default_query
+   table.insert(render.state.query_history, config.search.default_query)
    render.state.query = search.parse_query(config.search.default_query)
 end
 
@@ -34,7 +35,7 @@ function cmds.load_opml(filepath)
    local f = io.open(filepath, "r")
    if f then
       local str = f:read "*a"
-      local outlines = opml.import(str).outline
+      local outlines = opml.new(str).outline
       for _, v in ipairs(outlines) do
          db.feeds:append(v)
       end
@@ -154,7 +155,7 @@ function cmds.quit_index()
 end
 
 function cmds.show_next()
-   if render.current_index == #render.on_display then -- TODO: wrong
+   if render.current_index == #render.on_display then
       return
    end
    render.show_entry { row_idx = render.current_index + 1 }
@@ -229,7 +230,6 @@ function cmds.update()
       fetch.update_feed(link, #config.feeds, handle)
    end
 
-   -- db:sort() -- TODO:
    db:save()
 end
 
@@ -268,6 +268,27 @@ function cmds.which_key()
       ["local"] = true,
       loop = true,
    }
+end
+
+local sourced_file = require("plenary.debug_utils").sourced_filepath()
+
+local web_dir = vim.fn.fnamemodify(sourced_file, ":h:h:h") .. "/feed-web"
+
+local web
+
+function cmds.web_start()
+   local on_exit = function(obj)
+      print(obj.code)
+      print(obj.signal)
+      print(obj.stdout)
+      print(obj.stderr)
+   end
+
+   web = vim.system({ "lapis", "server" }, { text = true, cwd = web_dir }, on_exit)
+end
+
+function cmds.web_stop()
+   web:kill()
 end
 
 render.prepare_bufs()

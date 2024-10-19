@@ -67,7 +67,6 @@ end
 
 local function check(v, query)
    local res = true
-   -- TODO: logic wrong!!!
    if query.re then
       for _, reg in ipairs(query.re) do
          if not reg:match_str(v.title) then -- TODO: make case-insensetive
@@ -102,24 +101,20 @@ end
 ---@param entries feed.entry[]
 ---@param query feed.query
 ---@return feed.entry[]
----@return table<number, number>
 function M.filter(entries, query)
    local tbl = vim.deepcopy(entries, true)
-   local map_to_db_index, res = {}, {}
-   for i, v in ipairs(tbl) do
+   local res = {}
+   for _, v in ipairs(tbl) do
       if check(v, query) then
          res[#res + 1] = v
-         map_to_db_index[#map_to_db_index + 1] = i
       end
    end
-   -- table.sort(res, function(a, b)
-   --    if a.time and b.time then
-   --       return a.time > b.time
-   --    else
-   --       return true
-   --    end
-   -- end)
-   return res, map_to_db_index -- TODO: wrong
+   table.sort(res, function(a, b)
+      assert(a.time, ("no timestamp for %s"):format(vim.inspect(a)))
+      assert(b.time, ("no timestamp for %s"):format(vim.inspect(b)))
+      return a.time > b.time
+   end)
+   return res
 end
 
 return M

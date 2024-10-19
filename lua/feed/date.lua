@@ -71,7 +71,6 @@ M.today = M.new(os.date "*t")
 function M.new_from_str(str)
    local a, b, c = str:match "(%d+)-(%w+)-(%w+)"
    if not tonumber(b) then
-      --- TODO: year(s) ago
       return M.today[b .. "_ago"](M.today, a)
    end
    return M.new { year = a, month = b, day = c }

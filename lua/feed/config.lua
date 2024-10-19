@@ -5,8 +5,11 @@
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath "data" .. "/feed",
+   ---@type string
+   colorscheme = "morning",
 
    index = {
+      ---@type table<string, string | function>
       keys = {
          ["<CR>"] = "show_entry",
          ["<M-CR>"] = "show_in_split",
@@ -31,6 +34,7 @@ local default = {
    },
 
    entry = {
+      ---@type table<string, string | function>
       keys = {
          ["<CR>"] = "show_entry",
          ["}"] = "show_next",
@@ -67,8 +71,6 @@ local default = {
       split = "13split",
       header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- TODO: placeholder set to nil
    },
-   ---@type string
-   colorscheme = "morning",
 
    search = {
       default_query = "@6-months-ago +unread",

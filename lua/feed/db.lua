@@ -3,8 +3,6 @@ local path_ensured = false
 local config = require "feed.config"
 local opml = require "feed.opml"
 
---- TODO: move feeds index here, and store with index
-
 local index_header = { version = "0.1", ids = {} }
 local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0"><head><title>feed_nvim_export</title></head><body>

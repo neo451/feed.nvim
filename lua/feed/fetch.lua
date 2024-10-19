@@ -1,7 +1,6 @@
 local curl = require "plenary.curl"
 local feedparser = require "feed.feedparser"
 local db = require "feed.db"
-local ut = require "feed.utils"
 
 local M = {}
 
@@ -49,6 +48,7 @@ function M.update_feed(feed, total, handle)
       local ok, ast = pcall(feedparser.parse, src)
       if not ok then
          print(("failed to parse %s"):format(type(feed) == "table" and (feed.name or feed.title) or url))
+         print(ast)
          -- print("fetch", {
          --    msg = ("failed to parse %s"):format(type(feed) == "table" and (feed.name or feed.title) or url),
          --    level = "INFO",
