@@ -27,9 +27,10 @@ jobs:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
           dependencies: |
-            tree-sitter-xml
-            tree-sitter-markdown
-            tree-sitter-html
+            sha1
             treedoc.nvim
             plenary.nvim
             conform.nvim
+            tree-sitter-xml
+            tree-sitter-markdown
+            tree-sitter-html

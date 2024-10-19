@@ -6,13 +6,27 @@ source = {
    url = "git+https://github.com/neo451/feed.nvim",
 }
 
-test_dependencies = {
+dependencies = {
    "lua >= 5.1",
-   "nlua",
+   "sha1 >= 0.6.0-1",
+   "fidget.nvim",
+   "conform.nvim",
    "plenary.nvim",
    "treedoc.nvim",
    "tree-sitter-markdown",
    "tree-sitter-markdown_inline",
+   "tree-sitter-html",
+   "tree-sitter-xml",
+}
+
+test_dependencies = {
+   "lua >= 5.1",
+   "sha1 >= 0.6.0-1",
+   "nlua",
+   "plenary.nvim",
+   "treedoc.nvim",
+   "tree-sitter-markdown",
+   "tree-sitter-markdown",
    "tree-sitter-html",
    "tree-sitter-xml",
 }
