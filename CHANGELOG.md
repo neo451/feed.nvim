@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.1](https://github.com/neo451/feed.nvim/compare/v1.5.0...v1.5.1) (2024-10-19)
+
+
+### Bug Fixes
+
+* imporve opml handling: dups, incomplete.. ([f7c837e](https://github.com/neo451/feed.nvim/commit/f7c837e2c41c86eb01fb1b8d951986a0d89632b4))
+* move xml parsing here ([f7c837e](https://github.com/neo451/feed.nvim/commit/f7c837e2c41c86eb01fb1b8d951986a0d89632b4))
+* remove the copied url module, use luarock power! ([f7c837e](https://github.com/neo451/feed.nvim/commit/f7c837e2c41c86eb01fb1b8d951986a0d89632b4))
+* sort search results by time ([f7c837e](https://github.com/neo451/feed.nvim/commit/f7c837e2c41c86eb01fb1b8d951986a0d89632b4))
+
 ## [1.5.0](https://github.com/neo451/feed.nvim/compare/v1.4.2...v1.5.0) (2024-10-18)
 
 
