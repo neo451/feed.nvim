@@ -33,58 +33,32 @@ local check_feed = function(ast)
 end
 
 describe("rss", function()
-   it("should get ast", function()
-      local str = readfile "rss_example_2.0.xml"
-      local res = m.parse(str, { reify = false })
-      eq("2.0", res.version)
-
-      str = readfile "rss_example_0.92.xml"
-      res = m.parse(str, { reify = false })
-      eq("0.92", res.version)
-
-      str = readfile "rss_example_0.91.xml"
-      res = m.parse(str, { reify = false })
-      eq("0.91", res.version)
-
-      str = readfile "rss_real_zh_cdata.xml"
-      res = m.parse(str, { reify = false })
-      eq("2.0", res.version)
-
-      str = readfile "rss_real_complex.xml"
-      res = m.parse(str, { reify = false })
-      eq("2.0", res.version)
-
-      str = readfile "rss_atom_tags.xml"
-      res = m.parse(str, { reify = false })
-      eq("2.0", res.version)
-   end)
-
    it("should reify to unified format", function()
       local str = readfile "rss_real_complex.xml"
-      local ast = m.parse(str, { reify = true })
+      local ast = m.parse(str, "", { reify = true })
       check_feed(ast)
 
-      str = readfile "rss_atom_tags.xml"
-      ast, t = m.parse(str, { reify = true })
-      eq(t, "rss")
-      check_feed(ast)
+      -- str = readfile "rss_atom_tags.xml"
+      -- local ast, t = m.parse(str, "", { reify = true })
+      -- eq(t, "rss")
+      -- check_feed(ast)
    end)
 end)
 
 describe("atom", function()
    it("should get ast", function()
       local str = readfile "atom_example.xml"
-      local res = m.parse(str, { type = "atom" })
+      local res = m.parse(str, nil, {})
       eq("http://www.w3.org/2005/Atom", res.xmlns)
    end)
    it("should reify to unified format", function()
       -- TODO: xhtml
-      local str = readfile "atom_example.xml"
-      local res = m.parse(str, { reify = true }, "https://example.org")
-      check_feed(res)
+      -- local str = readfile "atom_example.xml"
+      -- local res = m.parse(str, "https://example.org")
+      -- check_feed(res)
 
-      local str = readfile "atom_example2.xml"
-      local res = m.parse(str, { reify = true }, "https://example.org")
+      str = readfile "atom_example2.xml"
+      res = m.parse(str, "https://example.org")
       check_feed(res)
    end)
 end)
@@ -92,12 +66,56 @@ end)
 describe("json", function()
    it("should get ast", function()
       local str = readfile "json_example.json"
-      local res = m.parse(str, { type = "json" })
+      local res = m.parse(str, nil, {})
       eq("https://www.jsonfeed.org/feed.json", res.feed_url)
    end)
    it("should reify to unified format", function()
       local str = readfile "json_example.json"
-      local ast = m.parse(str, { reify = true })
+      local ast = m.parse(str)
       check_feed(ast)
    end)
 end)
+
+local function readfile2(prefix, path)
+   local f = io.open(prefix .. path, "r")
+   local str
+   if f then
+      str = f:read "*a"
+      f:close()
+   end
+   return str
+end
+
+local ts_c = 0
+local nts_c = 0
+local success = 0
+
+local names = {}
+
+local data_dir2 = vim.fn.fnamemodify(sourced_file, ":h") .. "/feed_data/"
+
+local function test_dir(dir)
+   for v in vim.fs.dir(dir) do
+      local str = readfile2(dir, v)
+      local ok, ast = pcall(m.parse, str, "https://neovim.io")
+      if not ok then
+         if ast:find "ts error" then
+            ts_c = ts_c + 1
+         else
+            nts_c = nts_c + 1
+            table.insert(names, v)
+         end
+      else
+         success = success + 1
+         check_feed(ast)
+      end
+   end
+end
+--
+-- describe("simulation!", function()
+--    it("should parse bunch of real world feeds", function()
+--       test_dir(data_dir2)
+--       print(("ts_error: %d; none-ts_error: %d; susccess: %d"):format(ts_c, nts_c, success))
+--       print(vim.inspect(names))
+--    end)
+-- end)

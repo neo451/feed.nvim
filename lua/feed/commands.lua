@@ -16,6 +16,17 @@ if not render.state.query then
    render.state.query = search.parse_query(config.search.default_query)
 end
 
+local function merge(user_config_feeds, db_feeds)
+   local res = vim.deepcopy(db_feeds)
+   for _, v in ipairs(user_config_feeds) do
+      local url = type(v) == "table" and v[1] or v
+      if not db_feeds:has(url) then
+         res[#res + 1] = v
+      end
+   end
+   return res
+end
+
 -- TODO:
 -- 1. add/update feed
 -- 2. show random entry
@@ -28,6 +39,13 @@ function cmds.mod()
    vim.api.nvim_set_option_value("modifiable", true, { buf = render.buf.entry })
 end
 
+function cmds.log()
+   local buf = vim.api.nvim_create_buf(false, true)
+   local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
+   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+   vim.api.nvim_set_current_buf(buf)
+end
+
 ---load opml file to list of sources
 ---@param filepath string
 function cmds.load_opml(filepath)
@@ -35,13 +53,13 @@ function cmds.load_opml(filepath)
    local f = io.open(filepath, "r")
    if f then
       local str = f:read "*a"
-      local outlines = opml.new(str).outline
+      local outlines = opml.import(str)
       for _, v in ipairs(outlines) do
          db.feeds:append(v)
       end
       db:save { update_feed = true }
    else
-      ut.notify("commands", { msg = "failed to find your opml file" })
+      ut.notify("commands", { msg = "failed to find your opml file", level = "ERROR" })
    end
 end
 
@@ -55,6 +73,7 @@ function cmds.search()
       if input then
          render.state.query_string = input
          render.state.query = search.parse_query(input) -- TODO: preserve history, and allow direct pass arg or new input window, up/down for history
+         render.refresh()
       end
    end)
 end
@@ -183,8 +202,10 @@ function cmds.open_url()
    local item = vim.iter(render.state.urls):find(function(v)
       return v[1] == text
    end)
-   local link = resolve_url_from_entry(item[2])
-   vim.ui.open(link)
+   if item then
+      local link = resolve_url_from_entry(item[2])
+      vim.ui.open(link)
+   end
 end
 
 function cmds.urlview()
@@ -204,14 +225,18 @@ end
 
 -- TODO: better view
 function cmds.list_feeds()
-   print(vim.inspect(vim.tbl_values(config.feeds)))
+   for _, v in ipairs(db.feeds) do
+      print(v.title, v.xmlUrl)
+   end
 end
 
-function cmds.update()
+local fidget = function()
    local ok, progress = pcall(require, "fidget.progress")
    local handle
    if not ok then
-      vim.notify "fidget not found" -- TODO: make a simple message printer if fidget not found...
+      vim.notify "fidget not found, current version does not have a builtin progress bar yet"
+      -- TODO: make a simple message printer if fidget not found...
+      -- TODO: winbar component
    else
       handle = progress.handle.create {
          title = "Feed update",
@@ -219,39 +244,60 @@ function cmds.update()
          percentage = 0,
       }
    end
+   return handle
+end
 
-   -- TODO: iterate over opml, identify unstored feeds, fetch current info, and store to local opml index
-   local feeds = db.feeds
-   if feeds then
-      vim.list_extend(config.feeds, feeds.outline)
-   end
-
-   for _, link in ipairs(config.feeds) do
-      fetch.update_feed(link, #config.feeds, handle)
-   end
-
-   db:save()
+function cmds.update()
+   local feedlist = merge(config.feeds, db.feeds)
+   fetch.batch_update_feed(feedlist, 200, fidget())
 end
 
 ---add a feed to database
----@param str string
-function cmds:add_feed(str) end
+function cmds:add_feed()
+   vim.ui.input({ prompt = "Feed url: " }, function(input)
+      if input and input ~= "" then
+         table.insert(config.feeds, input)
+      end
+   end)
+end
 
 ---remove a feed from db.feeds
----@param str string
-function cmds:remove_feed(str) end
+-- function cmds:remove_feed() end
+
+cmds.update_feed = {
+   impl = function(name)
+      local url
+      if db.feeds:lookup(name) then
+         url = db.feeds:lookup(name)
+      else
+         url = name
+      end
+      coroutine.wrap(function()
+         fetch.update_feed(url)
+      end)()
+   end,
+   complete = function(lead)
+      local names = vim.tbl_keys(db.feeds.names) -- TODO: the feeds in config
+      local new_feeds = {}
+      for _, v in ipairs(config.feeds) do
+         local url = type(v) == "table" and v[1] or v
+         if not db.feeds.names[url] then
+            new_feeds[#new_feeds + 1] = url
+         end
+      end
+      vim.list_extend(names, new_feeds)
+      return vim.iter(names)
+         :filter(function(arg)
+            return arg:find(lead) ~= nil
+         end)
+         :totable()
+   end,
+}
 
 ---purge a feed from all of the db, including entries
 ---@param str string #Feed name or link
 function cmds:prune(str) end
 
-cmds.update_feed = {
-   impl = function(name)
-      local feeds = db.feeds
-      local feed = feeds:lookup(name)
-      fetch.update_feed(feed)
-   end,
-}
 --- **INTEGRATIONS**
 function cmds:telescope()
    pcall(vim.cmd.Telescope, "feed")

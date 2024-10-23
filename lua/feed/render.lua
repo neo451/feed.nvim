@@ -55,7 +55,7 @@ function M.show_index(opts)
    end
    local lines = {}
    for i, entry in ipairs(M.on_display) do
-      lines[i] = format.entry_name(entry)
+      lines[i] = format.entry_name(entry):gsub("\n", "") -- HACK:
    end
    M.show(lines, M.buf.index, { callback = ut.highlight_index, show = opts.show or true })
    M.state.index_rendered = true

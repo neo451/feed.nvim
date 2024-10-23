@@ -30,7 +30,7 @@ function date:format(format)
 end
 
 function date:__tostring()
-   return self:format(config.layout.date.format)
+   return self:format("%Y-%m-%d" or config.date_format)
 end
 
 ---@param num integer

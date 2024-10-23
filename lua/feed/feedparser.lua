@@ -1,8 +1,10 @@
 local xml = require "feed.xml"
 local date = require "feed.date"
-local sha1 = require "sha1"
 local ut = require "feed.utils"
 local format = require "feed.format"
+local sha = vim.fn.sha256
+
+-- TODO: handle enlosures
 
 ---check if json
 ---@param str string
@@ -12,34 +14,72 @@ local function is_json(str)
    return ok
 end
 
-local function handle_rss_title(ast)
-   if type(ast.channel.title) == "table" and vim.tbl_isempty(ast.channel.title) then
-      return ast.channel.link
-   end
-   return ast.channel.title
-end
+---Notes:
+---1. a feed has: a title, a text desc (optional), and entries (optional)
+---2. a entry has: a link, feed is always known, and all others are optional (author, time, content)
+---3. fallbacks:
+---  - author -> feed
+---  - time -> os.time()
+---  - content -> ""
 
-local function handle_atom_link(ast, base)
-   if not vim.islist(ast.link) then
-      return ut.url_resolve(base, ast.link.href)
-   end
-   for _, v in ipairs(ast.link) do
-      if v.rel == "alternate" then
-         return ut.url_resolve(base, v.href)
+local function handle_rss_title(ast)
+   if type(ast.title) == "table" then
+      if vim.tbl_isempty(ast.title) then
+         return ast.link
       end
    end
-   return ut.url_resolve(base, ast.link[1].href) -- just in case..?
+   return ast.title
 end
 
-local function handle_atom_title(title)
-   if type(title) == "table" then
-      return title[1]
-   elseif type(title) == "string" then
-      return title
+---@return string?
+local function handle_atom_link(ast, base)
+   local T = type(ast.link)
+   if T == "table" then
+      if not vim.islist(ast.link) then
+         return ut.url_resolve(base, ast.link.href)
+      end
+      for _, v in ipairs(ast.link) do
+         if v.rel == "alternate" then
+            return ut.url_resolve(base, v.href)
+         elseif v.rel == "self" then
+            return ut.url_resolve(base, v.href)
+         end
+      end
+      return ut.url_resolve(base, ast.link[1].href) -- just in case..?
+   elseif T == "string" then
+      return ast.link
    end
 end
 
-local function handle_atom_content(content)
+-- Pr = function(a)
+--    print(vim.inspect(a))
+-- end
+
+local function handle_atom_title(entry)
+   local function handle(v)
+      if type(v) == "table" then
+         return v[1] or ""
+      elseif type(v) == "string" then
+         return v
+      end
+   end
+   if vim.islist(entry.title) then
+      for _, v in ipairs(entry.title) do
+         if v.type == "html" then
+            return handle(v) -- TODO: there can be same tag atom tags together
+         end
+      end
+      return handle(entry.title[1])
+   end
+   return handle(entry.title)
+end
+
+local function handle_atom_content(entry)
+   local content = entry["content"] or entry["summary"]
+   if not content then
+      return "this feed seems to be empty..."
+   end
+
    if content.type == "html" then
       return content[1]
    else
@@ -64,51 +104,127 @@ local function handle_rss_content(entry)
    return ""
 end
 
+local function handle_rss_entry_title(entry)
+   if type(entry.title) == "table" then
+      if vim.tbl_isempty(entry.title) then
+         return ""
+      else
+         print(vim.inspect(entry.title))
+      end
+   elseif type(entry.title) == "string" then
+      return entry.title
+   end
+end
+
+local function handle_rss_entry_author(entry)
+   if type(entry.author) == "table" then
+      return entry.author.name -- TODO: read spec
+   elseif type(entry.author) == "string" then
+      return entry.author
+   end
+end
+
+local function handle_atom_date(entry)
+   local time = entry["published"] or entry["updated"]
+   local ok, res = pcall(date.new_from.atom, time)
+   if ok and res then
+      return res:absolute()
+   else
+      return os.time()
+   end
+end
+
+local function handle_rss_date(entry)
+   local time = entry.pubDate
+   local ok, res = pcall(date.new_from.rss, time)
+   if ok and res then
+      return res:absolute()
+   else
+      return os.time()
+   end
+end
+
+-- TODO: every other handler should have a fallback
+
+---@param link_node any
+---@param base any
+---@return string?
+local function handle_rss_link(entry, base)
+   local T = type(entry.link)
+   if T == "string" then
+      return entry.link
+   elseif T == "table" then
+      if not vim.islist(entry.link) then
+         return entry.link.href
+         -- return ut.url_resolve(base, entry.link.href)
+      end
+      for _, v in ipairs(entry.link) do
+         if v.rel == "alternate" then
+            return v.href
+         -- return ut.url_resolve(base, v.href)
+         elseif v.rel == "self" then
+            return v.href
+            -- return ut.url_resolve(base, v.href)
+         end
+      end
+      return entry.link[1].href -- just in case .. ?
+   end
+end
+
+local function handle_atom_feed_title(ast)
+   if type(ast.title) == "table" then
+      -- if vim.tbl_isempty(ast.title) then
+      --    return ""
+      -- end
+      return ast.title[1]
+   elseif type(ast.title) == "string" then
+      return ast.title
+   end
+   return ""
+end
+
 ---@param entry table
 ---@param feedtype string
----@param title string
+---@param feed_name string
 ---@param base? string # base url
----@return feed.entry
-local function reify_entry(entry, feedtype, title, base)
+---@return feed.entry?
+local function reify_entry(entry, feedtype, feed_name, base)
    local res = {}
    if feedtype == "rss" then
       -- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
-      res.link = entry.link
-      res.id = sha1(entry.link)
-      res.feed = title
-      res.title = entry.title
-      local ok, time = pcall(function()
-         return date.new_from.rss(entry.pubDate):absolute()
-      end)
-      if ok then
-         res.time = time
+      res.link = handle_rss_link(entry, base)
+      if not res.link then
+         return
       end
+      res.id = sha(res.link)
+      res.title = handle_rss_entry_title(entry) -- TODO: proper fallback for each attr
+      res.time = handle_rss_date(entry)
       res.content = handle_rss_content(entry)
-      res.author = entry.author or title
+      res.author = handle_rss_entry_author(entry) or feed_name
    elseif feedtype == "json" then
       res.link = entry.url
-      res.id = sha1(entry.url)
-      res.feed = title
+      if not res.link then
+         return
+      end
+      res.id = sha(entry.url)
       res.title = entry.title
       res.time = date.new_from.json(entry.date_published):absolute()
-      res.author = title
+      res.author = feed_name
       res.content = entry.content_html
    elseif feedtype == "atom" then
       res.link = handle_atom_link(entry, base)
-      res.id = sha1(res.link)
-      res.title = handle_atom_title(entry.title)
-      res.feed = title
-      res.time = date.new_from.atom(entry.published):absolute()
-      res.author = title
-      res.content = handle_atom_content(entry.content)
+      if not res.link then
+         return
+      end
+      res.id = sha(res.link)
+      res.title = handle_atom_title(entry)
+      res.time = handle_atom_date(entry)
+      res.author = feed_name
+      res.content = handle_atom_content(entry)
    end
    res.tags = { unread = true }
-   local ok, md = pcall(format.entry, res)
-   if ok then
-      res.content = md
-   else
-      print(md)
-   end
+   res.feed = feed_name
+   res.content = format.entry(res)
    return res
 end
 
@@ -118,51 +234,58 @@ end
 local function reify(ast, feedtype, base_uri)
    local res = {}
    if feedtype == "rss" then
+      local root_base = ut.url_rebase(ast, base_uri)
       res.title = handle_rss_title(ast)
-      res.link = ast.channel.link
-      res.desc = ast.channel.subtitle or res.title
+      res.link = handle_rss_link(ast, base_uri)
+      res.desc = ast.subtitle or res.title
       res.entries = {}
-      for i, v in ipairs(ut.listify(ast.channel.item)) do
-         res.entries[i] = reify_entry(v, "rss", res.title)
+      if ast.item then
+         for i, v in ipairs(ut.listify(ast.item)) do
+            res.entries[i] = reify_entry(v, "rss", res.title, root_base)
+         end
       end
    elseif feedtype == "json" then
       res.title = ast.title
       res.link = ast.home_page_url or ast.feed_url
       res.desc = ast.description or res.title
       res.entries = {}
-      for i, v in ipairs(ut.listify(ast.items)) do
-         res.entries[i] = reify_entry(v, "json", res.title)
+      if ast.items then
+         for i, v in ipairs(ut.listify(ast.items)) do
+            res.entries[i] = reify_entry(v, "json", res.title)
+         end
       end
    elseif feedtype == "atom" then
       local root_base = ut.url_rebase(ast, base_uri)
-      res.title = ast.title[1]
+      res.title = handle_atom_feed_title(ast)
       res.desc = res.title -- TODO:
       res.link = handle_atom_link(ast, root_base)
       res.entries = {}
-      for i, v in ipairs(ut.listify(ast.entry)) do
-         res.entries[i] = reify_entry(v, "atom", res.title, root_base)
+      if ast.entry then
+         for i, v in ipairs(ut.listify(ast.entry)) do
+            res.entries[i] = reify_entry(v, "atom", res.title, root_base)
+         end
       end
    end
    return res
 end
 
----@alias feed.feedtype "rss" | "atom" | "json"
-
 ---parse feed fetch from source
 ---@param src string
----@param opts? {type : feed.feedtype, reify : boolean }
+---@param base_uri? string
+---@param opts? { reify : boolean }
 ---@return table | feed.feed
----@return feed.feedtype
-local function parse(src, opts, base_uri)
+---@return "json" | "atom" | "rss"
+local function parse(src, base_uri, opts)
    local ast, feedtype
    opts = opts or { reify = true }
-   if opts.type == "json" or is_json(src) then
+   if is_json(src) then
       ast, feedtype = vim.json.decode(src), "json"
    else
-      local body = xml.parse(src)
-      if opts.type == "rss" or body.rss then
-         ast, feedtype = body.rss, "rss"
-      elseif opts.type == "atom" or body.feed then
+      local body = xml.parse(src, base_uri)
+      if body.rss then
+         -- TODO: get version info here, 2.0, 0.91..
+         ast, feedtype = body.rss.channel, "rss"
+      elseif body.feed then
          ast, feedtype = body.feed, "atom"
       else
          error "failed to parse the unknown feedtype"
@@ -174,7 +297,4 @@ local function parse(src, opts, base_uri)
    return ast, feedtype
 end
 
-return {
-   parse = parse,
-   reify = reify,
-}
+return { parse = parse }

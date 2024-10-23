@@ -4,10 +4,6 @@ local config = require "feed.config"
 local opml = require "feed.opml"
 
 local index_header = { version = "0.1", ids = {} }
-local opml_template = [[<?xml version="1.0" encoding="UTF-8"?>
-<opml version="1.0"><head><title>feed_nvim_export</title></head><body>
-<outline text="neovim.io" title="neovim.io" type="rss" xmlUrl="https://neovim.io/news.xml" htmlUrl="https://neovim.io/news"/>
-</body></opml>]]
 
 ---@param dir string
 local function prepare_db(dir)
@@ -27,11 +23,6 @@ local function prepare_db(dir)
    if not index_path:is_file() then
       index_path:touch()
       index_path:write("return " .. vim.inspect(index_header), "w")
-   end
-   local opml_path = Path:new(dir .. "/feeds.opml")
-   if not opml_path:is_file() then
-      opml_path:touch()
-      opml_path:write(opml_template, "w")
    end
    path_ensured = true
    return dir
@@ -133,10 +124,10 @@ end
 
 function db_mt:save(opts)
    opts = opts or {}
-   if opts.update_feed then
-      self.feeds:export(self.dir .. "/feeds.opml")
-   end
+   self.index.lastUpdated = os.time()
+   setmetatable(self.feeds, nil)
    save_file(self.dir .. "/index", "return " .. vim.inspect(self.index))
+   setmetatable(self.feeds, opml.mt)
 end
 
 function db_mt:blowup()
@@ -146,11 +137,15 @@ end
 
 local dir = prepare_db(config.db_dir)
 local index = update_index(dir)
-local str = get_file(dir .. "/feeds.opml")
-local feeds = opml.import(str)
+
+if not index.feeds then
+   index.feeds = opml.new()
+else
+   setmetatable(index.feeds, opml.mt)
+end
 
 return setmetatable({
    dir = dir,
    index = index,
-   feeds = feeds,
+   feeds = index.feeds,
 }, db_mt)
