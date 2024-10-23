@@ -75,7 +75,10 @@ for others see: [wiki/Manual-installation](https://github.com/neo451/feed.nvim/w
 - Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
 
 ### Feed Management
-
+- Pass your feeds as list of url and tags see [configurations](#configurations) below.
+- Use `Feed update` to update all the feeds in the db
+- Use `Feed add_feed` to add feed to the db
+- Use `Feed update_feed` to update a feed
 - Use `Feed load_opml` to import your opml file
 - Use `Feed export_opml` to export your opml file to load in other readers
 
