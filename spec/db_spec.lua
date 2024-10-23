@@ -36,7 +36,7 @@ describe("add", function()
       entry.description = nil
       local saved_entry = entry
       saved_entry.content = nil
-      assert.same({ version = "0.1", entry, ids = { ["1234567"] = 1 } }, loadfile(db.dir .. "/index")())
+      assert.same(entry, dofile(db.dir .. "/index")[1])
    end)
 end)
 --

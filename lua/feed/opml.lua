@@ -24,23 +24,29 @@ local function format_root(title, contents)
 end
 
 local mt = { __class = "feed.opml" }
-mt.__index = mt
+mt.__index = function(self, k)
+   if not rawget(self, k) then
+      if rawget(mt, k) then
+         return rawget(mt, k)
+      end
+   end
+end
 
 mt.__tostring = function(self)
-   return ("<OPML>name: %s, size: %d"):format(self.title, #self.outline)
+   return ("<OPML>name: %s, size: %d"):format(self.title, #self)
 end
 
 ---@param src string
 ---@return feed.opml
 function M.import(src)
-   local ast = xml.parse(src)
+   local ast = xml.parse(src, "import opml")
    local outline = ast.opml.body.outline
    local title = ast.opml.head.title
    outline = ut.listify(outline)
-   local id, names = {}, {}
+   local urls, names = {}, {}
    for i, v in ipairs(outline) do
       if v.xmlUrl then
-         id[v.xmlUrl] = i
+         urls[v.xmlUrl] = i
          if v.title then
             names[v.title] = i
          end
@@ -52,20 +58,25 @@ function M.import(src)
          table.remove(outline, i)
       end
    end
+   outline.title = title
+   outline.urls = urls
+   outline.names = names
+   return setmetatable(outline, mt)
+end
+
+function M.new()
    return setmetatable({
-      outline = outline,
-      title = title,
-      id = id,
-      names = names,
+      title = "feed.nvim",
+      urls = {},
+      names = {},
    }, mt)
 end
 
 ---@param topath string?
 ---@return string?
 function mt:export(topath)
-   local entries = self.outline
    local buf = {}
-   for _, v in ipairs(entries) do
+   for _, v in ipairs(self) do
       buf[#buf + 1] = format_outline(v)
    end
    local str = format_root(self.title, concat(buf, "\n"))
@@ -82,15 +93,23 @@ end
 function mt:lookup(name)
    local idx = self.names[name]
    if idx then
-      return self.outline[idx]
+      return self[idx]
+   end
+end
+
+---@param name string url
+function mt:has(url)
+   local idx = self.urls[url]
+   if idx then
+      return self[idx]
    end
 end
 
 ---@param v table
 function mt:append(v)
-   if self.id[v.xmlUrl] then
-      local idx = self.id[v.xmlUrl]
-      self.outline[idx] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
+   if self.urls[v.xmlUrl] then
+      local urlsx = self.urls[v.xmlUrl]
+      self[urlsx] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
       return
    end
    if not v.xmlUrl then
@@ -100,9 +119,11 @@ function mt:append(v)
       })
       return
    end
-   self.outline[#self.outline + 1] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
-   self.id[v.xmlUrl] = #self.outline
-   self.names[v.title] = #self.outline
+   self[#self + 1] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
+   self.urls[v.xmlUrl] = #self
+   self.names[v.title] = #self
 end
+
+M.mt = mt
 
 return M

@@ -1,5 +1,7 @@
 local M = {}
 local URL = require "net.url"
+local config = require "feed.config"
+local strings = require "plenary.strings"
 
 ---@param buf integer
 ---@param lhs string
@@ -11,9 +13,9 @@ end
 
 local ns = vim.api.nvim_create_namespace "feed"
 local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
-local light_grp = vim.api.nvim_get_hl(0, { name = "Whitespace" })
+local light_grp = vim.api.nvim_get_hl(0, { name = "LineNr" })
 vim.api.nvim_set_hl(ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-vim.api.nvim_set_hl(ns, "feed.light", { bold = true, fg = light_grp.fg, bg = light_grp.bg })
+vim.api.nvim_set_hl(ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
 M.ns = ns
 
 ---@param buf integer
@@ -24,12 +26,33 @@ function M.highlight_entry(buf)
    end
 end
 
+--- TODO: take displaywidth into account
+
+-- print(#str - strings.strdisplaywidth(str))
 ---@param buf integer
 function M.highlight_index(buf)
-   local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, true) -- TODO: api??
-   for i = 0, len do
-      vim.api.nvim_buf_add_highlight(buf, ns, "Title", i, 0, 10)
-      vim.api.nvim_buf_add_highlight(buf, ns, "feed.bold", i, 0, -1)
+   local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, true)
+   local len = #lines
+   local sections = vim.iter(vim.split(lines[1], " "))
+      :filter(function(str)
+         return str ~= ""
+      end)
+      :totable()
+   -- Pr(sections)
+   -- Pr(vim.split(lines[1]))
+   local width = 0
+   for i, v in ipairs(config.layout) do
+      local str = sections[i]
+      local diff
+      if str then
+         diff = #str - strings.strdisplaywidth(str) -- TODO:
+      else
+         diff = 0
+      end
+      for j = 0, len - 1 do
+         vim.api.nvim_buf_add_highlight(buf, ns, v.color or "Normal", j, width, v.width + width + diff)
+      end
+      width = width + v.width
    end
 end
 
@@ -49,6 +72,9 @@ function M.url_resolve(base_url, url)
       if url then
          return tostring(url)
       end
+   end
+   if not url then
+      -- print(base_url, url, "!")
    end
    return tostring(URL.resolve(base_url, url))
 end
@@ -87,6 +113,26 @@ function M.notify(funname, opts)
    notify_fn(string.format("[feed.%s]: %s", funname, opts.msg), level, {
       title = "feed.nvim",
    })
+end
+
+---@param f fun(cb:function, ...)
+function M.cb_to_co(f)
+   local f_co = function(...)
+      local co = coroutine.running()
+      assert(co ~= nil, "The result of cb_to_co must be called within a coroutine.")
+
+      -- f needs to have the callback as its first argument, because varargs
+      -- passing doesn’t work otherwise.
+      f(function(ret)
+         local ok = coroutine.resume(co, ret)
+         if not ok then
+            error "The coroutine failed"
+         end
+      end, ...)
+      return coroutine.yield()
+   end
+
+   return f_co
 end
 
 return M

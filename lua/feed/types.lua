@@ -42,6 +42,7 @@
 ---@field title string
 ---@field outline table
 ---@field names table
+---@field id table
 ---@field export fun(self: feed.opml, topath: string?): string?
 ---@field append fun(self: feed.opml, t: table)
 

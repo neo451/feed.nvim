@@ -7,6 +7,8 @@ local default = {
    db_dir = vim.fn.stdpath "data" .. "/feed",
    ---@type string
    colorscheme = "morning",
+   ---@type string
+   date_format = "%Y-%m-%d",
 
    index = {
       ---@type table<string, string | function>
@@ -30,6 +32,8 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
+         listchars = "tab:> ,nbsp:+",
+         -- listchars = { tab = "» ", trail = "·", nbsp = "␣" },
       },
    },
 
@@ -48,7 +52,7 @@ local default = {
       },
       ---@type table<string, any>
       opts = {
-         conceallevel = 0,
+         conceallevel = 3,
          concealcursor = "nvc",
          wrap = true,
          number = false,
@@ -59,14 +63,27 @@ local default = {
    },
    ---@type table<string, any>
    layout = {
-      title = {
+      -- TODO: validate
+      {
+         "feed",
+         width = 25,
+         color = "Title",
+      },
+      {
+         "tags",
+         width = 25,
+         color = "WhiteSpace",
+      },
+      {
+         "title",
          right_justify = false,
          width = 80,
+         color = "@markup.strong",
       },
-      date = {
-         format = "%Y-%m-%d",
-         width = 10,
-      },
+      -- date = {
+      --    format = "%Y-%m-%d",
+      --    width = 10,
+      -- },
       ---@type string
       split = "13split",
       header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- TODO: placeholder set to nil
@@ -92,10 +109,23 @@ local default = {
    },
 }
 
----@type feed.config | nil
-vim.g.feed = vim.g.feed
+local M = {}
 
----@type feed.config
-local config = vim.tbl_deep_extend("force", default, vim.g.feed or {})
+setmetatable(M, {
+   __index = function(self, key)
+      local config = rawget(self, "config")
+      if config then
+         return config[key]
+      end
+      return default[key]
+   end,
+})
 
-return config
+--- Merge the user configuration with the default values.
+---@param config feed.config
+function M.resolve(config)
+   config = config or {}
+   M.config = vim.tbl_deep_extend("keep", config, default)
+end
+
+return M
