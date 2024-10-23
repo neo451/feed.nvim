@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/neo451/feed.nvim/compare/v1.5.1...v1.6.0) (2024-10-23)
+
+
+### Features
+
+* fully functional feedparser, reliable fetching, many ux improvements ([cd06253](https://github.com/neo451/feed.nvim/commit/cd06253f15d804b73091a0448b62d1946fb2c54b))
+
 ## [1.5.1](https://github.com/neo451/feed.nvim/compare/v1.5.0...v1.5.1) (2024-10-19)
 
 
