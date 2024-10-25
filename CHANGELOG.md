@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.1](https://github.com/neo451/feed.nvim/compare/v1.6.0...v1.6.1) (2024-10-25)
+
+
+### Bug Fixes
+
+* batter date api ([74fa69d](https://github.com/neo451/feed.nvim/commit/74fa69df6bf63a4c789193e484bd41f657864616))
+* handle podcast links ([74fa69d](https://github.com/neo451/feed.nvim/commit/74fa69df6bf63a4c789193e484bd41f657864616))
+* remove some unnecessary commands, prepare for more extensible api ([74fa69d](https://github.com/neo451/feed.nvim/commit/74fa69df6bf63a4c789193e484bd41f657864616))
+* use fidget in single feed update ([74fa69d](https://github.com/neo451/feed.nvim/commit/74fa69df6bf63a4c789193e484bd41f657864616))
+
 ## [1.6.0](https://github.com/neo451/feed.nvim/compare/v1.5.1...v1.6.0) (2024-10-23)
 
 
