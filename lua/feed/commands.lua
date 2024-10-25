@@ -27,16 +27,15 @@ local function merge(user_config_feeds, db_feeds)
    return res
 end
 
--- TODO:
--- 1. add/update feed
--- 2. show random entry
-
+-- function cmds.play_podcast()
+--    local link = render.get_entry().link
+--    vim.system({ "vlc.exe", link }, { text = true }, function(out)
+--       print(vim.inspect(out))
+--    end)
+-- end
+--
 function cmds.blowup()
    db:blowup()
-end
-
-function cmds.mod()
-   vim.api.nvim_set_option_value("modifiable", true, { buf = render.buf.entry })
 end
 
 function cmds.log()
@@ -87,14 +86,6 @@ function cmds.show_in_browser()
    local entry = render.get_entry()
    local link = entry.link
    vim.ui.open(link)
-end
-
-function cmds.show_in_w3m()
-   local entry = render.get_entry()
-   local ok, _ = pcall(vim.cmd.W3m, entry.link)
-   if not ok then
-      vim.notify "[feed.nvim]: need w3m.vim installed"
-   end
 end
 
 function cmds.show_in_split()
@@ -162,7 +153,6 @@ function cmds.show_index()
    og_colorscheme = vim.g.colors_name
    og_buffer = vim.api.nvim_get_current_buf()
    render.refresh()
-   -- render.show_index { show = true }
 end
 
 function cmds.quit_index()
@@ -273,7 +263,7 @@ cmds.update_feed = {
          url = name
       end
       coroutine.wrap(function()
-         fetch.update_feed(url)
+         fetch.update_feed(url, fidget(), 1)
       end)()
    end,
    complete = function(lead)
@@ -287,10 +277,10 @@ cmds.update_feed = {
       end
       vim.list_extend(names, new_feeds)
       return vim.iter(names)
-         :filter(function(arg)
-            return arg:find(lead) ~= nil
-         end)
-         :totable()
+          :filter(function(arg)
+             return arg:find(lead) ~= nil
+          end)
+          :totable()
    end,
 }
 
@@ -316,26 +306,26 @@ function cmds.which_key()
    }
 end
 
-local sourced_file = require("plenary.debug_utils").sourced_filepath()
+-- local sourced_file = require("plenary.debug_utils").sourced_filepath()
+--
+-- local web_dir = vim.fn.fnamemodify(sourced_file, ":h:h:h") .. "/feed-web"
 
-local web_dir = vim.fn.fnamemodify(sourced_file, ":h:h:h") .. "/feed-web"
-
-local web
-
-function cmds.web_start()
-   local on_exit = function(obj)
-      print(obj.code)
-      print(obj.signal)
-      print(obj.stdout)
-      print(obj.stderr)
-   end
-
-   web = vim.system({ "lapis", "server" }, { text = true, cwd = web_dir }, on_exit)
-end
-
-function cmds.web_stop()
-   web:kill()
-end
+-- local web
+--
+-- function cmds.web_start()
+--    local on_exit = function(obj)
+--       print(obj.code)
+--       print(obj.signal)
+--       print(obj.stdout)
+--       print(obj.stderr)
+--    end
+--
+--    web = vim.system({ "lapis", "server" }, { text = true, cwd = web_dir }, on_exit)
+-- end
+--
+-- function cmds.web_stop()
+--    web:kill()
+-- end
 
 render.prepare_bufs()
 
@@ -343,26 +333,27 @@ local augroup = vim.api.nvim_create_augroup("Feed", {})
 
 for lhs, rhs in pairs(config.entry.keys) do
    rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-   ut.push_keymap(render.buf.entry, lhs, rhs)
+   vim.keymap.set("n", lhs, rhs, { silent = true, buffer = render.buf.entry })
 end
 
 for lhs, rhs in pairs(config.index.keys) do
    rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-   ut.push_keymap(render.buf.index, lhs, rhs)
+   vim.keymap.set("n", lhs, rhs, { silent = true, buffer = render.buf.index })
 end
 
 vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    buffer = render.buf.entry,
    callback = function(ev)
-      vim.cmd.colorscheme(config.colorscheme)
-      -- require "feed.lualine"
+      -- vim.cmd.colorscheme(config.colorscheme)
+      require "feed.lualine"
       render.state.in_entry = true
       vim.cmd "set cmdheight=0"
-      local buf = ev.buf
       local ok, conform = pcall(require, "conform")
       if ok then
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = buf })
+         vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
+         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
+         vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
       else
          print(conform)
       end
@@ -378,19 +369,34 @@ vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    buffer = render.buf.index,
    callback = function(ev)
-      vim.cmd.colorscheme(config.colorscheme)
-      -- require "feed.lualine"
+      -- vim.cmd.colorscheme(config.colorscheme)
+      require "feed.lualine"
       vim.cmd "set cmdheight=0"
-      local buf = ev.buf
-      local ok, conform = pcall(require, "conform")
-      if ok then
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = buf })
-      else
-         print(conform)
-      end
       for key, value in pairs(config.index.opts) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+      end
+   end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+   pattern = "ShowEntryPost",
+   group = augroup,
+   callback = function(_)
+      -- TODO: args = { lines: string[], ... }
+      local conform_ok, conform = pcall(require, "conform")
+      -- local has_null_ls, null_ls = pcall(require, "null-ls")
+      -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
+      --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
+
+      if conform_ok then
+         vim.api.nvim_set_option_value("modifiable", true, { buf = render.buf.entry })
+         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.buf.entry })
+         vim.api.nvim_set_option_value("modifiable", false, { buf = render.buf.entry })
+         -- elseif null_ls_ok then
+         --    -- vim.lsp.start({})
+         --    -- TODO:
+         --    vim.lsp.buf.format({ bufnr = render.buf.entry })
       end
    end,
 })
@@ -411,6 +417,22 @@ vim.api.nvim_create_autocmd("BufLeave", {
    group = augroup,
    buffer = render.buf.entry,
    callback = restore_state,
+})
+
+vim.api.nvim_create_autocmd("WinResized", {
+   group = augroup,
+   buffer = render.buf.entry,
+   callback = function()
+      render.refresh()
+   end,
+})
+
+vim.api.nvim_create_autocmd("WinResized", {
+   group = augroup,
+   buffer = render.buf.index,
+   callback = function()
+      render.refresh()
+   end,
 })
 
 return cmds

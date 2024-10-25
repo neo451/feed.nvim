@@ -3,7 +3,7 @@ local path_ensured = false
 local config = require "feed.config"
 local opml = require "feed.opml"
 
-local index_header = { version = "0.1", ids = {} }
+local index_header = { version = "0.2", ids = {} }
 
 ---@param dir string
 local function prepare_db(dir)

@@ -17,9 +17,11 @@ local function readfile(path)
    return table.concat(str)
 end
 
-local check_feed = function(ast)
+local check_feed = function(ast, ispod)
    assert.is_string(ast.title)
-   assert.is_string(ast.link)
+   if not ispod then
+      assert.is_string(ast.link)
+   end
    assert.is_table(ast.entries)
    for _, v in ipairs(ast.entries) do
       assert.is_number(v.time)
@@ -119,3 +121,11 @@ end
 --       print(vim.inspect(names))
 --    end)
 -- end)
+
+describe("podcast enclosures", function()
+   it("should parse enclosures", function()
+      local str = readfile "podcast.xml"
+      local ast = m.parse(str)
+      check_feed(ast, true)
+   end)
+end)

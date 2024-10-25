@@ -63,18 +63,22 @@ local fetch_co = ut.cb_to_co(function(cb, url, name)
 end)
 M.fetch_co = fetch_co
 
+---@param feed table | string
+---@return string?
+---@return string?
 local function get_feed_info(feed)
-   local url, name
+   vim.validate {
+      feed = { feed, { "table", "string" } },
+   }
    if type(feed) == "table" then
       if feed.xmlUrl then
-         url, name = feed.xmlUrl, feed.title or feed.text or feed.xmlUrl
-      else
-         url, name = feed[1], feed.name or feed[1]
+         return feed.xmlUrl, feed.title or feed.text or nil
+      elseif feed[1] then
+         return feed[1], feed.name or nil
       end
-   elseif type(feed) == "string" then
-      url, name = feed, feed
+   else
+      return feed, nil
    end
-   return url, name
 end
 
 ---fetch xml from source and load them into db
@@ -83,13 +87,13 @@ function M.update_feed(feed, handle, total)
    local url, name = get_feed_info(feed)
    local res = fetch_co(url, name)
    if is_valid_response(res) then
-      local ok, ast = pcall(feedparser.parse, res.body)
+      local ok, ast, f_type = pcall(feedparser.parse, res.body)
       if ok then
          for _, entry in ipairs(ast.entries) do
             db:add(entry)
          end
          -- TODO: check if info changed then update feed
-         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc }
+         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type }
          db:save { update_feed = true }
       else
          log.info("feedparser err for", name)
@@ -97,7 +101,11 @@ function M.update_feed(feed, handle, total)
    else
       log.info("server invalid response err for", name)
    end
-   advance_progress(handle, total)
+   if handle and total then
+      advance_progress(handle, total)
+   else
+      vim.notify("feed.nvim: " .. name .. " fetched")
+   end
 end
 
 local function batch_update_feed(feeds, size, handle)
