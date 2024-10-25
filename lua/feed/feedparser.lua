@@ -51,10 +51,6 @@ local function handle_atom_link(ast, base)
    end
 end
 
--- Pr = function(a)
---    print(vim.inspect(a))
--- end
-
 local function handle_atom_title(entry)
    local function handle(v)
       if type(v) == "table" then
@@ -108,8 +104,8 @@ local function handle_rss_entry_title(entry)
    if type(entry.title) == "table" then
       if vim.tbl_isempty(entry.title) then
          return ""
-      else
-         print(vim.inspect(entry.title))
+         -- else
+         -- print(vim.inspect(entry.title))
       end
    elseif type(entry.title) == "string" then
       return entry.title
@@ -144,9 +140,7 @@ local function handle_rss_date(entry)
    end
 end
 
--- TODO: every other handler should have a fallback
-
----@param link_node any
+---@param entry any
 ---@param base any
 ---@return string?
 local function handle_rss_link(entry, base)
@@ -161,7 +155,7 @@ local function handle_rss_link(entry, base)
       for _, v in ipairs(entry.link) do
          if v.rel == "alternate" then
             return v.href
-         -- return ut.url_resolve(base, v.href)
+            -- return ut.url_resolve(base, v.href)
          elseif v.rel == "self" then
             return v.href
             -- return ut.url_resolve(base, v.href)
@@ -192,7 +186,11 @@ local function reify_entry(entry, feedtype, feed_name, base)
    local res = {}
    if feedtype == "rss" then
       -- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
-      res.link = handle_rss_link(entry, base)
+      if entry.enclosure then
+         res.link = entry.enclosure.url
+      else
+         res.link = handle_rss_link(entry, base)
+      end
       if not res.link then
          return
       end

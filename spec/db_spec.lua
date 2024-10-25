@@ -15,7 +15,7 @@ describe("initialize", function()
    end)
 
    it("should read index file as a table in memory", function()
-      assert(db.index.version == "0.1")
+      assert(db.index.version == "0.2")
    end)
 end)
 

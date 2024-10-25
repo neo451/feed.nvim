@@ -1,6 +1,7 @@
 local M = {}
 local ut = require "feed.utils"
 local xml = require "feed.xml"
+local log = require "feed.log"
 
 local format = string.format
 local concat = table.concat
@@ -51,10 +52,7 @@ function M.import(src)
             names[v.title] = i
          end
       else
-         ut.notify("opml", {
-            level = "INFO",
-            msg = ("failed to import feed %s"):format(v.title or v.text or v.htmlUrl),
-         })
+         log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
          table.remove(outline, i)
       end
    end
@@ -64,6 +62,7 @@ function M.import(src)
    return setmetatable(outline, mt)
 end
 
+---@return feed.opml
 function M.new()
    return setmetatable({
       title = "feed.nvim",
@@ -113,10 +112,7 @@ function mt:append(v)
       return
    end
    if not v.xmlUrl then
-      ut.notify("opml", {
-         level = "INFO",
-         msg = ("failed to import feed %s"):format(v.title or v.text or v.htmlUrl),
-      })
+      log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
       return
    end
    self[#self + 1] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }

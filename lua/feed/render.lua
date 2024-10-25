@@ -9,7 +9,6 @@ M.state = {
 }
 
 -- TODO: line by line update
--- TODO: custom file type: FeedIndx, FeedEntry(ts -> markdown/norg)
 
 local db = require "feed.db"
 local ut = require "feed.utils"
@@ -21,12 +20,9 @@ function M.prepare_bufs()
    if M.buf then
       return
    end
-   M.buf = {
-      index = vim.api.nvim_create_buf(false, true),
-      entry = vim.api.nvim_create_buf(false, true),
-   }
-   vim.api.nvim_buf_set_name(M.buf.index, "FeedIndex")
-   vim.api.nvim_buf_set_name(M.buf.entry, "FeedEntry")
+   M.buf = {}
+   M.buf.index = vim.api.nvim_create_buf(false, true)
+   M.buf.entry = vim.api.nvim_create_buf(false, true)
 end
 
 ---@param lines string[]
@@ -72,10 +68,6 @@ function M.show_entry(opts)
    opts = opts or {}
    local untag = vim.F.if_nil(opts.untag, true)
    local entry
-   -- if opts.db_idx then
-   --    entry = db[opts.db_idx]
-   --    M.current_index = opts.db_idx
-   -- else
    local row_idx = opts.row_idx or ut.get_cursor_row()
    M.current_index = row_idx
    entry = M.on_display[row_idx]
@@ -87,6 +79,10 @@ function M.show_entry(opts)
    local lines, urls = urlview(vim.split(raw_str, "\n"))
    M.state.urls = urls
    M.show(lines, M.buf.entry, { callback = ut.highlight_entry, show = vim.F.if_nil(opts.show, true) })
+   vim.api.nvim_exec_autocmds("User", {
+      pattern = "ShowEntryPost",
+      data = { lines = lines },
+   })
 end
 
 function M.get_entry(opts)

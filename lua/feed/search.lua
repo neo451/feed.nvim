@@ -18,7 +18,6 @@ local M = {}
 local filter_symbols = {
    ["+"] = "must_have",
    ["-"] = "must_not_have",
-   [""] = "re",
    ["@"] = "date",
 }
 
@@ -29,7 +28,7 @@ function M.parse_query(str)
    for q in vim.gsplit(str, " ") do
       local kind = filter_symbols[q:sub(1, 1)] or "re"
       if kind == "date" then
-         query.after, query.before = date.parse_date_filter(q)
+         query.after, query.before = date.new_from.filter(q)
       elseif kind == "re" then
          if not query.re then
             query.re = {}
@@ -50,20 +49,20 @@ function M.parse_query(str)
    return query
 end
 
----check if a valid pattern
----@param str any
----@return boolean
-function M.valid_pattern(str)
-   if vim.lpeg.type(str) == "pattern" then
-      return true
-   else
-      local ok, obj = pcall(vim.regex, str)
-      if ok and tostring(obj) == "<regex>" then
-         return true
-      end
-   end
-   return false
-end
+-- ---check if a valid pattern
+-- ---@param str any
+-- ---@return boolean
+-- function M.valid_pattern(str)
+--    if vim.lpeg.type(str) == "pattern" then
+--       return true
+--    else
+--       local ok, obj = pcall(vim.regex, str)
+--       if ok and tostring(obj) == "<regex>" then
+--          return true
+--       end
+--    end
+--    return false
+-- end
 
 local function check(v, query)
    local res = true

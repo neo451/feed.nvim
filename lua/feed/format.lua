@@ -32,7 +32,7 @@ end
 function M.entry(entry)
    local lines = {}
    lines[1] = kv("Title", entry.title)
-   lines[2] = kv("Date", date.new_from_int(entry.time))
+   lines[2] = kv("Date", date.new_from.number(entry.time))
    lines[3] = kv("Author", entry.author or entry.feed)
    lines[4] = kv("Feed", entry.feed)
    lines[5] = kv("Link", entry.link)
