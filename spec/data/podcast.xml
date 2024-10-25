@@ -1,0 +1,1401 @@
+<?xml version="1.0"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:admin="http://webns.net/mvcb/" xmlns:atom="http://www.w3.org/2005/Atom/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:fireside="http://fireside.fm/modules/rss/fireside" xmlns:wavpub="https://www.wavpub.com/dtds/podcast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:spotify="http://www.spotify.com/ns/rss" xmlns:psc="http://podlove.org/simple-chapters/" version="2.0" encoding="UTF-8">
+  <channel>
+    <generator>WavPub.com</generator>
+    <wavpub:version>2.0</wavpub:version>
+    <wavpub:legal_notice>&#x6B64;RSS&#x6E90;&#x7684;&#x6240;&#x6709;&#x5185;&#x5BB9;&#x5747;&#x53D7;&#x8457;&#x4F5C;&#x6743;&#x6CD5;&#x4FDD;&#x62A4;&#xFF0C;&#x4E25;&#x7981;&#x4EFB;&#x4F55;&#x672A;&#x7ECF;&#x6388;&#x6743;&#x7684;&#x4F7F;&#x7528;&#x3002;&#x7B2C;&#x4E09;&#x65B9;&#x4EC5;&#x88AB;&#x8BB8;&#x53EF;&#x4EE5;&#x6D41;&#x5F0F;&#x4F20;&#x8F93;&#x5B9E;&#x65F6;&#x64AD;&#x653E;&#x672C;RSS&#x4E2D;&#x7684;&#x97F3;&#x89C6;&#x9891;&#x6587;&#x4EF6;URL&#x3002;&#x672A;&#x7ECF;&#x5185;&#x5BB9;&#x521B;&#x4F5C;&#x8005;&#x660E;&#x786E;&#x5141;&#x8BB8;&#x4E14;&#x672A;&#x5411;&#x58F0;&#x6E43;&#x6B63;&#x5F0F;&#x901A;&#x77E5;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4EFB;&#x4F55;&#x7F51;&#x7AD9;&#x3001;&#x5BA2;&#x6237;&#x7AEF;&#x6216;&#x8F6F;&#x4EF6;&#x5DE5;&#x5177;&#x5747;&#x4E0D;&#x5F97;&#x6293;&#x53D6;&#x3001;&#x5B58;&#x50A8;&#x6216;&#x518D;&#x5904;&#x7406;&#x97F3;&#x9891;&#x6587;&#x4EF6;&#xFF0C;&#x66F4;&#x4E0D;&#x5F97;&#x5411;&#x6700;&#x7EC8;&#x7528;&#x6237;&#x63D0;&#x4F9B;&#x7F13;&#x5B58;&#x7684;&#x97F3;&#x89C6;&#x9891;&#x6587;&#x4EF6;&#x3002;&#x9664;&#x975E;&#x4E8B;&#x5148;&#x83B7;&#x5F97;&#x521B;&#x4F5C;&#x8005;&#x548C;&#x58F0;&#x6E43;&#x7684;&#x4E66;&#x9762;&#x8BB8;&#x53EF;&#xFF0C;&#x5426;&#x5219;&#x7981;&#x6B62;&#x5C06;&#x672C;RSS&#x7684;&#x4EFB;&#x4F55;&#x5185;&#x5BB9;&#x7528;&#x4E8E;AI&#x4EA7;&#x54C1;&#x7684;&#x8BAD;&#x7EC3;&#xFF0C;&#x4E5F;&#x4E0D;&#x5F97;&#x5C06;&#x672C;RSS&#x7684;&#x5185;&#x5BB9;&#x4F5C;&#x4E3A;&#x8BAD;&#x7EC3;&#x7D20;&#x6750;&#x6216;&#x8BED;&#x6599;&#x5E93;&#x3002;&#x4E00;&#x65E6;&#x60A8;&#x901A;&#x8FC7;&#x4EBA;&#x5DE5;&#x65B9;&#x5F0F;&#x6216;&#x4F7F;&#x7528;&#x673A;&#x5668;&#x722C;&#x866B;&#x6280;&#x672F;&#x8BBF;&#x95EE;&#x672C;RSS&#x6E90;&#xFF0C;&#x5373;&#x89C6;&#x4E3A;&#x60A8;&#x5DF2;&#x5168;&#x9762;&#x7406;&#x89E3;&#x5E76;&#x65E0;&#x6761;&#x4EF6;&#x63A5;&#x53D7;&#x672C;&#x6CD5;&#x5F8B;&#x58F0;&#x660E;&#x7684;&#x6240;&#x6709;&#x6761;&#x6B3E;&#x3002;&#x6211;&#x4EEC;&#x8B66;&#x544A;&#xFF0C;&#x5BF9;&#x4EFB;&#x4F55;&#x8FDD;&#x53CD;&#x8FD9;&#x4E9B;&#x89C4;&#x5B9A;&#x7684;&#x884C;&#x4E3A;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x91C7;&#x53D6;&#x6CD5;&#x5F8B;&#x63AA;&#x65BD;&#xFF0C;&#x8FFD;&#x7A76;&#x5176;&#x6CD5;&#x5F8B;&#x8D23;&#x4EFB;&#xFF0C;&#x5E76;&#x8981;&#x6C42;&#x652F;&#x4ED8;&#x53EF;&#x80FD;&#x5F15;&#x8D77;&#x7684;&#x6240;&#x6709;&#x635F;&#x5BB3;&#x8D54;&#x507F;&#x3002;&#x60A8;&#x7684;&#x5408;&#x89C4;&#x64CD;&#x4F5C;&#x662F;&#x907F;&#x514D;&#x6CD5;&#x5F8B;&#x7EA0;&#x7EB7;&#x7684;&#x552F;&#x4E00;&#x9014;&#x5F84;&#x3002;
+All content from this RSS feed is protected by copyright law and any unauthorized use is strictly prohibited. Third parties are only permitted to stream the audio and video file URLs contained within this RSS feed in real time. Under no circumstances should any website, app, or software tool capture, store, or reprocess audio files, nor provide cached audio and video files to end users, without explicit permission from the content creator and formal notification to WavPub.Unless prior written consent has been obtained from both the content creator and WavPub, it is forbidden to use any content from this RSS feed for training AI products or as training materials or corpus. As soon as you access this RSS feed either manually or using machine crawling technology, it is deemed that you have fully understood and unconditionally accepted all terms of this legal statement.We warn that we will take legal action against any breaches of these provisions, pursue legal responsibility, and require payment for any damages incurred as a result. Compliance is your only path to avoid legal disputes.</wavpub:legal_notice>
+    <itunes:owner>
+      <itunes:name>&#x7C73;&#x5468;</itunes:name>
+      <itunes:email>yy.yuyang@outlook.com</itunes:email>
+    </itunes:owner>
+    <title><![CDATA[Why for Jazz]]></title>
+    <description><![CDATA[Why for Jazz 是 Y4 旗下的一档关于爵士乐的音频播客。我们主张爵士不应该只是一种音乐类型，它更为当代都市生活提供了一种可以参考的可能性。我们的口号是：即兴即合理。]]></description>
+    <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/03/whyforjazz.jpeg"/>
+    <language>zh-CN</language>
+    <itunes:category text="Music"/>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:author>&#x7C73;&#x5468;</itunes:author>
+    <itunes:type>Episodic</itunes:type>
+    <copyright><![CDATA[米周]]></copyright>
+    <item>
+      <wavpub:guid>wavpub_swafugeVWDCWANYxphCczCTRYvNsZnSCrXnEaNqRuVqddheTyqNTNFuqX</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/10/04/e87-j-j-johnson-%e4%bc%98%e9%9b%85%e7%9a%84%e9%95%bf%e5%8f%b7%e6%89%8b/</link>
+      <title><![CDATA[E87: J.J. Johnson | 优雅的长号手]]></title>
+      <description><![CDATA[<p>***这是一期不需要带脑子听的节目***</p><p>长号这样乐器其实伴随着爵士乐诞生就一直存在。然而在经历 Bebop 的过程中，这样一个需要靠手臂操作滑阀的乐器在速度上却显得不合时宜。有这样一位乐手，作为一个长号手，他通过自己的天赋和在演奏上的创新，使得自己也加入了 Bebop 的大军，并且在随后的爵士乐发展中独领风骚。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>如果想获得部分节目的文字稿，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show:</p><p>[04:35] Wycliffe Gordon &#8211; Sweet Louisiana</p><p>[07:42] Coleman Howkins &#8211; Half Step Down Please </p><p>[11:10] Benny Carter &#8211; Love for Sale</p><p>[16:49] J.J. Johnson &#8211; Teapot (Take 2)</p><p>[20:18] Charlie Parker &#8211; Quasimodo </p><p>[23:50] Miles Davis &#8211; Kelo</p><p>[28:53] Jay &amp; Kai &#8211; Bernie&#8217;s Tune</p><p>[33:50] J.J. Johnson &#8211; Poem for Brass </p><p>[38:55] J.J. Johnson &#8211; Like Someone in Love</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_hENqKNVFbFuCaLmMpgxUnjAFSCTBYZJeDVQjRrqgmNWaVbhyrrbfRUebAu-27.mp3" length="101840640" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_hENqKNVFbFuCaLmMpgxUnjAFSCTBYZJeDVQjRrqgmNWaVbhyrrbfRUebAu-27.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=399]]></guid>
+      <pubDate>Fri, 04 Oct 2024 23:04:06 +0800</pubDate>
+      <itunes:duration>2546</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/10/johnson3.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ZmqvdWdrvLCJzDRLcLcxAuJdtzLPMHAAEBsHhJbQUKgCnYyUkVkGkBCFj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/09/21/e86-%e8%8d%92%e5%b2%9b%e5%94%b1%e7%89%87/</link>
+      <title><![CDATA[E86: 荒岛唱片]]></title>
+      <description><![CDATA[<p>一档好的节目是可以穿越时间的。当然，我说的不只是 Why for Jazz。</p><p>英国广播公司 BBC 有一档至今已经播放长达 82 年的节目。这档节目诞生于二战的战火中，随着时间的流逝魅力不减，反而越来越拥有如今这个世界所缺少的某种特质。</p><p>这档节目对我来说意义非凡。它最开始只是我用来了解英国社会的一个管道，然而后来我发现，从这档节目中，也许可以看到不同时期，社会的一个个切片。从这些切片看过去，也许可以找到一些一直以来，我们力求寻找的答案。</p><p>Desert Island Discs: <a href="https://www.bbc.co.uk/programmes/b006qnmr">https://www.bbc.co.uk/programmes/b006qnmr</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>如果想获得部分节目的文字稿，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show:</p><p>[09:09] Eric Coates &#8211; By The Sleepy Lagoon</p><p>[13:17] Frederic Chopin &#8211; 革命练习曲 </p><p>[19:53] Dean Martin &#8211; Relex Ay Voo</p><p>[43:10] The Beatles &#8211; I Want to Hold Your Hand</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rfMqCHmgBqBNRZAUkFFQdkaFSbCWZWkgkPafLvANHrfDUSVpYWfabnqqmc-57.mp3" length="109461572" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rfMqCHmgBqBNRZAUkFFQdkaFSbCWZWkgkPafLvANHrfDUSVpYWfabnqqmc-57.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=393]]></guid>
+      <pubDate>Sat, 21 Sep 2024 22:21:13 +0800</pubDate>
+      <itunes:duration>2737</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/09/&#x5C4F;&#x5E55;&#x622A;&#x56FE;-2024-09-21-221934.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_BhskgCABwqwPjsJdAKnbMPrPqDARGPyAcvXVnFTQGqBQwWBfyTvvmgyQS</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/09/15/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-%e5%ad%99%e4%b9%a6%e6%81%92-%e7%88%b5%e5%a3%ab%e4%b9%90%e6%98%af%e4%b8%80%e7%a7%8d%e6%80%9d%e7%bb%b4%ef%bc%8c%e6%88%91%e7%94%a8%e5%ae%83%e6%9d%a5/</link>
+      <title><![CDATA[即兴访谈 | 孙书恒 – 爵士乐是一种思维，我用它来创作和理解任何东西]]></title>
+      <description><![CDATA[<p>内啡肽是大脑当中非常重要的让人产生快乐的化学物质。从产生的原理上讲，大笑和听音乐都是内啡肽产生的来源。这两个因素完美的融合在了今天这期嘉宾的身上。</p><p>这一期的嘉宾是孙书恒。他的职业是一个单口喜剧演员。所以当他告诉我他是一个重度爵士乐迷，并且正在学习爵士乐的时候，我起初有点惊讶。</p><p>【毕竟单口喜剧圈这么有品位的人不多（bushi】</p><p>但是熟悉了他的风格之后，我觉得他对爵士乐的爱，也合理。</p><p>这期节目中，我第一次尝试了一种新的形式。通过一个流落荒岛的设定，让嘉宾选择五首音乐，一本书，以及一个有价值的东西，并围绕这些，展开他的故事。</p><p><strong>嘉宾：孙书恒</strong></p><p>单口喜剧演员</p><p><strong>五首音乐：</strong></p><p>[10:25] 白光 &#8211; 魂萦旧梦</p><p>[20:27] Billy Holiday &#8211; Solitude</p><p>[29:21] 田震 &#8211; 自由自在</p><p>[36:20] 实话实说 &#8211; 三儿的问题</p><p>[53:15] Eddie Higgins &#8211; Autumn Leaves</p><p><strong>一本书</strong>：</p><p>《<a href="https://book.douban.com/subject/34848259/">纵横爵士乐</a>》</p><p><strong>一样有价值的东西</strong>：</p><p>吉他（以及效果器）</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ZHJxDzRRChHQYUEnpgDjdBQqdHYUhqfYFacaVAYwEtmZMNZUDzcVBwSSyj-47.mp3" length="55725267" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ZHJxDzRRChHQYUEnpgDjdBQqdHYUhqfYFacaVAYwEtmZMNZUDzcVBwSSyj-47.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=389]]></guid>
+      <pubDate>Sun, 15 Sep 2024 22:59:46 +0800</pubDate>
+      <itunes:duration>3483</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_SewPNaRxpUCzKtgPcmgbbruWCdqJSWtyLyCrmHHsUHyuEPnnLtfNRCcdd</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/08/19/e85-smooth-jazz-%e4%b8%80%e7%9e%ac%e9%97%b4%e7%88%86%e7%81%ab%ef%bc%8c%e4%b8%80%e5%a4%9c%e9%97%b4%e9%99%a8%e8%90%bd/</link>
+      <title><![CDATA[E85: Smooth Jazz | 一瞬间爆火，一夜间陨落]]></title>
+      <description><![CDATA[<p>关于 Smooth Jazz，人们的评价一直都是很极端的。有人很喜欢它，也有人很讨厌。但无论如何，一个真正的爵士乐迷，应该不会用 Smooth Jazz 来彰显 Ta 的音乐品味。但这玩意儿就好像擦边视频，谁都不会跟别人说自己爱看，但是却都在夜深人静时，默默独自享受。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>如果想获得部分节目的文字稿，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show:</p><p>[01:03] 理查德克莱德曼 &#8211; 水边的阿迪丽娜</p><p>[09:23] Wes Montgomery &#8211; In and Out</p><p>[13:46] Wes Montgomery &#8211; A Day in the Life</p><p>[16:12] George Washington Jr. &#8211; Mister Magic</p><p>[23:47] Kenny G &#8211; Forever in Love</p><p>[31:28] George Michael &#8211; Careless Whisper</p><p>[43:57] Chuck Mongione &#8211; Feel So Good</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_GnLrTYKHsrncNGpXbGncLayetkkPwMLaBKpvzXYytfvFCBnaYhfuYqnhnz-f7.mp3" length="118592640" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_GnLrTYKHsrncNGpXbGncLayetkkPwMLaBKpvzXYytfvFCBnaYhfuYqnhnz-f7.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=383]]></guid>
+      <pubDate>Mon, 19 Aug 2024 23:31:27 +0800</pubDate>
+      <itunes:duration>2965</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_rFjQmgLwetKqXtuSNXMekaDeZbYsCVnFGXYfqnunkHGftgNHcCmnfkPEL</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/07/26/%e7%95%aa%e5%a4%96%ef%bc%9a%e5%bd%93%e4%b8%80%e4%b8%aa%e5%ad%a9%e5%ad%90%e8%af%9e%e7%94%9f%e6%97%b6/</link>
+      <title><![CDATA[番外：当一个孩子诞生时]]></title>
+      <description><![CDATA[<p>我和 Tutti 迎来了我们的孩子：万万。</p><p>这期节目，献给她。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_YVSCtzZKsZwctzLREGsJvkDkGmFRgtqSHqXBWqCSZxzUpFFZuRCvCTBWsn-1c.mp3" length="48453120" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_YVSCtzZKsZwctzLREGsJvkDkGmFRgtqSHqXBWqCSZxzUpFFZuRCvCTBWsn-1c.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=379]]></guid>
+      <pubDate>Fri, 26 Jul 2024 08:02:00 +0800</pubDate>
+      <itunes:duration>1211</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_CQqxeEEyuJLuGNRPrSUDuvhGfKQrDQvenjshKGhtGGWJmzVYFyNfjYXZk</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/07/20/e84-%e5%bd%93%e6%88%91%e5%90%ac%e4%b8%80%e5%bc%a0%e7%88%b5%e5%a3%ab%e5%94%b1%e7%89%87%ef%bc%8c%e6%88%91%e5%9c%a8%e5%90%ac%e4%bb%80%e4%b9%88/</link>
+      <title><![CDATA[E84: 当我听一张爵士唱片，我在听什么]]></title>
+      <description><![CDATA[<p>曾经有一个白酒的广告我印象特别深刻，它说，你能听到的历史，136年。作为爵士乐迷，特别幸运的一件事，是爵士乐的发展，刚好被录音技术的发展完全覆盖，让我们有机会聆听爵士乐所有的声音。当我们去看一张爵士乐唱片的生产过程，不难发现，有时候一个比乐手更加重要的人，是录音工程师。在历史上，有这样一位录音工程师，靠着自己父母家的客厅，录制了许多非常优秀的爵士乐专辑。</p><p>这些专辑，有的堪称音乐纪录片。我们这期节目，会选择一张特别的唱片，我带着大家一点一点，寻找唱片当中，那些并没有出现的声音。</p><p>《摇滚学校》购票链接：<a href="https://smg.culture.cn/content/6618f816883d1c0001726ad1/?action=preview&amp;channelId=669b5c97fbeaf700015a4293&amp;showId=6618f816883d1c0001726ad1">https://smg.culture.cn/content/6618f816883d1c0001726ad1/?action=preview&amp;channelId=669b5c97fbeaf700015a4293&amp;showId=6618f816883d1c0001726ad1</a></p><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2024/07/rock-700x1024.jpg"></figure><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>Timeline of the Show:</p><p>[00:00] 先是一个小广告（但非常的真诚所以请你不要跳过）</p><p>[04:44] 你能听到的历史，136年</p><p>[09:03] 在北京 687211 的体验</p><p>[11:40] 一个极其重要的角色：录音工程师</p><p>[12:06] 介绍一个叫做 Rudy Van Gelder 的人</p><p>[28:44] 一起听一张奇妙的专辑《Miles Davis and the Modern Jazz Giants》</p><p>[38:26] Bag&#8217;s Groove Take 1</p><p>[45:44] Bensha Swing</p><p>[53:56] The Man I Love Take 1</p><p>[58:06] The Man I Love Take 2</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_TyEJgNsLKUBcNyfYbvbVkQGKmjaApYQafsWcAfEYZrXJSqEkqNtaXxxrqG-95.mp3" length="152663881" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_TyEJgNsLKUBcNyfYbvbVkQGKmjaApYQafsWcAfEYZrXJSqEkqNtaXxxrqG-95.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=371]]></guid>
+      <pubDate>Sat, 20 Jul 2024 13:50:05 +0800</pubDate>
+      <itunes:duration>3817</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/07/51DUOcHZQUL._UF10001000_QL80_.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_HYLHgaepNHuWsWNUaABhCADUAfkcFAYhTLZBtJUXDxDygQptucABaANnN</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/06/28/e83-sodade-%e4%bd%9b%e5%be%97%e8%a7%92%e7%8b%ac%e8%87%aa%e5%93%80%e4%bc%a4/</link>
+      <title><![CDATA[E83: Sodade | 佛得角独自哀伤]]></title>
+      <description><![CDATA[<p>这一期节目，是我所做的另一种尝试。我一直想用声音这种形式，做一期类似记录片加文艺片混合的内容，而这一期选择的方向，是一个小众的世界音乐，佛得角的Morna。</p><p>在佛得角的语言中，有一个词很难用其他的语言去解释，那就是“Sodade”。这是一个从葡萄牙语演变而来的词。简单的来说，Sodade 的意思是悲伤，但是特指一种很具体的悲伤，一种因为关心或喜爱的某件事或某个人的失去而产生的怀旧或者极度忧郁的悲伤。但这个悲伤又不是绝望的悲伤，它暗含着一种失去的人或事物还有一丝丝可能回到自己身旁的希望。</p><p>从某种意义上讲，Sodade 是佛得角这个国家，和国家中的人的一个注脚。想要将这个词讲清楚，恐怕需要一整期的播客。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show:</p><p>[00:00] Sodade &#8211; Kepa Junkera &amp; Julio Pereira</p><p>[07:34] Fado Meu &#8211; Amaria Rodrigus </p><p>[12:20] Sodade &#8211; Bonga</p><p>[32:07] Sodade &#8211; Cesaria Evora</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ZzuzSJupNaPpMGNzexegNRsCGrgdvLCSZypeaWCmKxcXENnBRYMcJukVqP-66.mp3" length="88891200" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ZzuzSJupNaPpMGNzexegNRsCGrgdvLCSZypeaWCmKxcXENnBRYMcJukVqP-66.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=365]]></guid>
+      <pubDate>Fri, 28 Jun 2024 06:31:00 +0800</pubDate>
+      <itunes:duration>2222</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/06/&#x5C4F;&#x5E55;&#x622A;&#x56FE;-2024-06-27-235437.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_sdDhsKzuRhBkXvpSYLeJZYXVbfCnRXbAnXBCczZFjaCMzSJAnvyseXpHd</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/06/20/e82-%e7%88%b5%e5%a3%ab%e4%b9%90%e7%9a%84-100-%e7%a7%8d%e5%88%86%e6%94%af%ef%bc%8c%e8%ae%a9%e6%88%91%e4%b8%80%e6%ac%a1%e8%ae%b2%e6%b8%85%e6%a5%9a/</link>
+      <title><![CDATA[E82: 关于爵士乐的 100 个分支，听这一期就够了]]></title>
+      <description><![CDATA[<p>爵士乐作为融合性极强的音乐，拥有着众多不同的分支。即便是听爵士很久的老炮，偶尔也会陷入到分不清爵士门类的尴尬当中。那么这一期，我为大家从头开始，梳理了爵士乐的发展脉络。从 1900 年之前，一直讲到新千年，让你对爵士乐的种类和发展，一次性全方位一网打尽。</p><p>这期节目非常适合点赞收藏，谁知道某一天你的另一半会不会听到一首曲子之后忽然问你：既然你喜欢爵士乐，那么这是什么类型的爵士乐？</p><p>Timeline（课代表省流指南）：</p><p>格式：[时间轴] 音乐分支 &#8211; 选曲 (艺术家）</p><p><strong>Before 1900:</strong></p><p>[03:00] Ragtime &#8211; Maple Leaf Rag (Scott Joplin)</p><p>[03:27] Blues &#8211; Empty Bed Blues (Bessie Smith)</p><p><strong>1900:</strong></p><p>[04:08] Dixieland Jazz &#8211; Skeleton Jangle (ODJB)</p><p>[05:05] New Orleans Jazz &#8211; Dipper Moon Blues (Joe King Oliver)</p><p><strong>1920:</strong></p><p>[06:28] Big Band &amp; Swing Jazz &#8211; Don&#8217;t Be That Way (Benny Goodman)</p><p><strong>1930:</strong></p><p>[08:20] Kansas City Jazz &#8211; Jumpin&#8217; at the Woodside (Count Basie &amp; Lester Young)</p><p><strong>1940:</strong></p><p>[09:53] Bebop &#8211; Donna Lee (Charlie Parker)</p><p>[11:17] Afro Cuban &#8211; Manteca Theme (Dizzy Gillespie)</p><p>[12:42] Cool Jazz &#8211; Moon Dreams (Miles Davis)</p><p><strong>1950:</strong></p><p>[13:50] Westcoast Jazz &#8211; Line for Lyons (Gerry Mulligan &amp; Chet Baker)</p><p>[15:09] Modal Jazz &#8211; So What (Miles Davis)</p><p>[17:29] Bossa Nova &#8211; The Girl From Ipanema (Joao Gilberto &amp; Stan Getz)</p><p>[18:27] Gospel &#8211; Amazing Grace (Judy Collins)</p><p>[19:24] African American Gospel &#8211; This Train (Sister Rosetta Tharpe)</p><p>[21:08] R&amp;B &#8211; Early in the Morning (Louis Jordan)</p><p>[23:07] Hard Bop &#8211; Moarnin&#8217; (Art Blakey)</p><p>[24:04] Soul Jazz &#8211; I Got a Woman (Jimmy Smith)</p><p>[25:25] The Third Stream &#8211; Sketch (Modern Jazz Quartet)</p><p>[26:21] Free Jazz / Avant-garde Jazz &#8211; Free Jazz (Ornette Coleman)</p><p>[27:58] Spiritual Jazz &#8211; Resolution (John Coltrane)</p><p><strong>1960:</strong></p><p>[29:22] Jazz Fusion / Jazz Rock &#8211; Don&#8217;t Look Now (Larry Goryell)</p><p>[33:05] Straight-ahead Jazz &#8211; Ebony Queen (McCoy Tyner)</p><p>[34:18] Neo Bop / Post Bop &#8211; School Boy (Wynton Marsalis)</p><p><strong>1970:</strong></p><p>[34:56] Jazz-Funk &#8211; Chameleon (Herbie Hancock)</p><p>[36:32] Smooth Jazz &#8211; Mister Magic (Grover Washington Jr.)</p><p><strong>1980:</strong></p><p>[38:55] Acid Jazz &#8211; Cantaloop (Us3)</p><p>[40:43] Jazz Rap / Jazz Hip Hop &#8211; Aruarian Dance (Nujabes)</p><p><strong>1990:</strong></p><p>[42:48] Nu Jazz &#8211; Tourist (St. Germain)</p><p>2020:</p><p>Why for Jazz :-)</p><p>________________</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_dGbWpYwFwDYUAfyUYQpzbRcKJjeyXjCtHPtKjeDKNsCDJdrcJGravkYXTn-af.mp3" length="108498240" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_dGbWpYwFwDYUAfyUYQpzbRcKJjeyXjCtHPtKjeDKNsCDJdrcJGravkYXTn-af.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=357]]></guid>
+      <pubDate>Thu, 20 Jun 2024 19:22:24 +0800</pubDate>
+      <itunes:duration>2712</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_PUdKSTNguQhYZEnqqhvmtxrcVjBcaqdRsGBxjbcRZsHBkrJcvQbDeejQd</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/05/23/%ef%bf%bce81-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e7%8e%b0%e5%9c%ba%e6%bc%94%e5%87%ba%ef%bc%8c%e8%b5%9e%e7%be%8e%e4%b8%8e%e5%90%90%e6%a7%bd%ef%bc%8c%e9%a9%ac%e6%9d%a5%e8%a5%bf%e4%ba%9a%ef%bc%8c/</link>
+      <title><![CDATA[E81: 凌晨四点 | 现场演出，赞美与吐槽，马来西亚，以及最后的二人世界]]></title>
+      <description><![CDATA[<p>数着日子过的二人世界，算是过一天少一天了。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>Playlist of the Show：</p><p>[06:50] Chris Botti &#8211; Emmanuel</p><p>[19:30] John Coltrane &#8211; Three Little Words</p><p>[30:55] 板桥文夫 &#8211; 渡良濑</p><p>[34:55] 当山瞳 &#8211; Cathy</p><p>[43:35] Amy Search &#8211; Tiada Lagi</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_LSrLrnHuuwBbxSsRtUpSVrNLjPjjWxYMWbBsXEARYzesPNkmQWTwgvQhyE-9a.mp3" length="117951474" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_LSrLrnHuuwBbxSsRtUpSVrNLjPjjWxYMWbBsXEARYzesPNkmQWTwgvQhyE-9a.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=350]]></guid>
+      <pubDate>Thu, 23 May 2024 23:36:15 +0800</pubDate>
+      <itunes:duration>2949</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_wDzZAPrjXFVMDTvPtAxXDNpCjTUNWRTykXzmEtTzNBjrSfUwYTkPvkFsR</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/04/27/e80-%e7%ba%bd%e7%ba%a6%e7%88%b5%e5%a3%ab%e5%9c%b0%e5%9b%be-cotton-club/</link>
+      <title><![CDATA[E80: 纽约爵士地图 | Cotton Club]]></title>
+      <description><![CDATA[<p>很难找到另一个像 Cotton Club 这样“拧巴”的地方：它的创始人是一个遭到白人厌恶的黑人，而它后来的运营者是纽约白人黑帮中的狠角色；它最开始营业的时候是专为黑人开设的俱乐部，却在后来成了只允许白人进入的高级场所。它被黑人民权运动家深深诟病，但对于爵士乐来说却又是非常伟大的地方。</p><p></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show：</p><p>[19:05] Adelaide Hall &#8211; Creole Love Call</p><p>[25:25] Cab Calloway &#8211; Minnie the Moocher</p><p>[32:04] Jimmie Lunceford &#8211; I&#8217;m Nuts about Screwy Music</p><p>[36:15] Adelaide Hall &#8211; Ill Wind</p><p>[45:06] Bill Robinson &#8211; Dancers Orgy</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_UtbWnVJLpFjuKgLuwAsXQzSCbpkuRXDuDJJZGSpgYWAQDzLVqtvTKnYqzK-a3.mp3" length="110278080" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_UtbWnVJLpFjuKgLuwAsXQzSCbpkuRXDuDJJZGSpgYWAQDzLVqtvTKnYqzK-a3.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=344]]></guid>
+      <pubDate>Sat, 27 Apr 2024 15:08:29 +0800</pubDate>
+      <itunes:duration>2757</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/04/&#x5C4F;&#x5E55;&#x622A;&#x56FE;-2024-04-27-150601-1024x1024.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ZvQvcfMKWnVsjkLTbEVvxeGbMebCgPdqrNHmNeeWyXaVSRNyvnuwWtrEE</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/03/12/e79-%e5%ae%87%e5%ae%99%e7%9a%84%e6%a0%b7%e8%b2%8c/</link>
+      <title><![CDATA[E79: 宇宙的样貌]]></title>
+      <description><![CDATA[<p>好在，音乐家们从来没有放弃过探索宇宙的样貌。</p><p></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show：</p><p>[00:16] John Coltrane &#8211; The Father And The Son And The Holy Ghost</p><p>[09:07] Coldplay &#8211; Music of the Spheres</p><p>[20:11] In Me Transierunt</p><p>[40:45] Cowboy Bebop &#8211; ELM</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_zyDEsESZbURCXEFBcZzVQHuCynABpYPaxhumVajmjZfmuftejjEnWYdsAm-b8.mp3" length="103645612" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_zyDEsESZbURCXEFBcZzVQHuCynABpYPaxhumVajmjZfmuftejjEnWYdsAm-b8.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=337]]></guid>
+      <pubDate>Tue, 12 Mar 2024 20:40:52 +0800</pubDate>
+      <itunes:duration>2591</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/03/image1-1024x1024.jpeg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_XqymmrnXCFmnkQbaBbKTRreUEeKEnpfNtfVLNAXsQDZDscDtSNfLvQhtP</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/02/28/e78-1935%ef%bc%8c%e5%a0%aa%e8%90%a8%e6%96%af%e5%9f%8e-%e4%b8%ad%e5%9b%bd%e5%8f%a4%e8%91%a3%e4%b8%8e%e7%be%8e%e5%9b%bd%e7%88%b5%e5%a3%ab%e4%b9%90/</link>
+      <title><![CDATA[E78: 1935，堪萨斯城 | 中国古董与美国爵士乐]]></title>
+      <description><![CDATA[<p>历史不是日记。</p><p>历史不会记载每个人每天发生的所有细节，因此我对平行时空的故事特别感兴趣。我觉得那种看似毫不相关却因为某些原因进而有着某些草蛇灰线，伏延千里的联系的那些故事，异常精彩迷人。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show：</p><p>[19:45] Jumpin&#8217; at the Woodside &#8211; Buck Clayton</p><p>[29:25] One O&#8217;Clock Jump &#8211; Count Basie 2925</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_WkNHUBLXtFuRZmULCxedtvmzCytjxXFgzXVXxUGVFgceHMkYkzsPTKyNFV-86.mp3" length="94034975" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_WkNHUBLXtFuRZmULCxedtvmzCytjxXFgzXVXxUGVFgceHMkYkzsPTKyNFV-86.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=332]]></guid>
+      <pubDate>Wed, 28 Feb 2024 17:29:57 +0800</pubDate>
+      <itunes:duration>2351</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_tUppeSGBfvzmtyGLqFcrdqGxXAFyCNfkCYMGTHWaGCusbbRUfVksBtXgP</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/02/16/e77-oscar-peterson-%e6%89%8b%e7%99%96%e5%8d%9a%e7%89%a9%e9%a6%86/</link>
+      <title><![CDATA[E77: Oscar Peterson | 手癖博物馆]]></title>
+      <description><![CDATA[<p>历史上很多爵士乐钢琴大师在弹奏音乐的时候，都会或多或少有一些自己独特的演奏习惯。我管这叫作“手癖”。拥有手癖并不是一件坏事，它对于一个钢琴手来说，就像一个歌手的嗓音一样，独特且有魅力。听得多了有时候甚至可以在聆听一段音乐的时候，根据“手癖”去判断弹奏的大师是哪一位。我曾经梦想找到一个人，可以把各位大师的手癖演绎一遍，后来发现，确实有这样一个人，他将各位大师的手癖了然于胸，因此他也堪称是一位终极大师，他就是Oscar Peterson。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show：</p><p>[00:00] Laura</p><p>[02:42] Boogie Blues Etude</p><p>[17:20] I Only Have Eyes for You</p><p>[21:10] Should I</p><p>[25:16] Blues in the Closet &#8211; Bud Powell</p><p>[36:05] Blues Etude</p><p>[41:59] Night Train</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_JeaBKwbGSjdZKULPwKspxPmEMvTtBypfHUKPVWCRFYVdbTbaECCsDpfgSA-b0.mp3" length="106413547" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_JeaBKwbGSjdZKULPwKspxPmEMvTtBypfHUKPVWCRFYVdbTbaECCsDpfgSA-b0.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=325]]></guid>
+      <pubDate>Fri, 16 Feb 2024 22:29:49 +0800</pubDate>
+      <itunes:duration>2660</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/02/Oscar-1024x1024.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_eDPAerQkwPMfzCanHFXNLVTygFmQXcVBETTXDCZHaTpBcZLWXpEHFvaQk</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2024/01/13/e76-%e7%88%b1%e5%9b%bd%e8%80%85%ef%bc%8c%e6%8b%b3%e5%87%bb%e8%b5%9b%ef%bc%8c%e9%97%ad%e9%97%a8%e7%be%b9%ef%bc%8c%e7%ba%a2%e8%93%9d%e9%93%85-%e7%be%8e%e5%9b%bd%e7%94%b5%e5%8f%b0%e5%8f%b2%e8%af%9d/</link>
+      <title><![CDATA[E76: 爱国者，拳击赛，闭门羹，红蓝铅 | 美国电台史话]]></title>
+      <description><![CDATA[<p>人们在谈论一段音乐的时候，往往会忽略跟这段音乐相关的历史背景。在某种音乐类型最流行的年代里，当时的社会是什么样子的，人们是什么精神面貌，以及科学技术上有哪些突破。在了解爵士乐的路上，我发现美国广播电台的发展，其实跟爵士乐的发展几乎在同一时期。爵士乐极大地丰富了彼时广播电台的节目，而广播又帮助爵士乐扩大了听众的范围。我忽然对美国的电台产生了浓厚的兴趣，想要看看它的历史，以及它跟爵士乐，不得不说的故事。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>Playlist of the Show：</p><p>[26:13] Saturday Night Swing Club &#8211; Dwight&nbsp;Davis</p><p>[33:38] Oh Look at Me Now &#8211; Tommy Dorsey &amp; Frank Sinatra</p><p>[41:43] Sing, Sing, Sing &#8211; Benny Goodman</p><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2024/01/微信图片_20240115001804-493x1024.jpg"></figure>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ejcLeZftVpLKeHDHdtEHWaSEQnRzrzfAMyPZPTAtUDxCsxqGsVhQAtRwGY-59.mp3" length="112485449" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ejcLeZftVpLKeHDHdtEHWaSEQnRzrzfAMyPZPTAtUDxCsxqGsVhQAtRwGY-59.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=315]]></guid>
+      <pubDate>Sat, 13 Jan 2024 15:41:53 +0800</pubDate>
+      <itunes:duration>2812</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2024/01/unnamed-1-1024x1024.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_sZqjsgyTeAxjSbGxmJkAePXsYhcHWJbkbsFrhGWBZzWZEPdQMYLSsThub</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/12/24/e75-%e5%9c%a3%e8%af%9e%e7%89%b9%e8%be%91-%e7%94%b5%e5%8f%b0%e6%85%a2%e6%ad%8c%ef%bc%8c%e5%9c%a3%e8%af%9e%e5%bf%ab%e4%b9%90/</link>
+      <title><![CDATA[E75: 圣诞特辑 | 电台慢歌，圣诞快乐]]></title>
+      <description><![CDATA[<p>2023年就要过去了，好像我身边的大部分人过的都不是很顺利。又到了一年的圣诞节，对于我来说，跟春节要与家人团聚不同，圣诞节更像是一个跟朋友一起过的节日。去年我出了一份圣诞歌单，作为圣诞特辑，受到大家的喜爱。今年仍然想要做一期圣诞特辑，但是不想再重复做一个圣诞歌单。今年的圣诞特辑，我打算用电台放歌的形式，做一个相对私人的2023年的回顾。我想到一些印象很深刻的时刻，以及跟这些时刻相关的音乐。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号 Why for Records，会持续推荐一些我喜欢的爵士乐专辑。第一集已在B站上线，欢迎大家点赞关注 Why for Records 视频号，作为播客伴侣，配合使用。</p><p>[04:02] Say You, Say Me &#8211; Leonel Richie</p><p>[10:27] Peace Piece &#8211; Bill Evans</p><p>[20:40] I&#8217;ll Be There For You &#8211; Postmodern Jukebox</p><p>[26:24] Glass Eye &#8211; Radiohead</p><p>[31:57] Sophisticated Lady &#8211; Thelonious Monk</p><p>[40:41] Belonging &#8211; Keith Jarrett, Jan Garbarek</p><p>[44:04] 港口 &#8211; 陈胤希</p><p>[47:49] Encontros E Despedidas &#8211; Maria Rita</p><p>[55:05] Little Blue &#8211; Jacob Collier</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_FhQTSZCsXAVgBWjTQUWdevhPxmayFxRnwNTkmbbCKZBtzxusEUPWycJFZC-ba.mp3" length="142873171" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_FhQTSZCsXAVgBWjTQUWdevhPxmayFxRnwNTkmbbCKZBtzxusEUPWycJFZC-ba.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=310]]></guid>
+      <pubDate>Sun, 24 Dec 2023 11:56:58 +0800</pubDate>
+      <itunes:duration>3572</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/12/5a3a2451e0b3f-1024x1024.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_eUHsRDeUATVntbDjXUpJQBnQAJtuusjgbFmHHrXsFKTkBkFsZwhTdsNNC</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/12/14/e74-symphony-sid-%e7%88%b5%e5%a3%ab%e6%97%b6%e4%bb%a3%e7%9a%84%e5%a4%a7%e6%95%b0%e6%8d%ae/</link>
+      <title><![CDATA[E74: Symphony Sid | 爵士时代的大数据]]></title>
+      <description><![CDATA[<p>如今这样一个网络时代，我们经常听到人们说：如果有幸被“大数据”选中，似乎“命运的齿轮就会开始转动”。这个定律，在爵士时代也是有用的。只不过在爵士时代，替代大数据的角色的，是一个个具体的人，他们就是电台中给大家推荐音乐的电台DJ。在许许多多的电台DJ中， 有一位堪称是最有名的，也是最重要的，那就是这一期我们聊的，Symphony Sid。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Walkin&#8217;s with Sid &#8211; Arnett Cobb</p><p>[03:53] Jumpin&#8217; with Symphony Sid &#8211; Lester Young</p><p>[14:33] After Hour &#8211; Erskine Hawkins</p><p>[19:48] A Night in Tunisia &#8211; Charlie Parker</p><p>[26:41] Walkin&#8217; &#8211; Lee Morgan</p><p>[29:57] After School Swing Session &#8211; Louis Jordan</p><p>[38:37] Ornithology &#8211; Charlie Parker w/ Symphony Sid Announcement</p><p>[45:22] Symphony in Sid &#8211; Illinois Jacquet</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_UQydQCGAVUgZApeyZBqJEVJhTwQRXQLGLkEjQfNHyszVRJhPGUCPwueRaU-f7.mp3" length="116333808" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_UQydQCGAVUgZApeyZBqJEVJhTwQRXQLGLkEjQfNHyszVRJhPGUCPwueRaU-f7.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=302]]></guid>
+      <pubDate>Thu, 14 Dec 2023 22:54:45 +0800</pubDate>
+      <itunes:duration>2908</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/12/index-1-1024x1024.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_JGzEVszvXjCctZsVUxzpJwernPydLhrRdDrZzKBzCnzPUeVbseuKmCLvJ</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/11/18/e73-%e4%b8%a4%e8%89%98%e8%88%b9%ef%bc%8c%e4%b8%8e%e6%97%a5%e6%9c%ac%e7%88%b5%e5%a3%ab%e4%b9%90/</link>
+      <title><![CDATA[E73: 两艘船，与日本爵士乐]]></title>
+      <description><![CDATA[<p>自从开始这档关于爵士乐的节目，就一直想做一些跟日本爵士有关的内容。但因为我不懂日语，不能阅读第一手的信息，而且国内日爵的专家很多，我不敢献丑，所以一直就搁置了。直到最近，在整理其他内容的时候，偶然的发现了一条暗线，通过两艘船，将日本爵士乐联系了起来。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Honey Moon &#8211; Haruomi Hosono</p><p>[10:19] 东方舞曲 &#8211; Hatano Orchestra</p><p>[17:12] Five Pennies &#8211; Fumio Nanri</p><p>[33:43] Behind the Mask &#8211; YMO</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_skxdVtCZQprKQNZGbwDJdxHTwLwYwjhDzGYcJrkWSyhFJVbypjAHRxrHPn-3e.mp3" length="89588600" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_skxdVtCZQprKQNZGbwDJdxHTwLwYwjhDzGYcJrkWSyhFJVbypjAHRxrHPn-3e.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=293]]></guid>
+      <pubDate>Sat, 18 Nov 2023 16:27:37 +0800</pubDate>
+      <itunes:duration>2240</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/11/220px-Nanri_Fumio.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_qPtsjFBtyAeujuYtyzrLdNjFnBcKTLLcsFvCXkMNBWNnEBBKQmSHzXnxR</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/10/31/e72-sam-cooke-%e4%b8%8a%e5%b8%9d%e7%a6%8f%e9%9f%b3%e5%92%8c%e4%b8%96%e4%bf%97%e7%81%b5%e9%ad%82/</link>
+      <title><![CDATA[E72: Sam Cooke | 上帝福音和世俗灵魂]]></title>
+      <description><![CDATA[<p>因为工作原因，节目耽误了一段时间，但是我们又回来了！并且会开启一段密集更新的阶段，希望大家继续保持对我们的关注和支持 ：）</p><p>今天这档节目，我们回到灵魂乐。说到灵魂乐，你第一个想到的也许是我们第 55 期聊过的Ray Charles。然而真正的 King of Soul，却是 Sam Cooke。Sam Cooke 对于音乐的贡献，并不仅仅局限于灵魂乐。他跨出了在那个年代看起来非常艰难的一步，而这一步彻底的改变了流行音乐的面貌。然而一场离奇的死亡，让 Sam Cooke 彻底停留在了三十三岁。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Sam Cooke &#8211; Cupid</p><p>[07:52] The Dixie Hummingbirds &#8211; If You See My Savior</p><p>[13:32] The Soul Stirrers &#8211; Jesus Gave me Water</p><p>[20:10] Sam Cooke &#8211; You Send Me</p><p>[41:32] Sam Cooke &#8211; Wonderful World</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_sGsWwQXqkgmFEzqcAFMrpwDvsWZpqWeTJMWJymLsQuwkFGxhvzUMMFvTaC-ed.mp3" length="104923522" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_sGsWwQXqkgmFEzqcAFMrpwDvsWZpqWeTJMWJymLsQuwkFGxhvzUMMFvTaC-ed.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=286]]></guid>
+      <pubDate>Tue, 31 Oct 2023 21:03:19 +0800</pubDate>
+      <itunes:duration>2623</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/10/Sam-on-couch-c-Abkco-Photo-by-Wally-Seawell_BW_c.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_YXTtgFHZPMCGWZfYjPUEgxKKeyfFwUyxRbCgAtCPsRfZaxGczXhbtEpCk</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/09/24/e71-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e4%ba%ac%e9%83%bd%e4%b8%80%e6%97%a5/</link>
+      <title><![CDATA[E71: 凌晨四点 | 京都一日]]></title>
+      <description><![CDATA[<p>从九月开始，我的生活进入了一个旅行的状态。趁着 Tutti 换工作的空档，我们开始了旅行的第一站，日本。我也是第一次来到日本，拜访了京都。不过因为时间的关系，我们只在京都呆了一整天，但这不妨碍我打开自己的感受力，并用一种对于我自己失传已久的方式——旅行日记，来记录这次的所见所想。当然，虽然是一期以游记为主的节目，但音乐还是少不了的。</p><p><strong>Why for Jazz 爵士乐人物立牌套组现已开售🎹</strong></p><p>终于可以隆重推出与@NUTS同好相谈所 合作的一个爵士乐周边套装！黑胶唱片的尺寸包装，内含有三组立牌和一张手绘地图，包括“Why for Jazz”播客相关的文字版音乐分享。预定只需148！超过300份，前300名可解锁，播客logo纸袋！</p><p>【淘宝】https://m.tb.cn/h.53sWvGF?tk=f3rgdy5z6z3</p><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/1.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/2.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/6.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/8.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/7.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/9.jpg"></figure><p></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考往期播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_RGMkMXVzRFTbdbynKPGNQetBdtspfPPEszkraapgYZSMCYSgmSbNfPEFgp-a4.mp3" length="116841628" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_RGMkMXVzRFTbdbynKPGNQetBdtspfPPEszkraapgYZSMCYSgmSbNfPEFgp-a4.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=281]]></guid>
+      <pubDate>Sun, 24 Sep 2023 17:59:02 +0800</pubDate>
+      <itunes:duration>2921</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/&#x65E0;&#x6807;&#x9898;.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_zqRSzZqgQPUvzXYxZjvthpQHbUzuPKVNyqRdNvWJfQqPpnRVtHfEvZjqE</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/09/07/e70-frank-sinatra-%e7%88%b5%e5%a3%ab%e6%ad%8c%e7%a5%9e%e8%bf%98%e6%98%af%e9%bb%91%e5%b8%ae%e5%a4%a7%e4%bd%ac%ef%bc%9f/</link>
+      <title><![CDATA[E70: Frank Sinatra | 爵士歌神还是黑帮大佬？]]></title>
+      <description><![CDATA[<p>Frank Sinatra 也许是历史上最成功的爵士乐男歌手。然而在成为艺术家的同时，他的整个演艺生涯一直饱受着与美国意大利裔黑帮有染的困扰。虽然他自己极力撇清自己的关系，希望大家不要因为自己的姓是意大利的姓，就随便散播谣言。然而事实上，有许多人在不同时期都看到 Frank Sinatra 与黑帮的大佬勾肩搭背，这甚至让他受到了美国扫黑除恶委员会的调查。</p><p>这一期节目，我们可能听起来有一点小报八卦的味道，咱们来聊一聊 Frank Sinatra，以及他与黑帮有关的故事。</p><p><strong>Why for Jazz 爵士乐人物立牌套组预售开启🎹</strong></p><p>终于可以隆重推出与@NUTS同好相谈所 合作的一个爵士乐周边套装！黑胶唱片的尺寸包装，内含有三组立牌和一张手绘地图，包括“Why for Jazz”播客相关的文字版音乐分享。预定只需148！超过300份，前300名可解锁，播客logo纸袋！上架时间在9月8日晚8点🕗</p><p>【淘宝】https://m.tb.cn/h.53sWvGF?tk=f3rgdy5z6z3</p><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/1.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/2.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/6.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/8.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/7.jpg"></figure><figure><img src="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/9.jpg"></figure><p></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_VDvRUWtuqFAURThNWhvBpKjqdGzukhXZgwcsddWusGrTCFxdyHFmpSPWhY-fd.mp3" length="134113792" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_VDvRUWtuqFAURThNWhvBpKjqdGzukhXZgwcsddWusGrTCFxdyHFmpSPWhY-fd.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=258]]></guid>
+      <pubDate>Thu, 07 Sep 2023 19:12:03 +0800</pubDate>
+      <itunes:duration>3353</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/09/&#x6355;&#x83B7;-1.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_FTXaNjQXQanrLSwKcSQTkAJKVvcvNWzLCWdwzHZYsQerVasGWkFwsdqjK</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/08/17/e69-bill-evans-%e4%b8%80%e9%a6%96%e5%ad%98%e5%9c%a8%e4%b8%bb%e4%b9%89%e7%9a%84%e6%8c%bd%e6%ad%8c/</link>
+      <title><![CDATA[E69: Bill Evans | 一首存在主义的挽歌]]></title>
+      <description><![CDATA[<p>这期节目，源自我一次小题大做的执拗。</p><p>我们常说，好的艺术作品是可以穿越时空的。我对这种说法存疑。这其中的问题在于，我们人类可以感知到的感受，是非常细腻的。很多的优秀的作品，无论是文学还是音乐，最初所要记录的便是这种细腻的感情。然而在作品穿越时空的过程中，由于后人的懒惰，加上出于好为人师或者班门弄斧而乐此不疲的对作品的总结和归纳，最终让一些很大，很空泛的词汇成为了很多作品的形容词。而这些形容词，却又成为了曲解作品原始创作动力的成本最低廉的手段。</p><p>我对这种曲解一开始是嗤之以鼻的，而后变得担心，但最后释怀。因为无论何种曲解，似乎都带有着某种时代属性，而这种时代属性，是每个曲解者对于这个时代本身，所做的一种注脚。</p><p>Why for Jazz 周边文创锐意策划中，首批音乐家立牌计划九月预售，先睹为快：</p><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2023/08/微信图片_20230827145804-2-1024x1024.jpg"></figure><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2023/08/微信图片_20230827145834-1-1024x1024.jpg"></figure><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2023/08/微信图片_20230827145843-1-1024x1024.jpg"></figure><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2023/08/微信图片_20230827145847-1-1024x1024.jpg"></figure><figure><img src="https://hosting.wavpub.cn/whyforjazz/wp-content/uploads/sites/25/2023/08/微信图片_20230827145851-1-1024x1024.jpg"></figure><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_GcaBsVeRhSKsJcSngTVxTRGnRKSZSYJrGyhPVaAXejBWpmUgCKwKThQtGU-83.mp3" length="105484632" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_GcaBsVeRhSKsJcSngTVxTRGnRKSZSYJrGyhPVaAXejBWpmUgCKwKThQtGU-83.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=234]]></guid>
+      <pubDate>Thu, 17 Aug 2023 20:00:00 +0800</pubDate>
+      <itunes:duration>2637</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/08/everybody-digs-bill-evans-uk-riverside-cover-1920px-ljc-1.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_YCujXVujKMUfBktwxNfGwKMaZrKNfZFJXsJkfzkwndcpDhAcrCHxUthdQ</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/08/02/e68-%e8%ae%a9%e6%88%91%e4%b8%ba%e4%bd%a0%e5%94%b1%e9%a6%96%e6%ad%8c/</link>
+      <title><![CDATA[E68: Chet Baker | 那个会唱歌的小号手]]></title>
+      <description><![CDATA[<p>欢迎收听 Why for Jazz。Why for Jazz 是 Y4 旗下一档关于爵士乐的音频播客及视频号。我们认为爵士乐不应该只是一种音乐类型，它更为当代都市生活提供了一种可以参考的可能性。我们的口号是：即兴即合理。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p>文中提到的音乐：</p><p>I&nbsp;Fall&nbsp;in&nbsp;Love&nbsp;So&nbsp;Easily</p><p>Come&nbsp;Back&nbsp;to&nbsp;Sorrento</p><p>Line&nbsp;for&nbsp;Lyons</p><p>My&nbsp;Funny&nbsp;Valentain</p><p>Portrait&nbsp;in&nbsp;Black&nbsp;and&nbsp;White</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_sPPxRFqZqyYuLDQrFjRYhTBtSnAnFjbEgfpMWZFTjUsSLrWjgVNBNegpNS-e1.mp3" length="91713922" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_sPPxRFqZqyYuLDQrFjRYhTBtSnAnFjbEgfpMWZFTjUsSLrWjgVNBNegpNS-e1.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=223]]></guid>
+      <pubDate>Wed, 02 Aug 2023 21:16:46 +0800</pubDate>
+      <itunes:duration>2293</itunes:duration>
+      <itunes:image href="https://hosting.wavpub.cn/whyforjazz/licensed-image"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_KKxLsKRbPVJhuPScsysXqKWJqTJnYyWUgRxCDesZCkSfqvReyJSafNgUF</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/07/16/e67-norman-granz-%e7%88%b5%e5%a3%ab%e4%b9%90%e7%ac%ac%e4%b8%80%e6%93%8d%e7%9b%98%e6%89%8b/</link>
+      <title><![CDATA[E67: Norman Granz | 爵士乐第一操盘手]]></title>
+      <description><![CDATA[<p>如果你熟悉爵士乐的历史，就会发现有一个人的名字反复出现。然而这个人却并不会演唱或者演奏一个音符，他就是 Norman Granz。虽然如此，我们仍然可以肯定的说，如果没有Norman Granz，爵士乐应该不会有后来如此辉煌的发展。虽然他不是一个音乐家，但他却是一个优秀的操盘手，不仅推广了爵士乐，甚至还改变了我们后来听音乐的方式。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Norman Granz&#8217; Jam Session &#8211; Jam Blues</p><p>[03:03] Coleman Hawkins-Body and Soul</p><p>[10:23] JATP &#8211; Lester Leaps In</p><p>[17:00] Ella Fitzgerald &#8211; Flying Home</p><p>[20:50] Oscar Peterson &#8211; I Only Have Eyes For You</p><p>[28:25] Ella Fitzgerald &#8211; Let&#8217;s Do It (Let&#8217;s Fall in Love)</p><p>[39:15] Ella Fitzgerald &#8211; In A Sentimental Mood</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_BPMPUmSvRKXLybpKPWZDsgaJBvMTRumGKYHXWvdUPCJvkTnzNUyjKVHRZW-76.mp3" length="100915294" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_BPMPUmSvRKXLybpKPWZDsgaJBvMTRumGKYHXWvdUPCJvkTnzNUyjKVHRZW-76.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=219]]></guid>
+      <pubDate>Sun, 16 Jul 2023 19:46:07 +0800</pubDate>
+      <itunes:duration>2523</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/07/Norman_Granz_ca._Nov._1947.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_kJnTCZNQbCpbTfyssLDhsJzdjcLxCsHgPLWLfpdGZjgjxVzmwyRZEhNLp</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/07/02/e66-charles-mingus-%e6%b0%b8%e8%bf%9c%e6%84%a4%e6%80%92%e7%9a%84%e8%b4%9d%e6%96%af%e6%89%8b/</link>
+      <title><![CDATA[E66: Charles Mingus | 永远愤怒的贝斯手]]></title>
+      <description><![CDATA[<p>提到 Charles Mingus，你可能听说他是一个传奇的贝斯手，你可能听说他是一个热爱中餐的美食家，你也可能听说他是一个会因为失恋而朝自己的脚开枪的疯子。有人管 Charles Mingus 叫 The Angry Man of Jazz，足以见得他的鬼脾气。在他短暂的五十多年的人生中，他与三代爵士乐大师同台演绎，却也因为自己的鲁莽，而被自己的偶像开除。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Haitian Fight Song</p><p>[07:16] Prayer for Passive Resistence</p><p>[09:52] Take The A Train + Exactly Like You</p><p>[23:49] Pithecanthropus Erectus</p><p>[30:21] Goodbye Pork Pie Hat</p><p>[37:53] Old Portrait</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_BSevcNKDxpGjGVmYwFvhzegkWfWjeZHBqWSTuNuTZbukTvGnwByNgWbUcU-c5.mp3" length="100650935" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_BSevcNKDxpGjGVmYwFvhzegkWfWjeZHBqWSTuNuTZbukTvGnwByNgWbUcU-c5.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=212]]></guid>
+      <pubDate>Sun, 02 Jul 2023 21:21:11 +0800</pubDate>
+      <itunes:duration>2516</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/07/800px-Charles_Mingus_1976_cropped.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_zCDPcfVhshfpPaKfHTxNtXSVvUNSCcksxMUcuXNnEeYcTfcvRhFqNEzgU</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/06/12/e65-%e5%8f%a4%e5%b7%b4%e9%9f%b3%e4%b9%90-%e5%a5%bd%e6%99%af%e4%b8%94%e9%95%bf/</link>
+      <title><![CDATA[E65: 古巴音乐 | 好景且长]]></title>
+      <description><![CDATA[<p>这期节目，我想用一种大费周章的方式，跟你们讲述一个关于古巴音乐的故事。</p><p>我们每个人思考的方式和关注的事情，都离不开我们所处世界的主流文化， 而文化的外显，是语言。我自己使用普通话，对英文也略知一二，因此我对全部世界的了解，都建立在普通话和英文带给我的信息洪流之上。这似乎看起来已经足够了，但我们仍然不可避免地忽略了其他那些并不跟我们分享相同主流文化的世界的其他角落。全球化带来的所谓人类文明的大一统，似乎只同化了那些可以被同化的内容，而剩下的绝大部分，藏在语言和文化的密码下面，如果不是某些特殊的契机，我们也许永远都不得而知。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>节目中人物关系：</strong></p><p>1950年代最伟大的三位古巴音乐家：</p><ul><li>Pacho Alonso （成立 Los Bocucos 大嘴巴乐团，Ibrahim Ferrer 担任伴唱，在演出中遇到了艾达四重唱 Cuarteto d&#8217;Aida 中的 Omara Portuondo）</li><li>Arsenio Rodríguez （找到了钢琴手 Ruban Gonzalez，乐队的主唱 Marcos 是 Ruban 的好朋友，Marcos 的儿子后来也是音乐家，叫 Juan de Marcos）</li><li>Campay Segundo</li></ul><p>1990年代发现古巴音乐的两位美国音乐家：Ry Cooder 和 Nick Gold。帮助他们找到古巴音乐家的人是 Juan de Marcos，Arsenio Rodríguez 乐队主唱的儿子。</p><p><strong>Playlist of the Show:</strong></p><p>[06:49] Pacho Alonso &#8211; En Casa De Pedro El Cojo</p><p>[08:56] Ibrahim Ferrer &#8211; El Platanal de Bartolo</p><p>[10:52] Los Bocucos ft. Cuarteto d&#8217;Aida (Omara Portuondo) &#8211; El Bombón De Elena</p><p>[15:30] Arsenio Rodríguez &#8211; Rumba Guajira</p><p>[18:45] Dundunbanza (Ruban Gonzales 钢琴 &amp; Marcos 主唱)</p><p>[21:47] Los compadres &#8211; Guantanamera</p><p>[25:17] Campay Segundo &#8211; Huellas Del Pasado</p><p>[28:45] Campay Segundo &#8211; Chan Chan</p><p>[40:47] Ibrahim Ferrer &#8211; Dos Gardenias</p><p>[43:09] Ibrahim Ferrer ft. Omara Portuondo &#8211; Silencio</p><p>[50:51] Buena Vista Social Club</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ntmCnwLHPqcUuKDHSeufDUrzQyFPvTCUhQTkyJqKLaDbwfdKnWKccKrtjU-dc.mp3" length="53492745" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ntmCnwLHPqcUuKDHSeufDUrzQyFPvTCUhQTkyJqKLaDbwfdKnWKccKrtjU-dc.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=202]]></guid>
+      <pubDate>Mon, 12 Jun 2023 23:22:58 +0800</pubDate>
+      <itunes:duration>3343</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/06/Buenavistasocialclubalbumcover-2.jpeg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_knzLAVTBkaWyamrLBuUpZmKZuuCNAEbtbtcVbasDwYwbhwNDLRxTvvbUV</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/06/04/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-%e8%b5%b5%e5%8f%af-%e6%88%91%e6%83%b3%e8%ae%a9%e5%85%a8%e5%9b%bd%e7%9a%84%e8%80%81%e7%99%be%e5%a7%93%e9%83%bd%e5%96%9c%e6%ac%a2%e7%88%b5%e5%a3%ab%e4%b9%90/</link>
+      <title><![CDATA[即兴访谈 | 赵可 – 我想让全国的老百姓都喜欢爵士乐]]></title>
+      <description><![CDATA[<p>2012年那会儿，我已经对爵士乐稍有了解。在聆听世界经典的同时，我好奇中国的爵士乐是怎样的样貌。在我苦苦搜寻的时候，一档国民综艺《中国好声音》给所有人推出了一个爵士中国声音，那就是赵可。有意思的是，在国人刚刚通过综艺了解赵可的爵士乐的时候，他在国际上已经有了很高的知名度，并且是第一个在蒙特利尔国际爵士音乐节上亮相的中国音乐家。</p><p>今年年初，我跟赵可老师在我的小店相识，那时候他正准备启程开始全国巡演，我们便相约等他演出归来录一期节目。结果时间不凑巧，当我们再度回顾的时候，赵可老师已经回到了阿姆斯特丹的家中。我们因此用了远程连线的方式录制了这期节目。在节目中，我们谈到了很多关于爵士乐的内容，也有爵士乐之外，关于赵可老师自己的故事。对谈的过程中，让我印象最深刻的，是赵可老师谦逊，坦然，和真诚。</p><p>巴黎的媒体曾经评价赵可的声音，是“来自中国的男声Billie Holiday”，我觉得没有比这个更浪漫和贴切的比喻了。然而除了歌唱本身，我也了解到赵可关于爵士乐和中国爵士乐更宏大的愿望。</p><p><strong>嘉宾：赵可 Coco</strong></p><p>爵士乐歌唱家，词曲作家，诗人</p><p><strong>Shownotes:</strong></p><p>[00:01:21] 赵可学习音乐的经历</p><p>[[00:06:14] 如何开始接触爵士乐</p><p>[00:13:27] 爵士乐为何让人着迷</p><p>[00:22:48] 回忆《中国好声音》</p><p>[00:31:18] 即兴演出居然被轰下台</p><p>[00:37:47] 唱歌说到底就是说故事</p><p>[00:42:36] 第一个参加蒙特利尔爵士节的中国人</p><p>[00:48:38] 如何思考“中国爵士乐”</p><p>[00:53:07] 专辑《一只鸟》</p><p>[00:56:59] 来自Betty Carter的忠告</p><p>[01:03:51] KTV麦霸可以唱爵士乐吗？</p><p>[01:08:31] 关于音乐以外的艺术项目</p><p><strong>Playlist of the Show:</strong></p><p>[00:00:00] 月圆花好</p><p>[00:23:30] 我要你的爱</p><p>[00:53:45] 阿青哥哥（一只鸟）</p><p>[00:58:43] Mean to Me (Betty Carter)</p><p>[01:15:40] 梦境</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_uJWhLgXhUGbPwPLhKrSnRJwSrGXHyPeygqkXKGSjVRWpVQVghBTBapfeuc-d1.mp3" length="74165786" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_uJWhLgXhUGbPwPLhKrSnRJwSrGXHyPeygqkXKGSjVRWpVQVghBTBapfeuc-d1.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=197]]></guid>
+      <pubDate>Sun, 04 Jun 2023 13:09:07 +0800</pubDate>
+      <itunes:duration>4635</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/06/500x500.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_GgmmHyVzmhdwpCfZWRdzGYMhYWhUMFmzKGfJNGPSRjExSXSLDcYhVnqSj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/05/24/e64-%e7%ba%bd%e7%ba%a6%e7%88%b5%e5%a3%ab%e5%9c%b0%e5%9b%be-mintons-playhouse/</link>
+      <title><![CDATA[E64: 纽约爵士地图 | Minton’s Playhouse]]></title>
+      <description><![CDATA[<p>1930年代开业的 Minton&#8217;s Playhouse（明顿音乐厅）也许是纽约众多爵士乐俱乐部当中最特殊的一个。它的老板在音乐圈有着很深厚的背景，而它又是一个真正属于非洲裔美国音乐家的演出场所。在很长的一段时间里，Minton&#8217;s Playhouse 代表了爵士乐最前沿的潮流，然而这股潮流，却也给爵士乐带来了不小的伤害。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Sweet Georgia Brown (after hours in Harlem) &#8211; Hot Lips Page ft. Thelonious Monk</p><p>[09:13] Stella by Starlight &#8211; Don Byas</p><p>[14:47] Swing to Bop &#8211; Charlie Christian</p><p>[21:35] Koko &#8211; Charlie Parker &amp; Dizzy Gillespie</p><p>[30:25] Hot House &#8211; The Quintet,《Jazz at the Massey Hall》</p><p>[35:57] Blues Etude &#8211; 《Midnight at Minton&#8217;s》</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ywUDMMUmMbnRSZheHYTeHrxPEwGtQfAFuawurmcGZPmwsKsbxhuvvXVdkC-23.mp3" length="96186086" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ywUDMMUmMbnRSZheHYTeHrxPEwGtQfAFuawurmcGZPmwsKsbxhuvvXVdkC-23.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=184]]></guid>
+      <pubDate>Wed, 24 May 2023 23:09:21 +0800</pubDate>
+      <itunes:duration>2405</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/05/410192_236b28b9d23f4447bc7cb99a8dd5822emv2-1.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_yWUmUHCdXMkLgpxmcenfhxAJbRwdPpSjHuTKgkVxQwdkndyEMyzKFNYBL</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/05/14/e63-joe-pass-%e4%b8%80%e6%ac%a1%e9%87%8d%e6%96%b0%e9%80%89%e6%8b%a9%e7%9a%84%e6%9c%ba%e4%bc%9a/</link>
+      <title><![CDATA[E63: Joe Pass | 一次重新选择的机会]]></title>
+      <description><![CDATA[<p>我大学的时候，曾经在英国的一家二手唱片店，淘到一张 Joe Pass 的专辑《Virtuoso》。在所有爵士乐独奏的场景中，一个人，一把吉他是我觉得非常有魅力的一种。在所有的一人一吉他的配置中，《Virtuoso》是其中最精彩的一张。Joe Pass 有着极高的天赋，他差点在早年毁掉自己的天赋，而后悬崖勒马，最终成为一代爵士吉他大师。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>如果想参考本集播客的文字版，请移步我的小报童：<a href="https://xiaobot.net/p/Y4JZ">https://xiaobot.net/p/Y4JZ</a></p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] My Romance</p><p>[07:40] C.E.D &#8211; 《Sounds of Synanon》</p><p>[13:13] Django &#8211; 《For Django》</p><p>[20:02] Blues for Alican &#8211; 《Virtuoso》</p><p>[26:55] Bluesette (ft. Ella Fitzgerald)</p><p>[32:40] Blues Etude &#8211; 《The Trio》</p><p>[38:51] I Thought About You &#8211; 《Joe Pass &amp; Co. Live at Yoshi&#8217;s》</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_WrEvhrGwyBNMgBxfbcRsVGupzYapatjJyRXeytuUyfHCBrcEaLLuGaGYkM-cc.mp3" length="103796077" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_WrEvhrGwyBNMgBxfbcRsVGupzYapatjJyRXeytuUyfHCBrcEaLLuGaGYkM-cc.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=177]]></guid>
+      <pubDate>Sun, 14 May 2023 22:05:46 +0800</pubDate>
+      <itunes:duration>2595</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/05/Joe_Pass_jazz.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ktxVjJMpPHRvGsUSVrqqkndmTDeDYkHUWJWQaTNdCZBxUpmQZmfkSqCrT</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/05/02/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-8090-%e6%9c%89%e9%99%90%e5%85%ac%e5%8f%b8-%e5%8d%8e%e8%af%ad%e6%b5%81%e8%a1%8c%e4%b8%ad%e7%9a%84%e7%88%b5%e5%a3%ab%e4%b9%90%e6%bc%ab%e8%b0%88/</link>
+      <title><![CDATA[即兴访谈 | 8090 有限公司 – 华语流行中的爵士乐漫谈]]></title>
+      <description><![CDATA[<p>明天就是五一假期返程的日子了，我仿佛能感受到大家从疲惫的旅行中解脱出来那激动的心情。在这种心情下，无论聊哪位爵士乐大师都显得有些唐突，所以这一期我跟《<a href="https://www.xiaoyuzhoufm.com/podcast/5e425da0418a84a0469876d5">8090有限公司</a>》的車二文老师一起聊聊华语流行中的爵士乐。不过之所以叫“漫谈”，是因为这一期我俩都很兴奋，所以聊得比较散，但我觉得正好适合大家返程的漫漫长路。换句话说，你在路上听着听着睡着了，半小时之后再醒来也完全不耽误。</p><p>很显然，这是一期（蹭）串（流）台（量）节目。毕竟，我太太 Tutti 的播放器中，《8090有限公司》的总播放时长远远超过了《Why for Jazz》：）</p><p>最后，希望华语流行乐的乐迷们都能喜欢爵士乐！</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>黄宣 &amp; 范晓萱 &#8211; 独上C楼</p><p>Amy Winehouse &#8211; Take the Box</p><p>Lou Rawls &#8211; Time Will Take Care of Everything</p><p>范晓萱 &#8211; 如果我先死了怎么办</p><p>Ella Fitzgerald &#8211; All of Me</p><p>陈胤希 &#8211; 港口</p><p>莫文蔚 &#8211; 爱我的请举手</p><p>谢安琪 &#8211; 开卷快乐</p><p>张学友 &#8211; Double Trouble</p><p>赵可 &#8211; 花好月圆</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_SXNJpTsPDDDbWfgLSEAnrCBNWPpcWZWewpFaWuSapVLjEjegDcduQuNqML-87.mp3" length="141407773" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_SXNJpTsPDDDbWfgLSEAnrCBNWPpcWZWewpFaWuSapVLjEjegDcduQuNqML-87.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=165]]></guid>
+      <pubDate>Tue, 02 May 2023 22:14:22 +0800</pubDate>
+      <itunes:duration>5891</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/05/&#x6355;&#x83B7;.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_EUUvAwUEACEEJSCEQaeaLABacdGjvpwmpGWLyMkBTFPcsAzCXdRJxAamS</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/04/20/e62-billie-holiday-%e9%9b%a8%e4%b8%ad%e7%9a%84%e6%af%94%e8%8e%89%e5%93%88%e4%b9%90%e9%bb%9b/</link>
+      <title><![CDATA[E62: Billie Holiday | 雨中的比莉哈乐黛]]></title>
+      <description><![CDATA[<p>我大概在十年前读过一篇村上春树的文章，名字叫《雨中的比莉哈乐黛》，写了一个关于爵士乐，美国大兵，日本女人和他的酒吧的故事。Billie Holiday 从那个时候开始，对于我，便成为了阴雨绵绵的日子，喝着威士忌，同时品味苦涩与快乐的代名词。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] God Bless the Child</p><p>[05:59] West End Blues &#8211; Louis Armstrong</p><p>[11:47] What a Little Moonlight Can Do</p><p>[28:31] Strange Fruit</p><p>[35:08] Lover Man</p><p>[51:04] Gloomy Sunday</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rTyYvmxzpQAYqRCGLgympsXAJbwqRSTeEUYdnKRqzQJLfbxPjKeuYeRNRg-5a.mp3" length="130315604" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rTyYvmxzpQAYqRCGLgympsXAJbwqRSTeEUYdnKRqzQJLfbxPjKeuYeRNRg-5a.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=156]]></guid>
+      <pubDate>Thu, 20 Apr 2023 15:02:11 +0800</pubDate>
+      <itunes:duration>3258</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/04/&#x5C4F;&#x5E55;&#x622A;&#x56FE;-2023-04-20-143604-1.png"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_LVEhCNuzPeFmPyuCpTDCpfwnEfEjjzyjZXHqzUcskvWUBNDFVUkydJUtj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/03/29/e61-stan-getz-%e4%b8%80%e4%b8%aa%e6%95%85%e4%ba%8b%e7%9a%84%e4%b8%a4%e4%b8%aa%e7%89%88%e6%9c%ac/</link>
+      <title><![CDATA[E61: Stan Getz | 一个故事的两个版本]]></title>
+      <description><![CDATA[<p>听过 Stan Getz 演奏的人无不被他那浪漫的，细腻的萨克斯演奏风格所吸引。的确，从各方面讲，Stan Getz 都是爵士乐历史上最重要的萨克斯演奏家。尤其是他对于 Bossa Nova 这种音乐类型在美国的流行起到了至关重要的作用。那首 The Girl from Ipanema 便是出自他跟巴西音乐大师 Joao Gilberto 的著名专辑当中。然而透过音乐本身，当我们去看 Stan Getz 的时候，还听到了另一个版本的故事。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><strong>Playlist of the Show:</strong></p><p>[00:00] Samba Dees Days</p><p>[07:44] Early Autumn</p><p>[13:21] We (My Honey and Me)</p><p>[22:32] I Can&#8217;t Get Started</p><p>[31:45] The Girl From Ipanema</p><p>[41:35] People Time</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ZZhcgmsUxLcTADWPDXngFrXGhqzgPbsDWRyYeTcgnbfnSUcUCfUpeSkVSv-28.mp3" length="114351653" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ZZhcgmsUxLcTADWPDXngFrXGhqzgPbsDWRyYeTcgnbfnSUcUCfUpeSkVSv-28.mp3"/>
+      <guid><![CDATA[https://hosting.wavpub.cn/whyforjazz/?p=145]]></guid>
+      <pubDate>Wed, 29 Mar 2023 16:12:22 +0800</pubDate>
+      <itunes:duration>2859</itunes:duration>
+      <itunes:image href="https://cdn2.wavpub.com/hosting.wavpub.cn/wp-content/uploads/sites/25/2023/03/stangetz-555-1-300x300.jpg"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_SJasfnhxcBZsLHPLTsmECFAkJDgNRxbsmfecJuENgRXEeSGTRSRzWzavr</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/03/05/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-%e9%bb%84%e5%81%a5%e6%80%a1-%e9%9f%b3%e4%b9%90%e7%9a%84%e5%93%81%e5%91%b3%e4%b9%9f%e6%98%af%e9%9f%b3%e4%b9%90%e7%9a%84%e8%ae%b0%e5%bf%86/</link>
+      <title><![CDATA[即兴访谈 | 黄健怡 – 音乐的品味也是音乐的记忆]]></title>
+      <description><![CDATA[<p>因为黄健怡是深度参与上海乃至中国早期爵士乐的音乐家，这让我对黄老师的经历十分感兴趣。在早春的一天，我约了黄老师在他家录了这期节目。谁知我们开心的聊了一个小时才发现设备故障，没录上音。我懊恼至极，然而黄健怡老师嘿嘿一笑，开了一瓶酒，说不要紧，我们再聊一会，于是就有了今天的这期节目。第二次聊天的时间比第一次更长，我们差点聊到午夜。回来剪辑的时候我曾经想舍弃一部分内容，把总时长控制在一个小时左右。但是回听完我们的聊天，我发现我并不舍得剪掉任何一段内容。因为很多东西看似是闲聊，如果许多年之后，真的有人对这段时间中国的爵士乐历史感兴趣，就像我翻回去寻找1930年代上海爵士乐的蛛丝马迹一样，这一期的每一句话，或许都能为将来提供一个答案。</p><p><a href="https://mp.weixin.qq.com/s/ejbWAZt-YhHLi2BCRDtKfQ">三月十日黄健怡新专辑线下首演</a></p><p><a href="https://new.m.taobao.com/detail.htm?ut_sk=1.XiGFRW8rpHQDADsPowgpM5hZ_21380790_1677494897536.Copy.ShareGlobalNavigation_1&amp;id=705279487089&amp;sourceType=item&amp;suid=FB4F5251-9E54-486F-9C4D-2019CCEB703B&amp;un=d2d88fce2167a7844b68d5f77a161062&amp;share_crt_v=1&amp;un_site=0&amp;spm=a2159r.13376460.0.0&amp;sp_abtk=gray_ShareGlobalNavigation_1_code_simpleios2&amp;tbSocialPopKey=shareItem&amp;sp_tk=dkF2WGRpZHNNbnM%3D&amp;bc_fl_src=share-104944469588475-2-1&amp;cpp=1&amp;shareurl=true&amp;short_name=h.UoCr2F5&amp;bxsign=scdzdk4ZVSP46bBUI6G-eqkQykkmoLxApitODw8AaNVxRDV4T4XbWIPRJW4xaomykBI2DbUm6YFPWQd_HlXhJGFLI1u3Tf4vfOGEJTF5aJ3Me7f5IBk4ZmwXR7FLHwQW9Yx&amp;tk=vAvXdidsMns&amp;app=weixin#hashState">黄健怡《四月·上》全新独奏专辑黑胶珍藏版 LP</a></p><p><strong>嘉宾：黄健怡</strong></p><p>爵士乐钢琴家，作曲家</p><p>JZ School 校长</p><p><strong>shownotes</strong></p><p>[00:02:28] 青年时代的音乐记忆</p><p>[00:08:45] 古典音乐的乐趣在哪里</p><p>[00:15:44] 现场演绎什么是“即兴”</p><p>[00:18:55] 古典专业怎么想着去搞爵士乐</p><p>[00:24:43] 早期的爵士乐排练是这样的</p><p>[00:31:09] 第一次去北京看中国人玩爵士</p><p>[00:33:20] 对上海爵士乐贡献最大的酒店大堂</p><p>[00:38:17] 早期上海爵士乐的听众是谁</p><p>[00:40:50] 留学美国的爵士乐学习经历</p><p>[00:42:27] 在美国“干活”是一种什么体验</p><p>[01:03:40] 毕业论文可以直接给大师打电话</p><p>[01:07:13] 藏龙卧虎的Rutgers师资力量</p><p>[01:13:29] JZ Club的都市感</p><p>[01:26:48] 最好的爵士乐市场之一在中国</p><p><strong>部分提到的音乐家:</strong></p><p>Keith Jarrett</p><p>Kenny Barron</p><p>Fred Hersch</p><p>Branford Marsalis</p><p>Stanley Cowell</p><p>赵可（梦境）</p><p>陈胤希（港口）</p><p>Theo Croker</p><p>任宇清</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_aWAAnnNpeghCQcsBwaBazfGQxreESELuzvUuZZAyngMnPMcPnGYKvTtFct-06.mp3" length="109380392" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_aWAAnnNpeghCQcsBwaBazfGQxreESELuzvUuZZAyngMnPMcPnGYKvTtFct-06.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/61]]></guid>
+      <pubDate>Sun, 05 Mar 2023 19:09:49 +0800</pubDate>
+      <itunes:duration>6564</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8321986677_693186.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_dJMBEKCqMSZpzDEsdxTrmnXauvUnVfwXsJqKYUvTbgsxLRCBgkaBBHfRV</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/02/19/e60-pannonica-%e6%9d%a5%e8%87%aa%e7%bd%97%e6%96%af%e6%9f%b4%e5%b0%94%e5%be%b7%e5%ae%b6%e6%97%8f%e7%9a%84%e7%88%b5%e5%a3%ab%e4%b9%90%e5%a4%a9%e4%bd%bf/</link>
+      <title><![CDATA[E60: Pannonica | 来自罗斯柴尔德家族的爵士乐天使]]></title>
+      <description><![CDATA[<p>如果你去翻看 1940-1970 年代一些纽约顶尖的爵士音乐家的音乐创作，会偶尔看到一个非常充满异域特色的名字：Pannonica，或者是她的简写：Nica。而当时的人们提到她的时候，用的更多的是Baroness，也就是“男爵夫人”。Pannonica 的全名叫做 Pannonica de Koenigswarter。她是大名鼎鼎的罗斯柴尔德家族的第六代后人。不过跟她家族当中其他那些热衷于财富和地位的家人们不同，Pannonica 将她的一生都献给了纽约的爵士乐。她是 1940-1970 年代纽约最重要的爵士乐赞助人，然而可惜的是，中文世界几乎从来没有对她的描述。Why for Jazz 决定用一期节目，向中文世界的爵士乐爱好者们第一次介绍这位爵士乐的天使，一个富家奇女子，一个一生追寻自己的人。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><p><a href="https://b23.tv/TT9rLvn">最新一期播主露脸视频在 B 站</a>。</p><hr><p>Playlist of the show:</p><p>[00:00:00] Gigi Gryce &#8211; Nica&#8217;s Tempo</p><p>[00:11:00] Thelonious Monk &#8211; &#8216;Round Midnight</p><p>[00:22:17] Thelonious Monk &#8211; Pannonica</p><p>[00:33:04] Horace Silver -Nica&#8217;s Dream</p><p>[00:40:40] Tommy Flanagan &#8211; Thelonica</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_vNAJtAzcNSnaVnQXeZdnwLVWmVWGzatNZszuLJuCNHJmLHfJfLpGwUEysY-5d.mp3" length="44026761" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_vNAJtAzcNSnaVnQXeZdnwLVWmVWGzatNZszuLJuCNHJmLHfJfLpGwUEysY-5d.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/60]]></guid>
+      <pubDate>Sun, 19 Feb 2023 23:50:18 +0800</pubDate>
+      <itunes:duration>2752</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8323179570_729971.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_zykeFKJnsueAkqArEZzjHqMPApevDnfdpcMdYLTzVzNYPcghMkkGVWEUr</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/02/05/e59-thelonious-monk-%e4%bf%a1%e4%bb%b0%e7%88%b5%e5%a3%ab%e7%9a%84%e9%9f%b3%e4%b9%90%e5%83%a7%e4%be%a3/</link>
+      <title><![CDATA[E59: Thelonious Monk | 信仰爵士的音乐僧侣]]></title>
+      <description><![CDATA[<p>Thelonious Monk 在爵士乐领域是一个怪咖。在很长一段时间当中，他不被人所欣赏，甚至不被人所理解。然而他的作品对于爵士乐来说，具有着划时代的意义。Monk 在英文中的意思是僧侣，这似乎暗合了 Thelonious 对于爵士乐的信仰。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区成都南路128号的街头酒吧 &#8211; 饮料 Beverage</strong>。同时，Y4旗下摇摆舞组织 <strong>Why For Swing</strong> 持续为大家带来摇摆舞课程，具体可关注公众号 “Why For Swing”。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，因此 Why for Jazz 在小红书和B站开通了视频号。我会在上面分享一些非常哇塞的爵士乐现场，也会发一些自己的视频，欢迎大家点赞关注 Why for Jazz 视频号，作为播客伴侣，配合使用。</p><hr><p>Playlist of the show:</p><p>[00:00:00] Blue Monk</p><p>[00:07:47] Drifting on a Reed (ft. Coleman Hawkins)</p><p>[00:12:43] &#8216;Round Midnight</p><p>[00:20:52] The Man I Love</p><p>[00:28:21] Well You Needn&#8217;t</p><p>[00:34:52] Monk&#8217;s Dream</p><p>[00:57:20] Ask Me Now</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_YnJzmwEMCpmemaEakJjXzcdtNTDTqFZFYtuxxnFPuQQSGPyUEYQErCHgsT-78.mp3" length="101580918" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_YnJzmwEMCpmemaEakJjXzcdtNTDTqFZFYtuxxnFPuQQSGPyUEYQErCHgsT-78.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/59]]></guid>
+      <pubDate>Sun, 05 Feb 2023 23:08:41 +0800</pubDate>
+      <itunes:duration>3718</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8324391193_935688.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_gveGfpQqsXtdTSsBwvHuxBqXxHnaqbKLMfuaFMysMGeQEjzmkaLHAgVxC</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/01/17/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-d-train-%e6%83%8a%e4%ba%86%ef%bc%81%e6%91%87%e6%91%86%e8%88%9e%e4%bc%9a%e4%b8%8d%e5%8f%aa%e6%98%af%e7%94%b7%e7%94%b7%e5%a5%b3%e5%a5%b3%e6%8b%89%e6%8b%89/</link>
+      <title><![CDATA[即兴访谈 | D Train – 惊了！摇摆舞会不只是男男女女拉拉小手？]]></title>
+      <description><![CDATA[<p>在很长一段时间里，提到“舞会”二字，人们想到的要么是电影中端庄而做作的镜头，要么是地下室昏暗灯光下窸窸窣窣的场景。如果你也是这么想的，那么这一期你一定要听。本期节目邀请到了摇摆舞会 DJ 天团 D Train 为大家分享关于摇摆舞会的一些事。</p><p>如果你对摇摆舞感兴趣，欢迎关注 Why for Swing，它是 Why for Jazz 旗下的摇摆舞组织，由我太太 Tutti 和她的搭档噶东老师领衔。更多信息欢迎关注公众号 <a href="https://mp.weixin.qq.com/s/JI-e3ApUxHMnN6vQQkOvXw">Why for Swing</a>。</p><p>如果你能走路，你就能跳摇摆舞。只要你对这个舞蹈感兴趣，不要在意你是否协调，不要在意你是否会跳舞。我们希望你能加入到我们，跟我们一起玩。期待与你相见！</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>[00:01:23] D Train 是谁</p><p>[00:06:05] 惊了！你是这样开始跳摇摆舞的？</p><p>[00:16:54] 惊了！舞会不只是男男女女拉拉小手？</p><p>[00:24:42] 惊了！跳摇摆舞除了快乐居然还能收获这些？</p><p>[00:29:55] 惊了！舞者跳到最后都成了哲学家？</p><p>[00:36:47] 惊了！无法坚持跳舞居然是因为这个？</p><p>[00:49:22] 惊了！四位舞者忽然亮明 DJ 身份！</p><p>[00:49:30] 惊了！最配 Tequila 的爵士乐居然是&#8230;&#8230;</p><p>[00:51:15] 惊了！不同版本的同一首歌居然还能这么用</p><p>[01:00:30] 惊了！（其实不惊但为了保持队型）摇摆舞曲的发展脉络</p><p>[01:18:31] 哭了！百人齐唱 In a Mellow Tone</p><hr><p>Playlist of the show:</p><p>[00:00:00] Dizzy Gillespie &#8211; Manteca</p><p>[00:50:50] Django Reinhardt &#8211; Minor Swing</p><p>[00:52:41] Oscar Peterson &#8211; Night Train</p><p>[00:55:00] Forrest, Rusty Bryant &#8211; All Night Long (Night Train)</p><p>[00:58:13] Lionel Hampton &#8211; Flying Home</p><p>[00:59:20] Lionel Hampton &#8211; Flying Home</p><p>[01:13:49] Chuck Berry &#8211; One O&#8217;clock Blues</p><p>[01:17:19] Oscar Peterson &#8211; C Jam Blues</p><p>[01:20:51] Duke Ellington &#8211; In a Mellow Tone</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ZuJtRTNKDqeGjGWYHpGaBeckmRefdxATyTBbzSbqnUgxDZenqZTEaNdqLA-c5.mp3" length="79045259" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ZuJtRTNKDqeGjGWYHpGaBeckmRefdxATyTBbzSbqnUgxDZenqZTEaNdqLA-c5.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/58-5]]></guid>
+      <pubDate>Tue, 17 Jan 2023 11:38:52 +0800</pubDate>
+      <itunes:duration>4940</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8326078487_773861.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_UNGznRQCwJnycQdmWTsrXWfmvnAacLZjuwSnrcKeunMNHCabQYBkBBKXj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2023/01/07/e58-harry-belafonte-%e5%8a%a0%e5%8b%92%e6%af%94%e6%83%85%e6%ad%8c%e7%8e%8b%e5%ad%90/</link>
+      <title><![CDATA[E58: Harry Belafonte | 加勒比情歌王子]]></title>
+      <description><![CDATA[<p>Harry Belafonte 是一位堪称伟大的音乐家。他通过自己的力量，把一个非常小众的音乐种类带到了全世界人的面前，并且将它发扬光大。他同时还是一个特别善于发掘音乐人才的“伯乐”。除此之外，他是一个积极地政治和民权运动者。这一期节目，我们一起来了解他了不起的一生。</p><p>Why for Jazz 为听众朋友们推荐蚝湾 Oyster Bay，它是来自新西兰的国民葡萄酒品牌，新世界产区的代表性佳酿。新西兰作为新世界葡萄酒风格的代表产区，已经逐渐成为全球葡萄酒爱好者餐桌必备的葡萄酒之选。</p><p>对于我来说，一款葡萄酒的好坏，取决于这瓶酒给到享用者带来的愉悦感和体验。蚝湾让你在任何时刻，任何场景都可以轻松享受。它是真正一瓶为我自己开的酒。</p><p>蚝湾相信，他们的葡萄酒可以让你的每一天都值得相思。简单轻松的小确幸可以很容易获得，只要你有发现美好的眼睛。</p><p>蚝湾品牌方在品牌天猫官方旗舰店“Delegat酒类旗舰店”准备了 Why for Jazz 听众特殊优惠，1月10日起至1月31日，在 Delegat 天猫旗舰店加入会员，再下单蚝湾长相思+黑皮诺两支装，报暗号<strong>「Y4」</strong>可加赠品牌爆款蚝湾霞多丽750ml装1支，据说所有优惠叠加合下来可以折到360元得3支蚝湾爆款2白+1红哦，新年聚会轻松满足所有挑剔的味蕾。</p><p>可在淘宝APP搜索‘蚝湾相思酒’或打开淘口令<strong><a href="https://m.tb.cn/h.U9KtAI3?tk=t2K0df5WKB6">访问Delegat酒类旗舰店</a></strong>，具体活动信息请咨询旗舰店客服。</p><hr><p>Playlist of the show:</p><p>[00:00:00] Man Smart (Women Smarter)</p><p>[00:09:01] Recognition</p><p>[00:19:07] Banana Boat (Day O)</p><p>[00:25:01] Midnight Special</p><p>[00:30:46] Mbombela (Train Song) &#8211; 出自专辑《An Evening with Belafonte/Makeba》</p><p>[00:37:23] Turn the World Around</p><p>[00:44:29] Move It</p><p>[00:50:28] Jamaica Farewell</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_bDAGesVUQNfMcGJPbrMgRTjsxFuAuCGYshDNxndFAUHZNXrkVeNtmfAgBx-29.mp3" length="51402254" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_bDAGesVUQNfMcGJPbrMgRTjsxFuAuCGYshDNxndFAUHZNXrkVeNtmfAgBx-29.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/58]]></guid>
+      <pubDate>Sat, 07 Jan 2023 11:46:50 +0800</pubDate>
+      <itunes:duration>3213</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8326938208_387398.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_dNjYCkLFWpLskrEzTwFMNBYxfcHmbHFvAwnvxqsvAdRbgheESeTktcqmg</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/12/28/dj-set-%e5%90%b8%e7%83%9f%e6%9c%89%e5%ae%b3%e5%81%a5%e5%ba%b7/</link>
+      <title><![CDATA[DJ Set | 吸烟有害健康]]></title>
+      <description><![CDATA[<p>推荐黄健怡老师的新专辑<a href="https://music.163.com/#/album?id=157230674"><strong>《四月·上》</strong></a></p><p>Why for Jazz 听友群每周五的 DJ 电台节目: <a href="https://www.xiaoyuzhoufm.com/podcast/6376f9d777b7c54c35e97ff4"><strong>Friday Night Club</strong></a></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:03:53] Hank Mobley &#8211; Dig Dis</p><figure><img src="https://i.typlog.com/whyforjazz/8327783175_0067.png"></figure><p>[00:10:11] Ben Webster &#8211; Pound Horn</p><figure><img src="https://i.typlog.com/whyforjazz/8327783126_801019.png"></figure><p>[00:15:34] Billy Strayhorn &#8211; Passion Flower</p><figure><img src="https://i.typlog.com/whyforjazz/8327783077_234453.png"></figure><p>[00:19:22] Art Blacky &#8211; Shaky Jake</p><figure><img src="https://i.typlog.com/whyforjazz/8327783038_63302.png"></figure><p>[00:26:36] Miles Davis &#8211; When I Fall in Love</p><figure><img src="https://i.typlog.com/whyforjazz/8327782946_6898985.jpg"></figure><p>[00:31:08] Thelonious Monk &#8211; Liza</p><figure><img src="https://i.typlog.com/whyforjazz/8327782937_056403.png"></figure><p>[00:36:04] Horace Silver &#8211; Song for my Father</p><figure><img src="https://i.typlog.com/whyforjazz/8327782881_678425.jpg"></figure><p>[00:43:39] Big John Patton &#8211; The Rock</p><figure><img src="https://i.typlog.com/whyforjazz/8327782840_85947.jpg"></figure><p>[00:51:32] Dexter Gordon &#8211; Scrapple From The Apple</p><figure><img src="https://i.typlog.com/whyforjazz/8327782796_835534.jpg"></figure><p>[00:59:26] J J Johnson &#8211; Misterioso</p><figure><img src="https://i.typlog.com/whyforjazz/8327782752_559435.jpg"></figure>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_QFZpZjdURqudKbcJTUWMWqXyZpUCxCWQBAbaYHEYTSfZcGqcfLqbSUXeah-00.mp3" length="63287051" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_QFZpZjdURqudKbcJTUWMWqXyZpUCxCWQBAbaYHEYTSfZcGqcfLqbSUXeah-00.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/dj-set-xi-yan-you-hai-jian-kang-c7d72207]]></guid>
+      <pubDate>Wed, 28 Dec 2022 17:04:59 +0800</pubDate>
+      <itunes:duration>3955</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8327782400_76313.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_XweJyrYZsvKhfdWdavSyNFefndPpxQVpTUEVfDnLPmDBVmceBJSmSVuaQ</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/12/27/e57-%e7%ba%bd%e7%ba%a6%e7%88%b5%e5%a3%ab%e5%9c%b0%e5%9b%be-village-vanguard/</link>
+      <title><![CDATA[E57: 纽约爵士地图 | Village Vanguard]]></title>
+      <description><![CDATA[<p>本节目是《纽约爵士地图》系列的第二期，我们来聊聊位于纽约的一个传奇爵士乐俱乐部：Village Vanguard（先锋村）。</p><p>Why for Jazz 听友群每周五的 DJ 电台节目: <a href="https://www.xiaoyuzhoufm.com/podcast/6376f9d777b7c54c35e97ff4"><strong>Friday Night Club</strong></a></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] John Coltrane &#8211; Greensleeves (Live at Village Vanguard 1961)</p><p>[00:09:19] Leadbelly And Josh White &#8211; I&#8217;ve A Pretty Flowers</p><p>[00:15:25] Thelonious Monk &#8211; Round About Midnight</p><p>[00:20:32] Sonny Rollins &#8211; Sonnymoon for Two</p><p>[00:31:09] Scott LaFaro &#8211; Jade Visions</p><p>[00:39:09] Vanguard Jazz Orchestra &#8211; My Centennial</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_zUfzAjTwFDVfXAxZKuNMtRkrUEXcWFJDaYNeCENLGezCcHaCzzDbqjsfJv-0d.mp3" length="80725637" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_zUfzAjTwFDVfXAxZKuNMtRkrUEXcWFJDaYNeCENLGezCcHaCzzDbqjsfJv-0d.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/57]]></guid>
+      <pubDate>Tue, 27 Dec 2022 16:12:02 +0800</pubDate>
+      <itunes:duration>2801</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8327872297_648219.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ddLhxjpNpQkYxyGyHhTmHGtYRXhRVaYmWSNeKzmfHRSxRQhEAVBTFbesD</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/12/20/e56-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e5%9c%a3%e8%af%9e%e6%b4%be%e5%af%b9%e5%b0%8f%e4%bc%97%e6%ad%8c%e5%8d%95/</link>
+      <title><![CDATA[E56: 凌晨四点 | 圣诞派对小众歌单]]></title>
+      <description><![CDATA[<p>马上又要到圣诞节了。对于我来说，圣诞节是跟朋友一起度过的节日。每年圣诞节我和朋友们都会聚在一起，喝酒吃饭，更主要的是聊聊天。聊聊这一年发生的事，和对未来的憧憬。每当这个时候都需要一些背景音乐，而每年为圣诞节选歌单都是我的工作。今年我为大家制作了一张“小众”的圣诞歌单。如果不嫌弃的话，可以在圣诞节聚会的时候播放这期节目，作为你们的背景音。</p><p><a href="https://music.163.com/playlist?id=7806851733&amp;userid=1951067487">圣诞歌单</a>（有几首找不到（妈耶真的好小众啊！）我做了替代）</p><p>————————————</p><p>Playlist of the show:</p><p>[00:03:56] Christmas in New Orleans – Louis Armstrong</p><p>[00:08:18] Christmas Waltz &#8211; Chet Baker &amp; Wolfgang Lackerschmid</p><p>[00:17:11] Angels We Have Heard on High &amp; Joy to the World &#8211; Joe Pass</p><p>[00:22:48] White Christmas &#8211; Charlie Parker &amp; Kenny Dorham</p><p>[00:28:30] Christmas Island – Ella Fitzgerald</p><p>[00:31:46] Merry Christmas Baby &#8211; Ramsey Lewis Trio</p><p>[00:37:04] Christmas Time is Here &#8211; Vince Guaraldi</p><p>[00:43:46] Silent Night &#8211; The Singers Unlimited</p><p>[00:48:18] Jesu, Joy of Man&#8217;s Desiring &#8211; Classical Jazz Quartet</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ZzZdPXuFgBdErEwUWxxwTvsUPZMUFxJMFRVYKYraqsMvWwQxJYqaAGwHBE-ed.mp3" length="100215548" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ZzZdPXuFgBdErEwUWxxwTvsUPZMUFxJMFRVYKYraqsMvWwQxJYqaAGwHBE-ed.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/56]]></guid>
+      <pubDate>Tue, 20 Dec 2022 11:31:20 +0800</pubDate>
+      <itunes:duration>3418</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8328924804_253479.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_EpVkcnShCJqZxpHJtEcnRyvJzdVCzxPqKLVTHKTrVMbUxSERAExnuJSns</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/12/13/%e5%98%bf%ef%bc%8c%e4%bd%a0%e6%83%b3%e8%b7%b3%e8%88%9e%e5%90%97%ef%bc%9f/</link>
+      <title><![CDATA[嘿，你想跳舞吗？]]></title>
+      <description><![CDATA[<p>最近在我的怂恿下，我和我的太太 Tutti 准备做一些好玩的东西。我们成立了一个叫做 Why for Swing 的一个身体工坊。Tutti 将和她的搭档，也是我的好朋友噶咚老师，在上海为大家带来一期摇摆舞课程。Tutti自幼跳舞，在巴塞罗那进修过现代舞，回国之后爱上摇摆舞并做过摇摆舞老师。而噶咚老师更是专业的摇摆舞老师，被学生叫做最会上课的老师，凭借独特的舞蹈风格在国内获得诸多奖项。</p><p>这期课程总共分为<strong>四节课，每节课两个小时，总的课时长为八个小时</strong>，时间安排在12月17日晚上20点-22点 、12月18日下午13点-15点 、12月24日下午13点-15点 、12月25日下午13点-15点。</p><p>这次课是收费的。它的价格是：<strong>单人报名1200元/人，男女双人搭档报名1050元/人</strong>。在课程的结束呢，我会为大家带来一个小时的爵士乐分享，当然，我这部分是送的。</p><p>这期课程呢，主要目的就是让大家体会到摇摆舞的快乐。如果你能走路，你就能跳摇摆舞。只要你对这个舞蹈感兴趣，不要在意你是否协调，不要在意你是否会跳舞。我们希望你能加入到我们，跟我们一起玩。</p><p>期待与你相见！</p><p><a href="https://mp.weixin.qq.com/s/uzVMZHhh2rpEFgSFbHpXeA">关于本次课的更多消息可以戳这里</a></p><p><a href="https://weidian.com/item.html?itemID=5966826955&amp;ifr=pbj_item_2972&amp;wfr=pbj_item_2972&amp;code=051xdr000flC4P1DuU2008qLxX1xdr0j&amp;state=f2f_pay"><strong>用于踊跃抢购的报名链接在这里！</strong></a></p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_sgDqpZUjSNnaZxQqDGwRueuJBtMbhPqSxmCAMWRuGFsjeasDFggcnMEAAP-81.mp3" length="2433832" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_sgDqpZUjSNnaZxQqDGwRueuJBtMbhPqSxmCAMWRuGFsjeasDFggcnMEAAP-81.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/xx]]></guid>
+      <pubDate>Tue, 13 Dec 2022 07:00:00 +0800</pubDate>
+      <itunes:duration>124</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8329141299_876696.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_kvzJyhAbePRkjsfVuKTKBNKdsyaeETJJDyAcmnpnsSpDRKbQMezCdSDdB</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/12/01/e55-ray-charles-%e5%81%87%e5%a6%82%e7%bb%99%e4%bd%a0%e4%b8%89%e5%a4%a9%e5%85%89%e6%98%8e/</link>
+      <title><![CDATA[E55: Ray Charles | 假如给你三天光明]]></title>
+      <description><![CDATA[<p>双目失明并很早就成了孤儿，Ray Charles 从各个角度都可以被称作是一个“被上帝遗弃的孩子”。然而这样一个看上去没有任何成功条件的人，却凭借一己之力，成为了也许是美国音乐史上最伟大的人。不仅如此，Ray Charles 从刚出道的单纯模仿开始，逐渐将各种风格融合在一起，最终创造了一个全新的音乐形式 &#8211; 灵魂乐 (Soul)。</p><p>Why for Jazz 听友群每周五的 DJ 电台节目: <a href="https://www.xiaoyuzhoufm.com/podcast/6376f9d777b7c54c35e97ff4"><strong>Friday Night Club</strong></a></p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:51:00] Hallelujah I Love Her So</p><p>[00:13:28] Confession Blues</p><p>[00:18:00] I&#8217;ve Got a Woman</p><p>[00:23:59] What&#8217;d I Say</p><p>[00:31:32] Georgia on My Mind</p><p>[00:39:19] One Mint Julep</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_uBQgwwAVRgHFpwuDNZCUzkZuYuPaHHfeHShACrmecLrHnrsAdxDfPgQBaY-48.mp3" length="76989476" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_uBQgwwAVRgHFpwuDNZCUzkZuYuPaHHfeHShACrmecLrHnrsAdxDfPgQBaY-48.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/55]]></guid>
+      <pubDate>Thu, 01 Dec 2022 23:27:58 +0800</pubDate>
+      <itunes:duration>2542</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8330092622_395923.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ShswqwEusxTnacMBhPrBvRcEywwzauszxvUjsqjDpnPAJzPMppgKgyLVm</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/11/19/e54-why-for-swing-%e6%91%87%e6%91%86%e8%88%9e%e7%9a%84%e6%95%85%e4%ba%8b/</link>
+      <title><![CDATA[E54: Why for Swing | 摇摆舞的故事]]></title>
+      <description><![CDATA[<p>摇摆舞（Swing Dance），或者说其中最受欢迎的一个大类 Lindy Hop，可以说是现在都市当中越来越流行的一种社交舞蹈。Lindy Hop 跟爵士乐密不可分。很难想象，这样一个有魅力的舞蹈，它的名字的由来却跟音乐和舞蹈没有任何关系。而摇摆舞在美国被接纳以及随后被推广到全世界的过程，不仅是亚文化逐渐走向主流的过程，它甚至伴随着美国整体清教徒传统价值观的落寞和新的消费伦理的崛起。</p><p>Y4致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Lil Armstrong &#8211; Lindy Hop</p><p>[00:10:33] Benny Goodman &#8211; Stompin&#8217; At The Savoy</p><p>[00:18:25] Chick Webb &#8211; Stoppin&#8217; at the Savoy</p><p>[00:22:58] Fletcher Henderson &#8211; Down South Camp Meeting</p><p>[00:38:03] Jimmie Lunceford &#8211; Tain&#8217;t What You Do</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_tnZwKQEdJbgCySFtuuJYAzmPfWzGQgjuQyvMxkfMqTrymEgjADZVnePASp-55.mp3" length="67732771" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_tnZwKQEdJbgCySFtuuJYAzmPfWzGQgjuQyvMxkfMqTrymEgjADZVnePASp-55.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/54]]></guid>
+      <pubDate>Sat, 19 Nov 2022 11:12:38 +0800</pubDate>
+      <itunes:duration>2466</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8331173295_756746.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_VBGtRJwQhAsJAgKWNUAfGCMktQunRVCyeMGzQBXkeaHymftnTsebjNUFx</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/11/09/e53-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e4%b8%80%e4%b8%aa%e5%a9%9a%e7%a4%bc/</link>
+      <title><![CDATA[E53: 凌晨四点 | 一个婚礼]]></title>
+      <description><![CDATA[<p>这一期的《凌晨四点》是“自我”很足的一期，讲的就是我自己的婚礼，它特别的个人，甚至有点矫情。婚礼那天我特意带了录音笔，请《大食话》的主播月月帮我把全程基本录了下来。我当然知道Why for Jazz这个节目是一档音乐节目，而且现在听的朋友也很多，但是今天在这个节目里，我只想放一些当天的婚礼片段，作为一个记录。我觉得个人的记录，都是时代的一个切片，而我们从某种角度也都是时代的承载者和记录者。我感觉让网络记住这个因为疫情而变得有些灰暗时代中发生在我自己身上的高光时刻，是一个很有意义的事情。</p><p>特别感谢本集现场录音：《<a href="https://www.xiaoyuzhoufm.com/podcast/62d79b9164f141ad815015c6">大食话</a>》主播 &#8211; 月月</p><p><a href="http://xhslink.com/cn4T5k">我和 Tutti 第一支舞的视频</a></p><p>Playlist of the Show：</p><p>[00:17:20] Michael Bublé &#8211; You and I</p><p>[00:45:49] Ella Fitzgerald &#8211; It&#8217;s Only a Paper Moon</p><p>[00:52:32] Nina Simone &#8211; Stars</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_sNvynnQDGSHWaDYxtCEJyWTNGdTveLWjmQZWbcSQpahrbbQJXcbkSspwRA-f9.mp3" length="104946733" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_sNvynnQDGSHWaDYxtCEJyWTNGdTveLWjmQZWbcSQpahrbbQJXcbkSspwRA-f9.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/53]]></guid>
+      <pubDate>Wed, 09 Nov 2022 11:10:50 +0800</pubDate>
+      <itunes:duration>3425</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8332039389_985468.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_pRwsgdDDGtvFfzYXxUxrcUsVceSFVWaYVmrWVnjbZjxevEgMswqpzsSkV</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/10/20/e52-mills-brothers-%e5%90%88%e5%94%b1%e5%9b%a2%e5%a7%8b%e7%a5%96%ef%bc%8c%e8%88%9e%e5%8f%b0%e5%b8%b8%e9%9d%92%e6%a0%91/</link>
+      <title><![CDATA[E52: Mills Brothers | 合唱团始祖，舞台常青树]]></title>
+      <description><![CDATA[<p>在爵士乐合唱团中，Mills Brothers 似乎是一个类似小号当中 Louis Armstrong 的角色。他们虽然不是第一个爵士乐合唱团，但却是将这种演唱形式推向大众的合唱团，并且在舞台上保持了将近七十年的活跃。他们的故事始终跟巧合连在一起，但是在巧合以外，似乎有另外的东西，支持着他们一路走下来。</p><p>Y4 致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:35:00] Till Then</p><p>[00:10:10] It Don&#8217;t Mean a Thing</p><p>[00:16:03] Tiger Rag</p><p>[00:21:29] Caravan</p><p>[00:25:46] Paper Doll</p><p>[00:31:06] Don&#8217;t Blame Me</p><p>[00:37:17] I Love You So Much It Hurts</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_PSFXXzywhDwPFRmpXrazZBnbVqYJKbWrsBLDwuepyDJxFXkuJLGkQvBFWd-4c.mp3" length="67705989" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_PSFXXzywhDwPFRmpXrazZBnbVqYJKbWrsBLDwuepyDJxFXkuJLGkQvBFWd-4c.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/52]]></guid>
+      <pubDate>Thu, 20 Oct 2022 16:43:00 +0800</pubDate>
+      <itunes:duration>2427</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8333745573_200873.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_WBszzAUCbPAUsGTcCWRUKaKqNkaxZvyehVqdjRGYsfhJPbjtytbcftAJM</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/09/30/e51-gerry-mulligan-%e9%85%b7%e6%b4%be%e7%88%b5%e5%a3%ab%e7%9a%84%e7%bc%94%e9%80%a0%e8%80%85/</link>
+      <title><![CDATA[E51: Gerry Mulligan | 酷派爵士的缔造者]]></title>
+      <description><![CDATA[<p>Gerry Mulligan 是一个十分优秀的爵士音乐家，但是他的视野和能力都远远超越了爵士乐的范畴。尽管作为共同缔造者，他创造了酷派爵士和西海岸爵士，然而更让他痴迷的，永远是更宏大的东西。</p><p>Y4致力于为都市生活提供陪伴与参考，欢迎大家光临我们位于<strong>上海市黄浦区复兴中路612号的播客之家 &#8211; 亲亲小酒馆</strong>。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Gerry Mulligan &#8211; Walking Shoes</p><p>[00:07:43] Gene Krupa &#8211; Disc Jockey Jump</p><p>[00:12:52] Gerry Mulligan &#8211; Jeru</p><p>[00:18:50] Gerry Mulligan &amp; Chet Baker &#8211; Line for Lyons</p><p>[00:23:33] Duke Ellington &#8211; Bara Dubla Prima</p><p>[00:28:49] Gerry Mulligan &#8211; Country Beaver</p><p>[00:32:58] Gerry Mulligan &#8211; Entente for Baritone Sax and Orchestra</p><p>[00:37:07] Gerry Mulligan &#8211; Prelude in E Minor</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_xPUtbdjAkaExtcXCMyPrBsdHnwhGSLKnWtyWqsjeJNJqSeZQJCWBuZxCwB-77.mp3" length="39675693" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_xPUtbdjAkaExtcXCMyPrBsdHnwhGSLKnWtyWqsjeJNJqSeZQJCWBuZxCwB-77.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/51]]></guid>
+      <pubDate>Fri, 30 Sep 2022 15:21:27 +0800</pubDate>
+      <itunes:duration>2480</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8335478176_743828.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_YSFSFnYfNmTcDJPbDzjLzXkXpyfrwXMdTjUHmXtyLrnTvcqvyXtYVdbdM</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/09/17/e50-scat-%e7%88%b5%e5%a3%ab%e6%ad%8c%e6%89%8b%e7%9a%84%e8%83%a1%e8%a8%80%e4%b9%b1%e8%af%ad/</link>
+      <title><![CDATA[E50: Scat | 爵士歌手的“胡言乱语”]]></title>
+      <description><![CDATA[<p>我们在听爵士乐手唱歌的时候，经常会发现他们演唱一些语义不明的歌词，听起来就像是在胡言乱语。其实这种唱法在爵士乐中有一个专门的名字：Scat。今天这期节目，我们就来聊聊，Scat 到底是怎么一回事。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:03:58] Louis Armstrong &#8211; Heebie Jeebie</p><p>[00:05:45] Gene Greene &#8211; From Here to Shanghai</p><p>[00:09:53] James Moody &#8211; I&#8217;m in the Mood for Love</p><p>[00:12:41]  Eddie Jefferson &#8211; Moody&#8217;s Mood for Love</p><p>[00:19:26] Freeddie Freeloader</p><p>[00:23:37] Scatman John &#8211; Scatman</p><p>[00:26:48] Ella Fitzgerald &#8211; Mack the Knife</p><p>[00:29:51] Ella Fitzgerald &#8211; How High the Moon</p><p>[00:35:00] Kurt Elling &#8211; Tight</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_XLTVnBkNAxJgakSptcpCAPDQqRdEbttSwfcKApmLthmscRsxVhxmtjSkae-b9.mp3" length="40618385" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_XLTVnBkNAxJgakSptcpCAPDQqRdEbttSwfcKApmLthmscRsxVhxmtjSkae-b9.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/50]]></guid>
+      <pubDate>Sat, 17 Sep 2022 12:28:59 +0800</pubDate>
+      <itunes:duration>2539</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8336611706_858313.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_HvVNUQgzfWMDHpsVfqFBeHhVXyfKuMLhnXzAtNexJayXfFMjKvwywpnse</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/09/03/e49-%e7%ba%bd%e7%ba%a6%e7%88%b5%e5%a3%ab%e5%9c%b0%e5%9b%be-birdland/</link>
+      <title><![CDATA[E49: 纽约爵士地图 | Birdland]]></title>
+      <description><![CDATA[<p>1930年之后，几乎每一次爵士乐史上的大运动都是在纽约发生的；每一个在爵士乐上想要有所发展的乐手都一定要去纽约发展。作为爵士乐绝对的中心，这里诞生了很多专门为爵士乐表演开设的爵士俱乐部。Why for Jazz 打算开设一个系列，专门介绍纽约的爵士乐酒吧和俱乐部。今天我们来到这个系列的第一站：Birdland。</p><p>Why for Jazz 开通了微信听友群。我会对进群的朋友一次性收取199元的入群费，作为对本节目的支持。想要进群的朋友可以添加微信号Y4JZXZS，在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Josef Zawinul &#8211; Birdland</p><p>[00:06:48] Igor Stravinsky &#8211; Ebony Concerto</p><p>[00:13:37] Count Basie Birdland Broadcast</p><p>[00:23:10] The Beatles &#8211; Come Together</p><p>[00:23:54] Chuck Berry &#8211; You can&#8217;t catch me</p><p>[00:28:11] Ella Fitzgerald &#8211; Lullaby of Birdland</p><p>[00:29:39] Lloyd Price &#8211; Just Because</p><p>[00:36:18] Lester Young &#8211; I Can&#8217;t Get Started</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_HwCHSTaWwruyEHHJCtQDwaryWFZKnuWAJsXUNwHAssyHZErACSFNXcesym-f1.mp3" length="64421186" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_HwCHSTaWwruyEHHJCtQDwaryWFZKnuWAJsXUNwHAssyHZErACSFNXcesym-f1.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/49]]></guid>
+      <pubDate>Sat, 03 Sep 2022 12:54:50 +0800</pubDate>
+      <itunes:duration>2395</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8337819623_66618.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_qbutgydWkfUJJPfGayuukwzuLdzeKceWADZvDffqXeSQrANyLxjJgZAmB</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/08/20/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-%e4%ba%95%e6%88%b7%e7%ab%af%e4%bc%9a%e8%ae%ae-%e6%98%af%e6%97%b6%e5%80%99%e4%bb%8e%e6%97%a5%e6%9c%ac%e8%bf%99%e4%b8%80%e8%af%be%e6%af%95/</link>
+      <title><![CDATA[即兴访谈 | 井户端会议 – 是时候从“日本”这一课毕业了]]></title>
+      <description><![CDATA[<p>【本期串台嘉宾】</p><p>梵一如 （@番薯梵一如）</p><p><a href="https://www.xiaoyuzhoufm.com/podcast/5e2853cb418a84a0462747cf">井户端会议</a>主播</p><p>【Playlist of the Show】</p><p>[00:15:58] 坂本九 &#8211; 昂首向前走</p><p>[00:21:33] 美空云雀 &#8211; 如河流般流淌</p><p>[00:37:36] 铃木勳 &#8211; Aqua Marine</p><p>[01:00:00] 花正在开</p><p>[01:17:15] 坂本九 &#8211; 抬眼望 看星空</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_QSkzDmrNsxRXYmuzxWePgyrpeDFaaXaqnXkmGhXQyAKMxgCFWPDfxDadWs-b2.mp3" length="122743736" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_QSkzDmrNsxRXYmuzxWePgyrpeDFaaXaqnXkmGhXQyAKMxgCFWPDfxDadWs-b2.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/chuantai2]]></guid>
+      <pubDate>Sat, 20 Aug 2022 08:00:00 +0800</pubDate>
+      <itunes:duration>4762</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8339065861_08376.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_YytwFbANCsKznKGhAGpYDWpUgQYdwnVcULThaHjkKkTwqDFQdpyxQQvmz</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/08/13/e48-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e6%b8%b8%e8%89%87%e6%91%87%e6%bb%9a-%e7%9b%9b%e5%a4%8f%e9%81%bf%e6%9a%91%e9%99%8d%e6%b8%a9%e7%9a%84%e7%a7%98%e6%96%b9/</link>
+      <title><![CDATA[E48: 凌晨四点 | 游艇摇滚 – 盛夏避暑降温的秘方]]></title>
+      <description><![CDATA[<p>本节目由 <strong>Jollee 特调微泡葡萄酒</strong> 特约播出。</p><p>Jollee 在经典葡萄酒的基础上加入天然的花果原料，简化葡萄酒的入门门槛的同时更贴近年轻人的口味偏好。另外，邀请了葡萄酒大师 Mark  Pygott 亲自选品调配，在口味上满足了每一款都好喝的超高标准，让选择葡萄酒变成一件简单的事。精致的小瓶装、亲民的定价和更好懂的酒标，让饮用葡萄酒变得不再有压力。</p><p>Jazz time，再加一瓶 Jollee 葡萄酒，让耳朵和嘴巴鼻子都沉醉于久违的慵懒浪漫当中。相互交融，感受平静温暖，开启一个专属于自己不打烊的 Jazz Club。</p><p><strong>【Jollee*WFJ听友专属好礼】</strong></p><p>️手淘搜索 Jollee微泡葡萄酒或复制淘口令链接</p><p><strong>89￥R6bI2teB3Ge￥ <a href="https://m.tb.cn/h.fAoGYR2">https://m.tb.cn/h.fAoGYR2</a>  CZ0001 jollee-why for jazz</strong></p><p>以129元到手价购买Jollee经典四瓶装礼盒，一次畅享所有口味</p><p><strong>️在购买订单中备注「Y4JZ」可享听友专属好礼「金属酒石一组」</strong></p><figure><img src="https://i.typlog.com/whyforjazz/8339642245_241919.jpg"></figure><p>Playlist of the Show:</p><p>[00:03:43] Christopher Cross &#8211; Sailing</p><p>[00:06:33] Kenny Loggins &#8211; Keep the Fire</p><p>[00:10:05] The Doobie Brothers &#8211; What a Fool Believes</p><p>[00:13:10] The Doobie Brothers &#8211; It Keeps You Runnin&#8217;</p><p>[00:16:01] The Doobie Brothers &#8211; Nothin&#8217; but a Heartache</p><p>[00:24:51] Steely Dan &#8211; Home at Last</p><p>[00:28:24] Toto &#8211; Africa</p><p>[00:28:24] Michael Jackson &#8211; Human Nature</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ERZJCnsGKGREFHfRDRpupYqfYSRSVjdeeWjSMrugPTPKXDjuwBsDAZZuXg-55.mp3" length="86487388" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ERZJCnsGKGREFHfRDRpupYqfYSRSVjdeeWjSMrugPTPKXDjuwBsDAZZuXg-55.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/48]]></guid>
+      <pubDate>Sat, 13 Aug 2022 10:29:37 +0800</pubDate>
+      <itunes:duration>2162</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8339643893_981592.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_dkmQCrEawmKWBHPFSbtnNTsyHhCFaQfNezYTtCNCwNfwcZPtVMkgXLLvv</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/07/23/e47-%e7%88%b5%e5%a3%ab%e7%bb%8f%e5%85%b8%e4%b9%90-a-night-in-tunisia/</link>
+      <title><![CDATA[E47: 爵士经典乐 | A Night in Tunisia]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对一百位以后进群的朋友一次性收取199元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Johnny Griffin &#8211; A Night in Tunisia</p><p>[00:04:51] Sarah Vaughan &#8211; Interlude</p><p>[00:08:09] Dizzy Gellaspie Septet &#8211; A Night in Tunisia (1946)</p><p>[00:12:10] Dizzy Gellaspie &#8211; Tunisia Fantacy (1961)</p><p>[00:15:01] Dizzy Gellaspie &#8211; A Night in Tunisia (1981)</p><p>[00:21:26] Michel Camilo Trio (Drum Solo by Dafnis Prieto)</p><p>[00:25:11] Arturo Sandoval &#8211; A Night in Tunisia</p><p>[00:27:21] Jeff Hamilton &#8211; A Night in Tunisia</p><p>[00:30:23] Kids These Days &#8211; Be</p><p>[00:35:53] 过门儿混剪 &#8211; Charlie Parker 1945 New York Town Hall</p><p>[00:36:27] 过门儿混剪 &#8211; Ella Fitzgerald / Wayne Shorter / Miles Davis / Canonball Adderley / John Coltrane / Bud Powell</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_wzpJJDFZuJcgDgEJYGdwnusEBWJXANvrkcRuYXcDySGqXPxsMGznTXQVam-5a.mp3" length="94869514" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_wzpJJDFZuJcgDgEJYGdwnusEBWJXANvrkcRuYXcDySGqXPxsMGznTXQVam-5a.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/47]]></guid>
+      <pubDate>Sat, 23 Jul 2022 09:07:14 +0800</pubDate>
+      <itunes:duration>2372</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8341463421_164781.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_WhDJntuTBCfLDyuBCSejAHqpAkKtAkSEsKYyhtqWJLLeksfvnbzNjLrtL</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/07/09/e46-tal-farlow-%e5%a4%a9%e8%b5%8b%e4%b8%8e%e6%83%b3%e8%a6%81%e7%9a%84%e7%94%9f%e6%b4%bb/</link>
+      <title><![CDATA[E46: Tal Farlow | 天赋与想要的生活]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对一百位以内进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Love Nest</p><p>[00:05:40] The Dardanelle Trio &#8211; September Song</p><p>[00:10:30] All Through The Night</p><p>[00:13:35] Cherokee</p><p>[00:16:27] Fascinating Rhythm</p><p>[00:20:40] My Romance</p><p>[00:28:19] Flamingo</p><p>[00:34:58] Misty</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_yEhvuBvfyDKLGTkPuehSHyWFLPaPFuQvbaQLDcPjCdcadJnLeFNGTjXMMK-db.mp3" length="65255884" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_yEhvuBvfyDKLGTkPuehSHyWFLPaPFuQvbaQLDcPjCdcadJnLeFNGTjXMMK-db.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/46]]></guid>
+      <pubDate>Sat, 09 Jul 2022 11:01:18 +0800</pubDate>
+      <itunes:duration>2286</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8342664629_870986.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_qrUvaTCXHWGKRFRLxVTBKhXdmepveZgSdYuuvwhcXLXDwtLRGjZtaGXyv</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/07/02/%e5%8d%b3%e5%85%b4%e8%ae%bf%e8%b0%88-%e9%93%b6%e6%9d%8f%e6%a0%91%e4%b8%8b-%e6%b5%b7%e4%b8%8a%e9%92%a2%e7%90%b4%e5%b8%88/</link>
+      <title><![CDATA[即兴访谈 | 银杏树下 – 海上钢琴师]]></title>
+      <description><![CDATA[<p><strong>推荐普洱猫主播的播客</strong> <a href="https://www.xiaoyuzhoufm.com/podcast/60e4e64e531cf97e7cbb7587?s=eyJ1IjogIjVmMWVhZDBmZTBmNWU3MjNiYmMzMWYyZCJ9">银杏树下</a></p><p>很感谢普洱猫老师的邀请，做客银杏树下，聊一聊《海上钢琴师》这部电影里面的音乐故事。</p><p>Why for Jazz 开通了微信听友群。我会对一百位以内进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_TSesnGVNRRNhcAXVLHGfAaMudveQCyJLezfykxfrbXENQjdYDsKfBgYNht-cb.mp3" length="128397887" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_TSesnGVNRRNhcAXVLHGfAaMudveQCyJLezfykxfrbXENQjdYDsKfBgYNht-cb.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/chuantai1]]></guid>
+      <pubDate>Sat, 02 Jul 2022 12:36:02 +0800</pubDate>
+      <itunes:duration>5292</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8343263814_393761.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_JmZXASxnSHPLFcmUbCBpKkeyANfCXwvGHxdxNtkzetMkBGFWQyVyvHaby</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/06/28/%e6%95%b4%e4%ba%86%e4%b8%80%e6%b4%bb/</link>
+      <title><![CDATA[整了一活]]></title>
+      <description><![CDATA[<p>跟沪上知名播客厂牌JustPod合作推出了一档全新的节目<a href="https://www.xiaoyuzhoufm.com/podcast/62ba79212af904c4f0031653?s=eyJ1IjogIjVmMWVhZDBmZTBmNWU3MjNiYmMzMWYyZCJ9">爵士群英谱</a>，这是一档关于爵士乐的入门指南和声音纪录片。《爵士群英谱》会更多的倾向于介绍一些耳熟能详的爵士乐大师，以及一些跟爵士乐相关的流行文化。</p><p>而作为 Why for Jazz，我们的内容和风格不会改变，还是会更多的侧重于小众爵士音乐家，以及作为我的自留地，播出任何我认为有意思的东西。Why for Jazz 会持续为当代都市生活提供一种可以参考的可能性，也会一直奉行“即兴即合理”的口号。由于工作量的原因，新节目对 Why for Jazz 唯一的影响，也许就是 Why for Jazz 的更新频率会从双周更变为月更。</p><p>希望大家去各大播客平台关注《爵士群英谱》，隔周五更新。并请大家继续支持 Why for Jazz。</p><p>谢谢大家。</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_RZQVmYMpZTapSJcxjvLNgnDBcpacMbPxXDCCcrtjaqwJsHFathqThJRxzk-ba.mp3" length="3502969" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_RZQVmYMpZTapSJcxjvLNgnDBcpacMbPxXDCCcrtjaqwJsHFathqThJRxzk-ba.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/kkk]]></guid>
+      <pubDate>Tue, 28 Jun 2022 18:13:26 +0800</pubDate>
+      <itunes:duration>117</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8343589306_807219.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_AnxzCxvePEmXfrtNsXzLWzMyNFZRpXZvZQKbaNNjnTBxBNVvgZXWMBweD</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/06/18/e45-stan-kenton-%e6%bc%94%e5%a5%8f%e4%b8%ad%e5%9b%bd%e5%9b%bd%e6%ad%8c%e7%9a%84%e7%88%b5%e5%a3%ab%e9%9f%b3%e4%b9%90%e5%ae%b6/</link>
+      <title><![CDATA[E45: Stan Kenton | 演奏中国国歌的爵士音乐家]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对一百位以内进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Balboa Bash</p><p>[00:04:23] Have You Got Any Castles Baby &#8211; Gus Arnheim</p><p>[00:05:30] Sing, Sing, Sing &#8211; Benny Goodman</p><p>[00:09:48] And Her Tears Flowed Like Wine</p><p>[00:13:43] Artistry In Bolero</p><p>[00:18:08] Lament</p><p>[00:25:14] Young Blood</p><p>[00:29:48] Intermission Riff</p><p>[00:34:47] When Stars Looked Down</p><p>[00:39:26] 中华人民共和国国歌</p><p>[00:44:12] The Peanut Vendor</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_MfbhDeYgnPwNTTVZgxCZvnrxpHVLyWJEjwvtSMwpvnpbQqyhcZzGJhAnJL-8d.mp3" length="80807087" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_MfbhDeYgnPwNTTVZgxCZvnrxpHVLyWJEjwvtSMwpvnpbQqyhcZzGJhAnJL-8d.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/45]]></guid>
+      <pubDate>Sat, 18 Jun 2022 11:34:11 +0800</pubDate>
+      <itunes:duration>2814</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8344478715_672968.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_JJMeGEqTadXcpAYqFuKtGTZDmNtBAZxvKgYYsxHyJJERHUYXthgZewMrq</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/06/04/e44-bud-powell-%e9%a3%9e%e8%b6%8a%e7%96%af%e4%ba%ba%e9%99%a2/</link>
+      <title><![CDATA[E44: Bud Powell | 飞越疯人院]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对一百位以内进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Dance of the Infidels</p><p>[00:06:44] &#8216;Round Midnight</p><p>[00:12:17] Un Poco Loco</p><p>[00:16:36] Wee AKA Allen&#8217;s Alley</p><p>[00:27:32] Buttercup</p><p>[00:32:36] Una Noche Con Francis</p><p>[00:40:12] Celia</p><p>[00:46:12] Time Waits</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_MjdKGkEuFTCCbngHBhkhrNNQtdsCaHYPFkgLhXsxmtnAynkNXJTseruXZg-aa.mp3" length="123285556" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_MjdKGkEuFTCCbngHBhkhrNNQtdsCaHYPFkgLhXsxmtnAynkNXJTseruXZg-aa.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/44]]></guid>
+      <pubDate>Sat, 04 Jun 2022 12:38:22 +0800</pubDate>
+      <itunes:duration>3082</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8345683509_162134.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_mSAUmxEyuWmfhGpEeNcUyHNAcwySXkaTrRmrUeaJnsrXYQvYtLphxcjqQ</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/05/21/e43-%e6%97%b6%e4%bb%a3%e6%9b%b2-1930%e5%b9%b4%e4%bb%a3%e7%9a%84%e4%b8%8a%e6%b5%b7%e7%88%b5%e5%a3%ab%e4%b9%90/</link>
+      <title><![CDATA[E43: 时代曲 | 1930年代的上海爵士乐]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对一百位以内进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] 玫瑰玫瑰我爱你</p><p>[00:07:11] 夜上海</p><p>[00:11:40] 夜来香</p><p>[00:17:49] 毛毛雨 （黎锦晖）</p><p>[00:31:14] Harlem Cradle Song (Buck Clayton)</p><p>[00:34:41] My Blue Heaven (Teddy Weatherford)</p><p>[00:41:51] 情人的眼泪</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_gGhhbWSUMUadNEQMGwwZYnZtMQasSrCgCFEJkfdRNZzYZzetynQsfhSPBn-a6.mp3" length="107396796" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_gGhhbWSUMUadNEQMGwwZYnZtMQasSrCgCFEJkfdRNZzYZzetynQsfhSPBn-a6.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/43]]></guid>
+      <pubDate>Sat, 21 May 2022 11:01:26 +0800</pubDate>
+      <itunes:duration>2685</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8346898705_479615.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_VhzbLVkaMPvmMEfFRRuNQsnQvnKyCdwKFHCpDJBwsuVcKKrPgFbuWSALY</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/05/08/e42-astor-piazolla-%e8%ae%a9%e4%bd%a0%e6%b5%81%e6%b3%aa%e7%9a%84%e9%ad%94%e6%b3%95/</link>
+      <title><![CDATA[E42: Astor Piazolla | 让你流泪的魔法]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对第五十到第一百位进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Divagacion</p><p>[00:06:30] Por Una Cabeza (Carlos Gardel)</p><p>[00:10:35] La Cumparsita (Stefan Milenkovich &amp; Marko Hatlak)</p><p>[00:15:59] Adios Nonino</p><p>[00:20:49] Libertango</p><p>[00:25:33] Years of Solitude (ft. Gerry Mulligan)</p><p>[00:27:51] Oblivion</p><p>[00:31:00] La Muerta Del Angel (Gary Burton)</p><p>[00:33:17] Milonga Del Angel</p><p>[00:39:13] Gotan Project</p><p>[00:42:08] Balada Para Un Loco</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_VtMeYuTdVKCjsfZrYtSDRQwBekjTmuxhQzJkcPqukrdvvAcqWGWSLytWsS-f4.mp3" length="109747816" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_VtMeYuTdVKCjsfZrYtSDRQwBekjTmuxhQzJkcPqukrdvvAcqWGWSLytWsS-f4.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/42]]></guid>
+      <pubDate>Sun, 08 May 2022 14:30:30 +0800</pubDate>
+      <itunes:duration>2744</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8348010537_093986.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_gALgtqAsCcRtcAtBNvDbBcWaQxZcWHQMCbvrsEGnPuzMQAsUWCNyxDVSw</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/04/29/e41-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e9%9a%94%e7%a6%bb%e6%97%a5%e8%ae%b0/</link>
+      <title><![CDATA[E41: 凌晨四点 | 隔离日记]]></title>
+      <description><![CDATA[<p>4月30日是国际爵士音乐日，祝大家爵日快乐。</p><p>今天是我封控的第四十二天，也许是第四十三天，我不知道。</p><p>这期节目有点特别，它是我的一篇封控期间写下的日记。</p><p>————————————</p><p>Why for Jazz 开通了微信听友群。我会对第五十到第一百位进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:05:47] Chet Baker &#8211; Everything Happens to Me</p><p>[00:13:49] Louis Armstrong &#8211; Let&#8217;s Do It</p><p>[00:17:07] Arnett Cobb &#8211; Why Try to Change Me Now？</p><p>[00:23:13] Karrin Allyson &#8211; Everybody‘s cryin&#8217; mercy</p><p>[00:31:58] Bill Evans &#8211; Peace Piece</p><p>————————————</p><p>冰岛</p><figure><img src="https://i.typlog.com/whyforjazz/8348753523_493332.jpg"></figure><figure><img src="https://i.typlog.com/whyforjazz/8348753511_506526.jpg"></figure><p>挪威</p><figure><img src="https://i.typlog.com/whyforjazz/8348753496_065998.jpg"></figure><p>Lofoten (北极圈)</p><figure><img src="https://i.typlog.com/whyforjazz/8348753436_916374.jpg"></figure><figure><img src="https://i.typlog.com/whyforjazz/8348753419_461992.jpg"></figure><p>法国</p><figure><img src="https://i.typlog.com/whyforjazz/8348753396_234717.jpg"></figure><p>马丘比丘</p><figure><img src="https://i.typlog.com/whyforjazz/8348754126_698983.jpg"></figure><p>墨西哥</p><figure><img src="https://i.typlog.com/whyforjazz/8348754098_553944.jpg"></figure><p>纽约</p><figure><img src="https://i.typlog.com/whyforjazz/8348754077_4040165.jpg"></figure><p>泰国</p><figure><img src="https://i.typlog.com/whyforjazz/8348753338_898177.jpg"></figure><p>芝加哥</p><figure><img src="https://i.typlog.com/whyforjazz/8348754047_084078.jpg"></figure><p>新奥尔良 Preservation Hall 爵士的起源地</p><figure><img src="https://i.typlog.com/whyforjazz/8348754033_748758.jpg"></figure>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_PvQAKFkqYLwUWEJGSpumDkxZaSkDMxGkKBRMZgmxseEwtZmaJEADEMzrwz-bf.mp3" length="92889432" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_PvQAKFkqYLwUWEJGSpumDkxZaSkDMxGkKBRMZgmxseEwtZmaJEADEMzrwz-bf.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/41]]></guid>
+      <pubDate>Fri, 29 Apr 2022 22:59:59 +0800</pubDate>
+      <itunes:duration>2322</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8348753169_571463.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_NGaEcwUvuuhFMKePNCfUszbUdSVEkbZJWATLbVZhptegzPpAMyuPsaVTk</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/04/23/e40-gene-puerling-%e6%9e%81%e8%87%b4%e5%92%8c%e5%a3%b0%ef%bc%8c%e5%ae%8c%e7%be%8e%e4%bd%93%e9%aa%8c/</link>
+      <title><![CDATA[E40: Gene Puerling | 极致和声，完美体验]]></title>
+      <description><![CDATA[<p>Why for Jazz 向各位推荐73Hours高跟鞋。他们的每双鞋都经过103道工序和73.3小时的打磨。一双好鞋能带你去到更多的地方。73Hours希望每位女性都拥有一双好鞋的陪伴，能够始终大胆地走自己的路。更多信息欢迎淘宝搜索：73Hours。</p><p>Why for Jazz 开通了微信听友群。我会对第五十到第一百位进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Misty</p><p>[00:04:56] Georgia</p><p>[00:10:12] This Is The Night</p><p>[00:14:12] No More Blues</p><p>[00:19:29] Then I Will Be Tired of You</p><p>[00:25:36] It Never Entered My Mind</p><p>[00:21:53] London By Night</p><p>[00:31:42] A Nightingale Sang in Berkeley Square (The Manhattan Transfer)</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_zJyjkdkcDWhZvwQHgVcYAmdSYkvMgsYAKPdCXkdMxTwgzpEGCawSXQddKq-6b.mp3" length="94924894" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_zJyjkdkcDWhZvwQHgVcYAmdSYkvMgsYAKPdCXkdMxTwgzpEGCawSXQddKq-6b.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/40]]></guid>
+      <pubDate>Sat, 23 Apr 2022 11:13:58 +0800</pubDate>
+      <itunes:duration>2373</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8349317176_492676.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_GVmsyZCLjpyfGnkwapmTMSGScRGdvrFrzdQrWHzvBVJVZDfnJheRTQrvf</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/04/09/e39-joe-henderson-%e7%ab%99%e7%9d%80%e4%b9%9f%e8%83%bd%e6%8a%8a%e9%92%b1%e8%b5%9a%e4%ba%86/</link>
+      <title><![CDATA[E39: Joe Henderson | 站着也能把钱赚了]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对第五十到第一百位进群的朋友一次性收取149元的入群费，作为对本节目的支持。根据本群的运行情况，后续入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。详细进群方式，可参考本节目下的shownotes。</p><p>爵士乐的现场性导致了单纯的音频没办法表现它的全部魅力，<a href="https://www.xiaohongshu.com/user/profile/5c98dccd000000001203c090?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1649479673">因此Why for Jazz在小红书开通了短视频号</a>。我会在上面分享一些非常哇塞的爵士乐现场，偶尔也会发一些自己的视频，欢迎大家去小红书关注Why for Jazz，作为播客伴侣，配合使用。</p><p>————————————</p><p>Playlist of the show:</p><p>[00:00:00] Recorda Me</p><p>[00:04:26] Blue Bossa</p><p>[00:10:06] The Prisoner (Herbie Hancock)</p><p>[00:11:26] The Sidewinder (Lee Morgan)</p><p>[00:13:13] Song for My Father (Horace Silver)</p><p>[00:15:53] Black is the Color</p><p>[00:21:53] Y Todaria la Quiero</p><p>[00:31:42] Isfahan</p><p>[00:38:59] Lazy Afternoon</p>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rayqMugzTSYTrdKhYqxgYUEfteVsdRPuEvFmdTEnyAmUBdVCRGyykEfLew-49.mp3" length="106733855" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rayqMugzTSYTrdKhYqxgYUEfteVsdRPuEvFmdTEnyAmUBdVCRGyykEfLew-49.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/39]]></guid>
+      <pubDate>Sat, 09 Apr 2022 12:52:51 +0800</pubDate>
+      <itunes:duration>2668</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8350522017_102239.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_jQPKURsnVDPvqEApBeVnDpXYQJtFNaMjXVMYCHqbEvzwDXACApStnvWJU</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/04/02/dj-set-%e5%9b%9b%e6%9c%88%e4%b8%80%e5%8f%b7%e5%90%ac%e5%8f%8b%e7%be%a4%e7%9a%84%e4%ba%91dj/</link>
+      <title><![CDATA[DJ Set | 四月一号听友群的云DJ]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我会对前五十位进群的朋友一次性收取99元的入群费，作为对本节目的支持。根据本群的运行情况，对于五十位以后申请加入的朋友，入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS，也就是大写的英文字母Y，数字4，英文字母JZXZS，全部大写。在确认群规及转账成功之后，我会将你拉进本节目的微信群。</p><p>请大家关注大陈的B站：<a href="https://www.bilibili.com/video/BV1sq4y1Y7po?spm_id_from=333.999.0.0">OldChem92</a>；小红书：<a href="https://www.xiaohongshu.com/user/profile/6124eba40000000001005a59?xhsshare=CopyLink&amp;appuid=5c98dccd000000001203c090&amp;apptime=1648892594">OldChem</a></p><p>Playlist of the Show:</p><p>City Pop Set:</p><ol><li>Ride on Time &#8211; 山下达郎</li><li>Last Summer Wisper &#8211; 杏里</li><li>Anklet &#8211; 角松敏生</li><li>Dress Down &#8211; 秋元熏</li><li>Melody for You &#8211; 角松敏生</li><li>爱の炎 &#8211; 吉田美奈子</li><li>Love Space &#8211; 山下达郎</li><li>Lovely Feelin&#8217; &#8211; 小岛惠理</li><li>Broken Heart &#8211; 竹内玛莉亚</li></ol><p>Other:</p><ol><li>Prelude in E Minor &#8211; Gerry Mulligan Sextet</li><li>轍 &#8211; 柴田淳</li><li>这些年来 &#8211; 张国荣</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_DnkaHYfchjwPbPsKWubCnACuvSXyhjFjvuvgSfUtZfmWHRqCLPMeHrDNBw-01.mp3" length="104675879" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_DnkaHYfchjwPbPsKWubCnACuvSXyhjFjvuvgSfUtZfmWHRqCLPMeHrDNBw-01.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/39-40]]></guid>
+      <pubDate>Sat, 02 Apr 2022 08:13:31 +0800</pubDate>
+      <itunes:duration>3337</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351113205_847391.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_wTEZWAvuDDuLDGeEAWpddCHEHNCSYRJHSzdMwssGdHgJDXdZhPsBMdmGE</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/03/24/e38-toots-thielemans-%e9%9d%a0%e5%8f%a3%e7%90%b4%e5%92%8c%e5%8f%a3%e5%93%a8%e6%88%90%e4%b8%ba%e7%88%b5%e5%a3%ab%e5%a4%a7%e5%b8%88/</link>
+      <title><![CDATA[E38: Toots Thielemans | 靠口琴和口哨成为爵士大师]]></title>
+      <description><![CDATA[<p>Why for Jazz 开通了微信听友群。我们会对前五十位进群的朋友一次性收取99元的入群费，作为对本节目的支持。根据本群的运行情况，对于五十位以后申请加入的朋友，入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS（英文字母全部大写）。在确认群规及转账成功之后，将会你拉进本节目的微信群。</p><hr><p>Playlist of the show:</p><ol><li>Giant Steps</li><li>Stardust</li><li>Summertime (ft. Dizzy Gillespie &amp; Mango Santamaria)</li><li>Orange Blossom Special (Jerry Murad&#8217;s Harmonicats)</li><li>This is All I Ask (Bill Evans)</li><li>Bluesette</li><li>Leave a Tender Moment Alone (ft. Billy Joel)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_vctsJnJkwNAdxSSNEwVYmpryGLyXLQxUtFAZpWmfpNeZfQFBYnJtjZxVsr-bb.mp3" length="91550918" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_vctsJnJkwNAdxSSNEwVYmpryGLyXLQxUtFAZpWmfpNeZfQFBYnJtjZxVsr-bb.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/38]]></guid>
+      <pubDate>Thu, 24 Mar 2022 21:56:53 +0800</pubDate>
+      <itunes:duration>2289</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351696968_773352.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ZYnSANrgAydahPfzwnmVvDYKCWMZCyHYtGjLadHYgAfvPBPVurXRWznky</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/03/20/e37-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-jazz-club-vol-1-%e9%80%82%e5%90%88%e5%96%9d%e9%85%92%e5%a4%9c%e8%81%8a%e7%9a%84bgm/</link>
+      <title><![CDATA[E37: 凌晨四点 | Jazz Club Vol. 1 – 适合喝酒夜聊的BGM]]></title>
+      <description><![CDATA[<p>本节目由小圃酿造Jazz Club系列葡萄酒特约播出。</p><p>Why for Jazz 开通了微信听友群。我们会对前五十位进群的朋友一次性收取99元的入群费，作为对本节目的支持。根据本群的运行情况，对于五十位以后申请加入的朋友，入群费可能会有相应的提升。想要进群的朋友可以添加微信号Y4JZXZS（英文字母全部大写）。在确认群规及转账成功之后，将会你拉进本节目的微信群。<br />————————————————<br />小圃酿造的Jazz Club是为了爵士乐而生的一组酒。发售的第一瓶酒Jazz Club Vol.1是一瓶来自中国高海拔地区的赤霞珠。在香格里拉地区酿造陈年。</p><p>自然发酵、轻柔萃取、最少化人工干预酿造，旧木桶陈年12个月。浓郁、饱满、强烈，黑莓果酱、黑枣、马尾松味道。适合稍微冰镇后饮用。</p><p>购买链接：<a href="https://k.youshop10.com/8SvSIpME">https://k.youshop10.com/8SvSIpME</a><br />————————————————<br />Playlist of the Show:</p><ol><li>Fast Car &#8211; Tracy Chapman</li><li>Peace Piece &#8211; Bill Evans</li><li>Chet Baker &#8211; Portrait in black and white</li><li>Nocturne No.2 in E Flat Major, Op. 9, No. 2 &#8211; Jacques Loussier</li><li>Manchester &#8211; J.A.M.</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ncDmcbMBskVtSMfEkaFVbzbMWyUZVAWWdaWHxaPZprMcrpvHFTwNrRyhUw-3b.mp3" length="118396437" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ncDmcbMBskVtSMfEkaFVbzbMWyUZVAWWdaWHxaPZprMcrpvHFTwNrRyhUw-3b.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/37]]></guid>
+      <pubDate>Sun, 20 Mar 2022 21:43:40 +0800</pubDate>
+      <itunes:duration>2960</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351697709_633521.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_DXyVbyQjMcfFTwEnfkYMfEhUcynxJfRzgggLfYgdurFkdhEHdXRWtgWqj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/03/07/e36-al-jarreau-%e7%88%b5%e5%a3%ab%e6%ad%8c%e6%89%8b%e5%8f%98%e7%9b%b8%e6%80%aa%e6%9d%b0/</link>
+      <title><![CDATA[E36: Al Jarreau | 爵士歌手变相怪杰]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Mornin&#8217;</li><li>We Got By</li><li>Breakin&#8217; Away</li><li>We&#8217;re in This Love Together</li><li>Take Five (1976)</li><li>Mas Que Nada (ft. Michel Petrucciani)</li><li>Busta Rhymes Rap Live</li><li>Breezin&#8217; (ft. George Benson)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_gVFvsrBfRPrPkNLQjeJzmrHhXMGpVXhbUVdguaGKKdAuuRDHaYQMVHLcda-88.mp3" length="99650982" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_gVFvsrBfRPrPkNLQjeJzmrHhXMGpVXhbUVdguaGKKdAuuRDHaYQMVHLcda-88.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/36]]></guid>
+      <pubDate>Mon, 07 Mar 2022 21:28:46 +0800</pubDate>
+      <itunes:duration>2491</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351698672_558638.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_edApdbVTTwwDNKuhpKWDzSyNmMDPfUavFhJWPpmHRwrSFVVbpxkUwvwYj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/02/26/e35-jim-hall-%e6%b8%a9%e6%96%87%e5%b0%94%e9%9b%85%e7%9a%84%e7%88%b5%e5%a3%ab%e6%95%99%e6%8e%88/</link>
+      <title><![CDATA[E35: Jim Hall | 温文尔雅的爵士教授]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Darn that Dream</li><li>I&#8217;ve Got You under My Skin</li><li>Two&#8217;s Blues</li><li>The Bridge</li><li>Something Special</li><li>Quartet + 4</li><li>Ballad Z</li><li>Deep in a Dream</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_WmNeuuhepeRHZXnvrCuaDEFVQSzwJJFFNcbzxZSkRrXtbEbXNtTbsLFZJw-07.mp3" length="104048943" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_WmNeuuhepeRHZXnvrCuaDEFVQSzwJJFFNcbzxZSkRrXtbEbXNtTbsLFZJw-07.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/35]]></guid>
+      <pubDate>Sat, 26 Feb 2022 21:11:35 +0800</pubDate>
+      <itunes:duration>2601</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351699711_158929.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_VNuBRbJyzLnwzvHEVJYQyqXtNqxXwuMyNThvswfsRCGWMQpjgpKwWBpAg</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/02/08/e34-art-farmer-%e7%94%9a%e8%87%b3%e5%88%9b%e9%80%a0%e4%ba%86%e4%b8%80%e4%b8%aa%e4%b9%90%e5%99%a8/</link>
+      <title><![CDATA[E34: Art Farmer | 甚至创造了一个乐器]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>春节序曲 &amp; I’ll Take Romance remix</li><li>Back in the Cage</li><li>Farmer’s Market</li><li>Concerto for Billy the Kid (ft. George Russell)</li><li>The Jazztet – I remember Clifford</li><li>Petite Belle</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_WXnyDEdbHWLsBeVvNpDqLtAkyYLDjpWqZuAbeabsrtfLGUxhNQVEqpcMxD-2a.mp3" length="102900600" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_WXnyDEdbHWLsBeVvNpDqLtAkyYLDjpWqZuAbeabsrtfLGUxhNQVEqpcMxD-2a.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/34]]></guid>
+      <pubDate>Tue, 08 Feb 2022 20:56:00 +0800</pubDate>
+      <itunes:duration>2572</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351700646_083002.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ACLWWjfksDxnwYPTLUCQSmHkWgpFTGfhaQXMDUfrLheKypJBrXNpVBdqF</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/01/23/e33-al-capone-%e5%bd%93%e9%bb%91%e5%b8%ae%e5%a4%a7%e4%bd%ac%e4%b9%9f%e6%98%af%e7%88%b5%e5%a3%ab%e4%b9%90%e8%bf%b7/</link>
+      <title><![CDATA[E33: Al Capone | 当黑帮大佬也是爵士乐迷]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Fly me to the moon</li><li>Rhapsody in Blue (Gershwin)</li><li>A kiss to build a dream on (Louis Armstrong)</li><li>Weather Bird (Louis Armstrong &amp; Earl Hines)</li><li>Blues in thirds (Earl Hines)</li><li>Ain&#8217;t misbehavin&#8217; (Fats Waller)</li><li>All of me (Gerald Marks)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_RNKWYVGqHeBYPjVSvxLwjedGvCJywvyXLZXyTBWdjHDRxtGrMzpFsFPzty-a0.mp3" length="109716575" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_RNKWYVGqHeBYPjVSvxLwjedGvCJywvyXLZXyTBWdjHDRxtGrMzpFsFPzty-a0.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/33]]></guid>
+      <pubDate>Sun, 23 Jan 2022 20:49:28 +0800</pubDate>
+      <itunes:duration>2743</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351701035_224136.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_VYNHsBfFvYpsysDbsNgJZFQTfPAjwZjWSrjEjgWzjhGmkHdHWNpvuSwWW</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2022/01/09/e32-chick-corea-%e8%9e%8d%e5%90%88%e7%88%b5%e5%a3%ab%e9%ac%bc%e6%89%8d/</link>
+      <title><![CDATA[E32: Chick Corea | 融合爵士鬼才]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Window</li><li>Peaceful (ft. Miles Davis)</li><li>Spane</li><li>Crystal Silence (ft. Gary Burton)</li><li>Armando&#8217;s Rhumba</li><li>El Bozo Pt.2</li><li>Spanish Fantacy Pt.1</li><li>Childred&#8217;s Song #1</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_zkaQgPHBahmwvyhjGFKYWqnhyeGucNxbGpVHhjVKKqvNyarrSECyXpvXaq-9a.mp3" length="121397760" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_zkaQgPHBahmwvyhjGFKYWqnhyeGucNxbGpVHhjVKKqvNyarrSECyXpvXaq-9a.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/32]]></guid>
+      <pubDate>Sun, 09 Jan 2022 20:42:33 +0800</pubDate>
+      <itunes:duration>3035</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351701867_485325.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_sEuRJpJVWuQwLqvSJHEUUHXBcDjZfFaYgxXpnLXasSbJJLzndkUFLFQcR</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/12/27/e31-%e5%87%8c%e6%99%a8%e5%9b%9b%e7%82%b9-%e5%bd%93%e4%bd%a0emo%e4%bd%a0%e4%bc%9a%e6%83%b3%e8%b5%b7%e8%b0%81/</link>
+      <title><![CDATA[E31: 凌晨四点 | 当你EMO你会想起谁]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Wonder &#8211; ADOY</li><li>情歌 &#8211; Nightcap 睡帽乐团</li><li>Glass Eyes &#8211; Radiohead</li><li>You can&#8217;t go home again &#8211; Stephane Belmondo</li><li>You can&#8217;t go home again &#8211; Chet Baker</li><li>Lullaby to an anxious child &#8211; Dominic Miller</li><li>EML &#8211; Pierre Bensusan</li><li>Midnight &#8211; Kurosuke</li><li>Encontros e Despedidas &#8211; Maris Rita</li><li>港口 &#8211; 陈胤希</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_MhEHdNKUDqtFYZLXbAQKrFFhqPHFMtJRQgsrtjJpvBZfxZfXuWkBEPeBXB-8a.mp3" length="129796031" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_MhEHdNKUDqtFYZLXbAQKrFFhqPHFMtJRQgsrtjJpvBZfxZfXuWkBEPeBXB-8a.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/31]]></guid>
+      <pubDate>Mon, 27 Dec 2021 19:07:24 +0800</pubDate>
+      <itunes:duration>4210</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351705470_479897.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_nMxmZFyarcGyZuKeFWSdNCBJaPwAkAdqBXTWbhrQVbFkATsNcztjEFNXP</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/12/02/e30-mongo-santamaria-%e8%83%bd%e5%bf%8d%e4%bd%8f%e4%b8%8d%e8%b7%b3%e8%88%9e%e5%90%97%ef%bc%9f/</link>
+      <title><![CDATA[E30: Mongo Santamaria | 能忍住不跳舞吗？]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Mama Papa Tu</li><li>Puchunguita &#8211; Lecuona Cuban Boys</li><li>Four Beat Manbo &#8211; Tito Puente</li><li>Afro Blue</li><li>Watermelon Man &#8211; Herbie Hancock</li><li>Watermelon Man &#8211; Mongo Santamaria</li><li>Watermelon Man &#8211; Herbie Hancock</li><li>La Bamba</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_cRqhxjZePtrEWZmrdRCQhMwdxXHAJnkMwrZkXXUzTGTZBanzskPtRQZWhx-21.mp3" length="108486815" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_cRqhxjZePtrEWZmrdRCQhMwdxXHAJnkMwrZkXXUzTGTZBanzskPtRQZWhx-21.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/30]]></guid>
+      <pubDate>Thu, 02 Dec 2021 18:52:29 +0800</pubDate>
+      <itunes:duration>2712</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351708036_330407.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_uuRpEMsUTYvMFmykYStQVraMqnkxWhkZpjpVmKGkWAUpGPBMxHMNkCead</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/11/14/e29-boz-scaggs-%e5%a3%b0%e9%9f%b3%e6%81%b0%e4%bc%bc%e6%b8%af%e6%b9%be%e7%9a%84%e6%9f%94%e7%81%af/</link>
+      <title><![CDATA[E29: Boz Scaggs | 声音恰似港湾的柔灯]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Girl from the North Country</li><li>Baby&#8217;s Calling Me Home</li><li>Dime-A-Dance Romance</li><li>I&#8217;ll Be Long Gone</li><li>Slow Dancer</li><li>Lowdown</li><li>JoJo</li><li>Miss Riddle</li><li>You Don&#8217;t Know What Love Is</li><li>Harbor Lights</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_ySvhBXFBcgMmSGvdvhHQZfVsAhVYKuMRbqXFBhXLbkbmBthmLPJqThKJkZ-61.mp3" length="130102175" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_ySvhBXFBcgMmSGvdvhHQZfVsAhVYKuMRbqXFBhXLbkbmBthmLPJqThKJkZ-61.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/29]]></guid>
+      <pubDate>Sun, 14 Nov 2021 16:37:13 +0800</pubDate>
+      <itunes:duration>3253</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351716152_415794.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_McnyegrUMCtzCBuWHFCNvYrGfYjJaxPsqhKkQpuZdytsGEmCHCtWWKqKx</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/11/07/e28-caleb-belkin-%e8%92%b8%e6%b1%bd%e6%b3%a2%ef%bc%8c%e7%84%b6%e5%90%8e%e5%91%a2%ef%bc%9f/</link>
+      <title><![CDATA[E28: Caleb Belkin | 蒸汽波，然后呢？]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Night Drive &#8211; Caleb Belkin</li><li>Cathy &#8211; 当山瞳</li><li>So Cute~ &#8211; Lopu$</li><li>Crystal Dolphin &#8211; engelwood</li><li>Machi No Dorufin &#8211; 滨田金吾</li><li>Rebirth of Slick (Cool Like Dat) &#8211; Digable Planet</li><li>The Lamp is Low &#8211; Laurindo Almeida</li><li>Aruarian Dance &#8211; Nujabes</li><li>I fall in love, too easily &#8211;  Chet Baker</li><li>I fall in love, too easily &#8211; Caleb Belkin</li><li>Kaun Komsott &#8211; Ros Serey Sothea</li><li>Lost Samurai &#8211; Caleb Belkin</li><li>Water &#8211; Caleb Belkin</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_QUCrTCZHqZGfEbhmbKJNvAYteuSqegcMxhUkaWywscvzssmXPpbGMTXUth-9d.mp3" length="115430495" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_QUCrTCZHqZGfEbhmbKJNvAYteuSqegcMxhUkaWywscvzssmXPpbGMTXUth-9d.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/28]]></guid>
+      <pubDate>Sun, 07 Nov 2021 16:29:35 +0800</pubDate>
+      <itunes:duration>2886</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351716634_645982.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_dBArmAcGeTNtXqjwtSXjMrvtmYgqzcMNQkFBwBAdbpjapEnUMLthtwaEC</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/10/31/e27-milt-jackson%e5%92%8c%e7%8e%b0%e4%bb%a3%e7%88%b5%e5%a3%ab%e5%9b%9b%e9%87%8d%e5%a5%8f/</link>
+      <title><![CDATA[E27: Milt Jackson和现代爵士四重奏]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Bluesology</li><li>Django</li><li>Bag&#8217;s Groove</li><li>Skating in Central Park</li><li>Bags &amp; Trane</li><li>Wave</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_YgVEFePBLZqMdtByHHSxPxTxnGNCvqYqMwDFyBCuaQHrvmcMTzfDhPtzgR-b9.mp3" length="116800415" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_YgVEFePBLZqMdtByHHSxPxTxnGNCvqYqMwDFyBCuaQHrvmcMTzfDhPtzgR-b9.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/27]]></guid>
+      <pubDate>Sun, 31 Oct 2021 16:20:56 +0800</pubDate>
+      <itunes:duration>2920</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351717150_109903.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_SgQEYNxRsywahqDBzCrGbZFvPeKDmCDtPSmuUvdBsjbasDmCaBXSghTkr</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/10/17/e26-john-coltrane-%e7%88%b5%e5%a3%ab%e5%8f%b2%e4%b8%8a%e4%b8%80%e5%a4%a7%e6%ad%a5/</link>
+      <title><![CDATA[E26: John Coltrane | 爵士史上一大步]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>My favorate things</li><li>Woody n&#8217; you</li><li>Bye-ya</li><li>Blue in green</li><li>Giant steps</li><li>Acknowledgement</li><li>The Father, The Son and The Holy Ghost</li><li>In a sentimental mood</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_cHDtYKMPTxMMrNNLuhJKRNHcHZrRxXDBFanuQGpZQmFNwvZetdkJXnQTLn-2d.mp3" length="116675490" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_cHDtYKMPTxMMrNNLuhJKRNHcHZrRxXDBFanuQGpZQmFNwvZetdkJXnQTLn-2d.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/26]]></guid>
+      <pubDate>Sun, 17 Oct 2021 16:13:43 +0800</pubDate>
+      <itunes:duration>2917</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351717584_650958.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_eUGaCGChXJfeRRFstpVmbYvwFdcKaGudwFJtxbqrgJJvSVjHkkxdduvbs</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/09/05/e25-%e5%8a%a8%e6%bc%ab-%e5%9d%82%e9%81%93%e4%b8%8a%e7%9a%84%e9%98%bf%e6%b3%a2%e7%bd%97/</link>
+      <title><![CDATA[E25: 动漫 | 坂道上的阿波罗]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Kids on the Slop</li><li>Someday My Prince Will Come (Bill Evans)</li><li>But Not for Me</li><li>Lullaby of Birdland (手茑葵)</li><li>You Don&#8217;t Know What Love Is (Chet Baker)</li><li>Now&#8217;s the Time (Charlie Parker)</li><li>These Foolish Things (Bob Dylan)</li><li>In a Sentimental Mood (Duke Ellington &amp; John Coltrane)</li><li>My Favorate Things &amp; Moanin&#8217;</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_pBysKYKWYrqnJdtVECgMjVgpNEATCUWWgsvYkSzPxEgJVeTxRPVVVhrfZm-42.mp3" length="98335441" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_pBysKYKWYrqnJdtVECgMjVgpNEATCUWWgsvYkSzPxEgJVeTxRPVVVhrfZm-42.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/25]]></guid>
+      <pubDate>Sun, 05 Sep 2021 15:51:07 +0800</pubDate>
+      <itunes:duration>2458</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351718879_201891.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_QrbMxAzBeWHZEvqtekvVCcPMDYjpaACjPJxCZnFkQyUNRkrcJTVLXByaS</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/08/25/e24-george-freeman-%e7%9b%b4%e5%88%b0%e4%bd%a0%e5%87%ba%e7%8e%b0/</link>
+      <title><![CDATA[E24: George Freeman | 直到你出现]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Deep Purple</li><li>Vonski (ft. Chico Freeman)</li><li>Boogie Woogie Joe (ft. Joe Morris)</li><li>There&#8217;s a Small Hotel (ft. Charlie Parker)</li><li>My Scenery</li><li>Bush Dance (ft. Johnny Griffin)</li><li>At Long Last Love (ft. Kurt Elling)</li><li>Till There Was You</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_huWjRqwahfcwLKQctJVcgSPkYqcVfQaRXjJMcKTyAwAUeLgaAHZSJhWMcP-7c.mp3" length="122400486" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_huWjRqwahfcwLKQctJVcgSPkYqcVfQaRXjJMcKTyAwAUeLgaAHZSJhWMcP-7c.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/24]]></guid>
+      <pubDate>Wed, 25 Aug 2021 15:43:21 +0800</pubDate>
+      <itunes:duration>3060</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351719326_303878.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_qKCeyXzdutyHcWjwxjfqdSPXMVdDTQFWqJGUGQgNFKauHXXWHFEqwxHhW</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/06/17/e23-george-benson-%e7%88%b5%e5%a3%ab%e8%be%b9%e7%95%8c%e5%bc%80%e6%8b%93%e8%80%85/</link>
+      <title><![CDATA[E23: George Benson | 爵士边界开拓者]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Affirmation</li><li>Easy Living</li><li>Paraphernalia</li><li>Breezin</li><li>Breezin ft. Al Jarreau</li><li>This Masquerade</li><li>Six Play</li><li>Moody&#8217;s Mood</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_zvaryVYcHthSuphkdujyDWWGvsWBcwWAcqTGHsPCWhJDBLdvnsZJpHWXBQ-ae.mp3" length="111965090" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_zvaryVYcHthSuphkdujyDWWGvsWBcwWAcqTGHsPCWhJDBLdvnsZJpHWXBQ-ae.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/23]]></guid>
+      <pubDate>Thu, 17 Jun 2021 15:35:54 +0800</pubDate>
+      <itunes:duration>2799</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351719823_293131.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_mPCzyaYgVXRPAuVpSDufRZNwRRvqPwStGqXpSHEbTUXSfhANAArKUxXSa</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/05/04/e22-%e5%85%b7%e5%b2%9b%e7%9b%b4%e5%ad%90-city-pop-%e7%9a%84%e6%9c%a6%e8%83%a7%e4%b9%8b%e9%9f%b3/</link>
+      <title><![CDATA[E22: 具岛直子 | City Pop 的朦胧之音]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>I Love You</li><li>Candy</li><li>So High, So High</li><li>十二月的街</li><li>Melody</li><li>台风の夜</li><li>No, No, No</li><li>まどろみ</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_SnwqAeQRpuXADkAgEHxLxgUuVAvnbhXzKNyzvbvkRTcEyqTMdjLzLpCwLK-82.mp3" length="92231147" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_SnwqAeQRpuXADkAgEHxLxgUuVAvnbhXzKNyzvbvkRTcEyqTMdjLzLpCwLK-82.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/22]]></guid>
+      <pubDate>Tue, 04 May 2021 15:29:55 +0800</pubDate>
+      <itunes:duration>2306</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351720124_702532.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_LUzFBeAQNBnJBKtBUqdRxXUNpQNyQTaRxUUBRrugmajcHLUKZvtStZDAf</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/04/18/e21-joey-alexander-%e6%9d%a5%e8%87%aa%e5%b7%b4%e5%8e%98%e5%b2%9b%e7%9a%84%e9%92%a2%e7%90%b4%e7%a5%9e%e7%ab%a5/</link>
+      <title><![CDATA[E21: Joey Alexander | 来自巴厘岛的钢琴神童]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>The Very Thought of You</li><li>Warna</li><li>Sonrisa</li><li>Giant Steps</li><li>Joey Alexander fiat. Wynton Marsalis Sextet</li><li>Ma Blues</li><li>Pannonica</li><li>Bali</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_BQLJWtwcKPAQLEwGkdRZYaYRMvusKQUuuLcGARjGQtHHNaauPfPqKCHeWy-41.mp3" length="124226015" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_BQLJWtwcKPAQLEwGkdRZYaYRMvusKQUuuLcGARjGQtHHNaauPfPqKCHeWy-41.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/21]]></guid>
+      <pubDate>Sun, 18 Apr 2021 15:22:48 +0800</pubDate>
+      <itunes:duration>3106</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351720635_087532.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_tfBFPbxMEegGFwENZfRQdDpwPrJfvBaXhugrFGVeNztUCGxAkVefSbAHj</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/01/24/e20-chris-botti-%e9%a2%9c%e5%80%bc%e6%9c%80%e9%ab%98%e7%9a%84%e5%b0%8f%e5%8f%b7%e6%89%8b/</link>
+      <title><![CDATA[E20: Chris Botti | 颜值最高的小号手]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Irresistible Bliss</li><li>Evocations (Michael Brecker)</li><li>My Funny Valentine (Sting)</li><li>Light the Stars</li><li>Italia (Andrea Bocelli)</li><li>Cinama Paradiso (Yo-Yo Ma)</li><li>Emmanuel (Lucia Micarelli)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_PAbMDBCNXcqfpWdgKjTHaEXNhWQfpmGwVxQxYUgdHSsaXvLLnvkELVCpTv-65.mp3" length="99142102" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_PAbMDBCNXcqfpWdgKjTHaEXNhWQfpmGwVxQxYUgdHSsaXvLLnvkELVCpTv-65.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/20]]></guid>
+      <pubDate>Sun, 24 Jan 2021 15:17:32 +0800</pubDate>
+      <itunes:duration>2479</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351720960_546928.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_vFvZUbKsWnbVVFdnugwPraxVVPbEHmyapvDAFQatbzzpeTcygJEvvZFke</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2021/01/07/e19-liane-carroll-%e8%8b%b1%e5%9b%bd%e5%9b%bd%e5%ae%9d%e7%88%b5%e5%a3%ab%e7%83%9f%e5%97%93/</link>
+      <title><![CDATA[E19: Liane Carroll | 英国国宝爵士烟嗓]]></title>
+      <description><![CDATA[<p>Play List of the Show:</p><ol><li>Seaside</li><li>You Don&#8217;t Know Me</li><li>Say a Little Prayer</li><li>My Funny Valentine</li><li>Eleanor Rigby</li><li>Dublin Morning</li><li>My Baby Just Cares for Me</li><li>The Briar and the Rose</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_bJGsXHNyECfjHzVWkXHNDbQdCKqTGWuuhjmhBavphqcJgDxbkpUGMtzHzL-08.mp3" length="98685481" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_bJGsXHNyECfjHzVWkXHNDbQdCKqTGWuuhjmhBavphqcJgDxbkpUGMtzHzL-08.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/19]]></guid>
+      <pubDate>Thu, 07 Jan 2021 15:15:57 +0800</pubDate>
+      <itunes:duration>2467</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351721427_060427.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_QjsbnHcnNDUqtGJeprmZTHPFrWSDgvEYSyrHAMbLHhuTuvSmetJFRehwD</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/10/21/e18-%e6%b5%b7%e9%87%8e%e9%9b%85%e5%a8%81-%e7%94%a8%e9%9f%b3%e4%b9%90%e4%b8%ba%e4%bb%96%e5%81%9a%e7%82%b9%e4%bb%80%e4%b9%88/</link>
+      <title><![CDATA[E18: 海野雅威 | 用音乐为他做点什么]]></title>
+      <description><![CDATA[<p>Play List of the Show:</p><ol><li>What Kind of Fool Am I &#8211; Yoshio Suzuki Trio</li><li>Whisper Not &#8211; Tadataka Unno</li><li>Pistachio &#8211; Jimmy Cobb Trio</li><li>Remember U &#8211; Jimmy Cobb Trio</li><li>From the Top of My Head &#8211; Roy Hargrove Quintet</li><li>Jazz Live &#8211; feat Hikari Ichihara</li><li>What a Wonderful World &#8211; Ta dataka Unno</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_qCvFFNpbYRjkvdTFTwsspkrqckQPUhhYJMgdzQBJZSdHTwsCfALAfnvGXj-ac.mp3" length="130761695" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_qCvFFNpbYRjkvdTFTwsspkrqckQPUhhYJMgdzQBJZSdHTwsCfALAfnvGXj-ac.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/18]]></guid>
+      <pubDate>Wed, 21 Oct 2020 15:07:16 +0800</pubDate>
+      <itunes:duration>3269</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351721979_895958.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_hreXgNPUGmfEsExFvJdgNqzmMGKfnRZXxzuTdvANJGtUSsjMGGwTEhHaE</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/09/17/e17-%e6%8a%ab%e5%a4%b4%e5%a3%ab-beatles-played-in-jazz/</link>
+      <title><![CDATA[E17: 披头士 | Beatles Played in Jazz]]></title>
+      <description><![CDATA[<p>Play List of the Show:</p><ol><li>The Fool on the Hill &#8211; Brazilian Tropical Orchestra</li><li>And I Love Her &#8211; André Ceccarelli Trio</li><li>Hey Jude &#8211; Ella Fitzgerald</li><li>A Day in Life &#8211; Grant Green</li><li>Eleanor Rigby &#8211; Wes Montgomery</li><li>Yesterday &#8211; Lee Morgan</li><li>Hello Goodbye &#8211; Bud Shank &amp; Chet Baker</li><li>Norwegian Wood &#8211; Herbie Hancock</li><li>Can&#8217;t Buy Me Love &#8211; Stanley Turrentine</li><li>Love Me Do &#8211; Blues Beatles</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_vCRGnKwrnwZFStNFuZKZdgJnAYnaqNDfzdCMugYwxtLYEVfTGhDBvhggFB-24.mp3" length="134733215" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_vCRGnKwrnwZFStNFuZKZdgJnAYnaqNDfzdCMugYwxtLYEVfTGhDBvhggFB-24.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/17]]></guid>
+      <pubDate>Thu, 17 Sep 2020 14:58:02 +0800</pubDate>
+      <itunes:duration>3368</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351722587_245626.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_TnVSXdFSHZKpVfKRkUsDusrmZuwjGTnxZaLccsvewSXGnzUxTnASKMGXB</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/08/24/e16-sade-%e7%81%b5%e9%ad%82%e7%88%b5%e5%a3%ab%e5%a5%b3%e7%a5%9e/</link>
+      <title><![CDATA[E16: Sade | 灵魂爵士女神]]></title>
+      <description><![CDATA[<p>Play List of the Show:</p><ol><li>Paradise</li><li>Smooth Operator</li><li>Your Love is King</li><li>Why Can&#8217;t We Live Together</li><li>King of Sorrow</li><li>Never as Good as the First Time</li><li>The Big Unknow</li><li>No Ordinary Love</li><li>The Sweatest Taboo</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_qRBqLhtJrgsrbaeCpNgzyyqkegxtfkhLYDGPDwRycZDXspaZAPsxrymFfx-d7.mp3" length="100018771" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_qRBqLhtJrgsrbaeCpNgzyyqkegxtfkhLYDGPDwRycZDXspaZAPsxrymFfx-d7.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/16]]></guid>
+      <pubDate>Mon, 24 Aug 2020 14:48:35 +0800</pubDate>
+      <itunes:duration>2500</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351723262_3798065.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_WrmtfVzZNDBnxGnCCrsAyccvzwvHEwjrqckNSMyLwMhYWJyvGJwpPjEYm</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/08/11/e15-%e7%88%b5%e5%a3%ab%e7%bb%8f%e5%85%b8%e4%b9%90-on-green-dolphin-street/</link>
+      <title><![CDATA[E15: 爵士经典乐 | On Green Dolphin Street]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Wynton Marsalis &#8211; St. Louis Blues</li><li>Tony Bennett, Amy Winehouse &#8211; Body and Soul</li><li>Thelonious Monk &#8211; Round Midnight</li><li>Miles Davis (1958) &#8211; On Green Dolphin Street</li><li>Miles Davis, John Cotran (1960) &#8211; On Green Dolphin Street</li><li>Miles Davis (1965) &#8211; On Green Dolphin Street</li><li>Ella Fitzgerald, Joe Pass &#8211; On Green Dolphin Street<br />&#8216;8. Wes Montgomery &#8211; On Green Dolphin Street</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_uHXmEGLnWnDGwjLCueFqKDtDjhrsErDTEetwXQnLENYLmfZgytnLnXkXZb-d7.mp3" length="148465465" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_uHXmEGLnWnDGwjLCueFqKDtDjhrsErDTEetwXQnLENYLmfZgytnLnXkXZb-d7.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/15]]></guid>
+      <pubDate>Tue, 11 Aug 2020 14:37:22 +0800</pubDate>
+      <itunes:duration>3712</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351724285_984032.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_BynFrGjeugDvRGWfVCGWQTjSbgYSnHTWDKztaUtSbBbfBXSjrQvpDeEFW</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/07/26/e14-bill-withers-%e8%8d%89%e6%a0%b9%e7%ba%a2%e4%ba%ba%e5%92%8c%e4%bb%96%e7%9a%84%e7%81%b5%e9%ad%82%e4%b9%90/</link>
+      <title><![CDATA[E14: Bill Withers | 草根红人和他的灵魂乐]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Memories Are That Way</li><li>Ain&#8217;t No Sunshine</li><li>Granma&#8217;s Hands</li><li>Lean on Me</li><li>Use Me</li><li>She&#8217;s Lonely</li><li>In the Name of Love</li><li>Paint You Pretty Picture</li><li>Oh Yeah!</li><li>Just the Two of Us</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_dZcfYUjQfrjjNBmRLrxvdtmRcdKsbLYSAWkQZhsKzETZJgyZNfGdqaTjvA-13.mp3" length="112983455" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_dZcfYUjQfrjjNBmRLrxvdtmRcdKsbLYSAWkQZhsKzETZJgyZNfGdqaTjvA-13.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/14]]></guid>
+      <pubDate>Sun, 26 Jul 2020 14:20:05 +0800</pubDate>
+      <itunes:duration>2825</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351724785_714022.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_eZQhmfheRFgMUXfqGtxtxGZzNpFEZBxrRRXwKajBJAUhYPrVrrHvdHjep</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/07/13/e13-art-blakey-%e7%8c%ae%e8%ba%ab%e7%88%b5%e5%a3%ab%e7%9a%84%e4%bd%bf%e5%be%92/</link>
+      <title><![CDATA[E13: Art Blakey | 献身爵士的使徒]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>The End of a Love Affair</li><li>Now&#8217;s the Time (A Night at Birdland Vol. 2)</li><li>It&#8217;s You or No One</li><li>Moanin&#8217;</li><li>A Night in Tunisia</li><li>Theme from Golden Boy (Chuck Mangione)</li><li>E.T.A (Wynton Marsalis)</li><li>One for All</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_LpubFEEzGCrArfUXusKHXGrgHHaNCGjPTLrvwNUnJvSnkscgjKRqCrmFXT-d9.mp3" length="149168681" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_LpubFEEzGCrArfUXusKHXGrgHHaNCGjPTLrvwNUnJvSnkscgjKRqCrmFXT-d9.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/13]]></guid>
+      <pubDate>Mon, 13 Jul 2020 14:11:01 +0800</pubDate>
+      <itunes:duration>3729</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351726196_355725.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_nKDqAngTEfncdFfGvDzrLXGdfQybWuWkqQsQNJVBuMEQqbmzWjGemLmLs</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/06/29/e12-latin-jazz-%e6%8b%89%e7%be%8e%e9%9f%b3%e4%b9%90%e4%b8%8e%e7%88%b5%e5%a3%ab%e4%b9%90%e7%9a%84%e5%ae%8c%e7%be%8e%e8%9e%8d%e5%90%88/</link>
+      <title><![CDATA[E12: Latin Jazz | 拉美音乐与爵士乐的完美融合]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>St. Louis Bluse (Louis Amstrong)</li><li>Tanga (Mario Bauza)</li><li>Manteca (Dizzy Gillespie)</li><li>Afro Blue (Mango Santamaria)</li><li>Hanava Blues (Chico O&#8217;Farrill)</li><li>El Monte (PALO!)</li><li>Sal Sangre (Chico Mendoza)</li><li>Mandinga Improvisacion (Ruben Gonzalez)</li><li>Que Pasa (Irakere)</li><li>La Gloria eres Tú (Rubén González)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rkAVmHacebUwbtGfhjWqZKLJYfsHtyrHLEkjubPYvwmzZLRyNHsCyUkLKG-1b.mp3" length="132935147" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rkAVmHacebUwbtGfhjWqZKLJYfsHtyrHLEkjubPYvwmzZLRyNHsCyUkLKG-1b.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/12]]></guid>
+      <pubDate>Mon, 29 Jun 2020 13:44:58 +0800</pubDate>
+      <itunes:duration>3323</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351726904_263166.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_wnyELZJBzRYghAYKDpgFVVVAacSgWERgBCwetEfyqGtChyWgGEMWXSPFA</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/06/14/e11-nina-simone-%e7%88%b5%e5%a3%ab%e7%8e%8b%e5%90%8e%e4%b8%8e%e6%b0%91%e6%9d%83%e6%96%97%e5%a3%ab/</link>
+      <title><![CDATA[E11: Nina Simone | 爵士王后与民权斗士]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Feeling Good</li><li>I Love You Porgy</li><li>My Baby Just Cares for Me</li><li>Love Me or Leave Me</li><li>Stars</li><li>I Wish I Knew How It Would Feel to Be Free</li><li>Just in Time</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_DdzxVtdULhuKcFbfUtSpfdCgqbRyHskVnewYjXwzePYUUNcfpUSEbmMVRt-fd.mp3" length="96057695" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_DdzxVtdULhuKcFbfUtSpfdCgqbRyHskVnewYjXwzePYUUNcfpUSEbmMVRt-fd.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/11]]></guid>
+      <pubDate>Sun, 14 Jun 2020 13:13:33 +0800</pubDate>
+      <itunes:duration>2401</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351730821_408654.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_EEYHZgpLgnUpNXxzJsAKcNnErFxHRLNxsgUubDdAruvCuKTwaEGfJtMjd</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/06/10/e10-concierto-de-aranjuez-%e8%a5%bf%e7%8f%ad%e7%89%99%e7%9a%84%e5%8f%a4%e5%85%b8%e7%81%b5%e6%84%9f/</link>
+      <title><![CDATA[E10: Concierto de Aranjuez | 西班牙的古典灵感]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Concierto de Aranjuez (Part 3)</li><li>Concierto de Aranjuez (Pablo Sáinz-Villegas)</li><li>Concierto de Aranjuez (Miles Davis)</li><li>Spain (Al Jerreau)</li><li>Concierto de Aranjuez (the Modern Jazz Quartet)</li><li>Concierto de Aranjuez (Jim Hall)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_nZjMgQGUjJaFcjfwUpmUHzraEcrDvexTrdWYrvvdHuexuPBbcPCTRJUGqN-b0.mp3" length="154761695" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_nZjMgQGUjJaFcjfwUpmUHzraEcrDvexTrdWYrvvdHuexuPBbcPCTRJUGqN-b0.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/10]]></guid>
+      <pubDate>Wed, 10 Jun 2020 00:39:26 +0800</pubDate>
+      <itunes:duration>3869</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351774171_284391.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ujnGccbCwCHrcSgVJPrAyTMGNHBUhmJxypjnEhEEYRnRSCscppWHwrwRx</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/06/04/e09-srp-%e7%9f%b3%e5%ba%93%e9%97%a8%e7%9a%84%e7%94%b5%e9%9f%b3%e4%b9%8b%e5%a3%b0/</link>
+      <title><![CDATA[E09: SRP | 石库门的电音之声]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>笑话（张乐）</li><li>Achnowledgements</li><li>Last Night of the Dynasty</li><li>The Jade Buddha Temple</li><li>The Bund</li><li>Miss Shanghai</li><li>Diamonds Remix (Kanye West)</li><li>找朋友</li><li>Mung Bean Mash （张乐）</li><li>Bailemen Swing （张乐）</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_VjVKeprLuYpFjjMXzUpghMhmZFTfctZneEnXtSYhaJNfWQLeJaxBsxvVbf-bd.mp3" length="119020241" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_VjVKeprLuYpFjjMXzUpghMhmZFTfctZneEnXtSYhaJNfWQLeJaxBsxvVbf-bd.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/9]]></guid>
+      <pubDate>Thu, 04 Jun 2020 00:22:53 +0800</pubDate>
+      <itunes:duration>2975</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351775035_913108.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_AJbSbNjBbLefWVyUXPMBUzYbWaEWTczhwYLqGBZCFRmPhdeFbEutVUeKW</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/05/27/e08-ron-carter-%e6%80%80%e6%8a%b1%e4%bd%8e%e9%9f%b3%e8%b4%9d%e6%96%af%e7%9a%84%e7%bb%85%e5%a3%ab/</link>
+      <title><![CDATA[E08: Ron Carter | 怀抱低音贝斯的绅士]]></title>
+      <description><![CDATA[<p>Playlist of the show:</p><ol><li>Samba de Orpheu</li><li>C大调平均律 (巴赫)</li><li>Seven Steps to Heaven (Miles Davis)</li><li>Alone Together (Jim Hall)</li><li>Three Little Words</li><li>The Shadow of Your Smile</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_HAKHULYLZTtqucktNRkKmAKhVQPHkugdfqkCEcuYRXBypzjynhseyhMwFf-d1.mp3" length="92154869" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_HAKHULYLZTtqucktNRkKmAKhVQPHkugdfqkCEcuYRXBypzjynhseyhMwFf-d1.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/8]]></guid>
+      <pubDate>Wed, 27 May 2020 00:04:05 +0800</pubDate>
+      <itunes:duration>2304</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351776217_149133.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_SKfFJaRXrdzqyEMmyDQXrcQgeVWPWYhjBjzUAFjvZDywDABsWzqRvXAkq</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/05/19/e7-joao-gilberto-%e6%b3%a2%e8%90%a8%e8%af%ba%e7%93%a6%e4%b9%8b%e7%88%b6/</link>
+      <title><![CDATA[E7: Joao Gilberto | 波萨诺瓦之父]]></title>
+      <enclosure url="https://tk.wavpub.com/WPDL_SxYPhZpqPhRrrSqVCeArehaaSMWNUGSGAqKwVDnMJBEUAkMCupvMWARvBh-48.mp3" length="87465695" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_SxYPhZpqPhRrrSqVCeArehaaSMWNUGSGAqKwVDnMJBEUAkMCupvMWARvBh-48.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/7]]></guid>
+      <pubDate>Tue, 19 May 2020 23:54:26 +0800</pubDate>
+      <itunes:duration>2187</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351777199_137832.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_cDdPRtAapDjffFTFjPwzACvBrtEHSvRduuGKgvNJTdbsurcxuVJGrSzjn</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/05/10/e06-lee-morgan-%e5%a4%a9%e5%ab%89%e8%8b%b1%e6%89%8d%e7%9a%84%e7%88%b5%e5%a3%ab%e5%b0%8f%e5%8f%b7%e6%89%8b/</link>
+      <title><![CDATA[E06: Lee Morgan | 天嫉英才的爵士小号手]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Pisces (the Jazz Messenger)</li><li>Blue Train (John Coltrane)</li><li>Yama (the Jazz Messenger)</li><li>The Sidewinder</li><li>Yes I Can, No You Can&#8217;t</li><li>Ceora</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rJLkSZyRdUjTtTNMTwScmXVdjWghWZDxMcydvKJKKjrRxUDXhnymzhBZhZ-4b.mp3" length="118671440" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rJLkSZyRdUjTtTNMTwScmXVdjWghWZDxMcydvKJKKjrRxUDXhnymzhBZhZ-4b.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/6]]></guid>
+      <pubDate>Sun, 10 May 2020 23:38:22 +0800</pubDate>
+      <itunes:duration>2967</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351777565_860373.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_QSyBdDWZQrhrugRWntTHqsNCyPPdyqGGkQprBcUCrTGAtdHaHAarjLqUp</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/05/05/e05-time-out-%e7%88%b5%e5%a3%ab%e4%b9%90%e7%9a%84%e6%9a%82%e5%81%9c%e9%94%ae/</link>
+      <title><![CDATA[E05: Time Out | 爵士乐的暂停键]]></title>
+      <description><![CDATA[<p>Playlist of the Show:</p><ol><li>Rondo alla Turca (Wolfgang Amadeus Mozart)</li><li>Blue Rondo a la Turk</li><li>Strange Mealow Lark</li><li>Take Five</li><li>Three to Get Ready</li><li>Kathy&#8217;s Waltz</li><li>All My Loving (the Beatles)</li><li>Everybody&#8217;s Jumpin&#8217;</li><li>Pick Up Sticks</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_nYJBntagydjfCGhtbXBcrfexvJeeVCkNgJRrtVKgzqDxVJKqrHKmwqSjfy-07.mp3" length="121455898" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_nYJBntagydjfCGhtbXBcrfexvJeeVCkNgJRrtVKgzqDxVJKqrHKmwqSjfy-07.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/5]]></guid>
+      <pubDate>Tue, 05 May 2020 23:30:21 +0800</pubDate>
+      <itunes:duration>3036</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351778190_101572.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_ZTZjyfVcCUAgftWzeHmMZauTFseRRfYLqdVkbtTtHEHVkvSCBHGbsTHaH</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/05/02/e04-paul-desmond-%e7%8e%a9%e4%b8%96%e4%b8%8d%e6%81%ad%e7%9a%84%e5%90%9f%e6%b8%b8%e8%af%97%e4%ba%ba/</link>
+      <title><![CDATA[E04: Paul Desmond | 玩世不恭的吟游诗人]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>The One I Love (Belongs to Someone Else)</li><li>The Last Long Mile (Emil Breitenfeld)</li><li>Take Five</li><li>Take Ten</li><li>Two of a Mind</li><li>You Can&#8217;t Go Home Again</li><li>Bossa Antigua</li><li>Samba Cantina</li><li>Samba de Orpheu</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_dnzLtTcqzFEdBUkZkFCYjvdCLQhFumJMLrXmqvWMdwvLJSwNzjfkaTWVSY-23.mp3" length="113143720" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_dnzLtTcqzFEdBUkZkFCYjvdCLQhFumJMLrXmqvWMdwvLJSwNzjfkaTWVSY-23.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/4]]></guid>
+      <pubDate>Sat, 02 May 2020 15:09:00 +0800</pubDate>
+      <itunes:duration>2829</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351779544_133358.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_JxRXkrYVAsPCsDWeqjzKPyLvfGSDxCJqBXTnvqUcnSbWjdQqeZhjfEeEx</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/04/28/e03-wes-montgomery-%e8%87%aa%e5%ad%a6%e6%88%90%e6%89%8d%e7%9a%84%e5%90%89%e4%bb%96%e5%a4%a7%e5%b8%88/</link>
+      <title><![CDATA[E03: Wes Montgomery | 自学成才的吉他大师]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Bumpin&#8217;</li><li>Gone with the Wind</li><li>California Night</li><li>Tequila</li><li>Here&#8217;s That Rainy Day</li><li>Body and Soul</li><li>Four on Six</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_rbFFNAcTesRfQqwAcZTkEpwrYrGNhVubKdEvGyjHmPHyyTnJtMnaVfrgec-ed.mp3" length="127287458" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_rbFFNAcTesRfQqwAcZTkEpwrYrGNhVubKdEvGyjHmPHyyTnJtMnaVfrgec-ed.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/3]]></guid>
+      <pubDate>Tue, 28 Apr 2020 22:59:11 +0800</pubDate>
+      <itunes:duration>3182</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351780219_073304.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_yjkJvFzYtqKJenBevUnRmHpsMFuumGtefXQnZygMLhvJzYbtzXVkKUmHu</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/04/23/e02-michel-petrucciani-%e4%bd%8f%e5%9c%a8%e4%be%8f%e5%84%92%e9%87%8c%e7%9a%84%e5%b7%a8%e4%ba%ba/</link>
+      <title><![CDATA[E02: Michel Petrucciani | 住在侏儒里的巨人]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>Brazilian Suite</li><li>Memories of Paris</li><li>100 hearts</li><li>Beautiful Love</li><li>Night and Day</li><li>September Second</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_AVaKWbLNEUXuLTUUHbJusacHZgkhfDHHxFGEWyacuXZNSXqagHdvBxzmpc-3c.mp3" length="127918175" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_AVaKWbLNEUXuLTUUHbJusacHZgkhfDHHxFGEWyacuXZNSXqagHdvBxzmpc-3c.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/2]]></guid>
+      <pubDate>Thu, 23 Apr 2020 22:40:23 +0800</pubDate>
+      <itunes:duration>3198</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351781120_673395.jpg?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+    <item>
+      <wavpub:guid>wavpub_UrMpQuqbsUmrDzavzrnMXazRukcwdCSMqMVDtjNGeBXVhDYzsMpnSDXWn</wavpub:guid>
+      <link>https://hosting.wavpub.cn/whyforjazz/2020/04/20/e01-%e5%85%b3%e4%ba%8ejazz%e7%9a%84%e4%b8%80%e4%ba%9b%e8%af%9d/</link>
+      <title><![CDATA[E01: 关于Jazz的一些话]]></title>
+      <description><![CDATA[<p>Play list of the show:</p><ol><li>In Every Heart (Hanno Busch Trio)</li><li>Jealous Hearted Blues (Ma Rainey)</li><li>The Entertainer (Scott Joplin)</li><li>Exploring Improvisation in Jazz (Jazz at Lincoln Center&#8217;s JAZZ ACADEMY)</li><li>Satin Doll (Duke Ellington)</li><li>Feels So Good (Chuck Mangione)</li></ol>]]></description>
+      <enclosure url="https://tk.wavpub.com/WPDL_CwXDXhUauNMYzMtRbprdcujhwnkRwKCAJqvhzCvyCkvpKbUBNBFwAvjQDW-44.mp3" length="87578015" type="audio/mpeg"/>
+      <media:content type="audio/mpeg" url="https://tk.wavpub.com/WPDL_CwXDXhUauNMYzMtRbprdcujhwnkRwKCAJqvhzCvyCkvpKbUBNBFwAvjQDW-44.mp3"/>
+      <guid><![CDATA[https://whyforjazz.typlog.io/episodes/1]]></guid>
+      <pubDate>Mon, 20 Apr 2020 22:19:57 +0800</pubDate>
+      <itunes:duration>2189</itunes:duration>
+      <itunes:image href="https://i.typlog.com/whyforjazz/8351783064_750939.png?x-oss-process=style/sl"/>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
+  </channel>
+</rss>
