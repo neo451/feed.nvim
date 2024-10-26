@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/neo451/feed.nvim/compare/v1.6.1...v1.6.2) (2024-10-26)
+
+
+### Bug Fixes
+
+* fetch should only see 404 as invalid ([f278276](https://github.com/neo451/feed.nvim/commit/f278276316ab33a7cb6763df3eed2d160e9a9e08))
+* fix lualine error, fix test file missing ([2b73168](https://github.com/neo451/feed.nvim/commit/2b731684d91814bdae18fe4e4403e95baa85941f))
+
 ## [1.6.1](https://github.com/neo451/feed.nvim/compare/v1.6.0...v1.6.1) (2024-10-25)
 
 
