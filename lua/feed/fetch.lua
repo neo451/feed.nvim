@@ -28,7 +28,7 @@ end
 ---@param res table
 ---@return boolean
 local function is_valid(res)
-   if res.status ~= 200 or header_says_html(res.headers) or doctype_says_html(res.body) then -- TODO: right?
+   if res.status == 404 or header_says_html(res.headers) or doctype_says_html(res.body) then -- TODO: right?
       return false
    end
    return true
