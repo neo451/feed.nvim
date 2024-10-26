@@ -345,8 +345,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    buffer = render.buf.entry,
    callback = function(ev)
-      -- vim.cmd.colorscheme(config.colorscheme)
-      require "feed.lualine"
+      vim.cmd.colorscheme(config.colorscheme)
+      pcall(require, "feed.lualine")
       render.state.in_entry = true
       vim.cmd "set cmdheight=0"
       local ok, conform = pcall(require, "conform")
@@ -369,8 +369,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    buffer = render.buf.index,
    callback = function(ev)
-      -- vim.cmd.colorscheme(config.colorscheme)
-      require "feed.lualine"
+      vim.cmd.colorscheme(config.colorscheme)
+      pcall(require, "feed.lualine")
       vim.cmd "set cmdheight=0"
       for key, value in pairs(config.index.opts) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
