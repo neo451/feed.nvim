@@ -89,11 +89,13 @@ require("nvim-treesitter.configs").setup {
 ### Feed Searching
 
 1. DSL query
-  - *WIP*: Will support all the syntax of elfeed, for now see [elfeed](https://github.com/skeeto/elfeed/tree/master?tab=readme-ov-file#filter-syntax)'s description.
-  - use `s` in index buffer to filter your feeds, currently suports: regex, must_have(`+`), must_not_have(`-`), and date(`@`).
+
+- *WIP*: Will support all the syntax of elfeed, for now see [elfeed](https://github.com/skeeto/elfeed/tree/master?tab=readme-ov-file#filter-syntax)'s description.
+- use `s` in index buffer to filter your feeds, currently suports: regex, must_have(`+`), must_not_have(`-`), and date(`@`).
 
 2. Live grep
-  - use `Feed grep` to use telescope's `live_grep` (requires `ripgrep`) to do fulltext search accross your database.
+
+- use `Feed grep` to use telescope's `live_grep` (requires `ripgrep`) to do fulltext search accross your database.
 
 ### RssHub Integration
 

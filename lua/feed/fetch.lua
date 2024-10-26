@@ -27,7 +27,7 @@ end
 -- TODO: right?
 ---@param res table
 ---@return boolean
-local function is_valid_response(res)
+local function is_valid(res)
    if res.status ~= 200 or header_says_html(res.headers) or doctype_says_html(res.body) then -- TODO: right?
       return false
    end
@@ -86,7 +86,7 @@ end
 function M.update_feed(feed, handle, total)
    local url, name = get_feed_info(feed)
    local res = fetch_co(url, name)
-   if is_valid_response(res) then
+   if is_valid(res) then
       local ok, ast, f_type = pcall(feedparser.parse, res.body)
       if ok then
          for _, entry in ipairs(ast.entries) do
