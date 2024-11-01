@@ -40,7 +40,7 @@ local default_config = {
 -- {{{ NO NEED TO CHANGE
 local log = {}
 
-local unpack = unpack or table.unpack
+local unpack = unpack
 
 log.new = function(config, standalone)
    config = vim.tbl_deep_extend("force", default_config, config)
@@ -116,8 +116,10 @@ log.new = function(config, standalone)
       if config.use_file then
          local fp = io.open(outfile, "a")
          local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
-         fp:write(str)
-         fp:close()
+         if fp then
+            fp:write(str)
+            fp:close()
+         end
       end
    end
 

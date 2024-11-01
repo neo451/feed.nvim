@@ -286,7 +286,7 @@ cmds.update_feed = {
 
 ---purge a feed from all of the db, including entries
 ---@param str string #Feed name or link
-function cmds:prune(str) end
+-- function cmds:prune(str) end
 
 --- **INTEGRATIONS**
 function cmds:telescope()
@@ -305,27 +305,6 @@ function cmds.which_key()
       loop = true,
    }
 end
-
--- local sourced_file = require("plenary.debug_utils").sourced_filepath()
---
--- local web_dir = vim.fn.fnamemodify(sourced_file, ":h:h:h") .. "/feed-web"
-
--- local web
---
--- function cmds.web_start()
---    local on_exit = function(obj)
---       print(obj.code)
---       print(obj.signal)
---       print(obj.stdout)
---       print(obj.stderr)
---    end
---
---    web = vim.system({ "lapis", "server" }, { text = true, cwd = web_dir }, on_exit)
--- end
---
--- function cmds.web_stop()
---    web:kill()
--- end
 
 render.prepare_bufs()
 
@@ -436,3 +415,4 @@ vim.api.nvim_create_autocmd("WinResized", {
 })
 
 return cmds
+

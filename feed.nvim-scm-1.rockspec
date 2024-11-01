@@ -8,8 +8,6 @@ source = {
 
 dependencies = {
    "lua >= 5.1",
-   "sha1 = 0.6.0-1",
-   "net-url = 1.1-1",
    "fidget.nvim",
    "conform.nvim",
    "plenary.nvim",
@@ -22,8 +20,6 @@ dependencies = {
 
 test_dependencies = {
    "lua >= 5.1",
-   "sha1 = 0.6.0-1",
-   "net-url = 1.1-1",
    "nlua",
    "plenary.nvim",
    "treedoc.nvim",
