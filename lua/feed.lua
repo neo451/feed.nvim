@@ -37,10 +37,10 @@ M.setup = function(usr_config)
             -- Filter subcommands that match
             local subcommand_keys = vim.tbl_keys(cmds)
             return vim.iter(subcommand_keys)
-                :filter(function(key)
-                   return key:find(arg_lead) ~= nil
-                end)
-                :totable()
+               :filter(function(key)
+                  return key:find(arg_lead) ~= nil
+               end)
+               :totable()
          end
       end,
    })
