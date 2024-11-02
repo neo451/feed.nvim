@@ -1,6 +1,7 @@
 local M = {}
 local URL = require "feed.url"
 local config = require "feed.config"
+local hl = vim.hl or vim.highlight
 
 ---@param buf integer
 ---@param lhs string
@@ -57,7 +58,7 @@ function M.highlight_index(buf)
    local acc = 0
    for _, v in ipairs(config.layout) do
       for i = 1, len do
-         vim.hl.range(buf, feed_ns, v.color or "Normal", { i - 1, acc }, { i - 1, acc + v.width })
+         hl.range(buf, feed_ns, v.color or "Normal", { i - 1, acc }, { i - 1, acc + v.width })
          -- hl_range(buf, feed_ns, v.color or "Normal", i, acc, acc + v.width)
       end
       acc = acc + v.width
