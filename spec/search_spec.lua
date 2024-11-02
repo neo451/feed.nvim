@@ -60,4 +60,14 @@ describe("filter", function()
       local res = M.filter(index, query)
       assert.same({ index[1], index[2] }, res)
    end)
+
+   it("filter by limit number", function()
+      local query = M.parse_query "#10"
+      local entries = {}
+      for i = 1, 20 do
+         entries[i] = { title = i, time = i }
+      end
+      local res = M.filter(entries, query)
+      assert.same(10, #res)
+   end)
 end)

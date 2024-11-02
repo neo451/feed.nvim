@@ -31,17 +31,19 @@ end
 ---@return string
 function M.entry(entry)
    local lines = {}
-   lines[1] = kv("Title", entry.title)
-   lines[2] = kv("Date", date.new_from.number(entry.time))
-   lines[3] = kv("Author", entry.author or entry.feed)
-   lines[4] = kv("Feed", entry.feed)
-   lines[5] = kv("Link", entry.link)
-   lines[6] = ""
+   lines[#lines + 1] = entry.title and kv("Title", entry.title)
+   lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
+   lines[#lines + 1] = entry.author and kv("Author", entry.author or entry.feed)
+   lines[#lines + 1] = entry.feed and kv("Feed", entry.feed)
+   lines[#lines + 1] = entry.link and kv("Link", entry.link)
+   lines[#lines + 1] = ""
    -- local md = _treedoc.write(_treedoc.read(entry.content, "html"), "markdown")
-   local ok, md = pcall(conv, treedoc.parse("<html>" .. entry.content .. "</html>", { language = "html" })[1])
-   if ok then
-      for line in vim.gsplit(md, "\n") do
-         lines[#lines + 1] = line
+   if entry.content then
+      local ok, md = pcall(conv, treedoc.parse("<html>" .. entry.content .. "</html>", { language = "html" })[1])
+      if ok then
+         for line in vim.gsplit(md, "\n") do
+            lines[#lines + 1] = line
+         end
       end
    end
    return table.concat(lines, "\n")

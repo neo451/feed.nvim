@@ -31,7 +31,6 @@ local default = {
          relativenumber = false,
          modifiable = false,
          listchars = "tab:> ,nbsp:+",
-         -- listchars = { tab = "» ", trail = "·", nbsp = "␣" },
       },
    },
 
@@ -99,7 +98,7 @@ local default = {
             width = 0.85, -- width will be 85% of the editor width
          },
          -- callback where you can add custom code when the Zen window opens
-         on_open = function(win) end,
+         on_open = function() end,
          -- callback where you can add custom code when the Zen window closes
          on_close = function() end,
       },

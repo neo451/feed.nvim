@@ -19,6 +19,7 @@ local filter_symbols = {
    ["+"] = "must_have",
    ["-"] = "must_not_have",
    ["@"] = "date",
+   ["#"] = "limit",
 }
 
 ---@param str string
@@ -44,6 +45,8 @@ function M.parse_query(str)
             query.must_not_have = {}
          end
          table.insert(query.must_not_have, q:sub(2))
+      elseif kind == "limit" then
+         query.limit = tonumber(q:sub(2))
       end
    end
    return query
@@ -68,7 +71,7 @@ local function check(v, query)
    local res = true
    if query.re then
       for _, reg in ipairs(query.re) do
-         if not reg:match_str(v.title) then -- TODO: make case-insensetive
+         if not reg:match_str(v.title) then
             return false
          end
       end
@@ -103,7 +106,10 @@ end
 function M.filter(entries, query)
    local tbl = vim.deepcopy(entries, true)
    local res = {}
-   for _, v in ipairs(tbl) do
+   for i, v in ipairs(tbl) do
+      if query.limit and i > query.limit then
+         break
+      end
       if check(v, query) then
          res[#res + 1] = v
       end

@@ -4,14 +4,11 @@ local ut = require "feed.utils"
 local format = require "feed.format"
 local sha = vim.fn.sha256
 
--- TODO: handle enlosures
-
 ---check if json
 ---@param str string
 ---@return boolean
 local function is_json(str)
-   local ok = pcall(vim.json.decode, str)
-   return ok
+   return pcall(vim.json.decode, str)
 end
 
 ---Notes:
@@ -86,16 +83,16 @@ end
 
 local function handle_rss_content(entry)
    --- rss content is always plain text?
-   local function handle_self_closing(t)
+   local function handle(t)
       if type(t) == "table" then
          return ""
       end
       return t
    end
    if entry["content:encoded"] then
-      return handle_self_closing(entry["content:encoded"])
+      return handle(entry["content:encoded"])
    elseif entry.description then
-      return handle_self_closing(entry.description)
+      return handle(entry.description)
    end
    return ""
 end
@@ -141,9 +138,8 @@ local function handle_rss_date(entry)
 end
 
 ---@param entry any
----@param base any
 ---@return string?
-local function handle_rss_link(entry, base)
+local function handle_rss_link(entry, _) -- TODO: base
    local T = type(entry.link)
    if T == "string" then
       return entry.link
@@ -195,7 +191,7 @@ local function reify_entry(entry, feedtype, feed_name, base)
          return
       end
       res.id = sha(res.link)
-      res.title = handle_rss_entry_title(entry) -- TODO: proper fallback for each attr
+      res.title = handle_rss_entry_title(entry)
       res.time = handle_rss_date(entry)
       res.content = handle_rss_content(entry)
       res.author = handle_rss_entry_author(entry) or feed_name
@@ -274,6 +270,7 @@ end
 ---@return table | feed.feed
 ---@return "json" | "atom" | "rss"
 local function parse(src, base_uri, opts)
+   src = src:gsub("\n", "")
    local ast, feedtype
    opts = opts or { reify = true }
    if is_json(src) then

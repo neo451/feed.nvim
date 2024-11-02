@@ -34,25 +34,28 @@ local function is_valid(res)
    return true
 end
 
-local function advance_progress(handle, total)
+local function advance_progress(handle, total, name)
    if handle then
       handle.percentage = handle.percentage + 100 / total
+      handle.message = "got " .. name
       if handle.percentage == 100 then
          handle:finish()
       end
    end
 end
 
+-- TODO: proper timeout???
+-- TODO: proxy??
 local fetch_co = ut.cb_to_co(function(cb, url, name)
    local is_rsshub = check_rsshub(url)
-   curl.get {
+   local job = {
       raw = { "--insecure", "-L" },
       url = url,
-      -- timeout = 300,
       callback = vim.schedule_wrap(cb),
+      timeout = 5000,
       query = is_rsshub and { format = "json" } or nil,
       on_error = vim.schedule_wrap(function(err)
-         advance_progress()
+         -- advance_progress()
          log.warn("curl error for", name)
          -- log.warn(err.message, name)
          -- TODO: parse curl err message, see if connection is rejected or the site has bad response and is simply unavilable
@@ -60,6 +63,12 @@ local fetch_co = ut.cb_to_co(function(cb, url, name)
          return err
       end),
    }
+   pcall(curl.get, job)
+   -- if not ok then -- TODO: only retry once
+   --    vim.defer_fn(function()
+   --       pcall(curl.get, job)
+   --    end, 1000)
+   -- end
 end)
 M.fetch_co = fetch_co
 
@@ -102,7 +111,7 @@ function M.update_feed(feed, handle, total)
       log.info("server invalid response err for", name)
    end
    if handle and total then
-      advance_progress(handle, total)
+      advance_progress(handle, total, name)
    else
       vim.notify("feed.nvim: " .. name .. " fetched")
    end
@@ -124,6 +133,14 @@ local function batch_update_feed(feeds, size, handle)
       vim.defer_fn(function()
          batch_update_feed(feeds, size, handle)
       end, 5000)
+   end
+end
+
+local function _batch_update_feed(feeds, _, handle)
+   for _, v in ipairs(feeds) do
+      coroutine.wrap(function()
+         M.update_feed(v, handle, #feeds)
+      end)()
    end
 end
 

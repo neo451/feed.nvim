@@ -78,50 +78,6 @@ describe("json", function()
    end)
 end)
 
-local function readfile2(prefix, path)
-   local f = io.open(prefix .. path, "r")
-   local str
-   if f then
-      str = f:read "*a"
-      f:close()
-   end
-   return str
-end
-
-local ts_c = 0
-local nts_c = 0
-local success = 0
-
-local names = {}
-
-local data_dir2 = vim.fn.fnamemodify(sourced_file, ":h") .. "/feed_data/"
-
-local function test_dir(dir)
-   for v in vim.fs.dir(dir) do
-      local str = readfile2(dir, v)
-      local ok, ast = pcall(m.parse, str, "https://neovim.io")
-      if not ok then
-         if ast:find "ts error" then
-            ts_c = ts_c + 1
-         else
-            nts_c = nts_c + 1
-            table.insert(names, v)
-         end
-      else
-         success = success + 1
-         check_feed(ast)
-      end
-   end
-end
-
--- describe("simulation!", function()
---    it("should parse bunch of real world feeds", function()
---       test_dir(data_dir2)
---       print(("ts_error: %d; none-ts_error: %d; susccess: %d"):format(ts_c, nts_c, success))
---       print(vim.inspect(names))
---    end)
--- end)
-
 describe("podcast enclosures", function()
    it("should parse enclosures", function()
       local str = readfile "podcast.xml"

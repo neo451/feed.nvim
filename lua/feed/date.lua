@@ -75,7 +75,6 @@ local function parse_date(str)
    return date.new { year = a, month = b, day = c }
 end
 
-
 ---@param str string
 ---@return feed.date
 ---@return feed.date
@@ -89,7 +88,6 @@ local function parse_date_filter(str)
       return parse_date(start):absolute(), parse_date(stop):absolute()
    end
 end
-
 
 ---@param time integer
 ---@return feed.date
@@ -113,10 +111,8 @@ do
    local col = P ":"
    local zone = (S "+-" * digit) + C(R "AZ" ^ 1)
    local min_and_sec = L.digit ^ 2 * P ":" * L.digit ^ 2 * P "-"
-   patterns.RFC2822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws *
-       zone
-   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit *
-       (P ":" ^ -1) * (digit ^ -1) * (R "AZ" ^ -1)
+   patterns.RFC2822 = alpha * P ", " * digit * ws * alpha * ws * digit * ws * digit * col * digit * col * digit * ws * zone
+   patterns.RFC3339 = digit * P "-" * digit * P "-" * digit * S "Tt" * digit * (P ":" * min_and_sec ^ -1) * digit * (P ":" ^ -1) * (digit ^ -1) * (R "AZ" ^ -1)
 end
 
 --- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 2822, with the exception that the year may be expressed with two characters or four characters (four preferred).
@@ -145,7 +141,7 @@ date.new_from = {
    json = rfc3339,
    atom = rfc3339,
    filter = parse_date_filter,
-   number = int_to_date
+   number = int_to_date,
 }
 
 return date
