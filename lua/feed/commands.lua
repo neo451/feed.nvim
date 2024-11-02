@@ -27,13 +27,6 @@ local function merge(user_config_feeds, db_feeds)
    return res
 end
 
--- function cmds.play_podcast()
---    local link = render.get_entry().link
---    vim.system({ "vlc.exe", link }, { text = true }, function(out)
---       print(vim.inspect(out))
---    end)
--- end
---
 function cmds.blowup()
    db:blowup()
 end
@@ -277,16 +270,15 @@ cmds.update_feed = {
       end
       vim.list_extend(names, new_feeds)
       return vim.iter(names)
-          :filter(function(arg)
-             return arg:find(lead) ~= nil
-          end)
-          :totable()
+         :filter(function(arg)
+            return arg:find(lead) ~= nil
+         end)
+         :totable()
    end,
 }
 
 ---purge a feed from all of the db, including entries
----@param str string #Feed name or link
--- function cmds:prune(str) end
+-- function cmds:prune() end
 
 --- **INTEGRATIONS**
 function cmds:telescope()
@@ -297,14 +289,14 @@ function cmds:grep()
    pcall(vim.cmd.Telescope, "feed_grep")
 end
 
-function cmds.which_key()
-   local wk = require "which-key"
-   wk.show {
-      buf = 0,
-      ["local"] = true,
-      loop = true,
-   }
-end
+-- function cmds.which_key()
+--    local wk = require "which-key"
+--    wk.show {
+--       buf = 0,
+--       ["local"] = true,
+--       loop = true,
+--    }
+-- end
 
 render.prepare_bufs()
 
@@ -362,6 +354,7 @@ vim.api.nvim_create_autocmd("User", {
    pattern = "ShowEntryPost",
    group = augroup,
    callback = function(_)
+      ut.highlight_entry(render.buf.entry)
       -- TODO: args = { lines: string[], ... }
       local conform_ok, conform = pcall(require, "conform")
       -- local has_null_ls, null_ls = pcall(require, "null-ls")
@@ -377,6 +370,14 @@ vim.api.nvim_create_autocmd("User", {
          --    -- TODO:
          --    vim.lsp.buf.format({ bufnr = render.buf.entry })
       end
+   end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+   pattern = "ShowIndexPost",
+   group = augroup,
+   callback = function(_)
+      ut.highlight_index(render.buf.index)
    end,
 })
 
@@ -397,22 +398,21 @@ vim.api.nvim_create_autocmd("BufLeave", {
    buffer = render.buf.entry,
    callback = restore_state,
 })
-
-vim.api.nvim_create_autocmd("WinResized", {
-   group = augroup,
-   buffer = render.buf.entry,
-   callback = function()
-      render.refresh()
-   end,
-})
-
-vim.api.nvim_create_autocmd("WinResized", {
-   group = augroup,
-   buffer = render.buf.index,
-   callback = function()
-      render.refresh()
-   end,
-})
+--
+-- vim.api.nvim_create_autocmd("WinResized", {
+--    group = augroup,
+--    buffer = render.buf.entry,
+--    callback = function()
+--       render.refresh()
+--    end,
+-- })
+--
+-- vim.api.nvim_create_autocmd("WinResized", {
+--    group = augroup,
+--    buffer = render.buf.index,
+--    callback = function()
+--       render.refresh()
+--    end,
+-- })
 
 return cmds
-

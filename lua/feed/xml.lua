@@ -195,17 +195,18 @@ end
 
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
+---@param name string?
 ---@return table
 function M.parse(src, name)
    src = M.sanitize(src)
    local root = ut.get_root(src, "xml")
-   if root:has_error() then
-      local f = io.open("_" .. name, "w")
-      f:write(src)
-      f:close()
-      log.fmt_warn("ts error: feed %s did not return a valid xml file", name)
-      error(("ts error: feed %s did not return a valid xml file"):format(name), 2)
-   end
+   -- if root:has_error() then
+   --    -- local f = io.open("_" .. name, "w")
+   --    -- f:write(src)
+   --    -- f:close()
+   --    -- log.warn("ts error: feed %s did not return a valid xml file", name)
+   --    error(("ts error: feed %s did not return a valid xml file"):format(name), 2)
+   -- end
    local iterator = vim.iter(root:iter_children())
    local collected = iterator:fold({}, function(acc, node)
       acc[#acc + 1] = M[node:type()](node, src)

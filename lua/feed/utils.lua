@@ -57,7 +57,8 @@ function M.highlight_index(buf)
    local acc = 0
    for _, v in ipairs(config.layout) do
       for i = 1, len do
-         hl_range(buf, feed_ns, v.color or "Normal", i, acc, acc + v.width)
+         vim.hl.range(buf, feed_ns, v.color or "Normal", { i - 1, acc }, { i - 1, acc + v.width })
+         -- hl_range(buf, feed_ns, v.color or "Normal", i, acc, acc + v.width)
       end
       acc = acc + v.width
    end
