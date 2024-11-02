@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.3](https://github.com/neo451/feed.nvim/compare/v1.6.2...v1.6.3) (2024-11-02)
+
+
+### Bug Fixes
+
+* bunch of small fixes, better conventions, less garbage ([c984750](https://github.com/neo451/feed.nvim/commit/c984750308903b4e3bd9343f2fe2baa3632d3a6c))
+* fix log file missing ([3a8c8e1](https://github.com/neo451/feed.nvim/commit/3a8c8e1ff37be2e32b6a7c4b728038fce8e1f1f0))
+* format to please stylua.. ([ca52700](https://github.com/neo451/feed.nvim/commit/ca5270089ddb98aaac9dde0b4175e7c1b4f588c3))
+* put url.lua back for better install in lazy ([3a8c8e1](https://github.com/neo451/feed.nvim/commit/3a8c8e1ff37be2e32b6a7c4b728038fce8e1f1f0))
+* use feed.url in utils... ([f1e0ad5](https://github.com/neo451/feed.nvim/commit/f1e0ad527a1eb2b72570b06ae312c286e526fc4f))
+* utf8.lua ([6b9cf15](https://github.com/neo451/feed.nvim/commit/6b9cf1580727a42f2f9980f77076d874851dd852))
+
 ## [1.6.2](https://github.com/neo451/feed.nvim/compare/v1.6.1...v1.6.2) (2024-10-26)
 
 
