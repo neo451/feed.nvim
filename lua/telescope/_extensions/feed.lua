@@ -14,8 +14,6 @@ local db = require "feed.db"
 local render = require "feed.render"
 local format = require "feed.format"
 
-render.prepare_bufs()
-
 local function feed()
    local opts = config.integrations.telescope or {}
 

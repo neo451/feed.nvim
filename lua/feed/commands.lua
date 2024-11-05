@@ -213,26 +213,9 @@ function cmds.list_feeds()
    end
 end
 
-local fidget = function()
-   local ok, progress = pcall(require, "fidget.progress")
-   local handle
-   if not ok then
-      vim.notify "fidget not found, current version does not have a builtin progress bar yet"
-      -- TODO: make a simple message printer if fidget not found...
-      -- TODO: winbar component
-   else
-      handle = progress.handle.create {
-         title = "Feed update",
-         message = "fetching feeds...",
-         percentage = 0,
-      }
-   end
-   return handle
-end
-
 function cmds.update()
    local feedlist = merge(config.feeds, db.feeds)
-   fetch.batch_update_feed(feedlist, 200, fidget())
+   fetch.batch_update_feed(feedlist, 200)
 end
 
 ---add a feed to database

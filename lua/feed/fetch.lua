@@ -3,6 +3,7 @@ local feedparser = require "feed.feedparser"
 local db = require "feed.db"
 local ut = require "feed.utils"
 local log = require "feed.log"
+local notify = require "feed.notify"
 
 local M = {}
 
@@ -32,16 +33,6 @@ local function is_valid(res)
       return false
    end
    return true
-end
-
-local function advance_progress(handle, total, name)
-   if handle then
-      handle.percentage = handle.percentage + 100 / total
-      handle.message = "got " .. name
-      if handle.percentage == 100 then
-         handle:finish()
-      end
-   end
 end
 
 -- TODO: proper timeout???
@@ -92,7 +83,7 @@ end
 
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
-function M.update_feed(feed, handle, total)
+function M.update_feed(feed, total)
    local url, name = get_feed_info(feed)
    local res = fetch_co(url, name)
    if is_valid(res) then
@@ -110,14 +101,14 @@ function M.update_feed(feed, handle, total)
    else
       log.info("server invalid response err for", name)
    end
-   if handle and total then
-      advance_progress(handle, total, name)
+   if total then
+      notify.advance(total, name or url)
    else
       vim.notify("feed.nvim: " .. name .. " fetched")
    end
 end
 
-local function batch_update_feed(feeds, size, handle)
+local function batch_update_feed(feeds, size)
    local c = 1
    for i = c, c + size - 1 do
       local v = feeds[i]
@@ -125,13 +116,13 @@ local function batch_update_feed(feeds, size, handle)
          break
       end
       coroutine.wrap(function()
-         M.update_feed(v, handle, #feeds)
+         M.update_feed(v, #feeds)
       end)()
    end
    c = c + size
    if c < #feeds then
       vim.defer_fn(function()
-         batch_update_feed(feeds, size, handle)
+         batch_update_feed(feeds, size)
       end, 5000)
    end
 end
@@ -139,11 +130,11 @@ end
 local function _batch_update_feed(feeds, _, handle)
    for _, v in ipairs(feeds) do
       coroutine.wrap(function()
-         M.update_feed(v, handle, #feeds)
+         M.update_feed(v, #feeds)
       end)()
    end
 end
 
-M.batch_update_feed = batch_update_feed
+M.batch_update_feed = _batch_update_feed
 
 return M

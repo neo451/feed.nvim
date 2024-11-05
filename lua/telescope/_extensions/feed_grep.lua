@@ -17,7 +17,6 @@ local config = require "feed.config"
 local db = require "feed.db"
 local render = require "feed.render"
 local format = require "feed.format"
-render.prepare_bufs()
 
 local Path = require "plenary.path"
 
