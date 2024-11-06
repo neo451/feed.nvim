@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/neo451/feed.nvim/compare/v1.7.0...v1.7.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* complete search grammar ([82ddd8b](https://github.com/neo451/feed.nvim/commit/82ddd8b00678c7a31a2257de8f36991657d95e9d))
+* default keymaps ([82ddd8b](https://github.com/neo451/feed.nvim/commit/82ddd8b00678c7a31a2257de8f36991657d95e9d))
+
 ## [1.7.0](https://github.com/neo451/feed.nvim/compare/v1.6.3...v1.7.0) (2024-11-06)
 
 
