@@ -91,12 +91,14 @@ end
 function M.filter(entries, query)
    local tbl = vim.deepcopy(entries, true)
    local res = {}
-   for i, v in ipairs(tbl) do
-      if query.limit and i > query.limit then
-         break
-      end
-      if check(v, query) then
-         res[#res + 1] = v
+   for i, v in pairs(tbl) do
+      if type(v) == "table" then
+         if query.limit and i > query.limit then
+            break
+         end
+         if check(v, query) then
+            res[#res + 1] = v
+         end
       end
    end
    table.sort(res, function(a, b)

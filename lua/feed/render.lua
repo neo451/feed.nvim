@@ -85,22 +85,6 @@ function M.get_entry(opts)
    return M.on_display[row_idx]
 end
 
-function M.tag(id, input)
-   local entry = db:lookup(id)
-   if entry then
-      entry.tags[input] = true
-      db:save()
-   end
-end
-
-function M.untag(id, input)
-   local entry = db:lookup(id)
-   if entry then
-      entry.tags[input] = nil
-      db:save()
-   end
-end
-
 function M.refresh()
    M.on_display = search.filter(db.index, M.state.query or {})
    M.show_index { refresh = true }

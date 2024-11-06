@@ -18,8 +18,12 @@ local function feed()
    local opts = config.integrations.telescope or {}
 
    local lines = {}
-   for i, entry in ipairs(db.index) do
-      lines[i] = format.entry_name(entry)
+   local idx_to_id = {}
+   for _, entry in pairs(db.index) do
+      if type(entry) == "table" then
+         lines[#lines + 1] = format.entry_name(entry)
+         idx_to_id[#idx_to_id + 1] = entry.id
+      end
    end
 
    pickers
@@ -28,7 +32,7 @@ local function feed()
 
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
-               local db_entry = db:address(db[entry.index])
+               local db_entry = db.dir .. "/data/" .. idx_to_id[entry.index]
                conf.buffer_previewer_maker(db_entry, self.state.bufnr, {
                   bufname = self.state.bufname,
                })

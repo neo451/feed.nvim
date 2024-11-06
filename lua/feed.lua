@@ -75,14 +75,17 @@ M.setup = function(usr_config)
          end
       end,
    })
+   M.index_buf = render.buf.index
+   M.entry_buf = render.buf.entry
+   M.get_entry = render.get_entry
 end
---
--- setmetatable(M, {
---    __index = function(self, k)
---       if not rawget(self, k) then
---          return rawget(require "feed.commands", k)
---       end
---    end,
--- })
---
+
+setmetatable(M, {
+   __index = function(self, k)
+      if not rawget(self, k) then
+         return rawget(require "feed.commands", k)
+      end
+   end,
+})
+
 return M
