@@ -1,12 +1,4 @@
 local M = {}
--- local ut = require "feed.ut"
--- local wrap = ut.wrap
-
-local function wrap(f)
-   return function()
-      coroutine.wrap(f)()
-   end
-end
 
 ---@param usr_config feed.config
 M.setup = function(usr_config)
@@ -15,20 +7,6 @@ M.setup = function(usr_config)
    local cmds = require "feed.commands"
    local render = require "feed.render"
 
-   for k, v in pairs(cmds) do
-      if type(v) == "table" then
-         if v.context.all then
-            vim.keymap.set("n", "<Plug>Feed_" .. k, wrap(v.impl), { noremap = true })
-         else
-            if v.context.index then
-               vim.keymap.set("n", "<Plug>Feed_" .. k, wrap(v.impl), { noremap = true, buffer = render.buf.index })
-            end
-            if v.context.entry then
-               vim.keymap.set("n", "<Plug>Feed_" .. k, wrap(v.impl), { noremap = true, buffer = render.buf.entry })
-            end
-         end
-      end
-   end
    vim.api.nvim_create_user_command("Feed", function(opts)
       ---@param args string[]
       local function load_command(args)
@@ -48,7 +26,6 @@ M.setup = function(usr_config)
 
       if #opts.fargs == 0 then
          cmds()
-         -- cmds.show_index()
       else
          load_command(opts.fargs)
       end
@@ -75,8 +52,6 @@ M.setup = function(usr_config)
          end
       end,
    })
-   M.index_buf = render.buf.index
-   M.entry_buf = render.buf.entry
    M.get_entry = render.get_entry
 end
 

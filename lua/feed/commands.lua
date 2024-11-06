@@ -15,8 +15,55 @@ local ui_select = ut.cb_to_co(function(cb, items, opts)
 end)
 
 local og_colorscheme, og_buffer
-
 local cmds = {}
+
+local function wrap(f)
+   return function()
+      coroutine.wrap(f)()
+   end
+end
+
+local function prepare_bufs()
+   if render.buf then
+      return
+   end
+   render.buf = {}
+   render.buf.index = vim.api.nvim_create_buf(false, true)
+   render.buf.entry = vim.api.nvim_create_buf(false, true)
+   vim.api.nvim_buf_set_name(render.buf.index, "FeedIndex")
+   vim.api.nvim_buf_set_name(render.buf.entry, "FeedEntry")
+
+   if config.enable_default_keybindings then
+      local function iset(lhs, rhs)
+         vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.buf.index })
+      end
+      local function eset(lhs, rhs)
+         vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.buf.entry })
+      end
+
+      local function bset(lhs, rhs)
+         iset(lhs, rhs)
+         eset(lhs, rhs)
+      end
+
+      iset("<CR>", cmds.show_entry)
+      iset("<M-CR>", cmds.show_in_split)
+      iset("r", cmds.refresh)
+
+      bset("b", cmds.show_in_browser)
+      bset("s", cmds.search)
+      bset("y", cmds.link_to_clipboard)
+      bset("s", cmds.search)
+      bset("+", cmds.tag)
+      bset("-", cmds.untag)
+      bset("q", cmds.quit)
+
+      eset("u", cmds.urlview)
+      eset("}", cmds.show_next)
+      eset("{", cmds.show_prev)
+      eset("gx", cmds.open_url)
+   end
+end
 
 if not render.state.query then
    render.state.query_string = config.search.default_query
@@ -116,6 +163,7 @@ cmds.show_in_browser = {
    impl = function()
       local entry = render.get_entry()
       local link = entry.link
+      cmds.untag.impl "unread"
       vim.ui.open(link)
    end,
    context = { index = true, entry = true },
@@ -123,7 +171,7 @@ cmds.show_in_browser = {
 
 cmds.show_in_split = {
    impl = function()
-      vim.cmd(config.layout.split)
+      vim.cmd(config.split_cmd)
       render.show_entry()
       render.state.in_split = true
    end,
@@ -132,10 +180,46 @@ cmds.show_in_split = {
 
 cmds.show_entry = {
    impl = function()
+      if not render.buf then
+         prepare_bufs()
+      end
       render.show_entry()
       render.state.in_entry = true
    end,
    context = { index = true },
+}
+
+cmds.show_index = {
+   impl = function()
+      if not render.buf then
+         prepare_bufs()
+      end
+      og_colorscheme = vim.g.colors_name
+      og_buffer = vim.api.nvim_get_current_buf()
+      render.refresh()
+      render.state.in_index = true
+   end,
+   context = { all = true },
+}
+
+cmds.show_next = {
+   impl = function()
+      if render.current_index == #render.on_display then
+         return
+      end
+      render.show_entry { row_idx = render.current_index + 1 }
+   end,
+   context = { entry = true },
+}
+
+cmds.show_prev = {
+   impl = function()
+      if render.current_index == 1 then
+         return
+      end
+      render.show_entry { row_idx = render.current_index - 1 }
+   end,
+   context = { entry = true },
 }
 
 cmds.quit = {
@@ -144,16 +228,18 @@ cmds.quit = {
          vim.cmd "q"
          vim.api.nvim_set_current_buf(render.buf.index)
          render.state.in_split = false
+         render.state.in_index = true
       elseif render.state.in_entry then
-         print "here"
          render.show_index()
          render.state.in_entry = false
-      else
+         render.state.in_index = true
+      elseif render.state.in_index then
          if not og_buffer then
             og_buffer = vim.api.nvim_create_buf(true, false)
          end
          vim.api.nvim_set_current_buf(og_buffer)
          pcall(vim.cmd.colorscheme, og_colorscheme)
+         render.state.in_index = false
       end
    end,
    context = { entry = true, index = true },
@@ -194,46 +280,6 @@ cmds.untag = {
    context = { index = true, entry = true },
    -- TODO: completion for in-db tags
    -- complete =
-}
-
-cmds.show_index = {
-   impl = function()
-      og_colorscheme = vim.g.colors_name
-      og_buffer = vim.api.nvim_get_current_buf()
-      render.refresh()
-   end,
-   context = { all = true },
-}
-
-cmds.quit_index = {
-   impl = function()
-      if not og_buffer then
-         og_buffer = vim.api.nvim_create_buf(true, false)
-      end
-      vim.api.nvim_set_current_buf(og_buffer)
-      vim.cmd.colorscheme(og_colorscheme)
-   end,
-   context = { index = true },
-}
-
-cmds.show_next = {
-   impl = function()
-      if render.current_index == #render.on_display then
-         return
-      end
-      render.show_entry { row_idx = render.current_index + 1 }
-   end,
-   context = { entry = true },
-}
-
-cmds.show_prev = {
-   impl = function()
-      if render.current_index == 1 then
-         return
-      end
-      render.show_entry { row_idx = render.current_index - 1 }
-   end,
-   context = { entry = true },
 }
 
 ---@param link any
@@ -362,7 +408,7 @@ setmetatable(cmds, {
          choices = choices:filter(function(v)
             return cmds[v].context.entry
          end)
-      elseif vim.api.nvim_get_current_buf() == render.buf.index then
+      elseif render.state.in_index then
          choices = choices:filter(function(v)
             return cmds[v].context.index
          end)
@@ -405,14 +451,13 @@ cmds.grep = {
    context = { all = true },
 }
 
-render.prepare_bufs()
-
 local augroup = vim.api.nvim_create_augroup("Feed", {})
 
 vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
-   buffer = render.buf.entry,
+   pattern = "FeedEntry",
    callback = function(ev)
+      config.on_attach(render.buf)
       vim.cmd.colorscheme(config.colorscheme)
       pcall(require, "feed.lualine")
       render.state.in_entry = true
@@ -425,7 +470,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
       else
          print(conform)
       end
-      for key, value in pairs(config.entry.opts) do
+      for key, value in pairs(config.options.entry) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
       end
@@ -434,12 +479,13 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
-   buffer = render.buf.index,
+   pattern = "FeedIndex",
    callback = function(ev)
+      config.on_attach(render.buf)
       vim.cmd.colorscheme(config.colorscheme)
       pcall(require, "feed.lualine")
       vim.cmd "set cmdheight=0"
-      for key, value in pairs(config.index.opts) do
+      for key, value in pairs(config.options.index) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
       end
@@ -483,13 +529,13 @@ end
 
 vim.api.nvim_create_autocmd("BufLeave", {
    group = augroup,
-   buffer = render.buf.index,
+   pattern = "FeedIndex",
    callback = restore_state,
 })
 
 vim.api.nvim_create_autocmd("BufLeave", {
    group = augroup,
-   buffer = render.buf.entry,
+   pattern = "FeedEntry",
    callback = restore_state,
 })
 

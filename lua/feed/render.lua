@@ -8,20 +8,13 @@ M.state = {
    query_history = {},
 }
 
+-- TODO: grey out the entries just read, only hide after refresh
+
 local db = require "feed.db"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local search = require "feed.search"
 local urlview = require "feed.urlview"
-
-function M.prepare_bufs()
-   if M.buf then
-      return
-   end
-   M.buf = {}
-   M.buf.index = vim.api.nvim_create_buf(false, true)
-   M.buf.entry = vim.api.nvim_create_buf(false, true)
-end
 
 ---@param lines string[]
 ---@param buf integer
@@ -59,13 +52,10 @@ end
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
-   local untag = vim.F.if_nil(opts.untag, true)
    local row_idx = opts.row_idx or ut.get_cursor_row()
    M.current_index = row_idx
    local entry = M.on_display[row_idx]
-   if untag then
-      M.untag(entry.id, "unread")
-   end
+   db[entry.id].tags.unread = nil
    local raw_str = db:get(entry)
    local lines, urls = urlview(vim.split(raw_str, "\n"))
    M.state.urls = urls
