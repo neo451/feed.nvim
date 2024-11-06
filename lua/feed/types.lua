@@ -22,6 +22,7 @@
 
 ---@class feed.db
 ---@field index feed.entry[]
+---@field feeds feed.opml
 ---@field is_stored fun(db: feed.db, id: integer): boolean
 ---@field add fun(db: feed.db, entry: feed.entry, content: string)
 ---@field get fun(db: feed.db, entry: feed.entry): string # maybe get back a list of lines?
@@ -45,9 +46,11 @@
 ---@field id table
 ---@field export fun(self: feed.opml, topath: string?): string?
 ---@field append fun(self: feed.opml, t: table)
+---@field lookup function
+---@field has function
 
 ---@class feed.config
----@field feeds? feed.feed[]
+---@field feeds? string | { "name": string, "tags" : string[] }
 ---@field colorscheme? string
 ---@field split? string
 ---@field keymaps? { index : table<string, string | function>, entry : table<string, string | function> }

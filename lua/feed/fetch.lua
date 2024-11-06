@@ -3,6 +3,7 @@ local feedparser = require "feed.feedparser"
 local db = require "feed.db"
 local ut = require "feed.utils"
 local log = require "feed.log"
+local notify = require "feed.notify"
 
 local M = {}
 
@@ -32,16 +33,6 @@ local function is_valid(res)
       return false
    end
    return true
-end
-
-local function advance_progress(handle, total, name)
-   if handle then
-      handle.percentage = handle.percentage + 100 / total
-      handle.message = "got " .. name
-      if handle.percentage == 100 then
-         handle:finish()
-      end
-   end
 end
 
 -- TODO: proper timeout???
@@ -75,49 +66,51 @@ M.fetch_co = fetch_co
 ---@param feed table | string
 ---@return string?
 ---@return string?
+---@return string[]?
 local function get_feed_info(feed)
    vim.validate {
       feed = { feed, { "table", "string" } },
    }
    if type(feed) == "table" then
       if feed.xmlUrl then
-         return feed.xmlUrl, feed.title or feed.text or nil
+         return feed.xmlUrl, feed.title or feed.text or nil, feed.tags
       elseif feed[1] then
-         return feed[1], feed.name or nil
+         return feed[1], feed.name or nil, feed.tags
       end
    else
-      return feed, nil
+      return feed, nil, nil
    end
 end
 
 ---fetch xml from source and load them into db
 ---@param feed feed.feed
-function M.update_feed(feed, handle, total)
-   local url, name = get_feed_info(feed)
+function M.update_feed(feed, total)
+   local url, name, tags = get_feed_info(feed)
    local res = fetch_co(url, name)
    if is_valid(res) then
       local ok, ast, f_type = pcall(feedparser.parse, res.body)
       if ok then
          for _, entry in ipairs(ast.entries) do
+            if tags then
+               for _, v in ipairs(tags) do
+                  entry.tags[v] = true
+               end
+            end
             db:add(entry)
          end
          -- TODO: check if info changed then update feed
-         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type }
-         db:save { update_feed = true }
+         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags }
+         db:save()
       else
          log.info("feedparser err for", name)
       end
    else
       log.info("server invalid response err for", name)
    end
-   if handle and total then
-      advance_progress(handle, total, name)
-   else
-      vim.notify("feed.nvim: " .. name .. " fetched")
-   end
+   notify.advance(total or 1, name or url)
 end
 
-local function batch_update_feed(feeds, size, handle)
+local function batch_update_feed(feeds, size)
    local c = 1
    for i = c, c + size - 1 do
       local v = feeds[i]
@@ -125,13 +118,13 @@ local function batch_update_feed(feeds, size, handle)
          break
       end
       coroutine.wrap(function()
-         M.update_feed(v, handle, #feeds)
+         M.update_feed(v, #feeds)
       end)()
    end
    c = c + size
    if c < #feeds then
       vim.defer_fn(function()
-         batch_update_feed(feeds, size, handle)
+         batch_update_feed(feeds, size)
       end, 5000)
    end
 end
@@ -139,11 +132,11 @@ end
 local function _batch_update_feed(feeds, _, handle)
    for _, v in ipairs(feeds) do
       coroutine.wrap(function()
-         M.update_feed(v, handle, #feeds)
+         M.update_feed(v, #feeds)
       end)()
    end
 end
 
-M.batch_update_feed = batch_update_feed
+M.batch_update_feed = _batch_update_feed
 
 return M

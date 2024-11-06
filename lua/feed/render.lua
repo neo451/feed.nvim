@@ -1,9 +1,9 @@
 local M = {}
-local index_rendered = false
 
 ---@type table<string, any>
 M.state = {
    in_split = false,
+   in_entry = false,
    on_display = {},
    query_history = {},
 }
@@ -33,7 +33,7 @@ end
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
-   if index_rendered and not opts.refresh then
+   if M.index_rendered and not opts.refresh then
       vim.api.nvim_set_current_buf(M.buf.index)
       return
    end
@@ -45,7 +45,7 @@ function M.show_index(opts)
       lines[i] = format.entry_name(entry):gsub("\n", "") -- HACK:
    end
    M.show(lines, M.buf.index)
-   index_rendered = true
+   M.index_rendered = true
    vim.api.nvim_exec_autocmds("User", {
       pattern = "ShowIndexPost",
       data = { lines = lines },
@@ -64,7 +64,7 @@ function M.show_entry(opts)
    M.current_index = row_idx
    local entry = M.on_display[row_idx]
    if untag then
-      M.untag(row_idx, "unread")
+      M.untag(entry.id, "unread")
    end
    local raw_str = db:get(entry)
    local lines, urls = urlview(vim.split(raw_str, "\n"))
@@ -81,26 +81,8 @@ function M.get_entry(opts)
    if opts.db_idx then
       return db[opts.db_idx]
    end
-   local row_idx = opts.row_idx or ut.get_cursor_row()
+   local row_idx = M.state.in_entry and M.current_index or ut.get_cursor_row()
    return M.on_display[row_idx]
-end
-
-function M.tag(row_idx, input)
-   local id = M.on_display[row_idx].id
-   local entry = db:lookup(id)
-   if entry then
-      entry.tags[input] = true
-      db:save()
-   end
-end
-
-function M.untag(row_idx, input)
-   local id = M.on_display[row_idx].id
-   local entry = db:lookup(id)
-   if entry then
-      entry.tags[input] = nil
-      db:save()
-   end
 end
 
 function M.refresh()
