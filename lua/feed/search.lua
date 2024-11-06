@@ -52,21 +52,6 @@ function M.parse_query(str)
    return query
 end
 
--- ---check if a valid pattern
--- ---@param str any
--- ---@return boolean
--- function M.valid_pattern(str)
---    if vim.lpeg.type(str) == "pattern" then
---       return true
---    else
---       local ok, obj = pcall(vim.regex, str)
---       if ok and tostring(obj) == "<regex>" then
---          return true
---       end
---    end
---    return false
--- end
-
 local function check(v, query)
    local res = true
    if query.re then

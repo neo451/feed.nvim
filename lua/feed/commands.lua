@@ -6,6 +6,14 @@ local ut = require "feed.utils"
 local search = require "feed.search"
 local opml = require "feed.opml"
 
+local ui_input = ut.cb_to_co(function(cb, items)
+   vim.ui.input(items, cb)
+end)
+
+local ui_select = ut.cb_to_co(function(cb, items, opts)
+   vim.ui.select(items, opts, cb)
+end)
+
 local og_colorscheme, og_buffer
 
 local cmds = {}
@@ -27,222 +35,290 @@ local function merge(user_config_feeds, db_feeds)
    return res
 end
 
-function cmds.blowup()
-   db:blowup()
-end
+-- function cmds.blowup()
+--    db:blowup()
+-- end
 
-function cmds.log()
-   local buf = vim.api.nvim_create_buf(false, true)
-   local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
-   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-   vim.api.nvim_set_current_buf(buf)
-end
+cmds.log = {
+   impl = function()
+      local buf = vim.api.nvim_create_buf(false, true)
+      local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.api.nvim_set_current_buf(buf)
+   end,
+   context = { all = true },
+}
 
----load opml file to list of sources
----@param filepath string
-function cmds.load_opml(filepath)
-   filepath = vim.fn.expand(filepath)
-   local f = io.open(filepath, "r")
-   if f then
-      local str = f:read "*a"
-      local outlines = opml.import(str)
-      for _, v in ipairs(outlines) do
-         db.feeds:append(v)
+-- TODO: ui completion done, what about command line completion ?
+cmds.load_opml = {
+   ---load opml file to list of sources
+   ---@param fp string
+   impl = function(fp)
+      fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
+      if not fp then
+         return
       end
-      db:save { update_feed = true }
-   else
-      ut.notify("commands", { msg = "failed to find your opml file", level = "ERROR" })
-   end
-end
+      fp = vim.fn.expand(fp)
+      local f = io.open(fp, "r")
+      if f then
+         local str = f:read "*a"
+         local outlines = opml.import(str)
+         for _, v in ipairs(outlines) do
+            db.feeds:append(v)
+         end
+         db:save()
+      else
+         ut.notify("commands", { msg = "failed to find your opml file", level = "ERROR" })
+      end
+   end,
+   context = "all",
+}
 
-function cmds.export_opml(filepath)
-   filepath = vim.fn.expand(filepath)
-   db.feeds:export(filepath)
-end
+cmds.export_opml = {
+   impl = function(fp)
+      fp = fp or ui_input { prompt = "export your opml to: ", completion = "file_in_path" }
+      fp = vim.fn.expand(fp)
+      if not fp then
+         return
+      end
+      db.feeds:export(fp)
+   end,
+   context = "all",
+}
 
-function cmds.search()
-   vim.ui.input({ prompt = "Search: " }, function(input)
-      if input then
-         render.state.query_string = input
-         render.state.query = search.parse_query(input) -- TODO: preserve history, and allow direct pass arg or new input window, up/down for history
+cmds.search = {
+   impl = function()
+      local query = ui_input { prompt = "Search: " }
+      if query then
+         render.state.query_string = query
+         render.state.query = search.parse_query(query) -- TODO: preserve history, and allow direct pass arg or new input window, up/down for history
          render.refresh()
       end
-   end)
-end
+   end,
+   context = { index = true },
+}
 
-function cmds.refresh()
-   render.refresh()
-end
+cmds.refresh = {
+   impl = function()
+      render.refresh()
+   end,
+   context = { index = true },
+}
 
----index buffer commands
-function cmds.show_in_browser()
-   local entry = render.get_entry()
-   local link = entry.link
-   vim.ui.open(link)
-end
+cmds.show_in_browser = {
+   impl = function()
+      local entry = render.get_entry()
+      local link = entry.link
+      vim.ui.open(link)
+   end,
+   context = { index = true, entry = true },
+}
 
-function cmds.show_in_split()
-   vim.cmd(config.layout.split)
-   render.show_entry()
-   render.state.in_split = true
+cmds.show_in_split = {
+   impl = function()
+      vim.cmd(config.layout.split)
+      render.show_entry()
+      render.state.in_split = true
+   end,
+   context = { index = true },
+}
 
-   local ok, conform = pcall(require, "conform")
-   if ok then
-      pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.buf.entry })
-   else
-      print(conform)
-   end
-end
+cmds.show_entry = {
+   impl = function()
+      render.show_entry()
+      render.state.in_entry = true
+   end,
+   context = { index = true },
+}
 
-function cmds.show_entry()
-   if not render.buf then
-      render.prepare_bufs()
-   end
-   render.show_entry()
-end
-
-function cmds.quit_entry()
-   if render.state.in_split then
-      vim.cmd "q"
-      vim.api.nvim_set_current_buf(render.buf.index)
-   end
-   render.show_index()
-end
-
-function cmds.link_to_clipboard()
-   vim.fn.setreg("+", render.get_entry().link)
-end
-
-function cmds.tag()
-   local index
-   if render.state.in_entry then
-      index = render.current_index
-   else
-      index = ut.get_cursor_row()
-   end
-   vim.ui.input({ prompt = "Tag: " }, function(input)
-      if input and input ~= "" then
-         render.tag(index, input)
+cmds.quit = {
+   impl = function()
+      if render.state.in_split then
+         vim.cmd "q"
+         vim.api.nvim_set_current_buf(render.buf.index)
+         render.state.in_split = false
+      elseif render.state.in_entry then
+         print "here"
+         render.show_index()
+         render.state.in_entry = false
+      else
+         if not og_buffer then
+            og_buffer = vim.api.nvim_create_buf(true, false)
+         end
+         vim.api.nvim_set_current_buf(og_buffer)
+         pcall(vim.cmd.colorscheme, og_colorscheme)
       end
-   end)
-end
+   end,
+   context = { entry = true, index = true },
+}
 
-function cmds.untag()
-   local index
-   if render.state.in_entry then
-      index = render.current_index
-   else
-      index = ut.get_cursor_row()
-   end
-   vim.ui.input({ prompt = "Untag: " }, function(input)
-      if input and input ~= "" then
-         render.untag(index, input)
+cmds.link_to_clipboard = {
+   impl = function()
+      vim.fn.setreg("+", render.get_entry().link)
+   end,
+   context = { index = true, entry = true },
+}
+
+cmds.tag = {
+   impl = function()
+      local id = render.get_entry().id
+      local input = ui_input { prompt = "Untag: " }
+      if not input then
+         return
       end
-   end)
-end
+      render.untag(id, input)
+   end,
+   context = { index = true, entry = true },
+}
 
---- entry buffer actions
-function cmds.show_index()
-   og_colorscheme = vim.g.colors_name
-   og_buffer = vim.api.nvim_get_current_buf()
-   render.refresh()
-end
+cmds.untag = {
+   impl = function()
+      local id = render.get_entry().id
+      local input = ui_input { prompt = "Untag: " }
+      if not input then
+         return
+      end
+      render.untag(id, input)
+   end,
+   context = { index = true, entry = true },
+}
 
-function cmds.quit_index()
-   if not og_buffer then
-      og_buffer = vim.api.nvim_create_buf(true, false)
-   end
-   vim.api.nvim_set_current_buf(og_buffer)
-   vim.cmd.colorscheme(og_colorscheme)
-end
+cmds.show_index = {
+   --- entry buffer actions
+   impl = function()
+      og_colorscheme = vim.g.colors_name
+      og_buffer = vim.api.nvim_get_current_buf()
+      render.refresh()
+   end,
+   context = { all = true },
+}
 
-function cmds.show_next()
-   if render.current_index == #render.on_display then
-      return
-   end
-   render.show_entry { row_idx = render.current_index + 1 }
-end
+cmds.quit_index = {
+   impl = function()
+      if not og_buffer then
+         og_buffer = vim.api.nvim_create_buf(true, false)
+      end
+      vim.api.nvim_set_current_buf(og_buffer)
+      vim.cmd.colorscheme(og_colorscheme)
+   end,
+   context = { index = true },
+}
 
-function cmds.show_prev()
-   if render.current_index == 1 then
-      return
-   end
-   render.show_entry { row_idx = render.current_index - 1 }
-end
+-- TODO:
+cmds.show_next = {
+   impl = function()
+      if render.current_index == #render.on_display then
+         return
+      end
+      render.show_entry { row_idx = render.current_index + 1 }
+   end,
+   context = { entry = true },
+}
+
+cmds.show_prev = {
+   impl = function()
+      if render.current_index == 1 then
+         return
+      end
+      render.show_entry { row_idx = render.current_index - 1 }
+   end,
+   context = { entry = true },
+}
 
 ---@param link any
 ---@return string
 local function resolve_url_from_entry(link)
-   local entry = render.get_entry { row_idx = render.current_index }
-   local feed = entry.feed
+   local feed = render.get_entry().feed
    local root_url = db.feeds:lookup(feed).htmlUrl
    return ut.url_resolve(root_url, link)
 end
 
-function cmds.open_url()
-   vim.cmd.normal "yi["
-   local text = vim.fn.getreg "0"
-   local item = vim.iter(render.state.urls):find(function(v)
-      return v[1] == text
-   end)
-   if item then
-      local link = resolve_url_from_entry(item[2])
-      vim.ui.open(link)
-   end
-end
-
-function cmds.urlview()
-   local items = render.state.urls
-   vim.ui.select(items, {
-      prompt = "urlview",
-      format_item = function(item)
-         return item[1]
-      end,
-   }, function(item, _)
+cmds.open_url = {
+   impl = function()
+      vim.cmd.normal "yi["
+      local text = vim.fn.getreg "0"
+      local item = vim.iter(render.state.urls):find(function(v)
+         return v[1] == text
+      end)
       if item then
          local link = resolve_url_from_entry(item[2])
          vim.ui.open(link)
       end
-   end)
-end
+   end,
+   context = { entry = true },
+}
+
+cmds.urlview = {
+   impl = function()
+      local items = render.state.urls
+      local item = ui_select(items, {
+         prompt = "urlview",
+         format_item = function(item)
+            return item[1]
+         end,
+      })
+      if item then
+         local link = resolve_url_from_entry(item[2])
+         vim.ui.open(link)
+      end
+   end,
+   context = { entry = true },
+}
 
 -- TODO: better view
-function cmds.list_feeds()
-   for _, v in ipairs(db.feeds) do
-      print(v.title, v.xmlUrl)
-   end
-end
-
-function cmds.update()
-   local feedlist = merge(config.feeds, db.feeds)
-   fetch.batch_update_feed(feedlist, 200)
-end
-
----add a feed to database
-function cmds:add_feed()
-   vim.ui.input({ prompt = "Feed url: " }, function(input)
-      if input and input ~= "" then
-         table.insert(config.feeds, input)
+cmds.list_feeds = {
+   impl = function()
+      for _, v in ipairs(db.feeds) do
+         print(v.title, v.xmlUrl)
       end
-   end)
-end
+   end,
+   context = { all = true },
+}
+
+cmds.update = {
+   impl = function()
+      local feedlist = merge(config.feeds, db.feeds)
+      fetch.batch_update_feed(feedlist, 200)
+   end,
+   context = { all = true },
+}
+
+-- TODO: use a local feeds file, no need to have fetched to be permanant
+---add a feed to database, currently need to actully fetch the feed to be permanent
+cmds.add_feed = {
+   impl = coroutine.wrap(function()
+      local feed_url = ui_input { prompt = "Feed url: " }
+      local feed_name = ui_input { prompt = "Feed name (optional): " }
+      -- local feed_tags = input { prompt = "Feed tags (optional, comma seperated): " } -- TODO:
+      if feed_url and feed_url ~= "" then
+         if feed_name then
+            table.insert(config.feeds, { feed_url, name = feed_name })
+         end
+         table.insert(config.feeds, feed_url)
+      end
+   end),
+   context = { all = true },
+}
 
 ---remove a feed from db.feeds
 -- function cmds:remove_feed() end
 
 cmds.update_feed = {
-   impl = function(name)
+   impl = coroutine.wrap(function(name)
+      name = name or ui_select(cmds.update_feed.complete(), {})
+      if not name then
+         return
+      end
       local url
       if db.feeds:lookup(name) then
          url = db.feeds:lookup(name)
       else
          url = name
       end
-      coroutine.wrap(function()
-         fetch.update_feed(url, fidget(), 1)
-      end)()
-   end,
-   complete = function(lead)
+      fetch.update_feed(url, 1)
+   end),
+
+   complete = function()
       local names = vim.tbl_keys(db.feeds.names) -- TODO: the feeds in config
       local new_feeds = {}
       for _, v in ipairs(config.feeds) do
@@ -252,48 +328,65 @@ cmds.update_feed = {
          end
       end
       vim.list_extend(names, new_feeds)
-      return vim.iter(names)
-         :filter(function(arg)
-            return arg:find(lead) ~= nil
-         end)
-         :totable()
+      return names
    end,
+   context = { all = true },
 }
+
+setmetatable(cmds, {
+   __call = function()
+      local choices = vim.tbl_keys(cmds)
+      if render.state.in_entry then
+         choices = vim.iter(choices)
+            :filter(function(v)
+               return cmds[v].context.entry
+            end)
+            :totable()
+      elseif vim.api.nvim_get_current_buf() == render.buf.index then
+         choices = vim.iter(choices)
+            :filter(function(v)
+               return cmds[v].context.index
+            end)
+            :totable()
+      else
+         choices = vim.iter(choices)
+            :filter(function(v)
+               return cmds[v].context.all
+            end)
+            :totable()
+      end
+
+      vim.ui.select(choices, {}, function(choice)
+         if choice then
+            local item = cmds[choice]
+            coroutine.wrap(item.impl)()
+         end
+      end)
+   end,
+})
 
 ---purge a feed from all of the db, including entries
 -- function cmds:prune() end
 
 --- **INTEGRATIONS**
-function cmds:telescope()
-   pcall(vim.cmd.Telescope, "feed")
-end
+cmds.telescope = {
+   impl = function()
+      pcall(vim.cmd.Telescope, "feed")
+   end,
+   context = { all = true },
+}
 
-function cmds:grep()
-   pcall(vim.cmd.Telescope, "feed_grep")
-end
-
--- function cmds.which_key()
---    local wk = require "which-key"
---    wk.show {
---       buf = 0,
---       ["local"] = true,
---       loop = true,
---    }
--- end
+cmds.grep = {
+   impl = function()
+      pcall(vim.cmd.Telescope, "feed_grep")
+      pcall(vim.cmd.Telescope, "feed")
+   end,
+   context = { all = true },
+}
 
 render.prepare_bufs()
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
-
-for lhs, rhs in pairs(config.entry.keys) do
-   rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-   vim.keymap.set("n", lhs, rhs, { silent = true, buffer = render.buf.entry })
-end
-
-for lhs, rhs in pairs(config.index.keys) do
-   rhs = (type(rhs) == "function") and rhs or cmds[rhs]
-   vim.keymap.set("n", lhs, rhs, { silent = true, buffer = render.buf.index })
-end
 
 vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
@@ -381,7 +474,7 @@ vim.api.nvim_create_autocmd("BufLeave", {
    buffer = render.buf.entry,
    callback = restore_state,
 })
---
+
 -- vim.api.nvim_create_autocmd("WinResized", {
 --    group = augroup,
 --    buffer = render.buf.entry,

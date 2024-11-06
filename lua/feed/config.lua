@@ -9,20 +9,8 @@ local default = {
    colorscheme = "morning",
    ---@type string
    date_format = "%Y-%m-%d",
-
+   -- TODO: one opts
    index = {
-      ---@type table<string, string | function>
-      keys = {
-         ["<CR>"] = "show_entry",
-         ["<M-CR>"] = "show_in_split",
-         ["+"] = "tag",
-         ["-"] = "untag",
-         s = "search",
-         b = "show_in_browser",
-         r = "refresh",
-         y = "link_to_clipboard",
-         q = "quit_index",
-      },
       ---@type table<string, any>
       opts = {
          conceallevel = 0,
@@ -35,17 +23,6 @@ local default = {
    },
 
    entry = {
-      ---@type table<string, string | function>
-      keys = {
-         ["<CR>"] = "show_entry",
-         ["}"] = "show_next",
-         ["{"] = "show_prev",
-         ["+"] = "tag",
-         ["-"] = "untag",
-         u = "urlview",
-         gx = "open_url",
-         q = "quit_entry",
-      },
       ---@type table<string, any>
       opts = {
          conceallevel = 3,
