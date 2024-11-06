@@ -50,6 +50,7 @@ describe("filter", function()
 
    it("filter by regex", function()
       local query = M.parse_query "Neo vim"
+      local rev_query = M.parse_query "!Neo !vim"
       local index = {
          { title = "Neovim is awesome", time = 1 },
          { title = "neovim is lowercase", time = 1 },
@@ -59,6 +60,8 @@ describe("filter", function()
       }
       local res = M.filter(index, query)
       assert.same({ index[1], index[2] }, res)
+      local res2 = M.filter(index, rev_query)
+      assert.same({ index[5] }, res2)
    end)
 
    it("filter by limit number", function()
@@ -69,5 +72,16 @@ describe("filter", function()
       end
       local res = M.filter(entries, query)
       assert.same(10, #res)
+   end)
+
+   it("filter by feed", function()
+      local query = M.parse_query "=vim"
+      local entries = {
+         { feed = "neovim.io", time = 1 },
+         { feed = "ovim.io", time = 1 },
+         { feed = "vm.io", time = 1 },
+      }
+      local res = M.filter(entries, query)
+      assert.same(2, #res)
    end)
 end)

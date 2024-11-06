@@ -20,6 +20,7 @@ local filter_symbols = {
    ["-"] = "must_not_have",
    ["@"] = "date",
    ["#"] = "limit",
+   ["="] = "feed",
 }
 
 ---@param str string
@@ -34,7 +35,9 @@ function M.parse_query(str)
          if not query.re then
             query.re = {}
          end
-         table.insert(query.re, vim.regex(q .. "\\c"))
+         table.insert(query.re, q)
+      elseif kind == "feed" then
+         query.feed = q:sub(2) -- TODO: ! weird for now =!neovim
       elseif kind == "must_have" then
          if not query.must_have then
             query.must_have = {}
@@ -52,12 +55,35 @@ function M.parse_query(str)
    return query
 end
 
+-- TODO: memoize
+local function build_regex(str)
+   local rev = str:sub(0, 1) == "!"
+   if rev then
+      str = str:sub(2)
+   end
+   local q = vim.regex(str .. "\\c")
+   return q, rev
+end
+
 local function check(v, query)
    local res = true
+   if query.feed then
+      local q, rev = build_regex(query.feed)
+      if not q:match_str(v.feed) then
+         return rev
+      end
+   end
    if query.re then
       for _, reg in ipairs(query.re) do
-         if not reg:match_str(v.title) then
-            return false
+         local q, rev = build_regex(reg)
+         if rev then
+            if q:match_str(v.title) then
+               return false
+            end
+         else
+            if not q:match_str(v.title) then
+               return false
+            end
          end
       end
    end
@@ -83,17 +109,15 @@ local function check(v, query)
    return res
 end
 
---- tag read should be default for empty tags
-
 ---@param entries feed.entry[]
 ---@param query feed.query
 ---@return feed.entry[]
 function M.filter(entries, query)
    local tbl = vim.deepcopy(entries, true)
    local res = {}
-   for i, v in pairs(tbl) do
+   for _, v in pairs(tbl) do
       if type(v) == "table" then
-         if query.limit and i > query.limit then
+         if query.limit and #res >= query.limit then
             break
          end
          if check(v, query) then

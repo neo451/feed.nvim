@@ -9,10 +9,14 @@ local default = {
    colorscheme = "morning",
    ---@type string
    date_format = "%Y-%m-%d",
+   ---@type string
+   split_cmd = "13split",
+   ---@type boolean
+   enable_default_keybindings = true,
    -- TODO: one opts
-   index = {
+   options = {
       ---@type table<string, any>
-      opts = {
+      index = {
          conceallevel = 0,
          wrap = false,
          number = false,
@@ -20,11 +24,9 @@ local default = {
          modifiable = false,
          listchars = "tab:> ,nbsp:+",
       },
-   },
 
-   entry = {
       ---@type table<string, any>
-      opts = {
+      entry = {
          conceallevel = 3,
          concealcursor = "nvc",
          wrap = true,
@@ -57,8 +59,6 @@ local default = {
       --    format = "%Y-%m-%d",
       --    width = 10,
       -- },
-      ---@type string
-      split = "13split",
       header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- TODO: placeholder set to nil
    },
 
@@ -70,15 +70,6 @@ local default = {
    feeds = {},
    integrations = {
       telescope = {},
-      zenmode = {
-         window = {
-            width = 0.85, -- width will be 85% of the editor width
-         },
-         -- callback where you can add custom code when the Zen window opens
-         on_open = function() end,
-         -- callback where you can add custom code when the Zen window closes
-         on_close = function() end,
-      },
    },
 }
 
