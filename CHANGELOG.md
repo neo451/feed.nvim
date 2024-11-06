@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.7.0](https://github.com/neo451/feed.nvim/compare/v1.6.3...v1.7.0) (2024-11-06)
+
+
+### Features
+
+* support for multiple notify backends ([1240969](https://github.com/neo451/feed.nvim/commit/1240969350b2311b5b2c497a788fed8eecd7abee))
+
+
+### Bug Fixes
+
+* vim.hl/highlight ([21f462a](https://github.com/neo451/feed.nvim/commit/21f462a5f9bc3a6f1058f9cae74c0c884988ce73))
+* xml module not rely on treedoc, cleaner impl ([6c704fc](https://github.com/neo451/feed.nvim/commit/6c704fc36a5b94a2abc60c2e9e4f7a1ebca326f5))
+
 ## [1.6.3](https://github.com/neo451/feed.nvim/compare/v1.6.2...v1.6.3) (2024-11-02)
 
 
