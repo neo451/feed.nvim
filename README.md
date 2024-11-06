@@ -17,17 +17,16 @@
 
 *This project is in beta, many features are incomplete, but is already useable for most feeds, trying out and contributions are welcome!*
 
-*see [roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
+*see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
 
 🚧 🚧 🚧
 
 ## 🌟 Features
 
-- 🌲 reliable and fast [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
-- 📝 feeds converted to markdown/neorg for reading and storing
+- 🌲 fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 📝 view entries as beautiful markdown
 - 🏪 pure lua database with no extra dependency
 - 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
-- 📶 [RSSHub](https://github.com/DIYgod/RSSHub) integration to turn (almost) any link into a web feed
 
 ## 🚀 Installation
 
@@ -54,7 +53,7 @@ require("nvim-treesitter.configs").setup {
 }
 ```
 
-for others see: [wiki/Manual-installation](https://github.com/neo451/feed.nvim/wiki/Manual-installation)
+for others see: [Manual Installation](https://github.com/neo451/feed.nvim/wiki/Manual-installation)
 
 
 ### Health Check
@@ -63,128 +62,13 @@ for others see: [wiki/Manual-installation](https://github.com/neo451/feed.nvim/w
 
 ### Optional Integrations
 
-- see [wiki/Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
+- see [Optional Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
 
 ## 🔖 Usage
 
-### Basic Usage
-
-- Use `Feed` command to open the default index, there are two main kinds of index:
-  - The `elfeed` style search buffer, everything is a flat list to be searched
-  - The `telescope` picker, good for fulltext search accross all your database
-- Use `Feed <Tab>` to find out more actions binded to `Feed` buffers
-
-### Feed Management
-- Pass your feeds as list of url and tags see [configurations](#configurations) below.
-- Use `Feed update` to update all the feeds in the db
-- Use `Feed add_feed` to add feed to the db
-- Use `Feed update_feed` to update a feed
-- Use `Feed load_opml` to import your opml file
-- Use `Feed export_opml` to export your opml file to load in other readers
-
-### Feed Searching
-
-1. DSL query
-
-- *WIP*: Will support all the syntax of elfeed, for now see [elfeed](https://github.com/skeeto/elfeed/tree/master?tab=readme-ov-file#filter-syntax)'s description.
-- use `s` in index buffer to filter your feeds, currently suports: regex, must_have(`+`), must_not_have(`-`), and date(`@`).
-
-2. Live grep
-
-- use `Feed grep` to use telescope's `live_grep` (requires `ripgrep`) to do fulltext search accross your database.
-
-### RssHub Integration
-
-- *To Be Implemented*
-
-### Tiny Tiny Rss Integration
-
-- *To Be Implemented*
-
-## Customization
-
-- these are the defaults, no need to copy, only set the ones you wish to change
-
-```lua
-require"feed".setup{
-   ---@type string
-   db_dir = vim.fn.stdpath "data" .. "/feed",
-   ---@type string
-   colorscheme = "morning",
-
-   index = {
-      ---@type table<string, string | function>
-      keys = {
-         ["<CR>"] = "show_entry",
-         ["<M-CR>"] = "show_in_split",
-         ["+"] = "tag",
-         ["-"] = "untag",
-         ["?"] = "which_key",
-         s = "search",
-         b = "show_in_browser",
-         w = "show_in_w3m",
-         r = "refresh",
-         y = "link_to_clipboard",
-         q = "quit_index",
-      },
-      ---@type table<string, any>
-      opts = {
-         conceallevel = 0,
-         wrap = false,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-      },
-   },
-
-   entry = {
-      ---@type table<string, string | function>
-      keys = {
-         ["<CR>"] = "show_entry",
-         ["}"] = "show_next",
-         ["{"] = "show_prev",
-         ["?"] = "which_key",
-         ["+"] = "tag",
-         ["-"] = "untag",
-         u = "urlview",
-         gx = "open_url",
-         q = "quit_entry",
-      },
-      ---@type table<string, any>
-      opts = {
-         conceallevel = 0,
-         wrap = true,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-         filetype = "markdown",
-      },
-   },
-   ---@type table<string, any>
-   layout = {
-      title = {
-         right_justify = false,
-         width = 80,
-      },
-      date = {
-         format = "%Y-%m-%d",
-         width = 10,
-      },
-      ---@type string
-      split = "13split",
-      header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- To be implemented
-   },
-
-   search = {
-      default_query = "@6-months-ago +unread",
-   },
-
-   ---@type feed.feed[]
-   feeds = {},
-   integrations = {}, -- To be implemented
-}
-
-```
+- [Usage Guide](https://github.com/neo451/feed.nvim/wiki/Usage-Guide)
+- [Default Configs](https://github.com/neo451/feed.nvim/wiki/Default-Config)
+- [Recipes](https://github.com/neo451/feed.nvim/wiki/Recipes)
 
 ## Related Projects
 
