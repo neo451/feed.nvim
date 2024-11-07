@@ -8,14 +8,12 @@ source = {
 
 dependencies = {
    "lua >= 5.1",
-   "fidget.nvim",
-   "conform.nvim",
    "plenary.nvim",
    "treedoc.nvim",
-   "tree-sitter-markdown",
-   "tree-sitter-markdown_inline",
-   "tree-sitter-html",
-   "tree-sitter-xml",
+   -- "tree-sitter-markdown",
+   -- "tree-sitter-markdown_inline",
+   -- "tree-sitter-html",
+   -- "tree-sitter-xml",
 }
 
 test_dependencies = {
@@ -23,7 +21,6 @@ test_dependencies = {
    "nlua",
    "plenary.nvim",
    "treedoc.nvim",
-   "tree-sitter-markdown",
    "tree-sitter-markdown",
    "tree-sitter-html",
    "tree-sitter-xml",

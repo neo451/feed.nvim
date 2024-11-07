@@ -13,7 +13,6 @@ local default = {
    split_cmd = "13split",
    ---@type boolean
    enable_default_keybindings = true,
-   -- TODO: one opts
    options = {
       ---@type table<string, any>
       index = {

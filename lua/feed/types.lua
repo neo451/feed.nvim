@@ -12,7 +12,7 @@
 
 ---@class feed.entry
 ---@field time integer
----@field id integer
+---@field id string
 ---@field title string
 ---@field feed string
 ---@field tags table<string, boolean>
