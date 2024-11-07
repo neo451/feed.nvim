@@ -1,9 +1,6 @@
 local log = require "feed.log"
-local build = require "feed.build"
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
-
-build.build()
 
 local M = {}
 
