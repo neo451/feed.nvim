@@ -34,30 +34,21 @@
 
 > requires `nvim 0.10` and `curl` to be installed on your path.
 
-Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
+For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
 ```
 Rocks install feed.nvim
 ```
 
-Using [lazy.nvim](https://github.com/folke/lazy.nvim), with `luarocks` support:
+For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-return {　'neo451/feed.nvim',　opts = {}　}
+return { 'neo451/feed.nvim' }
 ```
 
-```lua
--- somewhere in your config that sets up nvim-treesitter, add these three filetypes to the ensure_installed list:
-require("nvim-treesitter.configs").setup {
-   ensure_installed = { "xml", "html", "markdown" },
-}
-```
-
-for others see: [Manual Installation](https://github.com/neo451/feed.nvim/wiki/Manual-installation)
-
+For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `neo451/treedoc.nvim`, and tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
 
 ### Health Check
-
 - run `:checkhealth feed` to see your installation status
 
 ### Optional Integrations
