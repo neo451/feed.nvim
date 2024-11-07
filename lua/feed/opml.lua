@@ -33,40 +33,29 @@ mt.__index = function(self, k)
    end
 end
 
-mt.__tostring = function(self)
-   return ("<OPML>name: %s, size: %d"):format(self.title, #self)
-end
-
 ---@param src string
 ---@return feed.opml
 function M.import(src)
    local ast = xml.parse(src, "import opml")
    local outline = ast.opml.body.outline
-   local title = ast.opml.head.title
+   local ret = {}
    outline = ut.listify(outline)
-   local urls, names = {}, {}
-   for i, v in ipairs(outline) do
-      if v.xmlUrl then
-         urls[v.xmlUrl] = i
-         if v.title then
-            names[v.title] = i
-         end
+   local names = {}
+   for _, v in ipairs(outline) do
+      if v.xmlUrl and v.title then
+         ret[v.xmlUrl] = v
+         names[v.title] = v.xmlUrl
       else
          log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
-         table.remove(outline, i)
       end
    end
-   outline.title = title
-   outline.urls = urls
-   outline.names = names
-   return setmetatable(outline, mt)
+   ret.names = names
+   return setmetatable(ret, mt)
 end
 
 ---@return feed.opml
 function M.new()
    return setmetatable({
-      title = "feed.nvim",
-      urls = {},
       names = {},
    }, mt)
 end
@@ -75,10 +64,12 @@ end
 ---@return string?
 function mt:export(topath)
    local buf = {}
-   for _, v in ipairs(self) do
-      buf[#buf + 1] = format_outline(v)
+   for k, v in pairs(self) do
+      if k ~= "names" then
+         buf[#buf + 1] = format_outline(v)
+      end
    end
-   local str = format_root(self.title, concat(buf, "\n"))
+   local str = format_root("feed.nvim export", concat(buf, "\n"))
    if topath then
       local file = io.open(topath, "w")
       if file then
@@ -96,28 +87,18 @@ function mt:lookup(name)
    end
 end
 
----@param name string url
-function mt:has(url)
-   local idx = self.urls[url]
-   if idx then
-      return self[idx]
-   end
-end
-
 ---@param v table
 function mt:append(v)
-   if self.urls[v.xmlUrl] then
-      local urlsx = self.urls[v.xmlUrl]
-      self[urlsx] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
-      return
-   end
    if not v.xmlUrl then
       log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
       return
    end
-   self[#self + 1] = { text = v.title, title = v.title, type = v.type or "rss", htmlUrl = v.htmlUrl, xmlUrl = v.xmlUrl }
-   self.urls[v.xmlUrl] = #self
-   self.names[v.title] = #self
+   if self[v.xmlUrl] then
+      self[v.xmlUrl] = v
+      return
+   end
+   self[v.xmlUrl] = v
+   self.names[v.title] = v.xmlUrl
 end
 
 M.mt = mt

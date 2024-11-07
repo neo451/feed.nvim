@@ -17,8 +17,7 @@ describe("opml obj", function()
 </body></opml>]]
       opml:append { title = "world", text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
       opml:append { title = "world", text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
-      assert.same(opml[2].type, "atom")
-      assert.is_nil(opml[3]) -- Avoids dup items
+      assert.same(opml.xxx.type, "atom")
    end)
 
    it("should build a opml obj and exclude invalid entries", function()
@@ -29,21 +28,10 @@ describe("opml obj", function()
 </body></opml>]]
       opml:append { title = "world", text = "world", type = "atom", xmlUrl = "xxx", htmlUrl = "xxxxx" }
       opml:append { title = "world", text = "world", type = "atom", htmlUrl = "yyyyyy" }
-      assert.same(opml[2].type, "atom")
+      assert.same(opml.xxx.type, "atom")
       assert.is_nil(opml[3]) -- Avoids dup items
    end)
 
-   it("should pprint a opml obj", function()
-      local opml = M.import [[<?xml version="1.0" encoding="UTF-8"?>
-   <opml version="1.0"><head><title>test opml</title></head><body>
-   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-   <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
-   </body></opml>]]
-      assert.same(tostring(opml), "<OPML>name: test opml, size: 5")
-   end)
    it("should export to a file", function()
       local opml = M.import [[<?xml version="1.0" encoding="UTF-8"?>
    <opml version="1.0"><head><title>test opml</title></head><body>
@@ -75,20 +63,8 @@ describe("lookup and hs", function()
          type = "rss",
          xmlUrl = "http",
       })
-      assert.same(opml:has "http", {
-         htmlUrl = "https",
-         text = "hello",
-         title = "hello",
-         type = "rss",
-         xmlUrl = "http",
-      })
    end)
 end)
-
-local function readfile(path)
-   local str = vim.fn.readfile(data_dir .. path)
-   return table.concat(str)
-end
 
 -- describe("real opml data", function()
 --    it("should from podcast app export", function()
