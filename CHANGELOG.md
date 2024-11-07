@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.2](https://github.com/neo451/feed.nvim/compare/v1.7.1...v1.7.2) (2024-11-07)
+
+
+### Bug Fixes
+
+* feed grep now only searches the content of the entry ([f3ab1c6](https://github.com/neo451/feed.nvim/commit/f3ab1c6f359b4061ee0fdfbe529102ccde6bccaa))
+* sub command completion respects context now ([f3ab1c6](https://github.com/neo451/feed.nvim/commit/f3ab1c6f359b4061ee0fdfbe529102ccde6bccaa))
+
 ## [1.7.1](https://github.com/neo451/feed.nvim/compare/v1.7.0...v1.7.1) (2024-11-06)
 
 
