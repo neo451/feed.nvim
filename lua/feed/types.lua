@@ -68,3 +68,12 @@ vim.g.feed = vim.g.feed
 ---@field absolute fun(date: feed.date): feed.date
 ---@field format fun(date: feed.date, format: string): feed.date
 ---@field from_now fun(date: feed.date): integer
+
+---@class feed.query
+---@field after? feed.date #@
+---@field before? feed.date #@
+---@field must_have? string[] #+
+---@field must_not_have? string[] #-
+---@field feed? string #=
+---@field limit? number ##
+---@field re? string[]

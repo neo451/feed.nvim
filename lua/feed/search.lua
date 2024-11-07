@@ -2,19 +2,6 @@ local date = require "feed.date"
 
 local M = {}
 
----@class feed.query
----@field after? feed.date #@
----@field before? feed.date #@
----@field must_have? string[] #+
----@field must_not_have? string[] #-
----@field feeds? string #=
----@field limit? number ##
----@field re? feed.pattern[]
-
----TODO: !
-
----@alias feed.pattern vim.regex | vim.lpeg.Pattern | string # regex
-
 local filter_symbols = {
    ["+"] = "must_have",
    ["-"] = "must_not_have",

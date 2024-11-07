@@ -70,6 +70,7 @@ local default = {
    integrations = {
       telescope = {},
    },
+   on_attach = function() end,
 }
 
 local M = {}

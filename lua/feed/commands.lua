@@ -77,7 +77,7 @@ local function merge(user_config_feeds, db_feeds)
    local res = vim.deepcopy(db_feeds)
    for _, v in ipairs(user_config_feeds) do
       local url = type(v) == "table" and v[1] or v
-      if not db_feeds:has(url) then
+      if not db_feeds[url] then
          res[#res + 1] = v
       end
    end
@@ -291,6 +291,7 @@ cmds.untag = {
    -- complete =
 }
 
+--- TOOD:
 ---@param link any
 ---@return string
 local function resolve_url_from_entry(link)
@@ -349,8 +350,6 @@ cmds.update = {
    context = { all = true },
 }
 
--- TODO: use a local feeds file, no need to have fetched to be permanant
-
 local function comma_sp(str)
    return vim.iter(vim.gsplit(str, ",")):fold({}, function(acc, v)
       v = v:gsub("%s", "")
@@ -400,7 +399,7 @@ cmds.update_feed = {
       local new_feeds = {}
       for _, v in ipairs(config.feeds) do
          local url = type(v) == "table" and v[1] or v
-         if not db.feeds:has(url) then
+         if not db.feeds[url] then
             new_feeds[#new_feeds + 1] = url
          end
       end
@@ -417,11 +416,11 @@ local function get_item_by_context()
 
    if render.state.in_entry then
       choices = choices:filter(function(v)
-         return cmds[v].context.entry
+         return cmds[v].context.entry or cmds[v].context.all
       end)
    elseif render.state.in_index then
       choices = choices:filter(function(v)
-         return cmds[v].context.index
+         return cmds[v].context.index or cmds[v].context.all
       end)
    else
       choices = choices:filter(function(v)
