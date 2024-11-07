@@ -4,7 +4,6 @@ return {
    { "neo451/treedoc.nvim", lazy = true },
    {
       "neo451/feed.nvim",
-      build = ":Feed build",
       opts = {},
    },
 }
