@@ -48,14 +48,16 @@ end
 ---@class feed.entry_opts
 ---@field row_idx? integer # will default to cursor row
 ---@field untag? boolean # default true
+---@field id? string # db_id
 
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
-   local row_idx = opts.row_idx or ut.get_cursor_row()
-   M.current_index = row_idx
-   local entry = M.on_display[row_idx]
-   db[entry.id].tags.unread = nil
+   local untag = vim.F.if_nil(opts.untag, true)
+   local entry, id = M.get_entry(opts)
+   if untag then
+      db[id].tags.unread = nil
+   end
    local raw_str = db:get(entry)
    local lines, urls = urlview(vim.split(raw_str, "\n"))
    M.state.urls = urls
@@ -66,13 +68,17 @@ function M.show_entry(opts)
    })
 end
 
+---@param opts? feed.entry_opts
+---@return feed.entry
+---@return string
 function M.get_entry(opts)
    opts = opts or {}
-   if opts.db_idx then
-      return db[opts.db_idx]
+   if opts.id then
+      return db[opts.id], opts.id
    end
    local row_idx = M.state.in_entry and M.current_index or ut.get_cursor_row()
-   return M.on_display[row_idx]
+   local entry = M.on_display[row_idx]
+   return entry, entry.id
 end
 
 function M.refresh()
