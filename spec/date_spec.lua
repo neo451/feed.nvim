@@ -16,6 +16,10 @@ describe("new_from", function()
       assert.same("2003-06-10", tostring(res))
       assert.same("2003-06-10", tostring(res2))
    end)
+   it("should new form atom", function()
+      local res = M.new_from.atom "2024-08-21T00:00:00+00:00"
+      assert.same("2024-08-21", tostring(res))
+   end)
 end)
 
 describe("format", function()

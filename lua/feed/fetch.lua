@@ -58,12 +58,19 @@ M.fetch_co = fetch_co
 ---@param feed table
 ---@param total integer
 function M.update_feed(feed, total)
-   local url, name, tags = unpack(feed)
+   local url, name, tags, lastLast
+   if type(feed) == "table" then
+      url, name, tags = unpack(feed, 1, 3)
+   elseif type(feed) == "string" then
+      url = feed
+   end
+   if db.feeds[url] then
+      lastLast = db.feeds[url].lastBuild
+   end
    local res = fetch_co(url, name)
-   print(url, name)
    if is_valid(res) then
-      local ok, ast, f_type = pcall(feedparser.parse, res.body, url)
-      if ok then
+      local ok, ast, f_type, lastBuild = pcall(feedparser.parse, res.body, url, lastLast)
+      if ok and ast then
          for _, entry in ipairs(ast.entries) do
             if tags then
                for _, v in ipairs(tags) do
@@ -72,16 +79,13 @@ function M.update_feed(feed, total)
             end
             db:add(entry)
          end
-         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags }
-         db:save() -- TODO: wasteful
+         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags, lastBuild = lastBuild }
+         db:save()
       else
          log.info("feedparser err for", name)
       end
    else
       log.info("server invalid response err for", name)
-   end
-   if total == 1 then
-      db:save()
    end
    notify.advance(total or 1, name)
 end

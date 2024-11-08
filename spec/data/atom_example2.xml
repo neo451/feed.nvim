@@ -1,10 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="https://neovim.io/news.xml" rel="self" type="application/atom+xml" /><link href="https://neovim.io/" rel="alternate" type="text/html" /><updated>2024-09-29T19:55:20+00:00</updated><id>https://neovim.io/news.xml</id><title type="html">Neovim</title><subtitle>vim out of the box</subtitle><entry><title type="html">Neovim 0.10</title><link href="https://neovim.io/news/2024/05" rel="alternate" type="text/html" title="Neovim 0.10" /><published>2024-05-16T00:00:00+00:00</published><updated>2024-05-16T00:00:00+00:00</updated><id>https://neovim.io/news/2024/news</id><content type="html" xml:base="https://neovim.io/news/2024/05"><![CDATA[<p>Nvim 0.10 was released.</p>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator>
+  <link href="https://neovim.io/news.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://neovim.io/" rel="alternate" type="text/html"/>
+  <updated>2024-09-29T19:55:20+00:00</updated>
+  <id>https://neovim.io/news.xml</id>
+  <title type="html">Neovim</title>
+  <subtitle>vim out of the box</subtitle>
+  <entry>
+    <title type="html">Neovim 0.10</title>
+    <link href="https://neovim.io/news/2024/05" rel="alternate" type="text/html" title="Neovim 0.10"/>
+    <published>2024-05-16T00:00:00+00:00</published>
+    <updated>2024-05-16T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2024/news</id>
+    <content type="html" xml:base="https://neovim.io/news/2024/05"><![CDATA[<p>Nvim 0.10 was released.</p>
 
 <ul>
   <li>Newsletter is here: <a href="https://gpanders.com/blog/whats-new-in-neovim-0.10/">https://gpanders.com/blog/whats-new-in-neovim-0.10/</a></li>
   <li>LWN: <a href="https://lwn.net/Articles/973917/">https://lwn.net/Articles/973917/</a></li>
   <li>Features are described here: <a href="https://neovim.io/doc/user/news-0.10.html">https://neovim.io/doc/user/news-0.10.html</a></li>
-</ul>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[Nvim 0.10 was released.]]></summary></entry><entry><title type="html">Vim Boss</title><link href="https://neovim.io/news/2023/08" rel="alternate" type="text/html" title="Vim Boss" /><published>2023-08-09T00:00:00+00:00</published><updated>2023-08-09T00:00:00+00:00</updated><id>https://neovim.io/news/2023/bram</id><content type="html" xml:base="https://neovim.io/news/2023/08"><![CDATA[<p>Bram is one of my heroes. That’s literal and recursive: when I say it,
+</ul>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[Nvim 0.10 was released.]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Vim Boss</title>
+    <link href="https://neovim.io/news/2023/08" rel="alternate" type="text/html" title="Vim Boss"/>
+    <published>2023-08-09T00:00:00+00:00</published>
+    <updated>2023-08-09T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2023/bram</id>
+    <content type="html" xml:base="https://neovim.io/news/2023/08"><![CDATA[<p>Bram is one of my heroes. That’s literal and recursive: when I say it,
 internally I check before making a frivolous claim, which is a feature of this
 particular role-model; “What would Bram do?” is a fixture in me which informs my
 choices.</p>
@@ -74,7 +102,20 @@ should remember what the goal is, and compare our actions to the results.</p>
 
 <p><em>— Justin M. Keyes</em></p>
 
-<p>P.S. Jan van den Berg wrote <a href="https://j11g.com/2023/08/07/the-legacy-of-bram-moolenaar/">a nice post on Bram’s legacy</a>.</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[Bram is one of my heroes. That’s literal and recursive: when I say it, internally I check before making a frivolous claim, which is a feature of this particular role-model; “What would Bram do?” is a fixture in me which informs my choices.]]></summary></entry><entry><title type="html">What Neovim shipped in 2022</title><link href="https://neovim.io/news/2022/12" rel="alternate" type="text/html" title="What Neovim shipped in 2022" /><published>2022-12-31T00:00:00+00:00</published><updated>2022-12-31T00:00:00+00:00</updated><id>https://neovim.io/news/2022/newsletter</id><content type="html" xml:base="https://neovim.io/news/2022/12"><![CDATA[<p>Neovim is the <a href="https://insights.stackoverflow.com/survey/2021#most-loved-dreaded-and-wanted-new-collab-tools-love-dread">world’s most-loved editor</a>. That’s just science:</p>
+<p>P.S. Jan van den Berg wrote <a href="https://j11g.com/2023/08/07/the-legacy-of-bram-moolenaar/">a nice post on Bram’s legacy</a>.</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[Bram is one of my heroes. That’s literal and recursive: when I say it, internally I check before making a frivolous claim, which is a feature of this particular role-model; “What would Bram do?” is a fixture in me which informs my choices.]]></summary>
+  </entry>
+  <entry>
+    <title type="html">What Neovim shipped in 2022</title>
+    <link href="https://neovim.io/news/2022/12" rel="alternate" type="text/html" title="What Neovim shipped in 2022"/>
+    <published>2022-12-31T00:00:00+00:00</published>
+    <updated>2022-12-31T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2022/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2022/12"><![CDATA[<p>Neovim is the <a href="https://insights.stackoverflow.com/survey/2021#most-loved-dreaded-and-wanted-new-collab-tools-love-dread">world’s most-loved editor</a>. That’s just science:</p>
 
 <p><img src="/images/2023/3_1537128649228537859.jpg" alt="" /></p>
 
@@ -358,7 +399,20 @@ Try it!
       <li>Note: ctags support will <em>never</em> be removed, it is far more common and generally useful.</li>
     </ul>
   </li>
-</ul>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[Neovim is the world’s most-loved editor. That’s just science:]]></summary></entry><entry><title type="html">Neovim News #12 - What’s New In Neovim 0.7</title><link href="https://neovim.io/news/2022/04" rel="alternate" type="text/html" title="Neovim News #12 - What’s New In Neovim 0.7" /><published>2022-04-26T00:00:00+00:00</published><updated>2022-04-26T00:00:00+00:00</updated><id>https://neovim.io/news/2022/newsletter</id><content type="html" xml:base="https://neovim.io/news/2022/04"><![CDATA[<blockquote>
+</ul>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[Neovim is the world’s most-loved editor. That’s just science:]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Neovim News #12 - What’s New In Neovim 0.7</title>
+    <link href="https://neovim.io/news/2022/04" rel="alternate" type="text/html" title="Neovim News #12 - What’s New In Neovim 0.7"/>
+    <published>2022-04-26T00:00:00+00:00</published>
+    <updated>2022-04-26T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2022/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2022/04"><![CDATA[<blockquote>
   <p>Original article: <a href="https://gpanders.com/blog/whats-new-in-neovim-0-7">https://gpanders.com/blog/whats-new-in-neovim-0-7</a></p>
 </blockquote>
 
@@ -622,7 +676,20 @@ there are some things already brewing that you <em>might</em> see in Neovim 0.8:
   <li><a href="https://github.com/neovim/neovim/pull/9496">Anti-conceal</a></li>
   <li><a href="https://github.com/neovim/neovim/pull/10071">Fully remote TUI</a></li>
   <li>And more…</li>
-</ul>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[Original article: https://gpanders.com/blog/whats-new-in-neovim-0-7]]></summary></entry><entry><title type="html">Neovim News #11 - The Christmas Issue</title><link href="https://neovim.io/news/2021/07" rel="alternate" type="text/html" title="Neovim News #11 - The Christmas Issue" /><published>2021-07-12T00:00:00+00:00</published><updated>2021-07-12T00:00:00+00:00</updated><id>https://neovim.io/news/2021/newsletter</id><content type="html" xml:base="https://neovim.io/news/2021/07"><![CDATA[<blockquote>
+</ul>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[Original article: https://gpanders.com/blog/whats-new-in-neovim-0-7]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Neovim News #11 - The Christmas Issue</title>
+    <link href="https://neovim.io/news/2021/07" rel="alternate" type="text/html" title="Neovim News #11 - The Christmas Issue"/>
+    <published>2021-07-12T00:00:00+00:00</published>
+    <updated>2021-07-12T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2021/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2021/07"><![CDATA[<blockquote>
   <p>The <em>real</em> 0.5 was the friends we made along the way</p>
 </blockquote>
 
@@ -831,7 +898,20 @@ there are some things already brewing that you <em>might</em> see in Neovim 0.8:
   <li>and last but not least <a href="https://github.com/bfredl">@bfredl</a> for the decorations API, floating windows, a variety of similar feats of C-code wizardry, and for taking <code class="language-plaintext highlighter-rouge">:smile</code> seriously.</li>
 </ul>
 
-<p>Finally, thank you to <a href="https://github.com/justinmk">@justinmk</a> and <a href="https://github.com/brammool">@brammool</a> for your foundational work and your vision – the *vim community is stronger together!</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[The real 0.5 was the friends we made along the way]]></summary></entry><entry><title type="html">Newsletter #10 - Neovim v0.4.4</title><link href="https://neovim.io/news/2020/10/" rel="alternate" type="text/html" title="Newsletter #10 - Neovim v0.4.4" /><published>2020-10-28T00:00:00+00:00</published><updated>2020-10-28T00:00:00+00:00</updated><id>https://neovim.io/news/2020/newsletter</id><content type="html" xml:base="https://neovim.io/news/2020/10/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
+<p>Finally, thank you to <a href="https://github.com/justinmk">@justinmk</a> and <a href="https://github.com/brammool">@brammool</a> for your foundational work and your vision – the *vim community is stronger together!</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[The real 0.5 was the friends we made along the way]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Newsletter #10 - Neovim v0.4.4</title>
+    <link href="https://neovim.io/news/2020/10/" rel="alternate" type="text/html" title="Newsletter #10 - Neovim v0.4.4"/>
+    <published>2020-10-28T00:00:00+00:00</published>
+    <updated>2020-10-28T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2020/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2020/10/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
 
 <p>Neovim is a fork of the venerable text-editor vim, focused on extensibility and
 usability. It is not a rewrite but a continuation and extension of Vim. Many
@@ -1045,7 +1125,20 @@ added lines: 9226 removed lines: 7002 total lines: 2224
 
 <p>Thank you contributors, sponsors, bug-reporters, supporters.
 Note that you can now sponsor neovim via <a href="https://github.com/sponsors/neovim">github Sponsors</a> or on <a href="https://opencollective.com/neovim">OpenCollective</a>.
-Thank you <strong>@justinmk</strong> for the awesome project and thank you <strong>@brammool</strong> for your foundational work.</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[What is Neovim?]]></summary></entry><entry><title type="html">Newsletter #9 - Three’s company</title><link href="https://neovim.io/news/2020/04/" rel="alternate" type="text/html" title="Newsletter #9 - Three’s company" /><published>2020-04-14T00:00:00+00:00</published><updated>2020-04-14T00:00:00+00:00</updated><id>https://neovim.io/news/2020/newsletter</id><content type="html" xml:base="https://neovim.io/news/2020/04/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
+Thank you <strong>@justinmk</strong> for the awesome project and thank you <strong>@brammool</strong> for your foundational work.</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[What is Neovim?]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Newsletter #9 - Three’s company</title>
+    <link href="https://neovim.io/news/2020/04/" rel="alternate" type="text/html" title="Newsletter #9 - Three’s company"/>
+    <published>2020-04-14T00:00:00+00:00</published>
+    <updated>2020-04-14T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2020/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2020/04/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
 
 <p>Neovim is a fork of the venerable text-editor vim, focused on extensibility and
 usability. It is not a rewrite but a continuation and extension of Vim. Many
@@ -1285,7 +1378,20 @@ added lines: 4369 removed lines: 3645 total lines: 724
 
 <h2 id="thanks">Thanks</h2>
 <p>Thank you contributors, sponsors, bug-reporters, supporters. Thank you <strong>@justinmk</strong> for the awesome
-project and thank you <strong>@brammool</strong> for your foundational work.</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[What is Neovim?]]></summary></entry><entry><title type="html">Google Summer of Code 2019</title><link href="https://neovim.io/news/gsoc-2019" rel="alternate" type="text/html" title="Google Summer of Code 2019" /><published>2019-03-17T00:00:00+00:00</published><updated>2019-03-17T00:00:00+00:00</updated><id>https://neovim.io/news/newsletter</id><content type="html" xml:base="https://neovim.io/news/gsoc-2019"><![CDATA[<p>Neovim was again accepted into the Google Summer of Code program.
+project and thank you <strong>@brammool</strong> for your foundational work.</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[What is Neovim?]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Google Summer of Code 2019</title>
+    <link href="https://neovim.io/news/gsoc-2019" rel="alternate" type="text/html" title="Google Summer of Code 2019"/>
+    <published>2019-03-17T00:00:00+00:00</published>
+    <updated>2019-03-17T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/gsoc-2019"><![CDATA[<p>Neovim was again accepted into the Google Summer of Code program.
 View <a href="https://summerofcode.withgoogle.com/organizations/6095582066638848/">our page on the GSoC website</a>
 for details.  Our <a href="https://github.com/neovim/neovim/wiki/GSoC-2019-Ideas">ideas list</a>
 runneth over! You’re also welcome to propose other ideas in
@@ -1326,7 +1432,20 @@ to reveal documentation with completion results:</p>
 The best way to get familiar with Neovim development is to
 <a href="https://github.com/neovim/neovim/blob/master/CONTRIBUTING.md#getting-started">send a pull request</a>
 to help out with a small bug or feature request. Working with students on pull
-requests is <em>extremely helpful</em> for determining mentor-student workflow.</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[Neovim was again accepted into the Google Summer of Code program. View our page on the GSoC website for details. Our ideas list runneth over! You’re also welcome to propose other ideas in chat or on the ticket tracker.]]></summary></entry><entry><title type="html">Newsletter #8 - Open up the Windows</title><link href="https://neovim.io/news/2017/12/" rel="alternate" type="text/html" title="Newsletter #8 - Open up the Windows" /><published>2017-12-16T00:00:00+00:00</published><updated>2017-12-16T00:00:00+00:00</updated><id>https://neovim.io/news/2017/newsletter</id><content type="html" xml:base="https://neovim.io/news/2017/12/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
+requests is <em>extremely helpful</em> for determining mentor-student workflow.</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[Neovim was again accepted into the Google Summer of Code program. View our page on the GSoC website for details. Our ideas list runneth over! You’re also welcome to propose other ideas in chat or on the ticket tracker.]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Newsletter #8 - Open up the Windows</title>
+    <link href="https://neovim.io/news/2017/12/" rel="alternate" type="text/html" title="Newsletter #8 - Open up the Windows"/>
+    <published>2017-12-16T00:00:00+00:00</published>
+    <updated>2017-12-16T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2017/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2017/12/"><![CDATA[<h2 id="what-is-neovim">What is Neovim?</h2>
 
 <p>Neovim is a fork of the venerable text-editor vim, focused on extensibility and
 usability. It is not a rewrite but a continuation and extension of Vim. Many
@@ -1603,7 +1722,20 @@ added lines: 8579 removed lines: 6577 total lines: 2002
 project and thank you <strong>@brammool</strong> for your foundational work.</p>
 
 <p><strong>@brammool</strong> and <strong>@chrisbra</strong>  from the vim team have left a
-few comments on our issue tracker, it’s nice to be working together!</p>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[What is Neovim?]]></summary></entry><entry><title type="html">Newsletter #7 - Summer of Road</title><link href="https://neovim.io/news/2016/11/" rel="alternate" type="text/html" title="Newsletter #7 - Summer of Road" /><published>2016-11-01T00:00:00+00:00</published><updated>2016-11-01T00:00:00+00:00</updated><id>https://neovim.io/news/2016/newsletter</id><content type="html" xml:base="https://neovim.io/news/2016/11/"><![CDATA[<p>It’s time for the Neovim newsletter! Skip to the <a href="#fun-without-smile">Fun</a> and
+few comments on our issue tracker, it’s nice to be working together!</p>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[What is Neovim?]]></summary>
+  </entry>
+  <entry>
+    <title type="html">Newsletter #7 - Summer of Road</title>
+    <link href="https://neovim.io/news/2016/11/" rel="alternate" type="text/html" title="Newsletter #7 - Summer of Road"/>
+    <published>2016-11-01T00:00:00+00:00</published>
+    <updated>2016-11-01T00:00:00+00:00</updated>
+    <id>https://neovim.io/news/2016/newsletter</id>
+    <content type="html" xml:base="https://neovim.io/news/2016/11/"><![CDATA[<p>It’s time for the Neovim newsletter! Skip to the <a href="#fun-without-smile">Fun</a> and
 <a href="#features">Features</a> sections if you only care about new features. There are
 also changes in <a href="#project-management">project management</a> that you should know
 about.</p>
@@ -2027,4 +2159,11 @@ added lines: 10000 removed lines: 3033 total lines: 6967
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ohcount msgpack_rpc/ api/ os/ event/ tui/ shada.c rbuffer.c terminal.c memory.c
 c                    79      14576       2863      16.4%       2154      19593
-</code></pre></div></div>]]></content><author><name></name></author><category term="newsletter" /><summary type="html"><![CDATA[It’s time for the Neovim newsletter! Skip to the Fun and Features sections if you only care about new features. There are also changes in project management that you should know about.]]></summary></entry></feed>
+</code></pre></div></div>]]></content>
+    <author>
+      <name/>
+    </author>
+    <category term="newsletter"/>
+    <summary type="html"><![CDATA[It’s time for the Neovim newsletter! Skip to the Fun and Features sections if you only care about new features. There are also changes in project management that you should know about.]]></summary>
+  </entry>
+</feed>

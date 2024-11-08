@@ -102,8 +102,8 @@ end
 function M.filter(obj, query)
    local res = {}
    local id_t = {}
-   local iter = obj.iter and obj:iter() or vim.iter(obj)
-   for v in iter do -- just to please the test for now
+   local iter = obj.iter and obj:iter() or vim.iter(obj) -- just to please the test for now
+   for v in iter do
       if query.limit and #res >= query.limit then
          break
       end

@@ -57,6 +57,10 @@ function db_mt:add(entry)
    save_file(self.dir .. "/data/" .. entry.id, "return " .. vim.inspect(entry))
 end
 
+function db_mt:rm(entry)
+   vim.fs.rm(self.dir .. "/data/" .. entry.id)
+end
+
 function db_mt:iter()
    return vim.iter(vim.fs.dir(self.dir .. "/data/")):map(function(id)
       local r = pdofile(self.dir .. "/data/" .. id)
@@ -83,7 +87,7 @@ function db_mt:save(opts)
 end
 
 function db_mt:blowup()
-   vim.fn.delete(self.dir, "rf")
+   vim.fs.rm(self.dir, { recursive = true })
 end
 
 local feeds = pdofile(db_dir .. "/feeds.lua")
