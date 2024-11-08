@@ -96,26 +96,25 @@ local function check(v, query)
    return res
 end
 
----@param entries feed.entry[]
+---@param obj table
 ---@param query feed.query
----@return feed.entry[]
-function M.filter(entries, query)
-   local tbl = vim.deepcopy(entries, true)
+---@return string[]
+function M.filter(obj, query)
    local res = {}
-   for _, v in pairs(tbl) do
-      if type(v) == "table" then
-         if query.limit and #res >= query.limit then
-            break
-         end
-         if check(v, query) then
-            res[#res + 1] = v
-         end
+   local id_t = {}
+   local iter = obj.iter and obj:iter() or vim.iter(obj)
+   for v in iter do -- just to please the test for now
+      if query.limit and #res >= query.limit then
+         break
+      end
+      if check(v, query) then
+         res[#res + 1] = v.id
+         id_t[v.id] = v.time
       end
    end
    table.sort(res, function(a, b)
-      assert(a.time, ("no timestamp for %s"):format(vim.inspect(a)))
-      assert(b.time, ("no timestamp for %s"):format(vim.inspect(b)))
-      return a.time > b.time
+      a, b = id_t[a], id_t[b]
+      return a > b
    end)
    return res
 end

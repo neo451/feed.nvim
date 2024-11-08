@@ -144,4 +144,37 @@ function M.cb_to_co(f)
    return f_co
 end
 
+function M.pdofile(fp)
+   local ok, res = pcall(dofile, fp)
+   if ok and res then
+      return res
+   else
+      print("failed to load db file ", fp, res)
+   end
+end
+
+---@param path string
+---@param content string
+function M.save_file(path, content)
+   local f = io.open(path, "wb")
+   if f then
+      f:write(content)
+      f:close()
+   end
+end
+
+--@param path string
+---@return string?
+function M.read_file(path)
+   local ret
+   local f = io.open(path, "r")
+   if f then
+      ret = f:read "*a"
+      f:close()
+   else
+      return
+   end
+   return ret
+end
+
 return M

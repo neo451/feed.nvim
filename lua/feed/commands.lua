@@ -3,8 +3,9 @@ local db = require "feed.db"
 local render = require "feed.render"
 local fetch = require "feed.fetch"
 local ut = require "feed.utils"
-local search = require "feed.search"
 local opml = require "feed.opml"
+
+local read_file = ut.read_file
 
 local ui_input = ut.cb_to_co(function(cb, opts)
    pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
@@ -13,6 +14,24 @@ end)
 local ui_select = ut.cb_to_co(function(cb, items, opts)
    pcall(vim.ui.select, items, opts, cb)
 end)
+
+local function list_feeds()
+   local ret = {}
+   for _, v in ipairs(config.feeds) do
+      local url = type(v) == "table" and v[1] or v
+      local name = type(v) == "table" and v.name or v
+      local tags = type(v) == "table" and v.tags or nil
+      if not db.feeds[url] then
+         ret[#ret + 1] = { url, name, tags }
+      end
+   end
+   for _, v in pairs(db.feeds) do
+      if type(v) == "table" then
+         ret[#ret + 1] = { v.xmlUrl, v.title, v.tags }
+      end
+   end
+   return ret
+end
 
 local og_colorscheme, og_buffer
 local cmds = {}
@@ -53,7 +72,6 @@ local function prepare_bufs()
       bset("b", cmds.show_in_browser)
       bset("s", cmds.search)
       bset("y", cmds.link_to_clipboard)
-      bset("s", cmds.search)
       bset("+", cmds.tag)
       bset("-", cmds.untag)
       bset("q", cmds.quit)
@@ -66,23 +84,6 @@ local function prepare_bufs()
 end
 
 cmds._prepare_bufs = prepare_bufs
-
-if not render.state.query then
-   render.state.query_string = config.search.default_query
-   table.insert(render.state.query_history, config.search.default_query)
-   render.state.query = search.parse_query(config.search.default_query)
-end
-
-local function merge(user_config_feeds, db_feeds)
-   local res = vim.deepcopy(db_feeds)
-   for _, v in ipairs(user_config_feeds) do
-      local url = type(v) == "table" and v[1] or v
-      if not db_feeds[url] then
-         res[#res + 1] = v
-      end
-   end
-   return res
-end
 
 cmds.log = {
    impl = function()
@@ -101,20 +102,6 @@ cmds.build = {
    context = { all = true },
 }
 
---@param path string
----@return string?
-local function read_file(path)
-   local ret
-   local f = io.open(path, "r")
-   if f then
-      ret = f:read "*a"
-      f:close()
-   else
-      return
-   end
-   return ret
-end
-
 cmds.load_opml = {
    impl = function(fp)
       fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
@@ -123,8 +110,10 @@ cmds.load_opml = {
          local str = read_file(fp)
          if str then
             local outlines = opml.import(str)
-            for _, v in ipairs(outlines) do
-               db.feeds:append(v)
+            for k, v in pairs(outlines) do
+               if k ~= "names" then
+                  db.feeds:append(v)
+               end
             end
             db:save()
          end
@@ -152,13 +141,12 @@ cmds.search = {
    impl = function(query)
       query = query or ui_input { prompt = "Search: " }
       if query then
-         render.state.query_string = query
-         render.state.query = search.parse_query(query)
-         table.insert(render.state.query_history, query)
+         render.state.query = query
+         table.insert(render.query_history, query)
          render.refresh()
       end
    end,
-   context = { index = true },
+   context = { all = true },
 }
 
 cmds.refresh = {
@@ -206,7 +194,6 @@ cmds.show_index = {
       og_colorscheme = vim.g.colors_name
       og_buffer = vim.api.nvim_get_current_buf()
       render.refresh()
-      render.state.in_index = true
    end,
    context = { all = true },
 }
@@ -249,6 +236,7 @@ cmds.quit = {
          vim.api.nvim_set_current_buf(og_buffer)
          pcall(vim.cmd.colorscheme, og_colorscheme)
          render.state.in_index = false
+         db:save()
       end
    end,
    context = { entry = true, index = true },
@@ -291,12 +279,12 @@ cmds.untag = {
    -- complete =
 }
 
---- TOOD:
+--- TODO:
 ---@param link any
 ---@return string
 local function resolve_url_from_entry(link)
    local feed = render.get_entry().feed
-   local root_url = db.feeds:lookup(feed).htmlUrl
+   local root_url = db.feeds[feed].htmlUrl
    return ut.url_resolve(root_url, link)
 end
 
@@ -334,9 +322,13 @@ cmds.urlview = {
 
 cmds.list_feeds = {
    impl = function()
-      local feedlist = merge(config.feeds, db.feeds)
+      local feedlist = list_feeds()
       for _, v in ipairs(feedlist) do
-         print(v.title or v.name, type(v) == "table" and (v.xmlUrl or v[1]) or v)
+         if v[3] then
+            print(v[2], v[1], vim.inspect(v[3]))
+         else
+            print(v[2], v[1])
+         end
       end
    end,
    context = { all = true },
@@ -344,8 +336,8 @@ cmds.list_feeds = {
 
 cmds.update = {
    impl = function()
-      local feedlist = merge(config.feeds, db.feeds)
-      fetch.batch_update_feed(feedlist, 200)
+      local feedlist = list_feeds()
+      fetch.batch_update_feed(feedlist, 10)
    end,
    context = { all = true },
 }
@@ -381,30 +373,20 @@ cmds.add_feed = {
 
 cmds.update_feed = {
    impl = function(name)
-      name = name or ui_select(cmds.update_feed.complete(), {})
+      name = name or ui_select(list_feeds(), {
+         prompt = "Feed to update",
+         format_item = function(item)
+            return item[2]
+         end,
+      })
       if not name then
          return
       end
-      local url
-      if db.feeds:lookup(name) then
-         url = db.feeds:lookup(name)
-      else
-         url = name
-      end
-      fetch.update_feed(url, 1)
+      fetch.update_feed(type(name) == "table" and name[1] or name, 1)
    end,
 
    complete = function()
-      local names = vim.tbl_keys(db.feeds.names)
-      local new_feeds = {}
-      for _, v in ipairs(config.feeds) do
-         local url = type(v) == "table" and v[1] or v
-         if not db.feeds[url] then
-            new_feeds[#new_feeds + 1] = url
-         end
-      end
-      vim.list_extend(names, new_feeds)
-      return names
+      return vim.tbl_keys(list_feeds())
    end,
    context = { all = true },
 }
@@ -444,6 +426,8 @@ setmetatable(cmds, {
    end,
 })
 
+-- TODO: remove and prune
+
 ---purge a feed from all of the db, including entries
 -- function cmds:prune() end
 
@@ -457,7 +441,7 @@ cmds.telescope = {
    end,
    context = { all = true },
 }
--- TODO:
+
 cmds.grep = {
    impl = function()
       pcall(vim.cmd.Telescope, "feed_grep")
@@ -476,14 +460,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
       pcall(require, "feed.lualine")
       render.state.in_entry = true
       vim.cmd "set cmdheight=0"
-      local ok, conform = pcall(require, "conform")
-      if ok then
-         vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-         vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
-      else
-         print(conform)
-      end
       for key, value in pairs(config.options.entry) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
@@ -601,18 +577,17 @@ end, {
 
 -- vim.api.nvim_create_autocmd("WinResized", {
 --    group = augroup,
---    buffer = render.buf.entry,
+--    pattern = "FeedIndex",
 --    callback = function()
 --       render.refresh()
 --    end,
 -- })
 --
--- vim.api.nvim_create_autocmd("WinResized", {
---    group = augroup,
---    buffer = render.buf.index,
---    callback = function()
---       render.refresh()
---    end,
--- })
+vim.api.nvim_create_autocmd("VimLeavePre", {
+   group = augroup,
+   callback = function()
+      db:save()
+   end,
+})
 
 return cmds

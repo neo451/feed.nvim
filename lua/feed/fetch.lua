@@ -35,7 +35,6 @@ local function is_valid(res)
    return true
 end
 
--- TODO: proper timeout???
 -- TODO: proxy??
 local fetch_co = ut.cb_to_co(function(cb, url, name)
    local is_rsshub = check_rsshub(url)
@@ -46,49 +45,24 @@ local fetch_co = ut.cb_to_co(function(cb, url, name)
       timeout = 5000,
       query = is_rsshub and { format = "json" } or nil,
       on_error = vim.schedule_wrap(function(err)
-         -- advance_progress()
          log.warn("curl error for", name)
-         -- log.warn(err.message, name)
          -- TODO: parse curl err message, see if connection is rejected or the site has bad response and is simply unavilable
-         -- print(err.message)
          return err
       end),
    }
-   pcall(curl.get, job)
-   -- if not ok then -- TODO: only retry once
-   --    vim.defer_fn(function()
-   --       pcall(curl.get, job)
-   --    end, 1000)
-   -- end
+   curl.get(job)
 end)
 M.fetch_co = fetch_co
 
----@param feed table | string
----@return string?
----@return string?
----@return string[]?
-local function get_feed_info(feed)
-   vim.validate {
-      feed = { feed, { "table", "string" } },
-   }
-   if type(feed) == "table" then
-      if feed.xmlUrl then
-         return feed.xmlUrl, feed.title or feed.text or nil, feed.tags
-      elseif feed[1] then
-         return feed[1], feed.name or nil, feed.tags
-      end
-   else
-      return feed, nil, nil
-   end
-end
-
 ---fetch xml from source and load them into db
----@param feed feed.feed
+---@param feed table
+---@param total integer
 function M.update_feed(feed, total)
-   local url, name, tags = get_feed_info(feed)
+   local url, name, tags = unpack(feed)
    local res = fetch_co(url, name)
+   print(url, name)
    if is_valid(res) then
-      local ok, ast, f_type = pcall(feedparser.parse, res.body)
+      local ok, ast, f_type = pcall(feedparser.parse, res.body, url)
       if ok then
          for _, entry in ipairs(ast.entries) do
             if tags then
@@ -98,20 +72,23 @@ function M.update_feed(feed, total)
             end
             db:add(entry)
          end
-         -- TODO: check if info changed then update feed
          db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags }
-         db:save()
+         db:save() -- TODO: wasteful
       else
          log.info("feedparser err for", name)
       end
    else
       log.info("server invalid response err for", name)
    end
-   notify.advance(total or 1, name or url)
+   if total == 1 then
+      db:save()
+   end
+   notify.advance(total or 1, name)
 end
 
+local cc = 1
+local c = 1
 local function batch_update_feed(feeds, size)
-   local c = 1
    for i = c, c + size - 1 do
       local v = feeds[i]
       if not v then
@@ -119,6 +96,8 @@ local function batch_update_feed(feeds, size)
       end
       coroutine.wrap(function()
          M.update_feed(v, #feeds)
+         print(("[%d/%d]"):format(cc, #feeds))
+         cc = cc + 1
       end)()
    end
    c = c + size
@@ -126,17 +105,12 @@ local function batch_update_feed(feeds, size)
       vim.defer_fn(function()
          batch_update_feed(feeds, size)
       end, 5000)
+   else
+      db:save()
+      c = 1
    end
 end
 
-local function _batch_update_feed(feeds, _, handle)
-   for _, v in ipairs(feeds) do
-      coroutine.wrap(function()
-         M.update_feed(v, #feeds)
-      end)()
-   end
-end
-
-M.batch_update_feed = _batch_update_feed
+M.batch_update_feed = batch_update_feed
 
 return M

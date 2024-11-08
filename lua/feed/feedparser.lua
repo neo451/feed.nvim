@@ -217,8 +217,8 @@ local function reify_entry(entry, feedtype, feed_name, base)
       res.content = handle_atom_content(entry)
    end
    res.tags = { unread = true }
-   res.feed = feed_name
-   res.content = format.entry(res)
+   res.feed = base
+   res.content = format.entry(res, feed_name)
    return res
 end
 
@@ -235,7 +235,7 @@ local function reify(ast, feedtype, base_uri)
       res.entries = {}
       if ast.item then
          for i, v in ipairs(ut.listify(ast.item)) do
-            res.entries[i] = reify_entry(v, "rss", res.title, root_base)
+            res.entries[i] = reify_entry(v, "rss", res.title, base_uri) -- TODO:
          end
       end
    elseif feedtype == "json" then
@@ -245,7 +245,7 @@ local function reify(ast, feedtype, base_uri)
       res.entries = {}
       if ast.items then
          for i, v in ipairs(ut.listify(ast.items)) do
-            res.entries[i] = reify_entry(v, "json", res.title)
+            res.entries[i] = reify_entry(v, "json", res.title, base_uri) -- TODO:
          end
       end
    elseif feedtype == "atom" then
@@ -256,7 +256,7 @@ local function reify(ast, feedtype, base_uri)
       res.entries = {}
       if ast.entry then
          for i, v in ipairs(ut.listify(ast.entry)) do
-            res.entries[i] = reify_entry(v, "atom", res.title, root_base)
+            res.entries[i] = reify_entry(v, "atom", res.title, base_uri)
          end
       end
    end
