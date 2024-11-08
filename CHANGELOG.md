@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/neo451/feed.nvim/compare/v1.8.0...v1.8.1) (2024-11-08)
+
+
+### Performance Improvements
+
+* take lastBuildDate into account for better update fix: bunch of date parsing bugs fix: implement prune/remove feeds command ([ff4471a](https://github.com/neo451/feed.nvim/commit/ff4471ae63eccb3a6ca641c3453d65f779e42771))
+
 ## [1.8.0](https://github.com/neo451/feed.nvim/compare/v1.7.2...v1.8.0) (2024-11-08)
 
 
