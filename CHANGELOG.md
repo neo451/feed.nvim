@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.0](https://github.com/neo451/feed.nvim/compare/v1.7.2...v1.8.0) (2024-11-08)
+
+
+### Features
+
+* a more stable model of fetching ([0fbf290](https://github.com/neo451/feed.nvim/commit/0fbf29049762442e8e853e5a06e59b39e2dd6bdd))
+* total rewrite of db to get arround lua constant limit ([0fbf290](https://github.com/neo451/feed.nvim/commit/0fbf29049762442e8e853e5a06e59b39e2dd6bdd))
+
+
+### Bug Fixes
+
+* fixed missing on_attach in default config ([5effb2d](https://github.com/neo451/feed.nvim/commit/5effb2d564eaf785d34e914f66d419894e0bf904))
+
 ## [1.7.2](https://github.com/neo451/feed.nvim/compare/v1.7.1...v1.7.2) (2024-11-07)
 
 
