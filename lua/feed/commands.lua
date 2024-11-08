@@ -19,7 +19,7 @@ local function list_feeds()
    local ret = {}
    for _, v in ipairs(config.feeds) do
       local url = type(v) == "table" and v[1] or v
-      local name = type(v) == "table" and v.name or v
+      local name = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
       if not db.feeds[url] then
          ret[#ret + 1] = { url, name, tags }
@@ -320,7 +320,7 @@ cmds.urlview = {
    context = { entry = true },
 }
 
-cmds.list_feeds = {
+cmds.list = {
    impl = function()
       local feedlist = list_feeds()
       for _, v in ipairs(feedlist) do
@@ -373,20 +373,66 @@ cmds.add_feed = {
 
 cmds.update_feed = {
    impl = function(name)
-      name = name or ui_select(list_feeds(), {
-         prompt = "Feed to update",
-         format_item = function(item)
-            return item[2]
-         end,
-      })
+      name = name
+         or ui_select(list_feeds(), {
+            prompt = "Feed to update",
+            format_item = function(item)
+               return item[2] or item[1]
+            end,
+         })
       if not name then
          return
       end
-      fetch.update_feed(type(name) == "table" and name[1] or name, 1)
+      if type(name) == "string" then
+         -- TODO: check url or name
+         -- name = { name, name }
+      end
+      fetch.update_feed(name, 1)
    end,
 
    complete = function()
       return vim.tbl_keys(list_feeds())
+   end,
+   context = { all = true },
+}
+
+cmds.remove = {
+   doc = "remove a feed from feedlist, but not its entries",
+   impl = function(feed)
+      feed = feed or ui_select(list_feeds(), {
+         prompt = "Feed to remove",
+         format_item = function(item)
+            return item[2]
+         end,
+      })
+      if not feed then
+         return
+      end
+      db.feeds[feed[1]] = nil
+      db:save()
+   end,
+   context = { all = true },
+}
+
+cmds.prune = {
+   doc = "remove a feed from feedlist, and all its entries",
+   impl = function(feed)
+      feed = feed or ui_select(list_feeds(), {
+         prompt = "Feed to remove",
+         format_item = function(item)
+            return item[2]
+         end,
+      })
+      if not feed then
+         return
+      end
+      db.feeds[feed[1]] = nil
+      db:save()
+      for entry in db:iter() do
+         if entry.feed == feed[1] then
+            db:rm(entry)
+         end
+      end
    end,
    context = { all = true },
 }
@@ -412,28 +458,6 @@ local function get_item_by_context()
    return choices:totable()
 end
 
-setmetatable(cmds, {
-   __call = function()
-      local items = get_item_by_context()
-      vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
-         if choice then
-            local item = cmds[choice]
-            coroutine.wrap(function()
-               item.impl()
-            end)()
-         end
-      end)
-   end,
-})
-
--- TODO: remove and prune
-
----purge a feed from all of the db, including entries
--- function cmds:prune() end
-
----remove a feed from db.feeds
--- function cmds:remove_feed() end
-
 --- **INTEGRATIONS**
 cmds.telescope = {
    impl = function()
@@ -448,6 +472,20 @@ cmds.grep = {
    end,
    context = { all = true },
 }
+
+setmetatable(cmds, {
+   __call = function()
+      local items = get_item_by_context()
+      vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
+         if choice then
+            local item = cmds[choice]
+            coroutine.wrap(function()
+               item.impl()
+            end)()
+         end
+      end)
+   end,
+})
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
 

@@ -77,7 +77,11 @@ function M.entry_name(entry)
       if v[1] == "tags" then
          text = M.tags(entry.tags)
       elseif v[1] == "feed" then
-         text = db.feeds[entry.feed].title
+         if db.feeds[entry.feed] then
+            text = db.feeds[entry.feed].title
+         else
+            text = entry.feed
+         end
       end
       if i == #config.layout then
          v.width = vim.api.nvim_win_get_width(0) - acc_width

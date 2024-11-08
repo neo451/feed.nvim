@@ -3,6 +3,7 @@ local date = require "feed.date"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local sha = vim.fn.sha256
+local log = require "feed.log"
 
 ---check if json
 ---@param str string
@@ -119,20 +120,31 @@ end
 
 local function handle_atom_date(entry)
    local time = entry["published"] or entry["updated"]
-   local ok, res = pcall(date.new_from.atom, time)
-   if ok and res then
-      return res:absolute()
+   if time then
+      local ok, res = pcall(date.new_from.atom, time)
+      if ok and res then
+         return res:absolute()
+      end
    else
+      log.info("date error", vim.inspect(entry))
       return os.time()
    end
 end
 
 local function handle_rss_date(entry)
    local time = entry.pubDate
-   local ok, res = pcall(date.new_from.rss, time)
-   if ok and res then
-      return res:absolute()
+   if time then
+      local ok, res = pcall(date.new_from.rss, time)
+      if ok and res then
+         return res:absolute()
+      else
+         ok, res = pcall(date.new_from.atom, time)
+         if ok and res then
+            return res:absolute()
+         end
+      end
    else
+      log.info("date error", vim.inspect(entry))
       return os.time()
    end
 end
@@ -224,52 +236,72 @@ end
 
 ---walk the ast and retrive usefull info for all three types
 ---@param ast table
----@return feed.feed
-local function reify(ast, feedtype, base_uri)
+---@return feed.feed?
+---@return string?
+local function reify(ast, feedtype, base_uri, last_last)
    local res = {}
+   local lastBuild
    if feedtype == "rss" then
+      if ast.lastBuildDate then
+         lastBuild = tostring(date.new_from.rss(ast.lastBuildDate))
+         if lastBuild == last_last then
+            return
+         end
+      end
       local root_base = ut.url_rebase(ast, base_uri)
       res.title = handle_rss_title(ast)
       res.link = handle_rss_link(ast, base_uri)
-      res.desc = ast.subtitle or res.title
+      res.desc = ast.subtitle or res.title -- TODO:
       res.entries = {}
       if ast.item then
-         for i, v in ipairs(ut.listify(ast.item)) do
-            res.entries[i] = reify_entry(v, "rss", res.title, base_uri) -- TODO:
+         for _, v in ipairs(ut.listify(ast.item)) do
+            res.entries[#res.entries + 1] = reify_entry(v, "rss", res.title, base_uri) -- TODO:
          end
       end
    elseif feedtype == "json" then
+      lastBuild = tostring(date.new_from.json(ast.items[1].date_published))
+      if lastBuild == last_last then
+         return
+      end
       res.title = ast.title
       res.link = ast.home_page_url or ast.feed_url
       res.desc = ast.description or res.title
       res.entries = {}
       if ast.items then
-         for i, v in ipairs(ut.listify(ast.items)) do
-            res.entries[i] = reify_entry(v, "json", res.title, base_uri) -- TODO:
+         for _, v in ipairs(ut.listify(ast.items)) do
+            res.entries[#res.entries + 1] = reify_entry(v, "json", res.title, base_uri) -- TODO:
          end
       end
    elseif feedtype == "atom" then
+      if ast.updated then
+         lastBuild = tostring(date.new_from.atom(ast.updated))
+         if lastBuild == last_last then
+            return
+         end
+      end
       local root_base = ut.url_rebase(ast, base_uri)
       res.title = handle_atom_feed_title(ast)
       res.desc = res.title -- TODO:
       res.link = handle_atom_link(ast, root_base)
       res.entries = {}
       if ast.entry then
-         for i, v in ipairs(ut.listify(ast.entry)) do
-            res.entries[i] = reify_entry(v, "atom", res.title, base_uri)
+         for _, v in ipairs(ut.listify(ast.entry)) do
+            res.entries[#res.entries + 1] = reify_entry(v, "atom", res.title, base_uri)
          end
       end
    end
-   return res
+   return res, lastBuild
 end
 
 ---parse feed fetch from source
 ---@param src string
 ---@param base_uri? string
+---@param lastLast? string
 ---@param opts? { reify : boolean }
----@return table | feed.feed
----@return "json" | "atom" | "rss"
-local function parse(src, base_uri, opts)
+---@return table | feed.feed | nil
+---@return "json" | "atom" | "rss" | nil
+---@return string?
+local function parse(src, base_uri, lastLast, opts)
    src = src:gsub("\n", "")
    local ast, feedtype
    opts = opts or { reify = true }
@@ -287,7 +319,8 @@ local function parse(src, base_uri, opts)
       end
    end
    if opts.reify then
-      return reify(ast, feedtype, base_uri), feedtype
+      local res_or_nil, lastBuild = reify(ast, feedtype, base_uri, lastLast)
+      return res_or_nil, feedtype, lastBuild
    end
    return ast, feedtype
 end

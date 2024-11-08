@@ -124,6 +124,14 @@ M.CharData = function(node, src)
    end
 end
 
+M.CharRef = function(node, src)
+   local text = get_text(node, src)
+   local num = tonumber(text:sub(3, -2))
+   if num then
+      return string.char(num)
+   end
+end
+
 M.CDSect = function(node, src)
    return get_text(node:child(1), src)
 end
