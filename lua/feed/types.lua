@@ -11,14 +11,14 @@
 ---@field entries feed.entry[]
 
 ---@class feed.entry
----@field time integer
----@field id string
+---@field time integer # falls back to the current os.time
+---@field id string # db id
 ---@field title string
----@field feed string
----@field tags table<string, boolean>
----@field link string
----@field author string
+---@field feed string # link to the feed
+---@field link string # link to the entry
+---@field author string # falls back to the feed
 ---@field content string
+---@field tags table<string, boolean>
 
 ---@class feed.db
 ---@field index feed.entry[]

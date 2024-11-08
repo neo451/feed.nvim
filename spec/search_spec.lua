@@ -17,35 +17,35 @@ end)
 describe("filter", function()
    it("return identical if query empty", function()
       local index = {
-         { tags = { unread = true, star = true }, time = 1 },
+         { tags = { unread = true, star = true }, time = 1, id = 1 },
       }
       local res = M.filter(index, {})
-      assert.same(index, res)
+      assert.same({ 1 }, res)
    end)
 
    it("filter by tags", function()
       local query = M.parse_query "+unread -star"
       local index = {
-         { tags = { unread = true, star = true }, time = 1 },
-         { tags = { unread = true }, time = 2 },
-         { tags = { star = true }, time = 3 },
-         { tags = {}, time = 4 },
-         { tags = { unread = true }, time = 2 },
+         { tags = { unread = true, star = true }, time = 1, id = 1 },
+         { tags = { unread = true }, time = 2, id = 2 },
+         { tags = { star = true }, time = 3, id = 3 },
+         { tags = {}, time = 4, id = 4 },
+         { tags = { unread = true }, time = 2, id = 5 },
       }
       local res = M.filter(index, query)
-      assert.same({ index[2], index[5] }, res)
+      assert.same({ 2, 5 }, res)
    end)
 
    it("filter by date", function()
       local query = M.parse_query "@5-days-ago"
       local index = {
-         { time = date.today:days_ago(6):absolute(), v = 6 },
-         { time = date.today:days_ago(7):absolute(), v = 7 },
-         { time = date.today:days_ago(1):absolute(), v = 1 },
-         { time = date.today:absolute(), v = 0 },
+         { time = date.today:days_ago(6):absolute(), v = 6, id = 1 },
+         { time = date.today:days_ago(7):absolute(), v = 7, id = 2 },
+         { time = date.today:days_ago(1):absolute(), v = 1, id = 3 },
+         { time = date.today:absolute(), v = 0, id = 4 },
       }
       local res = M.filter(index, query)
-      assert.same({ index[4], index[3] }, res)
+      assert.same({ 4, 3 }, res)
    end)
 
    it("filter by regex", function()
@@ -58,17 +58,20 @@ describe("filter", function()
          { title = "vim is lowercase", time = 1 },
          { title = "bim is not a thing", time = 1 },
       }
+      for i, v in ipairs(index) do
+         v.id = i
+      end
       local res = M.filter(index, query)
-      assert.same({ index[1], index[2] }, res)
+      assert.same({ 1, 2 }, res)
       local res2 = M.filter(index, rev_query)
-      assert.same({ index[5] }, res2)
+      assert.same({ 5 }, res2)
    end)
 
    it("filter by limit number", function()
       local query = M.parse_query "#10"
       local entries = {}
       for i = 1, 20 do
-         entries[i] = { title = i, time = i }
+         entries[i] = { title = i, time = i, id = i }
       end
       local res = M.filter(entries, query)
       assert.same(10, #res)
@@ -77,9 +80,9 @@ describe("filter", function()
    it("filter by feed", function()
       local query = M.parse_query "=vim"
       local entries = {
-         { feed = "neovim.io", time = 1 },
-         { feed = "ovim.io", time = 1 },
-         { feed = "vm.io", time = 1 },
+         { feed = "neovim.io", time = 1, id = 1 },
+         { feed = "ovim.io", time = 1, id = 2 },
+         { feed = "vm.io", time = 1, id = 3 },
       }
       local res = M.filter(entries, query)
       assert.same(2, #res)

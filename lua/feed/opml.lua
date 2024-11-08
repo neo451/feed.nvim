@@ -40,34 +40,27 @@ function M.import(src)
    local outline = ast.opml.body.outline
    local ret = {}
    outline = ut.listify(outline)
-   local names = {}
    for _, v in ipairs(outline) do
-      if v.xmlUrl and v.title then
+      if v.xmlUrl then
          ret[v.xmlUrl] = v
-         names[v.title] = v.xmlUrl
       else
          log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
       end
    end
-   ret.names = names
    return setmetatable(ret, mt)
 end
 
 ---@return feed.opml
 function M.new()
-   return setmetatable({
-      names = {},
-   }, mt)
+   return setmetatable({}, mt)
 end
 
 ---@param topath string?
 ---@return string?
 function mt:export(topath)
    local buf = {}
-   for k, v in pairs(self) do
-      if k ~= "names" then
-         buf[#buf + 1] = format_outline(v)
-      end
+   for _, v in pairs(self) do
+      buf[#buf + 1] = format_outline(v)
    end
    local str = format_root("feed.nvim export", concat(buf, "\n"))
    if topath then
@@ -79,26 +72,13 @@ function mt:export(topath)
    end
 end
 
----@param name string
-function mt:lookup(name)
-   local idx = self.names[name]
-   if idx then
-      return self[idx]
-   end
-end
-
 ---@param v table
 function mt:append(v)
    if not v.xmlUrl then
       log.info(("failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
       return
    end
-   if self[v.xmlUrl] then
-      self[v.xmlUrl] = v
-      return
-   end
    self[v.xmlUrl] = v
-   self.names[v.title] = v.xmlUrl
 end
 
 M.mt = mt

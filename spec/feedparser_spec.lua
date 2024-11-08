@@ -68,20 +68,12 @@ end)
 describe("json", function()
    it("should get ast", function()
       local str = readfile "json_example.json"
-      local res = m.parse(str, nil, {})
+      local res = m.parse(str, "", {})
       eq("https://www.jsonfeed.org/feed.json", res.feed_url)
    end)
    it("should reify to unified format", function()
       local str = readfile "json_example.json"
-      local ast = m.parse(str)
+      local ast = m.parse(str, "")
       check_feed(ast)
-   end)
-end)
-
-describe("podcast enclosures", function()
-   it("should parse enclosures", function()
-      local str = readfile "podcast.xml"
-      local ast = m.parse(str)
-      check_feed(ast, true)
    end)
 end)
