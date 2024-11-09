@@ -137,11 +137,37 @@ local function rfc3339(str)
 end
 
 date.new_from = {
-   rss = rfc2822,
-   json = rfc3339,
-   atom = rfc3339,
+   rss = function(str)
+      local time = rfc2822(str)
+      if not time then
+         time = rfc3339(str) -- some rss feeds have atom timetags...
+      end
+      if time then
+         return time:absolute()
+      else
+         return os.time()
+      end
+   end,
+   json = function(str)
+      local time = rfc3339(str)
+      if time then
+         return time:absolute()
+      else
+         return os.time()
+      end
+   end,
+   atom = function(str)
+      local time = rfc3339(str)
+      if time then
+         return time:absolute()
+      else
+         return os.time()
+      end
+   end,
    filter = parse_date_filter,
    number = int_to_date,
+   rfc3339 = rfc3339,
+   rfc2822 = rfc2822,
 }
 
 return date

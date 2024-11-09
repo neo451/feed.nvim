@@ -1,6 +1,6 @@
 local curl = require "plenary.curl"
 local feedparser = require "feed.feedparser"
-local db = require "feed.db"
+local db = require("feed.db").new()
 local ut = require "feed.utils"
 local log = require "feed.log"
 local notify = require "feed.notify"
@@ -58,36 +58,42 @@ M.fetch_co = fetch_co
 ---@param feed table
 ---@param total integer
 function M.update_feed(feed, total)
-   local url, name, tags, lastLast
+   local url, name, tags, lastUpdated
    if type(feed) == "table" then
       url, name, tags = unpack(feed, 1, 3)
    elseif type(feed) == "string" then
       url = feed
    end
    if db.feeds[url] then
-      lastLast = db.feeds[url].lastBuild
+      lastUpdated = db.feeds[url].lastUpdated
    end
    local res = fetch_co(url, name)
    if is_valid(res) then
-      local ok, ast, f_type, lastBuild = pcall(feedparser.parse, res.body, url, lastLast)
-      if ok and ast then
-         for _, entry in ipairs(ast.entries) do
-            if tags then
-               for _, v in ipairs(tags) do
-                  entry.tags[v] = true
+      local ok, ast, f_type, lastBuild = pcall(feedparser.parse, res.body, url, lastUpdated)
+      if ok then
+         if ast then
+            for _, entry in ipairs(ast.entries) do
+               if tags then
+                  for _, v in ipairs(tags) do
+                     entry.tags[v] = true
+                  end
                end
+               db:add(entry)
             end
-            db:add(entry)
+            if not db.feeds[url] then
+               db.feeds[url] = { htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags, lastUpdated = lastBuild }
+            else
+               db.feeds[url].lastUpdated = lastBuild
+            end
+            db:save_feeds()
          end
-         db.feeds:append { xmlUrl = url, htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags, lastBuild = lastBuild }
-         db:save()
       else
          log.info("feedparser err for", name)
       end
    else
       log.info("server invalid response err for", name)
    end
-   notify.advance(total or 1, name)
+   notify.advance(total or 1, name or url)
 end
 
 local cc = 1
@@ -110,7 +116,6 @@ local function batch_update_feed(feeds, size)
          batch_update_feed(feeds, size)
       end, 5000)
    else
-      db:save()
       c = 1
    end
 end

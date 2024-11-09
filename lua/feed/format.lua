@@ -1,11 +1,13 @@
 local M = {}
-local strings = require "plenary.strings"
 local date = require "feed.date"
 local config = require "feed.config"
 local treedoc = require "treedoc"
-local db = require "feed.db"
+local db = require("feed.db").new()
 -- local _treedoc = require "_treedoc"
 local conv = require "treedoc.writers.markdown"
+local ut = require "feed.utils"
+
+local align = ut.align
 
 ---@param tags string[]
 ---@return string
@@ -14,13 +16,14 @@ function M.tags(tags)
    if #tags == 0 then
       return ""
    end
-   local buffer = {}
+   local buffer = { "[" }
    for i, tag in pairs(tags) do
       buffer[#buffer + 1] = tag
       if i ~= #tags then
          buffer[#buffer + 1] = ", "
       end
    end
+   buffer[#buffer + 1] = "]"
    return table.concat(buffer, "")
 end
 
@@ -49,21 +52,6 @@ function M.entry(entry, feed_name)
       end
    end
    return table.concat(lines, "\n")
-end
-
----porperly align, justify and trucate the title
----@param str string
----@param max_len integer
----@param right_justify boolean
----@return string
-local function align(str, max_len, right_justify)
-   right_justify = right_justify or false
-   local len = strings.strdisplaywidth(str)
-   if len < max_len then
-      return strings.align_str(str, max_len, right_justify)
-   else
-      return strings.align_str(strings.truncate(str, max_len), max_len, right_justify)
-   end
 end
 
 ---@param entry feed.entry

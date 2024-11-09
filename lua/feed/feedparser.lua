@@ -120,33 +120,18 @@ end
 
 local function handle_atom_date(entry)
    local time = entry["published"] or entry["updated"]
-   if time then
-      local ok, res = pcall(date.new_from.atom, time)
-      if ok and res then
-         return res:absolute()
-      end
-   else
-      log.info("date error", vim.inspect(entry))
-      return os.time()
+   if not time then
+      log.info("data nil for entry:", vim.inspect(entry))
    end
+   return date.new_from.atom(time)
 end
 
 local function handle_rss_date(entry)
    local time = entry.pubDate
-   if time then
-      local ok, res = pcall(date.new_from.rss, time)
-      if ok and res then
-         return res:absolute()
-      else
-         ok, res = pcall(date.new_from.atom, time)
-         if ok and res then
-            return res:absolute()
-         end
-      end
-   else
-      log.info("date error", vim.inspect(entry))
-      return os.time()
+   if not time then
+      log.info("data nil for entry:", vim.inspect(entry))
    end
+   return date.new_from.rss(time)
 end
 
 ---@param entry any
@@ -214,7 +199,7 @@ local function reify_entry(entry, feedtype, feed_name, base)
       end
       res.id = sha(entry.url)
       res.title = entry.title
-      res.time = date.new_from.json(entry.date_published):absolute()
+      res.time = date.new_from.json(entry.date_published)
       res.author = feed_name
       res.content = entry.content_html
    elseif feedtype == "atom" then
@@ -238,13 +223,13 @@ end
 ---@param ast table
 ---@return feed.feed?
 ---@return string?
-local function reify(ast, feedtype, base_uri, last_last)
+local function reify(ast, feedtype, base_uri, lastUpdated)
    local res = {}
    local lastBuild
    if feedtype == "rss" then
       if ast.lastBuildDate then
-         lastBuild = tostring(date.new_from.rss(ast.lastBuildDate))
-         if lastBuild == last_last then
+         lastBuild = tostring(date.new_from.rfc2822(ast.lastBuildDate))
+         if lastBuild == lastUpdated then
             return
          end
       end
@@ -259,8 +244,8 @@ local function reify(ast, feedtype, base_uri, last_last)
          end
       end
    elseif feedtype == "json" then
-      lastBuild = tostring(date.new_from.json(ast.items[1].date_published))
-      if lastBuild == last_last then
+      lastBuild = tostring(date.new_from.rfc3339(ast.items[1].date_published))
+      if lastBuild == lastUpdated then
          return
       end
       res.title = ast.title
@@ -274,8 +259,8 @@ local function reify(ast, feedtype, base_uri, last_last)
       end
    elseif feedtype == "atom" then
       if ast.updated then
-         lastBuild = tostring(date.new_from.atom(ast.updated))
-         if lastBuild == last_last then
+         lastBuild = tostring(date.new_from.rfc3339(ast.updated))
+         if lastBuild == lastUpdated then
             return
          end
       end
@@ -296,12 +281,12 @@ end
 ---parse feed fetch from source
 ---@param src string
 ---@param base_uri? string
----@param lastLast? string
+---@param lastUpdated? string
 ---@param opts? { reify : boolean }
 ---@return table | feed.feed | nil
 ---@return "json" | "atom" | "rss" | nil
 ---@return string?
-local function parse(src, base_uri, lastLast, opts)
+local function parse(src, base_uri, lastUpdated, opts)
    src = src:gsub("\n", "")
    local ast, feedtype
    opts = opts or { reify = true }
@@ -319,7 +304,7 @@ local function parse(src, base_uri, lastLast, opts)
       end
    end
    if opts.reify then
-      local res_or_nil, lastBuild = reify(ast, feedtype, base_uri, lastLast)
+      local res_or_nil, lastBuild = reify(ast, feedtype, base_uri, lastUpdated)
       return res_or_nil, feedtype, lastBuild
    end
    return ast, feedtype

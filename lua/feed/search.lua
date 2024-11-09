@@ -102,14 +102,13 @@ end
 function M.filter(obj, query)
    local res = {}
    local id_t = {}
-   local iter = obj.iter and obj:iter() or vim.iter(obj) -- just to please the test for now
-   for v in iter do
+   for id, v in obj:iter() do
       if query.limit and #res >= query.limit then
          break
       end
       if check(v, query) then
-         res[#res + 1] = v.id
-         id_t[v.id] = v.time
+         res[#res + 1] = id
+         id_t[id] = v.time
       end
    end
    table.sort(res, function(a, b)

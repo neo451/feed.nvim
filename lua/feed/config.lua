@@ -39,6 +39,12 @@ local default = {
    layout = {
       -- TODO: validate
       {
+         "date",
+         format = "%Y-%m-%d",
+         width = 10,
+         color = "Pmenu",
+      },
+      {
          "feed",
          width = 25,
          color = "Title",
@@ -54,11 +60,6 @@ local default = {
          width = 80,
          color = "@markup.strong",
       },
-      -- date = {
-      --    format = "%Y-%m-%d",
-      --    width = 10,
-      -- },
-      header = "Hint: <M-CR> open in split | <CR> open | + add tag | - remove tag | ? help", -- TODO: placeholder set to nil
    },
 
    search = {

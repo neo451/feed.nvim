@@ -1,19 +1,23 @@
 local config = require "feed.config"
 config.db_dir = "~/.feed.nvim.test/"
-local db = require "feed.db"
+local db = require("feed.db").new()
 local eq = assert.are.same
+local dir = vim.fs.normalize(config.db_dir)
+local ut = require "feed.utils"
 
 describe("initialize", function()
    it("should make parent dir and data dir in the passed in path", function()
-      eq(1, vim.fn.isdirectory(db.dir))
+      eq(1, vim.fn.isdirectory(dir))
+      eq(1, vim.fn.isdirectory(dir .. "/object/"))
+      eq(1, vim.fn.isdirectory(dir .. "/data/"))
    end)
    it("should write an index file in the passed in path", function()
-      eq(1, vim.fn.filereadable(db.dir .. "/feeds.lua"))
+      eq(1, vim.fn.filereadable(dir .. "/feeds.lua"))
    end)
 
-   -- it("should read index file as a table in memory", function()
-   --    assert(db.index.version == "0.3")
-   -- end)
+   it("should read index file as a table in memory", function()
+      assert.is_table(db.feeds)
+   end)
 end)
 
 describe("add", function()
@@ -26,11 +30,8 @@ describe("add", function()
          id = "1234567",
       }
       db:add(entry)
-      assert.same(entry, db[entry.id])
-      -- db:save()
-      -- local expected = vim.deepcopy(entry)
-      -- expected.content = nil
-      assert.same(entry, dofile(db.dir .. "/data/" .. entry.id))
+      assert.same(entry, db["1234567"])
+      assert.same("zig is a programming language", db:read_entry "1234567")
    end)
 end)
 
@@ -53,9 +54,10 @@ describe("iter", function()
       }
       db:add(entry)
       db:add(entry2)
-      for v in db:iter() do
+      for id, v in db:iter() do
+         assert.is_string(id)
          assert.is_table(v)
-         -- vim.print(v)
       end
+      db:blowup()
    end)
 end)
