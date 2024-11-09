@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.2](https://github.com/neo451/feed.nvim/compare/v1.8.1...v1.8.2) (2024-11-09)
+
+
+### Bug Fixes
+
+* fixed telescope implementation ([376cda7](https://github.com/neo451/feed.nvim/commit/376cda71da1645be41427773be5f8a2db5afe86e))
+* use nui.nvim to hanlde rendering, multi-width works! ([376cda7](https://github.com/neo451/feed.nvim/commit/376cda71da1645be41427773be5f8a2db5afe86e))
+
 ## [1.8.1](https://github.com/neo451/feed.nvim/compare/v1.8.0...v1.8.1) (2024-11-08)
 
 
