@@ -39,8 +39,8 @@ local function render_text(buf, text, hi_grp, col, row)
    obj:render_char(buf, -1, row, col)
 end
 
-local function render_line(entry, row)
-   vim.api.nvim_buf_set_lines(M.buf.index, row - 1, row, false, { "" })
+local function render_line(buf, entry, row)
+   vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
    local acc_width = 0
    for _, v in ipairs(config.layout) do
       local text = entry[v[1]] or ""
@@ -56,7 +56,7 @@ local function render_line(entry, row)
          text = date.new_from.number(entry.time):format(config.date_format)
       end
       text = align(text, v.width, v.right_justify) .. " "
-      render_text(M.buf.index, text, v.color, acc_width, row)
+      render_text(buf, text, v.color, acc_width, row)
       acc_width = acc_width + v.width + 1
    end
 end
@@ -64,18 +64,22 @@ end
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    if M.state.indexed_once and not opts.refresh then
-      vim.api.nvim_set_current_buf(M.buf.index)
+      vim.api.nvim_set_current_buf(M.state.index_buf)
       return
    end
-   vim.bo[M.buf.index].modifiable = true
    if not M.on_display then
       M.on_display = db:filter(M.state.query)
    end
+   if not M.state.index_buf then
+      M.state.index_buf = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_name(M.state.index_buf, "FeedIndex")
+   end
+   vim.bo[M.state.index_buf].modifiable = true
    for i, id in ipairs(M.on_display) do
       local entry = db[id]
-      render_line(entry, i)
+      render_line(M.state.index_buf, entry, i)
    end
-   vim.api.nvim_set_current_buf(M.buf.index)
+   vim.api.nvim_set_current_buf(M.state.index_buf)
    M.state.indexed_once = true
    vim.api.nvim_exec_autocmds("User", {
       pattern = "ShowIndexPost",
@@ -101,7 +105,11 @@ function M.show_entry(opts)
    if raw_str then
       local lines, urls = urlview(vim.split(raw_str, "\n"))
       M.state.urls = urls
-      show(lines, M.buf.entry)
+      if not M.state.entry_buf then
+         M.state.entry_buf = vim.api.nvim_create_buf(false, true)
+         vim.api.nvim_buf_set_name(M.state.entry_buf, "FeedEntry")
+      end
+      show(lines, M.state.entry_buf)
       vim.api.nvim_exec_autocmds("User", {
          pattern = "ShowEntryPost",
          data = { lines = lines },
@@ -122,9 +130,9 @@ function M.get_entry(opts)
    local row
    if opts.row_idx then
       row = opts.row_idx
-   elseif buf == M.buf.entry or M.state.in_split then
+   elseif buf == M.state.entry_buf or M.state.in_split then
       row = M.current_index
-   elseif buf == M.buf.index then
+   elseif buf == M.state.index_buf then
       row = ut.get_cursor_row()
    else
       return nil, nil, nil

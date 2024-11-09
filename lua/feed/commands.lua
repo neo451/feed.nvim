@@ -44,49 +44,6 @@ local function wrap(f)
    end
 end
 
-local function prepare_bufs()
-   if render.buf then
-      return
-   end
-   render.buf = {}
-   render.buf.index = vim.api.nvim_create_buf(false, true)
-   render.buf.entry = vim.api.nvim_create_buf(false, true)
-   vim.api.nvim_buf_set_name(render.buf.index, "FeedIndex")
-   vim.api.nvim_buf_set_name(render.buf.entry, "FeedEntry")
-
-   if config.enable_default_keybindings then
-      local function iset(lhs, rhs)
-         vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.buf.index })
-      end
-      local function eset(lhs, rhs)
-         vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.buf.entry })
-      end
-
-      local function bset(lhs, rhs)
-         iset(lhs, rhs)
-         eset(lhs, rhs)
-      end
-
-      iset("<CR>", cmds.show_entry)
-      iset("<M-CR>", cmds.show_in_split)
-      iset("r", cmds.refresh)
-
-      bset("b", cmds.show_in_browser)
-      bset("s", cmds.search)
-      bset("y", cmds.link_to_clipboard)
-      bset("+", cmds.tag)
-      bset("-", cmds.untag)
-      bset("q", cmds.quit)
-
-      eset("u", cmds.urlview)
-      eset("}", cmds.show_next)
-      eset("{", cmds.show_prev)
-      eset("gx", cmds.open_url)
-   end
-end
-
-cmds._prepare_bufs = prepare_bufs
-
 cmds.log = {
    impl = function()
       local buf = vim.api.nvim_create_buf(false, true)
@@ -187,9 +144,6 @@ cmds.show_in_split = {
 
 cmds.show_entry = {
    impl = function()
-      if not render.buf then
-         prepare_bufs()
-      end
       render.show_entry()
    end,
    context = { index = true },
@@ -197,9 +151,6 @@ cmds.show_entry = {
 
 cmds.show_index = {
    impl = function()
-      if not render.buf then
-         prepare_bufs()
-      end
       og_colorscheme = vim.g.colors_name
       og_buffer = vim.api.nvim_get_current_buf()
       render.show_index()
@@ -232,11 +183,11 @@ cmds.quit = {
       local buf = vim.api.nvim_get_current_buf()
       if render.state.in_split then
          vim.cmd "q"
-         vim.api.nvim_set_current_buf(render.buf.index)
+         vim.api.nvim_set_current_buf(render.state.index_buf)
          render.state.in_split = false
-      elseif render.buf.entry == buf then
+      elseif render.state.entry_buf == buf then
          render.show_index()
-      elseif render.buf.index == buf then
+      elseif render.state.index_buf == buf then
          if not og_buffer then
             og_buffer = vim.api.nvim_create_buf(true, false)
          end
@@ -447,15 +398,12 @@ cmds.prune = {
 
 local function get_item_by_context()
    local buf = vim.api.nvim_get_current_buf()
-   local choices = vim.iter(vim.tbl_keys(cmds)):filter(function(v)
-      return v:sub(0, 1) ~= "_"
-   end)
-
-   if render.buf.entry == buf then
+   local choices = vim.iter(vim.tbl_keys(cmds))
+   if render.state.entry_buf == buf then
       choices = choices:filter(function(v)
          return cmds[v].context.entry or cmds[v].context.all
       end)
-   elseif render.buf.index == buf then
+   elseif render.state.index_buf == buf then
       choices = choices:filter(function(v)
          return cmds[v].context.index or cmds[v].context.all
       end)
@@ -502,8 +450,23 @@ vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    pattern = "FeedEntry",
    callback = function(ev)
+      if config.enable_default_keybindings then
+         local function eset(lhs, rhs)
+            vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+         end
+         eset("b", cmds.show_in_browser)
+         eset("s", cmds.search)
+         eset("y", cmds.link_to_clipboard)
+         eset("+", cmds.tag)
+         eset("-", cmds.untag)
+         eset("q", cmds.quit)
+         eset("u", cmds.urlview)
+         eset("}", cmds.show_next)
+         eset("{", cmds.show_prev)
+         eset("gx", cmds.open_url)
+      end
       winbar.render()
-      config.on_attach(render.buf)
+      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
       vim.cmd.colorscheme(config.colorscheme)
       pcall(require, "feed.lualine")
       vim.cmd "set cmdheight=0"
@@ -518,8 +481,22 @@ vim.api.nvim_create_autocmd("BufEnter", {
    group = augroup,
    pattern = "FeedIndex",
    callback = function(ev)
+      if config.enable_default_keybindings then
+         local function iset(lhs, rhs)
+            vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+         end
+         iset("<CR>", cmds.show_entry)
+         iset("<M-CR>", cmds.show_in_split)
+         iset("r", cmds.refresh)
+         iset("b", cmds.show_in_browser)
+         iset("s", cmds.search)
+         iset("y", cmds.link_to_clipboard)
+         iset("+", cmds.tag)
+         iset("-", cmds.untag)
+         iset("q", cmds.quit)
+      end
       winbar.render()
-      config.on_attach(render.buf)
+      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
       vim.cmd.colorscheme(config.colorscheme)
       vim.cmd "set cmdheight=0"
       for key, value in pairs(config.options.index) do
@@ -533,19 +510,19 @@ vim.api.nvim_create_autocmd("User", {
    pattern = "ShowEntryPost",
    group = augroup,
    callback = function(_)
-      ut.highlight_entry(render.buf.entry)
+      ut.highlight_entry(render.state.entry_buf)
       local conform_ok, conform = pcall(require, "conform")
       -- local has_null_ls, null_ls = pcall(require, "null-ls")
       -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
       --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
 
       if conform_ok then
-         vim.api.nvim_set_option_value("modifiable", true, { buf = render.buf.entry })
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.buf.entry })
-         vim.api.nvim_set_option_value("modifiable", false, { buf = render.buf.entry })
+         vim.api.nvim_set_option_value("modifiable", true, { buf = render.state.entry_buf })
+         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.state.entry_buf })
+         vim.api.nvim_set_option_value("modifiable", false, { buf = render.state.entry_buf })
          -- elseif null_ls_ok then
          -- vim.lsp.start({})
-         -- vim.lsp.buf.format({ bufnr = render.buf.entry })
+         -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
       end
    end,
 })

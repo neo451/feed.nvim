@@ -54,6 +54,7 @@ function M.entry(entry, feed_name)
    return table.concat(lines, "\n")
 end
 
+-- TODO: abstruct and use in rendering
 ---@param entry feed.entry
 ---@return string
 function M.entry_name(entry)
