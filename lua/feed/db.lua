@@ -115,7 +115,7 @@ end
 -- self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
 
 function db_mt:blowup()
-   vim.fs.rm(db_dir, { recursive = true })
+   vim.fn.delete(db_dir, "rf")
 end
 
 return db_mt
