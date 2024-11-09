@@ -1,34 +1,45 @@
 local Path = require "plenary.path"
 local config = require "feed.config"
-local opml = require "feed.opml"
 local search = require "feed.search"
 local ut = require "feed.utils"
 
 local pdofile = ut.pdofile
 local save_file = ut.save_file
+local read_file = ut.read_file
 
 local db_mt = { __class = "feed.db" }
 local db_dir = vim.fs.normalize(config.db_dir)
 
 local data_dir = db_dir .. "/data/"
+local object_dir = db_dir .. "/object/"
 local feed_fp = db_dir .. "/feeds.lua"
 
-local function if_path(k)
-   return vim.fs.find({ k }, { path = db_dir .. "/data/", type = "file" })[1]
+---@return feed.db
+function db_mt.new()
+   local dir_handle = Path:new(db_dir)
+   if not dir_handle:is_dir() then
+      dir_handle:mkdir { parents = true }
+   end
+   local data_dir_handle = Path:new(data_dir)
+   if not data_dir_handle:is_dir() then
+      data_dir_handle:mkdir { parents = true }
+   end
+   local object_dir_handle = Path:new(object_dir)
+   if not object_dir_handle:is_dir() then
+      object_dir_handle:mkdir { parents = true }
+   end
+   local feeds_path = Path:new(feed_fp)
+   if not feeds_path:is_file() then
+      feeds_path:touch()
+      feeds_path:write("return " .. vim.inspect {}, "w")
+   end
+
+   local feeds = pdofile(feed_fp)
+   return setmetatable({ feeds = feeds, dir = db_dir }, db_mt)
 end
 
-local dir_handle = Path:new(db_dir)
-if not dir_handle:is_dir() then
-   dir_handle:mkdir { parents = true }
-end
-local data_dir_handle = Path:new(data_dir)
-if not data_dir_handle:is_dir() then
-   data_dir_handle:mkdir { parents = true }
-end
-local feeds_path = Path:new(feed_fp)
-if not feeds_path:is_file() then
-   feeds_path:touch()
-   feeds_path:write("return " .. vim.inspect {}, "w")
+local function if_path(k)
+   return vim.fs.find({ k }, { path = db_dir .. "/object/", type = "file" })[1]
 end
 
 local mem = {}
@@ -54,18 +65,24 @@ function db_mt:add(entry)
    if if_path(entry.id) then
       return
    end
-   save_file(self.dir .. "/data/" .. entry.id, "return " .. vim.inspect(entry))
+   local content = entry.content
+   entry.content = nil
+   local id = entry.id
+   entry.id = nil
+   save_file(data_dir .. id, content)
+   save_file(object_dir .. id, "return " .. vim.inspect(entry))
 end
 
-function db_mt:rm(entry)
-   vim.fs.rm(self.dir .. "/data/" .. entry.id)
+function db_mt:rm(id)
+   vim.fs.rm(data_dir .. id)
+   vim.fs.rm(object_dir .. id)
 end
 
 function db_mt:iter()
-   return vim.iter(vim.fs.dir(self.dir .. "/data/")):map(function(id)
-      local r = pdofile(self.dir .. "/data/" .. id)
+   return vim.iter(vim.fs.dir(object_dir)):map(function(id)
+      local r = pdofile(object_dir .. id)
       mem[id] = r
-      return r
+      return id, r
    end)
 end
 
@@ -77,24 +94,28 @@ function db_mt:filter(query)
    return search.filter(self, q)
 end
 
--- TODO: better save
-function db_mt:save(opts)
-   opts = opts or {}
-   self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
-   setmetatable(self.feeds, nil)
-   save_file(self.dir .. "/feeds.lua", "return " .. vim.inspect(self.feeds))
-   setmetatable(self.feeds, opml.mt)
+---@param id string
+---@return string?
+function db_mt:read_entry(id)
+   return read_file(data_dir .. id)
 end
+
+---@param id string
+---@return boolean
+function db_mt:save_entry(id)
+   return save_file(object_dir .. id, "return " .. vim.inspect(self[id]))
+end
+
+---@return boolean
+function db_mt:save_feeds()
+   return save_file(feed_fp, "return " .. vim.inspect(self.feeds))
+end
+
+-- TOOD: metadate file
+-- self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
 
 function db_mt:blowup()
-   vim.fs.rm(self.dir, { recursive = true })
+   vim.fs.rm(db_dir, { recursive = true })
 end
 
-local feeds = pdofile(db_dir .. "/feeds.lua")
-setmetatable(feeds, opml.mt)
-
-return setmetatable({
-   dir = db_dir,
-   feeds = feeds,
-   mem = mem,
-}, db_mt)
+return db_mt

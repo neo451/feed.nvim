@@ -9,8 +9,7 @@ local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 local builtins = require "telescope.builtin"
 
-local config = require "feed.config"
-local db = require "feed.db"
+local db = require("feed.db").new()
 local render = require "feed.render"
 local format = require "feed.format"
 local cmds = require "feed.commands"
@@ -106,7 +105,7 @@ end
 
 local function feed_grep()
    builtins.live_grep {
-      cwd = config.db_dir .. "/data/",
+      cwd = db.dir .. "/data/",
       entry_maker = function(line)
          return setmetatable({ line }, mt)
       end,
@@ -114,7 +113,7 @@ local function feed_grep()
          define_preview = function(self, entry, _)
             jump_to_line(self, self.state.bufnr, entry)
 
-            local path = config.db_dir .. "/data/" .. entry.filename
+            local path = db.dir .. "/data/" .. entry.filename
             vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
             vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
             vim.treesitter.start(self.state.bufnr, "markdown")

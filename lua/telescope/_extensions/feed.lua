@@ -10,7 +10,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 local config = require "feed.config"
-local db = require "feed.db"
+local db = require("feed.db").new()
 local render = require "feed.render"
 local format = require "feed.format"
 
@@ -19,11 +19,9 @@ local function feed()
 
    local lines = {}
    local idx_to_id = {}
-   for _, entry in pairs(db.index) do
-      if type(entry) == "table" then
-         lines[#lines + 1] = format.entry_name(entry)
-         idx_to_id[#idx_to_id + 1] = entry.id
-      end
+   for id, entry in db:iter() do
+      lines[#lines + 1] = format.entry_name(entry)
+      idx_to_id[#idx_to_id + 1] = id
    end
 
    pickers

@@ -8,6 +8,7 @@ source = {
 
 dependencies = {
    "lua >= 5.1",
+   "nui.nvim",
    "plenary.nvim",
    "treedoc.nvim",
    -- "tree-sitter-markdown",
@@ -19,6 +20,7 @@ dependencies = {
 test_dependencies = {
    "lua >= 5.1",
    "nlua",
+   "nui.nvim",
    "plenary.nvim",
    "treedoc.nvim",
    "tree-sitter-markdown",

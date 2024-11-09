@@ -26,53 +26,6 @@ function M.highlight_entry(buf)
    end
 end
 
-local utf8 = require "feed.utf8"
-
-local function hl_range(buf, ns, hl_group, row, start, stop)
-   local line = vim.api.nvim_buf_get_lines(buf, row - 1, row, false)[1]
-   -- local res = { 0 }
-   -- local acc = 0
-
-   -- for _, str in utf8.codes(line) do
-   --    acc = acc + vim.fn.strwidth(str)
-   --    res[#res + 1] = acc -- TODO:  break
-   -- end
-
-   -- local _start = res[start + 1]
-   -- local _stop = res[stop + 2] or #line
-   -- if not _start or not _stop then
-   --    print(start, stop)
-   -- end
-   -- print(start, stop)
-   local _start = vim.str_byteindex(line, "utf-8", start, false)
-   local _stop = vim.str_byteindex(line, "utf-8", stop + 1, false)
-   vim.highlight.range(buf, ns, hl_group, { row - 1, _start }, { row - 1, _stop })
-end
-
----TODO:
-
----@param buf integer
-function M.highlight_index(buf)
-   local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-   -- print(len)
-   local acc = 0
-   for _, v in ipairs(config.layout) do
-      for i = 1, len do
-         hl.range(buf, feed_ns, v.color or "Normal", { i - 1, acc }, { i - 1, acc + v.width })
-         -- hl_range(buf, feed_ns, v.color or "Normal", i, acc, acc + v.width)
-      end
-      acc = acc + v.width
-   end
-end
-
-function M.clamp(min, value, max)
-   return math.min(max, math.max(min, value))
-end
-
-function M.cycle(i, n)
-   return i % n == 0 and n or i % n
-end
-
 ---@param base_url string | table
 ---@param url string | table
 ---@return string
@@ -155,11 +108,15 @@ end
 
 ---@param path string
 ---@param content string
+---@return boolean
 function M.save_file(path, content)
-   local f = io.open(path, "wb")
+   local f = io.open(path, "w")
    if f then
       f:write(content)
       f:close()
+      return true
+   else
+      return false
    end
 end
 
@@ -175,6 +132,23 @@ function M.read_file(path)
       return
    end
    return ret
+end
+
+local strings = require "plenary.strings"
+
+---porperly align, justify and trucate the title
+---@param str string
+---@param max_len integer
+---@param right_justify boolean
+---@return string
+function M.align(str, max_len, right_justify)
+   right_justify = right_justify or false
+   local len = strings.strdisplaywidth(str)
+   if len < max_len then
+      return strings.align_str(str, max_len, right_justify)
+   else
+      return strings.align_str(strings.truncate(str, max_len), max_len, right_justify)
+   end
 end
 
 return M
