@@ -4,6 +4,7 @@ local ut = require "feed.utils"
 local format = require "feed.format"
 local sha = vim.fn.sha256
 local log = require "feed.log"
+local db = require "feed.db"
 
 ---check if json
 ---@param str string
@@ -121,7 +122,8 @@ end
 local function handle_atom_date(entry)
    local time = entry["published"] or entry["updated"]
    if not time then
-      log.info("data nil for entry:", vim.inspect(entry))
+      -- TODO: log date errs
+      log.info("date nil for entry:", vim.inspect(entry))
    end
    return date.new_from.atom(time)
 end
@@ -129,7 +131,7 @@ end
 local function handle_rss_date(entry)
    local time = entry.pubDate
    if not time then
-      log.info("data nil for entry:", vim.inspect(entry))
+      log.info("date nil for entry:", vim.inspect(entry))
    end
    return date.new_from.rss(time)
 end
@@ -294,13 +296,15 @@ local function parse(src, base_uri, lastUpdated, opts)
       ast, feedtype = vim.json.decode(src), "json"
    else
       local body = xml.parse(src, base_uri)
-      if body.rss then
-         -- TODO: get version info here, 2.0, 0.91..
-         ast, feedtype = body.rss.channel, "rss"
-      elseif body.feed then
-         ast, feedtype = body.feed, "atom"
-      else
-         error "failed to parse the unknown feedtype"
+      if body then
+         if body.rss then
+            -- TODO: get version info here, 2.0, 0.91..
+            ast, feedtype = body.rss.channel, "rss"
+         elseif body.feed then
+            ast, feedtype = body.feed, "atom"
+         else
+            error "failed to parse the unknown feedtype"
+         end
       end
    end
    if opts.reify then

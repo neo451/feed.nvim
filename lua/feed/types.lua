@@ -32,6 +32,7 @@
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field read_entry fun(db: feed.db, id: string): string?
 ---@field save_entry fun(db: feed.db, id: string): boolean
+---@field save_err fun(db: feed.db, type: string, url: string): boolean
 ---@field save_feeds fun(db: feed.db): boolean
 ---@field blowup fun(db: feed.db)
 
