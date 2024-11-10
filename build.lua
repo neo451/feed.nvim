@@ -1,4 +1,3 @@
--- TODO: move to utils and use in health
 local function ts_backend()
    local use_nts = pcall(require, "nvim-treesitter")
    if use_nts then
@@ -18,16 +17,12 @@ local function check_treesitter_parser(name)
    return res
 end
 
-local function build()
-   local cmd = ts_backend()
-   if not cmd then
-      error "[feed.nvim]: Build failed: no available tree-sitter backend found, use nvim-treesitter or rocks.nvim"
-   end
-   for _, v in ipairs { "xml", "html", "markdown" } do
-      if not check_treesitter_parser(v) then
-         pcall(cmd, v)
-      end
+local cmd = ts_backend()
+if not cmd then
+   error "[feed.nvim]: Build failed: no available tree-sitter backend found, use nvim-treesitter or rocks.nvim"
+end
+for _, v in ipairs { "xml", "html", "markdown" } do
+   if not check_treesitter_parser(v) then
+      pcall(cmd, v)
    end
 end
-
-return { build = build }

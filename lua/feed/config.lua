@@ -16,6 +16,9 @@ local default = {
    options = {
       ---@type table<string, any>
       index = {
+         swapfile = false,
+         undolevels = -1,
+         undoreload = 0,
          conceallevel = 0,
          wrap = false,
          number = false,
@@ -40,7 +43,6 @@ local default = {
       -- TODO: validate
       {
          "date",
-         format = "%Y-%m-%d",
          width = 10,
          color = "Pmenu",
       },
@@ -56,14 +58,18 @@ local default = {
       },
       {
          "title",
-         right_justify = false,
          width = 80,
          color = "@markup.strong",
+      },
+      {
+         "query",
+         right = true,
+         color = "Pmenu",
       },
    },
 
    search = {
-      default_query = "@6-months-ago +unread",
+      default_query = "@6-months-ago +unread #100",
    },
 
    ---@type feed.feed[]

@@ -9,10 +9,11 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
-local config = require "feed.config"
+
 local db = require("feed.db").new()
 local render = require "feed.render"
 local format = require "feed.format"
+local config = require "feed.config"
 
 local function feed()
    local opts = config.integrations.telescope or {}
@@ -44,11 +45,8 @@ local function feed()
          },
          attach_mappings = function(prompt_bufnr)
             actions.select_default:replace(function()
-               -- local filtered = action_state.get_current_picker(prompt_bufnr).sorter._discard_state.filtered
                actions.close(prompt_bufnr)
                local selection = action_state.get_selected_entry()
-               -- TODO: update M.on_display
-               render.on_display = db.index
                render.show_entry { row_idx = selection.index, untag = false }
             end)
             return true

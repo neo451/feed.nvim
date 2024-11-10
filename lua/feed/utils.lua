@@ -151,4 +151,25 @@ function M.align(str, max_len, right_justify)
    end
 end
 
+function M.comma_sp(str)
+   return vim.iter(vim.gsplit(str, ",")):fold({}, function(acc, v)
+      v = v:gsub("%s", "")
+      if v ~= "" then
+         acc[v] = true
+      end
+      return acc
+   end)
+end
+
+function M.append(str)
+   vim.wo.winbar = vim.wo.winbar .. str
+end
+
+function M.comp(name, str, width, grp)
+   width = width or #str
+   vim.g["feed_" .. name] = str
+   M.append("%#" .. grp .. "#")
+   M.append("%-" .. width + 1 .. "." .. width + 1 .. "{g:feed_" .. name .. "}")
+end
+
 return M
