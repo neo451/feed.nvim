@@ -88,7 +88,8 @@ function M.cb_to_co(f)
       f(function(ret)
          local ok = coroutine.resume(co, ret)
          if not ok then
-            error "The coroutine failed"
+            print "coroutine failed"
+            -- error "The coroutine failed"
          end
       end, ...)
       return coroutine.yield()

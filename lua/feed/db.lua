@@ -6,6 +6,13 @@ local ut = require "feed.utils"
 local pdofile = ut.pdofile
 local save_file = ut.save_file
 local read_file = ut.read_file
+local remove_file = function(fp)
+   if vim.fs.rm then
+      vim.fs.rm(fp, { recursive = true })
+   else
+      vim.fn.delete(fp, "rf")
+   end
+end
 
 local db_mt = { __class = "feed.db" }
 local db_dir = vim.fs.normalize(config.db_dir)
@@ -13,6 +20,7 @@ local db_dir = vim.fs.normalize(config.db_dir)
 local data_dir = db_dir .. "/data/"
 local object_dir = db_dir .. "/object/"
 local feed_fp = db_dir .. "/feeds.lua"
+local log_fp = db_dir .. "/log.lua"
 
 ---@return feed.db
 function db_mt.new()
@@ -33,9 +41,15 @@ function db_mt.new()
       feeds_path:touch()
       feeds_path:write("return " .. vim.inspect {}, "w")
    end
+   local log_path = Path:new(log_fp)
+   if not log_path:is_file() then
+      log_path:touch()
+      log_path:write("return " .. vim.inspect {}, "w")
+   end
 
    local feeds = pdofile(feed_fp)
-   return setmetatable({ feeds = feeds, dir = db_dir }, db_mt)
+   local log = pdofile(log_fp)
+   return setmetatable({ feeds = feeds, dir = db_dir, log = log }, db_mt)
 end
 
 local function if_path(k)
@@ -74,8 +88,8 @@ function db_mt:add(entry)
 end
 
 function db_mt:rm(id)
-   vim.fs.rm(data_dir .. id)
-   vim.fs.rm(object_dir .. id)
+   remove_file(data_dir .. id)
+   remove_file(object_dir .. id)
 end
 
 function db_mt:iter()
@@ -111,11 +125,19 @@ function db_mt:save_feeds()
    return save_file(feed_fp, "return " .. vim.inspect(self.feeds))
 end
 
+function db_mt:save_err(type, url)
+   if not self.log[type] then
+      self.log[type] = {}
+   end
+   table.insert(self.log[type], url)
+   return save_file(log_fp, "return " .. vim.inspect(self.log))
+end
+
 -- TOOD: metadate file
 -- self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
 
 function db_mt:blowup()
-   vim.fn.delete(db_dir, "rf")
+   remove_file(db_dir)
 end
 
 return db_mt

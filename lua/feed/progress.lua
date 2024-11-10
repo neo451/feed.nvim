@@ -1,12 +1,13 @@
 local backends = {
+   "native",
    "fidget",
    "notify",
 }
 
 local function choose_backend()
    local config = require "feed.config"
-   if config.notify then
-      return config.notify
+   if config.progress then
+      return config.progress
    end
    for _, v in ipairs(backends) do
       local ok = pcall(require, v)
@@ -23,10 +24,15 @@ local _, notify = pcall(require, "notify")
 local function update_fidget(handle, total, name)
    if handle.percentage == 100 then
       handle.percentage = 0
+      handle.count = 0
    end
+   if not handle.count then
+      handle.count = 0
+   end
+   handle.count = handle.count + 1
    handle.percentage = handle.percentage + 100 / total
    handle.message = "got " .. name
-   if handle.percentage == 100 then
+   if handle.count == total then
       handle:finish()
    end
 end
@@ -84,6 +90,17 @@ local function new()
       return fidget_new()
    elseif backend == "notify" then
       return notify_new()
+   elseif backend == "native" then
+      return { c = 0 }
+   end
+end
+
+local function update_native(handle, total, message)
+   handle.c = handle.c + 1
+   print(("[%d/%d] got %s"):format(handle.c, total, message))
+   if handle.c == total then
+      print "finish"
+      vim.cmd "1mes clear"
    end
 end
 
@@ -97,6 +114,8 @@ local function advance(total, message)
       update_fidget(handle, total, message)
    elseif backend == "notify" then
       update_notify(handle, total, message)
+   elseif backend == "native" then
+      update_native(handle, total, message)
    end
 end
 

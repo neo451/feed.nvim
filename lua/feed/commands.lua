@@ -188,10 +188,9 @@ cmds.tag = {
       if not tag or not id then
          return
       end
-      print(tag, id)
       db[id].tags[tag] = true
       db:save_entry(id)
-      render.refresh()
+      -- render.refresh()
    end,
    context = { index = true, entry = true },
 }
@@ -205,7 +204,7 @@ cmds.untag = {
       end
       db[id].tags[tag] = nil
       db:save_entry(id)
-      render.refresh()
+      -- TODO: re-render line in in index
    end,
    context = { index = true, entry = true },
    -- TODO: completion for in-db tags
@@ -270,7 +269,7 @@ cmds.list = {
 cmds.update = {
    impl = function()
       local feedlist = list_feeds()
-      fetch.batch_update_feed(feedlist, 10)
+      fetch.batch_update_feed(feedlist, 5)
    end,
    context = { all = true },
 }

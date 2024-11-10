@@ -14,7 +14,10 @@ end
 ---@param str string
 ---@return TSNode
 local get_root = function(str, language)
-   local parser = vim.treesitter.get_string_parser(str, language)
+   local ok, parser = pcall(vim.treesitter.get_string_parser, str, language)
+   if not ok then
+      error "xml TS parser not found"
+   end
    return parser:parse()[1]:root()
 end
 
@@ -200,7 +203,7 @@ end
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
 ---@param name string?
----@return table
+---@return table?
 function M.parse(src, name)
    src = M.sanitize(src)
    local root = get_root(src, "xml")
