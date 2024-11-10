@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.3](https://github.com/neo451/feed.nvim/compare/v1.8.2...v1.8.3) (2024-11-10)
+
+
+### Bug Fixes
+
+* winbar improvement, build.lua, plugin/ ([651b70a](https://github.com/neo451/feed.nvim/commit/651b70a64eff99392bfb6f9ba04c38c75bfd0c98))
+
 ## [1.8.2](https://github.com/neo451/feed.nvim/compare/v1.8.1...v1.8.2) (2024-11-09)
 
 
