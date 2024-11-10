@@ -4,13 +4,12 @@ local render = require "feed.render"
 local fetch = require "feed.fetch"
 local ut = require "feed.utils"
 local opml = require "feed.opml"
-local winbar = require "feed.winbar"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
 
 local ui_input = ut.cb_to_co(function(cb, opts)
-   pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
+   pcall(vim.ui.input, opts, cb)
 end)
 
 local ui_select = ut.cb_to_co(function(cb, items, opts)
@@ -39,8 +38,8 @@ local og_colorscheme, og_buffer, og_winbar
 local cmds = {}
 
 local function wrap(f)
-   return function()
-      coroutine.wrap(f)()
+   return function(...)
+      coroutine.wrap(f)(...)
    end
 end
 
@@ -50,13 +49,6 @@ cmds.log = {
       local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
       vim.api.nvim_set_current_buf(buf)
-   end,
-   context = { all = true },
-}
-
-cmds.build = {
-   impl = function()
-      require("feed.build").build()
    end,
    context = { all = true },
 }
@@ -151,8 +143,6 @@ cmds.show_entry = {
 
 cmds.show_index = {
    impl = function()
-      og_colorscheme = vim.g.colors_name
-      og_buffer = vim.api.nvim_get_current_buf()
       render.show_index()
    end,
    context = { all = true },
@@ -178,22 +168,10 @@ cmds.show_prev = {
    context = { entry = true },
 }
 
+--- TOOD: move logic to render
 cmds.quit = {
    impl = function()
-      local buf = vim.api.nvim_get_current_buf()
-      if render.state.in_split then
-         vim.cmd "q"
-         vim.api.nvim_set_current_buf(render.state.index_buf)
-         render.state.in_split = false
-      elseif render.state.entry_buf == buf then
-         render.show_index()
-      elseif render.state.index_buf == buf then
-         if not og_buffer then
-            og_buffer = vim.api.nvim_create_buf(true, false)
-         end
-         vim.api.nvim_set_current_buf(og_buffer)
-         pcall(vim.cmd.colorscheme, og_colorscheme)
-      end
+      render.quit()
    end,
    context = { entry = true, index = true },
 }
@@ -293,22 +271,10 @@ cmds.list = {
 cmds.update = {
    impl = function()
       local feedlist = list_feeds()
-      -- vim.print(feedlist)
-      -- vim.print(db.feeds)
       fetch.batch_update_feed(feedlist, 10)
    end,
    context = { all = true },
 }
-
-local function comma_sp(str)
-   return vim.iter(vim.gsplit(str, ",")):fold({}, function(acc, v)
-      v = v:gsub("%s", "")
-      if v ~= "" then
-         acc[v] = true
-      end
-      return acc
-   end)
-end
 
 ---add a feed to database, currently need to actully fetch the feed to be permanent
 cmds.add_feed = {
@@ -318,7 +284,7 @@ cmds.add_feed = {
       tags = tags or ui_input { prompt = "Feed tags (optional, comma seperated): " } -- TODO: auto tags
       if url and url ~= "" then
          if tags then
-            table.insert(config.feeds, { url, name = name, tags = comma_sp(tags) })
+            table.insert(config.feeds, { url, name = name, tags = ut.comma_sp(tags) })
          elseif name then
             table.insert(config.feeds, { url, name = name })
          else
@@ -349,7 +315,12 @@ cmds.update_feed = {
    end,
 
    complete = function()
-      return vim.tbl_keys(list_feeds())
+      return vim.iter(list_feeds())
+         :map(function(v)
+            vim.print(v)
+            return v[2] or v[1]
+         end)
+         :totable()
    end,
    context = { all = true },
 }
@@ -396,9 +367,26 @@ cmds.prune = {
    context = { all = true },
 }
 
-local function get_item_by_context()
+--- **INTEGRATIONS**
+cmds.telescope = {
+   impl = function()
+      pcall(vim.cmd.Telescope, "feed")
+   end,
+   context = { all = true },
+}
+
+cmds.grep = {
+   impl = function()
+      pcall(vim.cmd.Telescope, "feed_grep")
+   end,
+   context = { all = true },
+}
+
+function cmds._get_item_by_context()
    local buf = vim.api.nvim_get_current_buf()
-   local choices = vim.iter(vim.tbl_keys(cmds))
+   local choices = vim.iter(vim.tbl_keys(cmds)):filter(function(v)
+      return v:sub(0, 1) ~= "_"
+   end)
    if render.state.entry_buf == buf then
       choices = choices:filter(function(v)
          return cmds[v].context.entry or cmds[v].context.all
@@ -415,41 +403,47 @@ local function get_item_by_context()
    return choices:totable()
 end
 
---- **INTEGRATIONS**
-cmds.telescope = {
-   impl = function()
-      pcall(vim.cmd.Telescope, "feed")
-   end,
-   context = { all = true },
-}
+---@param args string[]
+function cmds._load_command(args)
+   local cmd = table.remove(args, 1)
+   local item = cmds[cmd]
+   wrap(item.impl)(unpack(args))
+end
 
-cmds.grep = {
-   impl = function()
-      pcall(vim.cmd.Telescope, "feed_grep")
-   end,
-   context = { all = true },
-}
-
-setmetatable(cmds, {
-   __call = function()
-      local items = get_item_by_context()
-      vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
-         if choice then
-            local item = cmds[choice]
-            coroutine.wrap(function()
-               item.impl()
-            end)()
-         end
-      end)
-   end,
-})
+function cmds._menu()
+   local items = cmds._get_item_by_context()
+   vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
+      if choice then
+         local item = cmds[choice]
+         wrap(item.impl)()
+      end
+   end)
+end
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
 
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("User", {
+   pattern = "ShowEntryPost",
    group = augroup,
-   pattern = "FeedEntry",
    callback = function(ev)
+      vim.cmd "set cmdheight=0"
+      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+      vim.cmd.colorscheme(config.colorscheme)
+      ut.highlight_entry(ev.buf)
+      local conform_ok, conform = pcall(require, "conform")
+      -- local has_null_ls, null_ls = pcall(require, "null-ls")
+      -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
+      --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
+
+      if conform_ok then
+         vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
+         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
+         vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
+         -- elseif null_ls_ok then
+         -- vim.lsp.start({})
+         -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
+      end
+
       if config.enable_default_keybindings then
          local function eset(lhs, rhs)
             vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
@@ -465,11 +459,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
          eset("{", cmds.show_prev)
          eset("gx", cmds.open_url)
       end
-      winbar.render()
-      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-      vim.cmd.colorscheme(config.colorscheme)
-      pcall(require, "feed.lualine")
-      vim.cmd "set cmdheight=0"
       for key, value in pairs(config.options.entry) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
@@ -477,10 +466,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
    end,
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("User", {
+   pattern = "ShowIndexPost",
    group = augroup,
-   pattern = "FeedIndex",
    callback = function(ev)
+      vim.cmd "set cmdheight=0"
+      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+      vim.cmd.colorscheme(config.colorscheme)
+
       if config.enable_default_keybindings then
          local function iset(lhs, rhs)
             vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
@@ -495,10 +488,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
          iset("-", cmds.untag)
          iset("q", cmds.quit)
       end
-      winbar.render()
-      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-      vim.cmd.colorscheme(config.colorscheme)
-      vim.cmd "set cmdheight=0"
       for key, value in pairs(config.options.index) do
          pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
          pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
@@ -506,98 +495,21 @@ vim.api.nvim_create_autocmd("BufEnter", {
    end,
 })
 
-vim.api.nvim_create_autocmd("User", {
-   pattern = "ShowEntryPost",
-   group = augroup,
-   callback = function(_)
-      ut.highlight_entry(render.state.entry_buf)
-      local conform_ok, conform = pcall(require, "conform")
-      -- local has_null_ls, null_ls = pcall(require, "null-ls")
-      -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
-      --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
-
-      if conform_ok then
-         vim.api.nvim_set_option_value("modifiable", true, { buf = render.state.entry_buf })
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.state.entry_buf })
-         vim.api.nvim_set_option_value("modifiable", false, { buf = render.state.entry_buf })
-         -- elseif null_ls_ok then
-         -- vim.lsp.start({})
-         -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
-      end
-   end,
-})
-
 local function restore_state()
    vim.cmd "set cmdheight=1"
    vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
-   vim.cmd.colorscheme(og_colorscheme)
 end
 
-vim.api.nvim_create_autocmd("BufLeave", {
+vim.api.nvim_create_autocmd("User", {
    group = augroup,
-   pattern = "FeedIndex",
+   pattern = "QuitEntryPost",
    callback = restore_state,
 })
 
-vim.api.nvim_create_autocmd("BufLeave", {
+vim.api.nvim_create_autocmd("User", {
    group = augroup,
-   pattern = "FeedEntry",
+   pattern = "QuitIndexPost",
    callback = restore_state,
 })
-
----@param args string[]
-local function load_command(args)
-   local cmd = table.remove(args, 1)
-   local item = cmds[cmd]
-   if type(item) == "table" then
-      coroutine.wrap(function()
-         item.impl(unpack(args))
-      end)()
-   elseif type(item) == "function" then
-      item(unpack(args))
-   end
-end
-
-vim.api.nvim_create_user_command("Feed", function(opts)
-   pcall(require("telescope").load_extension, "feed")
-   pcall(require("telescope").load_extension, "feed_grep")
-
-   if #opts.fargs == 0 then
-      cmds()
-   else
-      load_command(opts.fargs)
-   end
-end, {
-   nargs = "*",
-   complete = function(arg_lead, line)
-      local subcmd_key, subcmd_arg_lead = line:match "^['<,'>]*Feed*%s(%S+)%s(.*)$"
-      if subcmd_key and subcmd_arg_lead and cmds[subcmd_key] and type(cmds[subcmd_key]) == "table" and cmds[subcmd_key].complete then
-         local sub_items = cmds[subcmd_key].complete()
-         return vim.iter(sub_items)
-            :filter(function(arg)
-               return arg:find(subcmd_arg_lead) ~= nil
-            end)
-            :totable()
-      end
-      if line:match "^['<,'>]*Feed*%s+%w*$" then
-         -- Filter subcommands that match
-         local subcommand_keys = get_item_by_context()
-         return vim.iter(subcommand_keys)
-            :filter(function(key)
-               return key:find(arg_lead) ~= nil
-            end)
-            :totable()
-      end
-   end,
-})
-
--- vim.api.nvim_create_autocmd("WinResized", {
---    group = augroup,
---    pattern = "FeedIndex",
---    callback = function()
---       render.refresh()
---    end,
--- })
---
 
 return cmds

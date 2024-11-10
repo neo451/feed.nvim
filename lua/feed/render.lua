@@ -9,6 +9,8 @@ local date = require "feed.date"
 
 local align = ut.align
 
+local og_colorscheme, og_buffer, og_winbar
+
 local M = {
    on_display = nil,
    query_history = {},
@@ -18,6 +20,34 @@ local M = {
       indexed_once = false,
    },
 }
+
+local main_comp = vim.iter(config.layout)
+   :filter(function(v)
+      return not v.right
+   end)
+   :totable()
+
+local extra_comp = vim.iter(config.layout)
+   :filter(function(v)
+      return v.right
+   end)
+   :totable()
+
+local providers = {}
+
+setmetatable(providers, {
+   __index = function(_, k)
+      return function()
+         return string.upper(k:sub(0, 1)) .. k:sub(2, -1)
+      end
+   end,
+})
+
+providers.query = function()
+   return M.state.query
+end
+
+providers.lastUpdated = function() end
 
 ---@param lines string[]
 ---@param buf integer
@@ -42,7 +72,7 @@ end
 local function render_line(buf, entry, row)
    vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
    local acc_width = 0
-   for _, v in ipairs(config.layout) do
+   for _, v in ipairs(main_comp) do
       local text = entry[v[1]] or ""
       if v[1] == "tags" then
          text = format.tags(entry.tags)
@@ -63,8 +93,15 @@ end
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
+   og_colorscheme = vim.g.colors_name
+   og_buffer = vim.api.nvim_get_current_buf()
+   og_winbar = vim.wo.winbar
+   M.show_winbar()
    if M.state.indexed_once and not opts.refresh then
       vim.api.nvim_set_current_buf(M.state.index_buf)
+      vim.api.nvim_exec_autocmds("User", {
+         pattern = "ShowIndexPost",
+      })
       return
    end
    if not M.on_display then
@@ -72,7 +109,6 @@ function M.show_index(opts)
    end
    if not M.state.index_buf then
       M.state.index_buf = vim.api.nvim_create_buf(false, true)
-      vim.api.nvim_buf_set_name(M.state.index_buf, "FeedIndex")
    end
    vim.bo[M.state.index_buf].modifiable = true
    for i, id in ipairs(M.on_display) do
@@ -80,6 +116,7 @@ function M.show_index(opts)
       render_line(M.state.index_buf, entry, i)
    end
    vim.api.nvim_set_current_buf(M.state.index_buf)
+   M.show_winbar()
    M.state.indexed_once = true
    vim.api.nvim_exec_autocmds("User", {
       pattern = "ShowIndexPost",
@@ -107,13 +144,25 @@ function M.show_entry(opts)
       M.state.urls = urls
       if not M.state.entry_buf then
          M.state.entry_buf = vim.api.nvim_create_buf(false, true)
-         vim.api.nvim_buf_set_name(M.state.entry_buf, "FeedEntry")
       end
       show(lines, M.state.entry_buf)
+      M.show_winbar()
       vim.api.nvim_exec_autocmds("User", {
          pattern = "ShowEntryPost",
-         data = { lines = lines },
       })
+   end
+end
+
+function M.show_winbar()
+   local comp = ut.comp
+   local append = ut.append
+   vim.wo.winbar = ""
+   for _, v in ipairs(main_comp) do
+      comp(v[1], providers[v[1]](v), v.width, v.color)
+   end
+   append "%="
+   for _, v in ipairs(extra_comp) do
+      comp(v[1], providers[v[1]](v), v.width, v.color)
    end
 end
 
@@ -144,6 +193,29 @@ end
 function M.refresh()
    M.on_display = db:filter(M.state.query)
    M.show_index { refresh = true }
+end
+
+function M.quit()
+   local buf = vim.api.nvim_get_current_buf()
+   if M.state.in_split then
+      vim.cmd "q"
+      vim.api.nvim_set_current_buf(M.state.index_buf)
+      M.state.in_split = false
+   elseif M.state.entry_buf == buf then
+      M.show_index()
+      vim.api.nvim_exec_autocmds("User", {
+         pattern = "QuitEntryPost",
+      })
+   elseif M.state.index_buf == buf then
+      if not og_buffer then
+         og_buffer = vim.api.nvim_create_buf(true, false)
+      end
+      vim.api.nvim_set_current_buf(og_buffer)
+      pcall(vim.cmd.colorscheme, og_colorscheme)
+      vim.api.nvim_exec_autocmds("User", {
+         pattern = "QuitIndexPost",
+      })
+   end
 end
 
 return M

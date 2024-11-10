@@ -1,4 +1,5 @@
 return {
+   { "MunifTanjim/nui.nvim", lazy = true },
    { "nvim-lua/plenary.nvim", lazy = true },
 
    { "neo451/treedoc.nvim", lazy = true },
@@ -7,7 +8,6 @@ return {
       dependencies = {
          "nvim-treesitter/nvim-treesitter",
       },
-      build = ":TSInstall xml html markdown",
       opts = {},
    },
 }

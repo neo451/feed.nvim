@@ -43,7 +43,6 @@ local default = {
       -- TODO: validate
       {
          "date",
-         format = "%Y-%m-%d",
          width = 10,
          color = "Pmenu",
       },
@@ -59,9 +58,13 @@ local default = {
       },
       {
          "title",
-         right_justify = false,
          width = 80,
          color = "@markup.strong",
+      },
+      {
+         "query",
+         right = true,
+         color = "Pmenu",
       },
    },
 
