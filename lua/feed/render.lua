@@ -9,7 +9,7 @@ local date = require "feed.date"
 
 local align = ut.align
 
-local og_colorscheme, og_buffer, og_winbar
+local og_colorscheme, og_winbar
 
 local M = {
    on_display = nil,
@@ -69,33 +69,21 @@ local function render_text(buf, text, hi_grp, col, row)
    obj:render_char(buf, -1, row, col)
 end
 
-local function render_line(buf, entry, row)
+---@param buf integer
+---@param entry feed.entry
+---@param row integer
+local function show_line(buf, entry, row)
    vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
-   local acc_width = 0
-   for _, v in ipairs(main_comp) do
-      local text = entry[v[1]] or ""
-      if v[1] == "tags" then
-         text = format.tags(entry.tags)
-      elseif v[1] == "feed" then
-         if db.feeds[entry.feed] then
-            text = db.feeds[entry.feed].title
-         else
-            text = entry.feed
-         end
-      elseif v[1] == "date" then
-         text = date.new_from.number(entry.time):format(config.date_format)
-      end
-      text = align(text, v.width, v.right_justify) .. " "
-      render_text(buf, text, v.color, acc_width, row)
-      acc_width = acc_width + v.width + 1
+   local formats = format.get_entry_format(entry, main_comp)
+   for _, v in ipairs(formats) do
+      render_text(buf, v.text, v.color, v.width, row)
    end
 end
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    og_colorscheme = vim.g.colors_name
-   og_buffer = vim.api.nvim_get_current_buf()
-   og_winbar = vim.wo.winbar
+   -- og_winbar = vim.wo.winbar
    M.show_winbar()
    if M.state.indexed_once and not opts.refresh then
       vim.api.nvim_set_current_buf(M.state.index_buf)
@@ -113,7 +101,7 @@ function M.show_index(opts)
    vim.bo[M.state.index_buf].modifiable = true
    for i, id in ipairs(M.on_display) do
       local entry = db[id]
-      render_line(M.state.index_buf, entry, i)
+      show_line(M.state.index_buf, entry, i)
    end
    vim.api.nvim_set_current_buf(M.state.index_buf)
    M.show_winbar()
@@ -207,10 +195,7 @@ function M.quit()
          pattern = "QuitEntryPost",
       })
    elseif M.state.index_buf == buf then
-      if not og_buffer then
-         og_buffer = vim.api.nvim_create_buf(true, false)
-      end
-      vim.api.nvim_set_current_buf(og_buffer)
+      vim.cmd "bp"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", {
          pattern = "QuitIndexPost",

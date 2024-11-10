@@ -2,7 +2,6 @@ local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
    error "This extension requires telescope.nvim"
 end
-
 local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
@@ -12,7 +11,7 @@ local builtins = require "telescope.builtin"
 local db = require("feed.db").new()
 local render = require "feed.render"
 local format = require "feed.format"
-local cmds = require "feed.commands"
+local config = require "feed.config"
 
 local parse = function(t)
    local _, _, filename, lnum, col, text = string.find(t.value, [[(..-):(%d+):(%d+):(.*)]])
@@ -79,7 +78,6 @@ mt = {
 
 local ns = vim.api.nvim_create_namespace "feed.grep"
 
--- TODO: offset by 2 lines??
 local jump_to_line = function(win, bufnr, entry)
    pcall(vim.api.nvim_buf_clear_namespace, bufnr, ns, 0, -1)
 
@@ -104,12 +102,14 @@ local jump_to_line = function(win, bufnr, entry)
 end
 
 local function feed_grep()
-   builtins.live_grep {
+   local opts = {
+      prompt_title = "Feed grep",
       cwd = db.dir .. "/data/",
       entry_maker = function(line)
          return setmetatable({ line }, mt)
       end,
       previewer = previewers.new_buffer_previewer {
+         title = "Feed Grep Preview",
          define_preview = function(self, entry, _)
             jump_to_line(self, self.state.bufnr, entry)
 
@@ -131,16 +131,17 @@ local function feed_grep()
       },
       attach_mappings = function(prompt_bufnr, _)
          actions.select_default:replace(function()
-            cmds._prepare_bufs()
             actions.close(prompt_bufnr)
             local selection = action_state.get_selected_entry()
             local id = selection.filename
             render.show_entry { id = id, untag = false }
-            jump_to_line(nil, render.buf.entry, selection)
+            jump_to_line(nil, render.state.entry_buf, selection)
          end)
          return true
       end,
    }
+   opts = vim.tbl_extend("force", opts, config.integrations.telescope)
+   builtins.live_grep(opts)
 end
 
 return telescope.register_extension {

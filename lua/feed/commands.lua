@@ -9,7 +9,7 @@ local read_file = ut.read_file
 local save_file = ut.save_file
 
 local ui_input = ut.cb_to_co(function(cb, opts)
-   pcall(vim.ui.input, opts, cb)
+   pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
 end)
 
 local ui_select = ut.cb_to_co(function(cb, items, opts)
@@ -34,7 +34,6 @@ local function list_feeds()
    return ret
 end
 
-local og_colorscheme, og_buffer, og_winbar
 local cmds = {}
 
 local function wrap(f)
@@ -168,7 +167,6 @@ cmds.show_prev = {
    context = { entry = true },
 }
 
---- TOOD: move logic to render
 cmds.quit = {
    impl = function()
       render.quit()
@@ -190,6 +188,7 @@ cmds.tag = {
       if not tag or not id then
          return
       end
+      print(tag, id)
       db[id].tags[tag] = true
       db:save_entry(id)
       render.refresh()
@@ -368,16 +367,16 @@ cmds.prune = {
 }
 
 --- **INTEGRATIONS**
+
 cmds.telescope = {
    impl = function()
-      pcall(vim.cmd.Telescope, "feed")
-   end,
-   context = { all = true },
-}
-
-cmds.grep = {
-   impl = function()
-      pcall(vim.cmd.Telescope, "feed_grep")
+      vim.ui.select({ "find", "grep" }, { prompt = "" }, function(item)
+         if item == "find" then
+            pcall(vim.cmd.Telescope, "feed")
+         elseif item == "grep" then
+            pcall(vim.cmd.Telescope, "feed_grep")
+         end
+      end)
    end,
    context = { all = true },
 }

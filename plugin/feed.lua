@@ -10,8 +10,6 @@ vim.g.loaded_feed = 1
 
 vim.api.nvim_create_user_command("Feed", function(opts)
    local cmds = require "feed.commands"
-   pcall(require("telescope").load_extension, "feed")
-   pcall(require("telescope").load_extension, "feed_grep")
 
    if #opts.fargs == 0 then
       cmds._menu()
