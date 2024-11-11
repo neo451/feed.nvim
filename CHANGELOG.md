@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.4](https://github.com/neo451/feed.nvim/compare/v1.8.3...v1.8.4) (2024-11-11)
+
+
+### Bug Fixes
+
+* one db instance, improve loging, mini.notify backend ([ce848be](https://github.com/neo451/feed.nvim/commit/ce848be4abeba95ecf20c92ea988d32e02a57bb2))
+
 ## [1.8.3](https://github.com/neo451/feed.nvim/compare/v1.8.2...v1.8.3) (2024-11-10)
 
 
