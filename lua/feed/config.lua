@@ -78,6 +78,12 @@ local default = {
       telescope = {},
    },
    on_attach = function() end,
+   progress = {
+      "fidget",
+      "notify",
+      "mini",
+      "native",
+   },
 }
 
 local M = {}

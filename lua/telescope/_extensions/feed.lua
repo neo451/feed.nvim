@@ -10,7 +10,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 
-local db = require("feed.db").new()
+local db = require "feed.db"
 local render = require "feed.render"
 local format = require "feed.format"
 local config = require "feed.config"

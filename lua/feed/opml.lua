@@ -1,7 +1,6 @@
 local M = {}
 local ut = require "feed.utils"
 local xml = require "feed.xml"
-local log = require "feed.log"
 
 local format, concat = string.format, table.concat
 local spairs, ipairs = vim.spairs, ipairs
@@ -21,8 +20,8 @@ end
 ---@param src string
 ---@return feed.opml
 function M.import(src)
-   local ast = xml.parse(src)
-   local outline = ast.opml.body.outline
+   local ast = xml.parse(src, "")
+   local outline = ast.opml.body.outline -- TODO:
    local ret = {}
    outline = ut.listify(outline)
    for _, v in ipairs(outline) do
@@ -30,8 +29,6 @@ function M.import(src)
          local url = v.xmlUrl
          v.xmlUrl = nil
          ret[url] = v
-      else
-         log.info(("opml error: failed to import feed %s"):format(v.title or v.text or v.htmlUrl))
       end
    end
    return ret

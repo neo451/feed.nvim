@@ -1,15 +1,9 @@
-local backends = {
-   "native",
-   "fidget",
-   "notify",
-}
-
 local function choose_backend()
    local config = require "feed.config"
-   if config.progress then
+   if type(config.progress) == "string" then
       return config.progress
    end
-   for _, v in ipairs(backends) do
+   for _, v in ipairs(config.progress) do
       local ok = pcall(require, v)
       if ok then
          return v
@@ -20,6 +14,7 @@ end
 local backend = choose_backend()
 
 local _, notify = pcall(require, "notify")
+local _, MiniNotify = pcall(require, "mini.notify") -- TODO:
 
 local function update_fidget(handle, total, name)
    if handle.percentage == 100 then
@@ -90,6 +85,8 @@ local function new()
       return fidget_new()
    elseif backend == "notify" then
       return notify_new()
+   elseif backend == "mini" then
+      return { id = MiniNotify.add("0", "INFO", "Title"), c = 0 }
    elseif backend == "native" then
       return { c = 0 }
    end
@@ -99,8 +96,17 @@ local function update_native(handle, total, message)
    handle.c = handle.c + 1
    print(("[%d/%d] got %s"):format(handle.c, total, message))
    if handle.c == total then
-      print "finish"
-      vim.cmd "1mes clear"
+      print "Feed fetch finished"
+   end
+end
+
+local function update_mini(handle, total, message)
+   handle.c = handle.c + 1
+   MiniNotify.update(handle.id, { msg = ("[%d/%d] got %s"):format(handle.c, total, message) })
+   if handle.c == total then
+      MiniNotify.remove(handle.id)
+      local opts = { INFO = { duration = 1000 } }
+      MiniNotify.make_notify(opts) "Feed fetch finished"
    end
 end
 
@@ -114,6 +120,8 @@ local function advance(total, message)
       update_fidget(handle, total, message)
    elseif backend == "notify" then
       update_notify(handle, total, message)
+   elseif backend == "mini" then
+      update_mini(handle, total, message)
    elseif backend == "native" then
       update_native(handle, total, message)
    end

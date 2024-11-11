@@ -1,6 +1,6 @@
-local log = require "feed.log"
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
+local db = require "feed.db"
 
 local M = {}
 
@@ -186,11 +186,16 @@ M.element = function(node, src)
                end
                table.insert(V[k], v)
             else
+               if type(V) == "string" then
+                  V = { V }
+               end
                V[k] = v
             end
          end
       elseif type(element) == "string" then
-         if vim.tbl_isempty(V) then
+         if type(V) == "string" then
+            V = { V }
+         elseif vim.tbl_isempty(V) then
             V = element
          else
             table.insert(V, element)
@@ -202,20 +207,21 @@ end
 
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
----@param name string?
+---@param url string
 ---@return table?
-function M.parse(src, name)
+function M.parse(src, url)
    src = M.sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      log.warn("ts error: feed", name, "did not return a valid xml file")
+      db:save_err("ts", url)
+   else
+      local iterator = vim.iter(root:iter_children())
+      local collected = iterator:fold({}, function(acc, node)
+         acc[#acc + 1] = M[node:type()](node, src)
+         return acc
+      end)
+      return collected[1]
    end
-   local iterator = vim.iter(root:iter_children())
-   local collected = iterator:fold({}, function(acc, node)
-      acc[#acc + 1] = M[node:type()](node, src)
-      return acc
-   end)
-   return collected[1]
 end
 
 return M

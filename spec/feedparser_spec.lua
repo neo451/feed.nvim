@@ -86,4 +86,13 @@ describe("return", function()
    end)
 end)
 
--- TODO: return early
+-- describe("real edge cases", function()
+--    it("should", function()
+--       local xml = require "feed.xml"
+--       local str = readfile "fp4.xml"
+--       local res = xml.parse(str, "")
+--       -- local res = m.parse(str, "", "2020-08-07", { reify = false })
+--       vim.print(res.ast)
+--       -- assert.is_nil(res)
+--    end)
+-- end)

@@ -3,7 +3,6 @@ local date = require "feed.date"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local sha = vim.fn.sha256
-local log = require "feed.log"
 local db = require "feed.db"
 
 ---check if json
@@ -122,8 +121,7 @@ end
 local function handle_atom_date(entry)
    local time = entry["published"] or entry["updated"]
    if not time then
-      -- TODO: log date errs
-      log.info("date nil for entry:", vim.inspect(entry))
+      db:save_err("date", entry.feed)
    end
    return date.new_from.atom(time)
 end
@@ -131,7 +129,7 @@ end
 local function handle_rss_date(entry)
    local time = entry.pubDate
    if not time then
-      log.info("date nil for entry:", vim.inspect(entry))
+      db:save_err("date", entry.feed)
    end
    return date.new_from.rss(time)
 end
