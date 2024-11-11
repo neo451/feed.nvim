@@ -1,5 +1,5 @@
 local feedparser = require "feed.feedparser"
-local db = require("feed.db").new()
+local db = require "feed.db"
 local progress = require "feed.progress"
 local date = require "feed.date"
 
@@ -66,6 +66,8 @@ local function fetch(cb, url, timeout)
    end)
 end
 
+M.fetch = fetch
+
 ---fetch xml from source and load them into db
 ---@param feed table
 ---@param total integer
@@ -110,18 +112,17 @@ function M.update_feed(feed, total)
                db:save_feeds()
             end
          else
-            db:save_err("fp", url)
+            db:save_err("fp", url, ret)
          end
       else
          if res.code == 28 then
             db:save_err("timeout", url)
          else
-            db:save_err("response", url)
+            db:save_err("response", url, vim.inspect(res))
          end
       end
       progress.advance(total or 1, name or url)
    end, url, 15)
-   return true
 end
 
 local c = 1

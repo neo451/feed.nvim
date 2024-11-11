@@ -1,13 +1,10 @@
 -- TODO: grey out the entries just read, only hide after refresh
 
-local db = require("feed.db").new()
+local db = require "feed.db"
 local ut = require "feed.utils"
 local format = require "feed.format"
 local urlview = require "feed.urlview"
 local config = require "feed.config"
-local date = require "feed.date"
-
-local align = ut.align
 
 local og_colorscheme, og_winbar
 

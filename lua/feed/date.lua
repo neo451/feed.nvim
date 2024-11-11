@@ -138,6 +138,9 @@ end
 
 date.new_from = {
    rss = function(str)
+      if not str then
+         return os.time()
+      end
       local time = rfc2822(str)
       if not time then
          time = rfc3339(str) -- some rss feeds have atom timetags...
@@ -149,6 +152,9 @@ date.new_from = {
       end
    end,
    json = function(str)
+      if not str then
+         return os.time()
+      end
       local time = rfc3339(str)
       if time then
          return time:absolute()
@@ -157,6 +163,9 @@ date.new_from = {
       end
    end,
    atom = function(str)
+      if not str then
+         return os.time()
+      end
       local time = rfc3339(str)
       if time then
          return time:absolute()

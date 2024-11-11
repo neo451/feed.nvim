@@ -78,7 +78,7 @@ function db_mt.new()
    ensure_path(index_fp, "file")
 
    local feeds = pdofile(feeds_fp)
-   local log = pdofile(log_fp)
+   local log = {}
    local index = parse_index()
    local tags = pdofile(tags_fp)
    return setmetatable({
@@ -294,11 +294,11 @@ function db_mt:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds))
 end
 
-function db_mt:save_err(type, url)
+function db_mt:save_err(type, url, mes)
    if not self.log[type] then
       self.log[type] = {}
    end
-   table.insert(self.log[type], url)
+   self.log[type][url] = mes or true
    return save_file(log_fp, "return " .. vim.inspect(self.log))
 end
 
@@ -309,4 +309,4 @@ function db_mt:blowup()
    remove_file(db_dir)
 end
 
-return db_mt
+return db_mt.new()

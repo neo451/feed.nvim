@@ -2,7 +2,7 @@ local M = require "feed.search"
 local date = require "feed.date"
 local config = require "feed.config"
 config.db_dir = "~/.feed.nvim.test/"
-local db = require("feed.db").new()
+local db = require "feed.db"
 
 local function clear()
    for id, v in db:iter() do

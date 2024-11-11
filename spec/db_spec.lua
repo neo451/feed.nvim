@@ -1,6 +1,6 @@
 local config = require "feed.config"
 config.db_dir = "~/.feed.nvim.test/"
-local db = require("feed.db").new()
+local db = require "feed.db"
 local eq = assert.are.same
 local dir = vim.fs.normalize(config.db_dir)
 

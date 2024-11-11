@@ -1,5 +1,5 @@
 local config = require "feed.config"
-local db = require("feed.db").new()
+local db = require "feed.db"
 local render = require "feed.render"
 local fetch = require "feed.fetch"
 local ut = require "feed.utils"
