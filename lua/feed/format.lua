@@ -12,6 +12,9 @@ local align = ut.align
 ---@param tags string[]
 ---@return string
 function M.tags(tags)
+   if not tags then
+      return "[unread]"
+   end
    tags = vim.tbl_keys(tags)
    if #tags == 0 then
       return ""

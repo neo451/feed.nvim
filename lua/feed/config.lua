@@ -69,7 +69,7 @@ local default = {
    },
 
    search = {
-      default_query = "@6-months-ago +unread #100",
+      default_query = "@6-months-ago +unread",
    },
 
    ---@type feed.feed[]

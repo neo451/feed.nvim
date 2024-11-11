@@ -18,20 +18,13 @@ local config = require "feed.config"
 local function feed()
    local opts = config.integrations.telescope or {}
 
-   local lines = {}
-   local idx_to_id = {}
-   for id, entry in db:iter() do
-      lines[#lines + 1] = format.entry_name(entry)
-      idx_to_id[#idx_to_id + 1] = id
-   end
-
    pickers
       .new(opts, {
          prompt_title = "Feeds",
 
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
-               local db_entry = db.dir .. "/data/" .. idx_to_id[entry.index]
+               local db_entry = db.dir .. "/data/" .. entry.value
                conf.buffer_previewer_maker(db_entry, self.state.bufnr, {
                   bufname = self.state.bufname,
                })
@@ -40,17 +33,31 @@ local function feed()
                vim.treesitter.start(self.state.bufnr, "markdown")
             end,
          },
-         finder = finders.new_table {
-            results = lines,
+         finder = finders.new_dynamic {
+            -- TODO: memoize res, only update query after space?
+            fn = function(query)
+               local res = db:filter(query)
+               return res
+            end,
+            entry_maker = function(line)
+               return {
+                  value = line,
+                  display = function(entry)
+                     local en = db[entry.value]
+                     return format.entry_name(en)
+                  end,
+                  ordinal = line, -- TODO: sort by time
+               }
+            end,
          },
-         attach_mappings = function(prompt_bufnr)
-            actions.select_default:replace(function()
-               actions.close(prompt_bufnr)
-               local selection = action_state.get_selected_entry()
-               render.show_entry { row_idx = selection.index, untag = false }
-            end)
-            return true
-         end,
+         -- attach_mappings = function(prompt_bufnr)
+         --    actions.select_default:replace(function()
+         --       actions.close(prompt_bufnr)
+         --       local selection = action_state.get_selected_entry()
+         --       render.show_entry { row_idx = selection.index, untag = false }
+         --    end)
+         --    return true
+         -- end,
          sorter = conf.generic_sorter(opts),
       })
       :find()

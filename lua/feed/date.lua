@@ -77,12 +77,12 @@ end
 
 ---@param str string
 ---@return feed.date
----@return feed.date
+---@return feed.date?
 local function parse_date_filter(str)
    local sep = string.find(str, "%-%-")
    if not sep then
       str = string.sub(str, 2, #str)
-      return parse_date(str):absolute(), date.today:absolute()
+      return parse_date(str):absolute(), nil
    else
       local start, stop = string.sub(str, 2, sep - 1), string.sub(str, sep + 2, #str)
       return parse_date(start):absolute(), parse_date(stop):absolute()

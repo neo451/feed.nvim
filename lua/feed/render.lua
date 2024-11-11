@@ -84,7 +84,6 @@ function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    og_colorscheme = vim.g.colors_name
    -- og_winbar = vim.wo.winbar
-   M.show_winbar()
    if M.state.indexed_once and not opts.refresh then
       vim.api.nvim_set_current_buf(M.state.index_buf)
       vim.api.nvim_exec_autocmds("User", {
@@ -123,8 +122,7 @@ function M.show_entry(opts)
       M.current_index = row
    end
    if untag then
-      entry.tags.unread = nil
-      db:save_entry(id)
+      db:tag(id, "read")
    end
    local raw_str = db:read_entry(id)
    if raw_str then

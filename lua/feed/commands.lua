@@ -188,8 +188,7 @@ cmds.tag = {
       if not tag or not id then
          return
       end
-      db[id].tags[tag] = true
-      db:save_entry(id)
+      db:tag(id, tag)
       -- render.refresh()
    end,
    context = { index = true, entry = true },
@@ -202,8 +201,7 @@ cmds.untag = {
       if not tag or not id then
          return
       end
-      db[id].tags[tag] = nil
-      db:save_entry(id)
+      db:untag(id, tag)
       -- TODO: re-render line in in index
    end,
    context = { index = true, entry = true },
@@ -315,7 +313,6 @@ cmds.update_feed = {
    complete = function()
       return vim.iter(list_feeds())
          :map(function(v)
-            vim.print(v)
             return v[2] or v[1]
          end)
          :totable()
