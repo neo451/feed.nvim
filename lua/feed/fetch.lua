@@ -81,19 +81,29 @@ function M.update_feed(feed, total)
    end
    fetch(function(res)
       if is_valid(res) then
-         local ok, ast, f_type, lastBuild = pcall(feedparser.parse, res.body, url, lastUpdated)
+         local ok, ret = pcall(feedparser.parse, res.body, url, lastUpdated)
          if ok then
-            if ast and ast.entries then -- TODO: assert check_feed
-               for _, entry in ipairs(ast.entries) do
-                  if tags then
-                     for _, v in ipairs(tags) do
-                        entry.tags[v] = true
+            if ret then -- TODO: assert check_feed
+               local ast, feedtype, lastBuild = ret.ast, ret.feedtype, ret.lastBuild
+               if ast.entries then
+                  for _, entry in ipairs(ast.entries) do
+                     if tags then
+                        for _, v in ipairs(tags) do
+                           entry.tags[v] = true
+                        end
                      end
+                     db:add(entry)
                   end
-                  db:add(entry)
                end
                if not db.feeds[url] then
-                  db.feeds[url] = { htmlUrl = ast.link, title = name or ast.title, text = ast.desc, type = f_type, tags = tags, lastUpdated = lastBuild or tostring(date.today) }
+                  db.feeds[url] = {
+                     htmlUrl = ast.link,
+                     title = ast.title,
+                     text = ast.desc,
+                     type = feedtype,
+                     tags = tags,
+                     lastUpdated = lastBuild or tostring(date.today),
+                  }
                else
                   db.feeds[url].lastUpdated = lastBuild or tostring(date.today)
                end
@@ -101,7 +111,6 @@ function M.update_feed(feed, total)
             end
          else
             db:save_err("fp", url)
-            -- log.info("feedparser err for", url)
          end
       else
          if res.code == 28 then
@@ -109,7 +118,6 @@ function M.update_feed(feed, total)
          else
             db:save_err("response", url)
          end
-         -- log.info("server invalid response err for", url)
       end
       progress.advance(total or 1, name or url)
    end, url, 15)

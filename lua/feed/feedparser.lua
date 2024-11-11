@@ -139,6 +139,9 @@ end
 ---@param entry any
 ---@return string?
 local function handle_rss_link(entry, _) -- TODO: base
+   if entry.enclosure then
+      return entry.enclosure.url
+   end
    local T = type(entry.link)
    if T == "string" then
       return entry.link
@@ -181,15 +184,14 @@ local function reify_entry(entry, feedtype, feed_name, base)
    local res = {}
    if feedtype == "rss" then
       -- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
-      if entry.enclosure then
-         res.link = entry.enclosure.url
-      else
-         res.link = handle_rss_link(entry, base)
-      end
+      res.link = handle_rss_link(entry, base)
       if not res.link then
          return
       end
       res.id = sha(res.link)
+      if db[res.id] then
+         return
+      end
       res.title = handle_rss_entry_title(entry)
       res.time = handle_rss_date(entry)
       res.content = handle_rss_content(entry)
@@ -200,6 +202,9 @@ local function reify_entry(entry, feedtype, feed_name, base)
          return
       end
       res.id = sha(entry.url)
+      if db[res.id] then
+         return -- TODO: test if works, return early if db has id
+      end
       res.title = entry.title
       res.time = date.new_from.json(entry.date_published)
       res.author = feed_name
@@ -210,12 +215,14 @@ local function reify_entry(entry, feedtype, feed_name, base)
          return
       end
       res.id = sha(res.link)
+      if db[res.id] then
+         return
+      end
       res.title = handle_atom_title(entry)
       res.time = handle_atom_date(entry)
       res.author = feed_name
       res.content = handle_atom_content(entry)
    end
-   res.tags = { unread = true }
    res.feed = base
    res.content = format.entry(res, feed_name)
    return res
@@ -309,7 +316,14 @@ local function parse(src, base_uri, lastUpdated, opts)
    end
    if opts.reify then
       local res_or_nil, lastBuild = reify(ast, feedtype, base_uri, lastUpdated)
-      return res_or_nil, feedtype, lastBuild
+      if not res_or_nil then
+         return nil
+      end
+      return {
+         ast = res_or_nil,
+         feedtype = feedtype,
+         lastBuild = lastBuild,
+      }
    end
    return ast, feedtype
 end

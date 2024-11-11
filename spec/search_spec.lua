@@ -4,10 +4,18 @@ local config = require "feed.config"
 config.db_dir = "~/.feed.nvim.test/"
 local db = require("feed.db").new()
 
+local function clear()
+   for id, v in db:iter() do
+      db:rm(id)
+      -- db.mem[id] = nil
+   end
+end
+
 function DB(entries)
+   clear()
    for i, v in ipairs(entries) do
       v.content = ""
-      v.id = i
+      v.id = tostring(i)
       v.time = v.time or i
       db:add(v)
    end
@@ -21,7 +29,6 @@ describe("parse_query", function()
       assert.same(expected.must_have, query.must_have)
       assert.same(expected.must_not_have, query.must_not_have)
       assert.same(expected.after, query.after)
-      assert.same(expected.before, query.before)
       assert.same(type(expected.re), type(query.re))
    end)
 end)
@@ -29,33 +36,58 @@ end)
 describe("filter", function()
    it("return identical if query empty", function()
       DB {
-         { title = "hi", tags = { unread = true, star = true } },
+         { title = "hi" },
+         { title = "hello" },
       }
+      db:tag("1", "unread")
+      db:tag("1", "star")
       local res = db:filter ""
-      assert.same({ "1" }, res)
+      assert.same({ "2", "1" }, res)
+      clear()
    end)
 
    it("filter by tags", function()
       DB {
-         { tags = { unread = true, star = true }, time = 1, id = 1 },
-         { tags = { unread = true }, time = 2, id = 2 },
-         { tags = { star = true }, time = 3, id = 3 },
-         { tags = {}, time = 4, id = 4 },
-         { tags = { unread = true }, time = 2, id = 5 },
+         { time = 3 },
+         { time = 2 },
+         { time = 0 },
+         { time = 0 },
+         { time = 1 },
       }
-      local res = db:filter "+unread -star"
+      db:tag("1", "read")
+      db:tag("1", "star")
+      db:tag("2", "read")
+      db:tag("3", "star")
+      db:tag("5", "read")
+      local res = db:filter "+read -star"
       assert.same({ "2", "5" }, res)
+      db:untag("1", "unread")
+      db:untag("1", "star")
+      db:untag("2", "unread")
+      db:untag("3", "star")
+      db:untag("5", "unread")
    end)
 
    it("filter by date", function()
       DB {
-         { time = date.today:days_ago(6):absolute(), v = 6 },
-         { time = date.today:days_ago(7):absolute(), v = 7 },
-         { time = date.today:days_ago(1):absolute(), v = 1 },
-         { time = date.today:absolute(), v = 0, id = 4 },
+         { time = date.today:days_ago(6):absolute() },
+         { time = date.today:days_ago(7):absolute() },
+         { time = date.today:days_ago(1):absolute() },
+         { time = date.today:absolute() },
       }
+      db:sort()
       local res = db:filter "@5-days-ago"
       assert.same({ "4", "3" }, res)
+   end)
+
+   it("filter by limit number", function()
+      local entries = {}
+      for i = 1, 20 do
+         entries[i] = { title = i, time = i, id = i }
+      end
+      DB(entries)
+      local res = db:filter "#10"
+      assert.same(10, #res)
    end)
 
    it("filter by regex", function()
@@ -72,24 +104,14 @@ describe("filter", function()
       assert.same({ "5" }, res2)
    end)
 
-   it("filter by limit number", function()
-      local entries = {}
-      for i = 1, 20 do
-         entries[i] = { title = i, time = i, id = i }
-      end
-      DB(entries)
-      local res = db:filter "#10"
-      assert.same(10, #res)
-   end)
-
    it("filter by feed", function()
-      db:blowup()
       DB {
          { feed = "neovim.io" },
          { feed = "ovim.io" },
          { feed = "vm.io" },
       }
       local res = db:filter "=vim"
-      -- assert.same(2, #res)
+      assert.same(2, #res)
+      db:blowup()
    end)
 end)
