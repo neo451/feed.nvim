@@ -42,7 +42,7 @@ describe("filter", function()
       db:tag("1", "unread")
       db:tag("1", "star")
       local res = db:filter ""
-      assert.same({ "1", "2" }, res)
+      assert.same({ "2", "1" }, res)
       clear()
    end)
 
