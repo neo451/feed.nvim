@@ -27,6 +27,7 @@ describe("add", function()
          title = "zig",
          content = "zig is a programming language",
          id = "1234567",
+         time = 1,
       }
       db:add(entry)
       entry.content = nil
@@ -43,6 +44,7 @@ describe("iter", function()
          title = "zig",
          content = "zig is a programming language",
          id = "1",
+         time = 1,
       }
 
       local entry2 = {
@@ -51,6 +53,7 @@ describe("iter", function()
          title = "zig",
          content = "zig is a programming language",
          id = "2",
+         time = 2,
       }
       db:add(entry)
       db:add(entry2)

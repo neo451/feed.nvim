@@ -25,11 +25,16 @@ local ensure_path = function(fp, type)
       if not dir_handle:is_dir() then
          dir_handle:mkdir { parents = true }
       end
-   elseif type == "file" then
+   elseif type == "obj" then
       local feeds_path = Path:new(fp)
       if not feeds_path:is_file() then
          feeds_path:touch()
          feeds_path:write("return " .. vim.inspect {}, "w")
+      end
+   elseif type == "file" then
+      local feeds_path = Path:new(fp)
+      if not feeds_path:is_file() then
+         feeds_path:touch()
       end
    end
 end
@@ -42,7 +47,24 @@ local object_dir = db_dir .. "/object/"
 local feeds_fp = db_dir .. "/feeds.lua"
 local log_fp = db_dir .. "/log.lua"
 local tags_fp = db_dir .. "/tags.lua"
-local time_fp = db_dir .. "/time.lua"
+local index_fp = db_dir .. "/index"
+
+local append_time_id = function(time, id)
+   local f = io.open(index_fp, "a")
+   if f then
+      f:write(time .. " " .. id .. "\n")
+      f:close()
+   end
+end
+
+local function parse_index()
+   local res = {}
+   for line in io.lines(index_fp) do
+      local time, id = line:match "(%d+)%s(%S+)"
+      res[#res + 1] = { id, tonumber(time) }
+   end
+   return res
+end
 
 local mem = {}
 ---@return feed.db
@@ -50,20 +72,20 @@ function db_mt.new()
    ensure_path(db_dir, "dir")
    ensure_path(data_dir, "dir")
    ensure_path(object_dir, "dir")
-   ensure_path(feeds_fp, "file")
-   ensure_path(log_fp, "file")
-   ensure_path(tags_fp, "file")
-   ensure_path(time_fp, "file")
+   ensure_path(feeds_fp, "obj")
+   ensure_path(log_fp, "obj")
+   ensure_path(tags_fp, "obj")
+   ensure_path(index_fp, "file")
 
    local feeds = pdofile(feeds_fp)
    local log = pdofile(log_fp)
-   local time = pdofile(time_fp)
+   local index = parse_index()
    local tags = pdofile(tags_fp)
    return setmetatable({
       dir = db_dir,
       feeds = feeds,
       log = log,
-      time = time,
+      index = index,
       tags = tags,
       mem = mem,
    }, db_mt)
@@ -100,9 +122,10 @@ function db_mt:add(entry)
    entry.content = nil
    local id = entry.id
    entry.id = nil
-   table.insert(self.time, { id, entry.time })
+   table.insert(self.index, { id, entry.time })
    -- TODO: sort here?? messure perf
-   save_obj(time_fp, self.time)
+   append_time_id(entry.time, id)
+   -- save_obj(time_fp, self.index)
    save_file(data_dir .. id, content)
    save_obj(object_dir .. id, entry)
 end
@@ -134,15 +157,15 @@ function db_mt:untag(id, tag)
 end
 
 function db_mt:sort()
-   table.sort(self.time, function(a, b)
+   table.sort(self.index, function(a, b)
       return a[2] > b[2]
    end)
 end
 
 function db_mt:rm(id)
-   for i, v in ipairs(self.time) do
+   for i, v in ipairs(self.index) do
       if v[1] == id then
-         table.remove(self.time, i)
+         table.remove(self.index, i)
       end
    end
    mem[id] = nil
@@ -182,7 +205,7 @@ function db_mt:filter(query)
       end
    else
       self:sort()
-      iter = vim.iter(self.time):map(function(v)
+      iter = vim.iter(self.index):map(function(v)
          return v[1], v[2]
       end)
    end
@@ -192,8 +215,8 @@ function db_mt:filter(query)
    end
 
    if q.before then
-      iter:find(function(id)
-         return self[id].time <= q.before
+      iter:find(function(_, time)
+         return time <= q.before
       end)
    end
 
@@ -204,9 +227,9 @@ function db_mt:filter(query)
    end
 
    if q.must_not_have then
-      iter = iter:filter(function(v)
+      iter = iter:filter(function(id)
          for _, tag in ipairs(q.must_not_have) do
-            if self.tags[tag][v] then
+            if self.tags[tag][id] then
                return false
             end
          end
@@ -223,11 +246,11 @@ function db_mt:filter(query)
          for _, reg in ipairs(q.re) do
             local q, rev = build_regex(reg)
             if rev then
-               if q:match_str(self[v].title) then
+               if q:match_str(entry.title) then
                   return false
                end
             else
-               if not q:match_str(self[v].title) then
+               if not q:match_str(entry.title) then
                   return false
                end
             end
@@ -235,6 +258,7 @@ function db_mt:filter(query)
          return true
       end)
    end
+
    if q.feed then
       iter = iter:filter(function(v)
          local re, rev = build_regex(q.feed)
@@ -245,9 +269,9 @@ function db_mt:filter(query)
       end)
    end
 
-   return iter:fold({}, function(acc, id, t)
-      acc[#acc + 1] = id
+   return iter:fold({}, function(acc, id)
       mem[id] = pdofile(object_dir .. id)
+      acc[#acc + 1] = id
       return acc
    end)
 end

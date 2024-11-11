@@ -91,13 +91,29 @@ cmds.export_opml = {
 }
 
 cmds.search = {
-   -- TODO: complete history
    impl = function(query)
-      query = query or ui_input { prompt = "Search: " }
-      if query then
-         render.state.query = query
-         table.insert(render.query_history, query)
+      local function native(q)
+         render.state.query = q
+         table.insert(render.query_history, q)
          render.refresh()
+      end
+      if query then
+         native(query)
+      end
+      local ok = pcall(vim.cmd.Telescope, "feed")
+      if not ok then
+         query = ui_input { prompt = "Search: " }
+         native(query)
+      end
+   end,
+   context = { all = true },
+}
+
+cmds.grep = {
+   impl = function()
+      local ok = pcall(vim.cmd.Telescope, "feed_grep")
+      if not ok then
+         ut.notify("commands", { msg = "need telescope.nvim and rg to grep feeds", level = "INFO" })
       end
    end,
    context = { all = true },
@@ -358,21 +374,6 @@ cmds.prune = {
             db:rm(id)
          end
       end
-   end,
-   context = { all = true },
-}
-
---- **INTEGRATIONS**
-
-cmds.telescope = {
-   impl = function()
-      vim.ui.select({ "find", "grep" }, { prompt = "" }, function(item)
-         if item == "find" then
-            pcall(vim.cmd.Telescope, "feed")
-         elseif item == "grep" then
-            pcall(vim.cmd.Telescope, "feed_grep")
-         end
-      end)
    end,
    context = { all = true },
 }

@@ -34,10 +34,8 @@ local function feed()
             end,
          },
          finder = finders.new_dynamic {
-            -- TODO: memoize res, only update query after space?
             fn = function(query)
-               local res = db:filter(query)
-               return res
+               return db:filter(query)
             end,
             entry_maker = function(line)
                return {
@@ -58,7 +56,6 @@ local function feed()
          --    end)
          --    return true
          -- end,
-         sorter = conf.generic_sorter(opts),
       })
       :find()
 end
