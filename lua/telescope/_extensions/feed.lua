@@ -14,8 +14,11 @@ local db = require "feed.db"
 local render = require "feed.render"
 local format = require "feed.format"
 local config = require "feed.config"
+local cmds = require "feed.commands"
 
 local function feed()
+   cmds._register_autocmds()
+
    local opts = config.integrations.telescope or {}
 
    pickers
@@ -35,27 +38,34 @@ local function feed()
          },
          finder = finders.new_dynamic {
             fn = function(query)
-               return db:filter(query)
+               render.on_display = db:filter(query)
+               return render.on_display
             end,
             entry_maker = function(line)
                return {
                   value = line,
+                  text = format.entry_name(db[line]),
+                  filename = db.dir .. "/data/" .. line,
                   display = function(entry)
-                     local en = db[entry.value]
-                     return format.entry_name(en)
+                     return format.entry_name(db[entry.value])
                   end,
                   ordinal = line, -- TODO: sort by time
                }
             end,
          },
-         -- attach_mappings = function(prompt_bufnr)
-         --    actions.select_default:replace(function()
-         --       actions.close(prompt_bufnr)
-         --       local selection = action_state.get_selected_entry()
-         --       render.show_entry { row_idx = selection.index, untag = false }
-         --    end)
-         --    return true
-         -- end,
+         attach_mappings = function(prompt_bufnr)
+            actions.select_default:replace(function()
+               actions.close(prompt_bufnr)
+               local selection = action_state.get_selected_entry()
+               render.show_entry { row_idx = selection.index }
+            end)
+            actions.send_to_qflist:replace(function()
+               actions.close(prompt_bufnr)
+               render.show_index()
+               vim.cmd "bd"
+            end)
+            return true
+         end,
       })
       :find()
 end

@@ -205,11 +205,11 @@ cmds.tag = {
          return
       end
       db:tag(id, tag)
-      -- render.refresh()
    end,
    context = { index = true, entry = true },
 }
 
+--- TODO: make tag untag dot repeatable, undoable, visual line mode
 cmds.untag = {
    impl = function(tag)
       local _, id = render.get_entry()
@@ -418,94 +418,96 @@ end
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
 
-vim.api.nvim_create_autocmd("User", {
-   pattern = "ShowEntryPost",
-   group = augroup,
-   callback = function(ev)
-      vim.cmd "set cmdheight=0"
-      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-      vim.cmd.colorscheme(config.colorscheme)
-      ut.highlight_entry(ev.buf)
-      local conform_ok, conform = pcall(require, "conform")
-      -- local has_null_ls, null_ls = pcall(require, "null-ls")
-      -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
-      --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
+function cmds._register_autocmds()
+   vim.api.nvim_create_autocmd("User", {
+      pattern = "ShowEntryPost",
+      group = augroup,
+      callback = function(ev)
+         vim.cmd "set cmdheight=0"
+         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         vim.cmd.colorscheme(config.colorscheme)
+         ut.highlight_entry(ev.buf)
+         local conform_ok, conform = pcall(require, "conform")
+         -- local has_null_ls, null_ls = pcall(require, "null-ls")
+         -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
+         --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
 
-      if conform_ok then
-         vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
-         pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-         vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
-         -- elseif null_ls_ok then
-         -- vim.lsp.start({})
-         -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
-      end
-
-      if config.enable_default_keybindings then
-         local function eset(lhs, rhs)
-            vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+         if conform_ok then
+            vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
+            vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
+            -- elseif null_ls_ok then
+            -- vim.lsp.start({})
+            -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
          end
-         eset("b", cmds.show_in_browser)
-         eset("s", cmds.search)
-         eset("y", cmds.link_to_clipboard)
-         eset("+", cmds.tag)
-         eset("-", cmds.untag)
-         eset("q", cmds.quit)
-         eset("u", cmds.urlview)
-         eset("}", cmds.show_next)
-         eset("{", cmds.show_prev)
-         eset("gx", cmds.open_url)
-      end
-      for key, value in pairs(config.options.entry) do
-         pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
-         pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
-      end
-   end,
-})
 
-vim.api.nvim_create_autocmd("User", {
-   pattern = "ShowIndexPost",
-   group = augroup,
-   callback = function(ev)
-      vim.cmd "set cmdheight=0"
-      config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-      vim.cmd.colorscheme(config.colorscheme)
-
-      if config.enable_default_keybindings then
-         local function iset(lhs, rhs)
-            vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+         if config.enable_default_keybindings then
+            local function eset(lhs, rhs)
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+            end
+            eset("b", cmds.show_in_browser)
+            eset("s", cmds.search)
+            eset("y", cmds.link_to_clipboard)
+            eset("+", cmds.tag)
+            eset("-", cmds.untag)
+            eset("q", cmds.quit)
+            eset("r", cmds.urlview)
+            eset("}", cmds.show_next)
+            eset("{", cmds.show_prev)
+            eset("gx", cmds.open_url)
          end
-         iset("<CR>", cmds.show_entry)
-         iset("<M-CR>", cmds.show_in_split)
-         iset("r", cmds.refresh)
-         iset("b", cmds.show_in_browser)
-         iset("s", cmds.search)
-         iset("y", cmds.link_to_clipboard)
-         iset("+", cmds.tag)
-         iset("-", cmds.untag)
-         iset("q", cmds.quit)
-      end
-      for key, value in pairs(config.options.index) do
-         pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
-         pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
-      end
-   end,
-})
+         for key, value in pairs(config.options.entry) do
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+         end
+      end,
+   })
 
-local function restore_state()
-   vim.cmd "set cmdheight=1"
-   vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
+   vim.api.nvim_create_autocmd("User", {
+      pattern = "ShowIndexPost",
+      group = augroup,
+      callback = function(ev)
+         vim.cmd "set cmdheight=0"
+         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         vim.cmd.colorscheme(config.colorscheme)
+
+         if config.enable_default_keybindings then
+            local function iset(lhs, rhs)
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+            end
+            iset("<CR>", cmds.show_entry)
+            iset("<M-CR>", cmds.show_in_split)
+            iset("r", cmds.refresh)
+            iset("b", cmds.show_in_browser)
+            iset("s", cmds.search)
+            iset("y", cmds.link_to_clipboard)
+            iset("+", cmds.tag)
+            iset("-", cmds.untag)
+            iset("q", cmds.quit)
+         end
+         for key, value in pairs(config.options.index) do
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+         end
+      end,
+   })
+
+   local function restore_state()
+      vim.cmd "set cmdheight=1"
+      vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
+   end
+
+   vim.api.nvim_create_autocmd("User", {
+      group = augroup,
+      pattern = "QuitEntryPost",
+      callback = restore_state,
+   })
+
+   vim.api.nvim_create_autocmd("User", {
+      group = augroup,
+      pattern = "QuitIndexPost",
+      callback = restore_state,
+   })
 end
-
-vim.api.nvim_create_autocmd("User", {
-   group = augroup,
-   pattern = "QuitEntryPost",
-   callback = restore_state,
-})
-
-vim.api.nvim_create_autocmd("User", {
-   group = augroup,
-   pattern = "QuitIndexPost",
-   callback = restore_state,
-})
 
 return cmds

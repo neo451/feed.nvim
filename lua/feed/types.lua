@@ -25,6 +25,9 @@
 ---@class feed.db
 ---@field dir string
 ---@field feeds feed.opml
+---@field log table
+---@field index table
+---@field tags table<string, table<string, boolean>>
 ---@field is_stored fun(db: feed.db, id: integer): boolean
 ---@field add fun(db: feed.db, entry: feed.entry)
 ---@field rm fun(db: feed.db, id: integer)
@@ -32,8 +35,10 @@
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field read_entry fun(db: feed.db, id: string): string?
 ---@field save_entry fun(db: feed.db, id: string): boolean
----@field save_err fun(db: feed.db, type: string, url: string): boolean
+---@field save_err fun(db: feed.db, type: string, url: string, mes: string): boolean
 ---@field save_feeds fun(db: feed.db): boolean
+---@field tag fun(db: feed.db, id: string, tag: string)
+---@field untag fun(db: feed.db, id: string, tag: string)
 ---@field blowup fun(db: feed.db)
 
 ---@class feed.entry_opts

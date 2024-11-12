@@ -6,7 +6,7 @@ local format = require "feed.format"
 local urlview = require "feed.urlview"
 local config = require "feed.config"
 
-local og_colorscheme, og_winbar
+local og_colorscheme, og_winbar, og_buffer
 
 local M = {
    on_display = nil,
@@ -123,6 +123,7 @@ function M.show_entry(opts)
    end
    local raw_str = db:read_entry(id)
    if raw_str then
+      -- local lines = vim.split(raw_str, "\n")
       local lines, urls = urlview(vim.split(raw_str, "\n"))
       M.state.urls = urls
       if not M.state.entry_buf then
@@ -185,12 +186,13 @@ function M.quit()
       vim.api.nvim_set_current_buf(M.state.index_buf)
       M.state.in_split = false
    elseif M.state.entry_buf == buf then
+      vim.cmd "bd!"
       M.show_index()
       vim.api.nvim_exec_autocmds("User", {
          pattern = "QuitEntryPost",
       })
    elseif M.state.index_buf == buf then
-      vim.cmd "bp"
+      vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", {
          pattern = "QuitIndexPost",

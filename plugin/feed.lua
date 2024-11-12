@@ -10,6 +10,7 @@ vim.g.loaded_feed = 1
 
 vim.api.nvim_create_user_command("Feed", function(opts)
    local cmds = require "feed.commands"
+   cmds._register_autocmds()
 
    if #opts.fargs == 0 then
       cmds._menu()
@@ -30,7 +31,6 @@ end, {
             :totable()
       end
       if line:match "^['<,'>]*Feed*%s+%w*$" then
-         -- Filter subcommands that match
          local subcommand_keys = cmds._get_item_by_context()
          return vim.iter(subcommand_keys)
             :filter(function(key)

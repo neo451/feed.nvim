@@ -3,6 +3,16 @@ local config = require "feed.config"
 local search = require "feed.search"
 local ut = require "feed.utils"
 
+local db_mt = { __class = "feed.db" }
+local db_dir = vim.fs.normalize(config.db_dir)
+
+local data_dir = db_dir .. "/data/"
+local object_dir = db_dir .. "/object/"
+local feeds_fp = db_dir .. "/feeds.lua"
+local log_fp = db_dir .. "/log.lua"
+local tags_fp = db_dir .. "/tags.lua"
+local index_fp = db_dir .. "/index"
+
 local pdofile = ut.pdofile
 local save_file = ut.save_file
 local save_obj = function(fp, object)
@@ -15,6 +25,12 @@ local remove_file = function(fp)
    else
       vim.fn.delete(fp, "rf")
    end
+end
+
+---@param id string
+---@param obj? table
+local save_entry = function(id, obj)
+   save_obj(object_dir .. id, obj)
 end
 
 local build_regex = search.build_regex
@@ -38,16 +54,6 @@ local ensure_path = function(fp, type)
       end
    end
 end
-
-local db_mt = { __class = "feed.db" }
-local db_dir = vim.fs.normalize(config.db_dir)
-
-local data_dir = db_dir .. "/data/"
-local object_dir = db_dir .. "/object/"
-local feeds_fp = db_dir .. "/feeds.lua"
-local log_fp = db_dir .. "/log.lua"
-local tags_fp = db_dir .. "/tags.lua"
-local index_fp = db_dir .. "/index"
 
 local append_time_id = function(time, id)
    local f = io.open(index_fp, "a")
@@ -77,16 +83,8 @@ function db_mt.new()
    ensure_path(tags_fp, "obj")
    ensure_path(index_fp, "file")
 
-   local feeds = pdofile(feeds_fp)
-   local log = {}
-   local index = parse_index()
-   local tags = pdofile(tags_fp)
    return setmetatable({
       dir = db_dir,
-      feeds = feeds,
-      log = log,
-      index = index,
-      tags = tags,
       mem = mem,
    }, db_mt)
 end
@@ -100,6 +98,30 @@ end
 function db_mt:__index(k)
    if rawget(db_mt, k) then
       return db_mt[k]
+   elseif k == "feeds" then
+      if not rawget(self, k) then
+         local feeds = pdofile(feeds_fp)
+         rawset(self, "feeds", feeds)
+      end
+      return rawget(self, "feeds")
+   elseif k == "index" then
+      if not rawget(self, k) then
+         local index = parse_index()
+         rawset(self, "index", index)
+      end
+      return rawget(self, "index")
+   elseif k == "tags" then
+      if not rawget(self, k) then
+         local tags = pdofile(tags_fp)
+         rawset(self, "tags", tags)
+      end
+      return rawget(self, "tags")
+   elseif k == "log" then
+      if not rawget(self, k) then
+         local log = pdofile(log_fp)
+         rawset(self, "log", log)
+      end
+      return rawget(self, "log")
    else
       local r = mem[k]
       if not r then
@@ -139,7 +161,7 @@ function db_mt:tag(id, tag)
    end
    self[id].tags[tag] = true
    self.tags[tag][id] = true
-   self:save_entry(id)
+   save_entry(id, self[id])
    save_obj(tags_fp, self.tags)
 end
 
@@ -152,7 +174,7 @@ function db_mt:untag(id, tag)
    end
    self[id].tags[tag] = nil
    self.tags[tag][id] = nil
-   self:save_entry(id)
+   save_entry(id, self[id])
    save_obj(tags_fp, self.tags)
 end
 
@@ -280,13 +302,6 @@ end
 ---@return string?
 function db_mt:read_entry(id)
    return read_file(data_dir .. id)
-end
-
----@param id string
----@param obj table
----@return boolean
-function db_mt:save_entry(id, obj)
-   return save_obj(object_dir .. id, obj or self[id])
 end
 
 ---@return boolean

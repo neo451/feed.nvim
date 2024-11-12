@@ -143,6 +143,7 @@ local strings = require "plenary.strings"
 ---@param right_justify boolean
 ---@return string
 function M.align(str, max_len, right_justify)
+   str = str or ""
    right_justify = right_justify or false
    local len = strings.strdisplaywidth(str)
    if len < max_len then
