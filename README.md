@@ -15,7 +15,7 @@
 
 🚧 🚧 🚧
 
-*This project is in beta, many features are incomplete, but is already useable for most feeds, trying out and contributions are welcome!*
+*This project is in beta, many features are incomplete, and database format is prune to breaking changes, but the parser and renderer is already very powerful for most feeds, if you just wanna do some simple reading, this is very useable. Contributions are welcome!*
 
 *see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
 
