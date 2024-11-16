@@ -3,7 +3,6 @@ local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local strings = require "plenary.strings"
 local p_ut = require "feed.parser.utils"
-local html_to_md = p_ut.html_to_md
 local sensible = p_ut.sensible
 
 local function handle_version(ast)
@@ -64,7 +63,7 @@ local function handle_content(entry)
    -- TODO: type of content not relevant?
    local content = sensible(entry["content:encoded"] or entry.description, 1)
    if content then
-      return html_to_md(content)
+      return content
    else
       return "this feed seems to be empty..."
    end

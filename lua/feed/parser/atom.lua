@@ -3,7 +3,6 @@ local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local strings = require "plenary.strings"
 local p_ut = require "feed.parser.utils"
-local html_to_md = p_ut.html_to_md
 local sensible = p_ut.sensible
 
 local function handle_version(ast)
@@ -62,7 +61,7 @@ local function handle_content(entry)
    end
    -- TODO: use urlview to get relative links and resolve
    if content.type == "html" then
-      return html_to_md(content[1])
+      return content[1]
    else
       -- TODO: treedoc power!
       return "xhtml not supported now"

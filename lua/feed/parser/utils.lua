@@ -1,14 +1,4 @@
 local M = {}
-local _treedoc = require "_treedoc"
-
-function M.html_to_md(str)
-   local ok, md = pcall(_treedoc.write, _treedoc.read(str, "html"), "markdown")
-   if ok then
-      return md
-   else
-      return str
-   end
-end
 
 ---@param thing table | string
 ---@param field string | integer

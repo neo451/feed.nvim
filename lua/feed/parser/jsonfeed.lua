@@ -2,7 +2,6 @@ local date = require "feed.parser.date"
 local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local strings = require "plenary.strings"
-local html_to_md = require("feed.parser.utils").html_to_md
 
 local function handle_title(entry)
    if not entry.title then
@@ -18,7 +17,7 @@ local function handle_entry(entry, author, feed_name)
    res.title = handle_title(entry)
    res.time = date.new_from.json(entry.date_published)
    res.author = author
-   res.content = html_to_md(entry.content_html or "")
+   res.content = entry.content_html or ""
    res.feed = feed_name
    return res
 end
