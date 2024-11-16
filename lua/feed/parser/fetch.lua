@@ -57,16 +57,6 @@ local function fetch(cb, url, opts)
 end
 
 local fetch_co = ut.cb_to_co(fetch)
---
--- function M.fetch(cb, url, timeout, etag, last_modified, opts)
---    fetch(function(obj)
---       if obj.status == 301 then
---          fetch(cb, obj.location, timeout, etag, last_modified, opts)
---       else
---          vim.schedule_wrap(cb)(obj)
---       end
---    end, url, timeout, etag, last_modified, opts)
--- end
 
 function M.fetch_co(url, opts)
    local obj = fetch_co(url, opts)
@@ -76,14 +66,4 @@ function M.fetch_co(url, opts)
    return obj
 end
 
--- coroutine.wrap(function()
---    local url = "https://neovim.io/news.xml"
---    -- local url = "http://7400.me/atom.xml"
---    -- local url = "http://blog.cnbang.net/feed/"
---    local obj = M.fetch_co(url)
---    print(obj.etag)
---    local obj2 = M.fetch_co(url, { etag = obj.etag, last_modified = obj.last_modified })
---    print(obj2.status, obj2.body ~= nil)
--- end)()
---
 return M

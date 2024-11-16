@@ -94,6 +94,10 @@ function M.cb_to_co(f)
    return f_co
 end
 
+function M.fire_and_forget(co)
+   coroutine.resume(coroutine.create(co))
+end
+
 function M.pdofile(fp)
    local ok, res = pcall(dofile, fp)
    if ok and res then

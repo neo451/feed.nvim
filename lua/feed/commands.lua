@@ -208,12 +208,17 @@ cmds.link_to_clipboard = {
 
 cmds.tag = {
    impl = function(tag)
-      local _, id = render.get_entry()
+      local entry, id, row = render.get_entry()
       tag = tag or ui_input { prompt = "Tag: " }
       if not tag or not id then
          return
       end
       db:tag(id, tag)
+      local buf = vim.api.nvim_get_current_buf()
+      if buf == render.state.index_buf then
+         render.refresh()
+         --    render.show_line(render.state.index_buf, entry, row)
+      end
    end,
    context = { index = true, entry = true },
 }
@@ -221,13 +226,17 @@ cmds.tag = {
 --- TODO: make tag untag dot repeatable, undoable, visual line mode
 cmds.untag = {
    impl = function(tag)
-      local _, id = render.get_entry()
+      local entry, id, row = render.get_entry()
       tag = tag or ui_input { prompt = "Untag: " }
       if not tag or not id then
          return
       end
       db:untag(id, tag)
-      -- FIXME: re-render line in in index
+      local buf = vim.api.nvim_get_current_buf()
+      if buf == render.state.index_buf then
+         render.refresh()
+         --    render.show_line(render.state.index_buf, entry, row)
+      end
    end,
    context = { index = true, entry = true },
    -- TODO: completion for in-db tags , tags.lua
@@ -440,17 +449,16 @@ function cmds._register_autocmds()
          end
          ut.highlight_entry(ev.buf)
          local conform_ok, conform = pcall(require, "conform")
-         local has_null_ls, null_ls = pcall(require, "null-ls")
-         local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
+         -- local has_null_ls, null_ls = pcall(require, "null-ls")
+         -- local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
 
-         -- if conform_ok then
-         --    vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
-         --    pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-         --    print "formated"
-         --    vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
-         -- elseif null_ls_ok then
-         if null_ls_ok then
-            vim.lsp.buf.format { bufnr = render.state.entry_buf }
+         if conform_ok then
+            vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
+            print "formated"
+            vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
+         else
+            pcall(vim.lsp.buf.format, { bufnr = render.state.entry_buf }) -- TODO:
          end
 
          if config.enable_default_keybindings then

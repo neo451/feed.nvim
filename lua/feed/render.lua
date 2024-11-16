@@ -6,6 +6,7 @@ local format = require "feed.format"
 local urlview = require "feed.urlview"
 local config = require "feed.config"
 local date = require "feed.parser.date"
+local NuiText = require "nui.text"
 
 local og_colorscheme, og_winbar, og_buffer
 
@@ -47,16 +48,6 @@ end
 
 providers.lastUpdated = function() end
 
----@param lines string[]
----@param buf integer
-local function show(lines, buf)
-   vim.bo[buf].modifiable = true
-   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-   vim.api.nvim_set_current_buf(buf)
-end
-
-local NuiText = require "nui.text"
-
 ---@param buf integer
 ---@param text string
 ---@param hi_grp string
@@ -77,6 +68,8 @@ local function show_line(buf, entry, row)
       render_text(buf, v.text, v.color, v.width, row)
    end
 end
+
+M.show_line = show_line
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
@@ -195,8 +188,14 @@ function M.get_entry(opts)
 end
 
 function M.refresh()
-   -- FIXME: clear previous lines
+   -- TODO: remove trailing empty lines?
    M.on_display = db:filter(M.state.query)
+   local len = #vim.api.nvim_buf_get_lines(0, 0, -1, false)
+   vim.bo[M.state.index_buf].modifiable = true
+   for i = 1, len do
+      vim.api.nvim_buf_set_lines(M.state.index_buf, i, i + 1, false, { "" })
+   end
+   vim.bo[M.state.index_buf].modifiable = false
    M.show_index { refresh = true }
 end
 

@@ -67,14 +67,6 @@ end
 function M.parse(url_or_src, opts)
    opts = opts or {}
    if looks_like_url(url_or_src) then
-      -- if opts.callback then
-      --    fetch.fetch(function(obj)
-      --       local res = M.parse_src(obj.body, obj.location)
-      --       obj = vim.tbl_extend("keep", res, obj)
-      --       opts.callback(obj)
-      --    end, url_or_src, opts.timeout or 10, opts.etag, opts.last_modified)
-      -- else
-      -- print(opts.etag)
       local response = fetch.fetch_co(url_or_src, opts) -- TODO:
       local parsed
       if response.body == "" or not response.body then
@@ -83,28 +75,9 @@ function M.parse(url_or_src, opts)
          parsed = M.parse_src(response.body, url_or_src)
       end
       return vim.tbl_extend("keep", response, parsed)
-      -- return vim.tbl_extend("keep", response, parsed)
-      -- end
    else
-      return M.parse_src(url_or_src, opts.url) -- url??
+      return M.parse_src(url_or_src) -- url??
    end
-   return false
 end
-
--- local url = "https://neovim.io/news.xml"
--- -- local function cb(res)
--- --    print(res.status)
--- --    M.parse(url, { callback = cb, etag = res.etag })
--- --    -- print(res.etag, res.last_modified)
--- --    -- vim.print(#res.entries)
--- -- end
--- -- -- local url = "https://www.gcores.com/rss"
--- -- M.parse(url, { callback = cb, etag = 'W/"67200cc2-27ad5"' })
---
--- coroutine.wrap(function()
---    local d = M.parse(url)
---    local d2 = M.parse(url, { etag = d.etag, last_modified = d.last_modified })
---    print(#d2.entries)
--- end)()
 
 return M

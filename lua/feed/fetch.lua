@@ -19,9 +19,18 @@ function M.update_feed(feed, total)
       last_modified = db.feeds[url].last_modified
       etag = db.feeds[url].etag
    end
+   -- TODO: check if new tags from user config? getting to chaotic...
    local d = feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified })
    if not vim.tbl_isempty(d.entries) then
       for _, entry in ipairs(d.entries) do
+         if tags then
+            for i, v in ipairs(tags) do
+               if not entry.tags then
+                  entry.tags = {}
+               end
+               entry.tags[v] = true
+            end
+         end
          db:add(entry)
       end
    end

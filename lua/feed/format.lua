@@ -1,11 +1,8 @@
 local M = {}
 local date = require "feed.parser.date"
 local config = require "feed.config"
-local treedoc = require "treedoc"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
--- local _treedoc = require "_treedoc"
-local conv = require "treedoc.writers.markdown"
 
 local align = ut.align
 
@@ -17,46 +14,11 @@ function M.tags(tags)
    if not tags then
       return "[unread]"
    end
-   tags = vim.tbl_keys(tags)
-   if #tags == 0 then
-      return ""
+   local taglist = vim.tbl_keys(tags)
+   if not tags["read"] then
+      taglist[#taglist + 1] = "unread"
    end
-   local buffer = { "[" }
-   for i, tag in pairs(tags) do
-      buffer[#buffer + 1] = tag
-      if i ~= #tags then
-         buffer[#buffer + 1] = ", "
-      end
-   end
-   buffer[#buffer + 1] = "]"
-   return table.concat(buffer, "")
-end
-
-local function kv(k, v)
-   return string.format("%s: %s", k, v)
-end
-
----@param entry feed.entry
----@param feed_name string
----@return string
-function M.entry(entry, feed_name)
-   local lines = {}
-   lines[#lines + 1] = entry.title and kv("Title", entry.title)
-   lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
-   lines[#lines + 1] = entry.author and kv("Author", entry.author or entry.feed)
-   lines[#lines + 1] = entry.feed and kv("Feed", feed_name)
-   lines[#lines + 1] = entry.link and kv("Link", entry.link)
-   lines[#lines + 1] = ""
-   -- local md = _treedoc.write(_treedoc.read(entry.content, "html"), "markdown")
-   if entry.content then
-      local ok, md = pcall(conv, treedoc.parse("<html>" .. entry.content .. "</html>", { language = "html" })[1])
-      if ok then
-         for line in vim.gsplit(md, "\n") do
-            lines[#lines + 1] = line
-         end
-      end
-   end
-   return table.concat(lines, "\n")
+   return "[" .. table.concat(taglist, ", ") .. "]"
 end
 
 ---return a format info for an entry base on user config

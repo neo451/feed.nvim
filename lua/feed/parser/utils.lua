@@ -1,15 +1,12 @@
 local M = {}
--- local _treedoc = require "_treedoc"
-local treedoc = require "treedoc"
-local conv = require "treedoc.writers.markdown"
+local _treedoc = require "_treedoc"
 
 function M.html_to_md(str)
-   local ok, md = pcall(conv, treedoc.parse("<html>" .. str .. "</html>", { language = "html" })[1])
-   -- local ok, md = pcall(_treedoc.write, _treedoc.read(str, "html"), "markdown")
+   local ok, md = pcall(_treedoc.write, _treedoc.read(str, "html"), "markdown")
    if ok then
       return md
    else
-      -- print "markdown err"
+      return str
    end
 end
 
