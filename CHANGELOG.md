@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.0](https://github.com/neo451/feed.nvim/compare/v1.8.4...v1.9.0) (2024-11-16)
+
+
+### Features
+
+* db + telescope search improvements ([43f7eb7](https://github.com/neo451/feed.nvim/commit/43f7eb72f2076e60588815be152816d7b2ca9ffa))
+* feedparser overhaul, inlcude test suite and http features! ([43f7eb7](https://github.com/neo451/feed.nvim/commit/43f7eb72f2076e60588815be152816d7b2ca9ffa))
+
+
+### Bug Fixes
+
+* better tags, use the new converter ([452983d](https://github.com/neo451/feed.nvim/commit/452983d4910bba2c2fb51a0c933102c175da540b))
+* lazy load db to speed up startuptime, more native telescope ([4113c15](https://github.com/neo451/feed.nvim/commit/4113c157bbccb67056e6c31bbde19954dc135704))
+* save html to local and only convert when render ([05a43d7](https://github.com/neo451/feed.nvim/commit/05a43d7cc7f9fe948eab7f1aa07483f5243c5fe7))
+
 ## [1.8.4](https://github.com/neo451/feed.nvim/compare/v1.8.3...v1.8.4) (2024-11-11)
 
 
