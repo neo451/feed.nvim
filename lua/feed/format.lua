@@ -1,13 +1,15 @@
 local M = {}
-local date = require "feed.date"
+local date = require "feed.parser.date"
 local config = require "feed.config"
 local treedoc = require "treedoc"
-local db = require "feed.db"
+local ut = require "feed.utils"
+local db = ut.require "feed.db"
 -- local _treedoc = require "_treedoc"
 local conv = require "treedoc.writers.markdown"
-local ut = require "feed.utils"
 
 local align = ut.align
+
+-- TODO: this whole module should be user definable
 
 ---@param tags string[]
 ---@return string
@@ -59,7 +61,7 @@ end
 
 ---return a format info for an entry base on user config
 ---@param entry feed.entry
----@param comps table # TODO:
+---@param comps table
 ---@return table
 function M.get_entry_format(entry, comps)
    local acc_width = 0
@@ -84,7 +86,6 @@ function M.get_entry_format(entry, comps)
    return res
 end
 
--- TODO: abstruct and use in rendering
 ---@param entry feed.entry
 ---@return string
 function M.entry_name(entry)

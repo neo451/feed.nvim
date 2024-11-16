@@ -1,5 +1,8 @@
-local m = require "feed.feedparser"
+local m = require "feed.parser"
 local eq = assert.are.same
+local date = require "feed.parser.date"
+local h = require "spec.helpers"
+local is_url = h.is_url
 
 vim.treesitter.language.add("html", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-html/0.0.29-1/parser/html.so",
@@ -12,87 +15,167 @@ vim.treesitter.language.add("xml", {
 local sourced_file = require("plenary.debug_utils").sourced_filepath()
 local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
 
-local function readfile(path)
-   local str = vim.fn.readfile(data_dir .. path)
+local function readfile(path, prefix)
+   prefix = prefix or data_dir
+   local str = vim.fn.readfile(prefix .. path)
    return table.concat(str)
 end
 
-local check_feed = function(ast, ispod)
-   assert.is_string(ast.title)
-   if not ispod then
-      assert.is_string(ast.link)
-   end
+local check_feed = function(ast)
+   assert.is_string(ast.title, "no title")
+   assert.is_string(ast.desc, "not desc")
+   is_url(ast.link)
    assert.is_table(ast.entries)
    for _, v in ipairs(ast.entries) do
-      assert.is_number(v.time)
-      assert.is_string(v.id)
-      assert.is_string(v.title)
-      assert.is_string(v.author)
-      assert.is_string(v.feed)
-      assert.is_string(v.link)
+      if not v.link then
+         vim.print(ast)
+      end
+      is_url(v.link, "no link")
+      assert.is_number(v.time, "no time")
+      assert.is_string(v.id, "no id")
+      assert.is_string(v.title, "no title")
+      assert.is_string(v.author, "no author")
+      assert.is_string(v.feed, "no feed")
    end
+end
+
+local check_feed_minimal = function(ast)
+   -- assert.is_string(ast.title, "no title")
+   assert.is_string(ast.version)
+   assert.is_table(ast.entries)
+end
+
+local dump_date = function(time)
+   return tostring(date.new_from.number(time))
 end
 
 describe("rss", function()
    it("should reify to unified format", function()
-      local str = readfile "rss_real_complex.xml"
-      local res = m.parse(str, "", nil, { reify = true })
-      assert.equal("2024-09-04", res.lastBuild)
-      check_feed(res.ast)
+      local f = m.parse_src(readfile "rss_0.91.xml", "http://placehoder.feed")
+      eq("rss091", f.version)
+      check_feed(f)
 
-      -- str = readfile "rss_atom_tags.xml"
-      -- local ast, t = m.parse(str, "", { reify = true })
-      -- eq(t, "rss")
-      -- check_feed(ast)
+      f = m.parse_src(readfile "rss_2.0.xml", "http://placehoder.feed")
+      eq("rss20", f.version)
+      check_feed(f)
+
+      f = m.parse_src(readfile "rss_0.92.xml", "http://placehoder.feed")
+      eq("rss092", f.version)
+      check_feed(f)
+
+      f = m.parse_src(readfile "rss_ns.xml", "http://placehoder.feed")
+      eq("rss20", f.version)
+      eq("2002-09-04", dump_date(f.entries[1].time))
+      eq("For documentation only", f.desc)
+      eq("Mark Pilgrim (mark@example.org)", f.entries[1].author)
+      check_feed(f)
+
+      f = m.parse_src(readfile "rss_pod.xml", "http://placehoder.feed")
+      eq("rss20", f.version)
+      eq("2024-10-31", dump_date(f.entries[1].time))
+      eq("Kris Jenkins", f.entries[1].author)
+      check_feed(f)
+
+      f = m.parse_src(readfile "rss_atom.xml", "http://placehoder.feed")
+      eq("rss20", f.version)
+      eq("2021-06-14", dump_date(f.entries[1].time))
+      check_feed(f)
    end)
 end)
 
 describe("atom", function()
-   it("should reify to unified format", function()
-      -- TODO: xhtml
-      -- local str = readfile "atom_example.xml"
-      -- local res = m.parse(str, "https://example.org")
-      -- check_feed(res)
+   it("should parse", function()
+      local f = m.parse_src(readfile "atom10.xml", "http://placehoder.feed")
+      eq("atom10", f.version)
+      check_feed(f)
 
-      local str = readfile "atom_example2.xml"
-      local res = m.parse(str, "https://example.org")
-      eq("2024-09-29", res.lastBuild)
-      check_feed(res.ast)
+      f = m.parse_src(readfile "atom03.xml", "http://placehoder.feed")
+      eq("atom03", f.version)
+      check_feed(f)
+
+      f = m.parse_src(readfile "atom_html_content.xml", "http://placehoder.feed")
+      check_feed(f)
    end)
 end)
 
 describe("json", function()
-   it("should reify to unified format", function()
-      local str = readfile "json_example.json"
-      local res = m.parse(str, "")
-      check_feed(res.ast)
-      eq("2020-08-07", res.lastBuild)
+   it("should parse", function()
+      local f = m.parse_src(readfile "json1.json", "http://placehoder.feed")
+      eq("json1", f.version)
+      check_feed(f)
    end)
 end)
 
-describe("pod", function()
-   it("should reify to unified format", function()
-      local str = readfile "pod.xml"
-      local res = m.parse(str, "")
-      check_feed(res.ast, true)
+describe("url resolve", function()
+   it("resolve in atom, fallback to feed link?", function()
+      local src = [[<feed version="0.3">
+<title>Sample Feed</title>
+<tagline>For documentation only</tagline>
+<link rel="alternate" type="text/html" href="index.html"/>
+<entry xml:base="http://example.org/archives/">
+<title>First entry title</title>
+<link rel="alternate" type="text/html" href="000001.html"/>
+<author>
+<name>Mark Pilgrim</name>
+<url>../about/</url>
+<email>mark@example.org</email>
+</author>
+</entry>
+</feed>]]
+      local f = m.parse_src(src, "https://placehoder.feed")
+      eq(f.link, "https://placehoder.feed/index.html")
+      eq(f.entries[1].link, "http://example.org/archives/000001.html")
+
+      src = [[<feed version="0.3" xml:base="https://example.org">
+<title>Sample Feed</title>
+<tagline>For documentation only</tagline>
+<link rel="alternate" type="text/html" href="index.html"/>
+<entry xml:base="http://example.org/archives/">
+<title>First entry title</title>
+<link rel="alternate" type="text/html" href="000001.html"/>
+<author>
+<name>Mark Pilgrim</name>
+<url>../about/</url>
+<email>mark@example.org</email>
+</author>
+</entry>
+</feed>]]
+      f = m.parse_src(src, "https://placehoder.feed")
+      eq(f.link, "https://example.org/index.html")
+      eq(f.entries[1].link, "http://example.org/archives/000001.html")
    end)
 end)
 
-describe("return", function()
-   it("should return nil if lastBuild is same", function()
-      local str = readfile "json_example.json"
-      local res = m.parse(str, "", "2020-08-07")
-      assert.is_nil(res)
+describe("feedparser test suite", function()
+   it("atom", function()
+      for f in vim.fs.dir "./spec/data/atom" do
+         local str = readfile(f, data_dir .. "/atom/")
+         check_feed_minimal(m.parse_src(str, ""))
+      end
+   end)
+   it("rss", function()
+      for f in vim.fs.dir "./spec/data/rss" do
+         if not f:sub(0, 1) == "_" then -- TODO:
+            -- print(f)
+            local str = readfile(f, data_dir .. "/rss/")
+            check_feed_minimal(m.parse_src(str, ""))
+         end
+      end
+   end)
+   it("sanitize", function()
+      for f in vim.fs.dir "./spec/data/sanitize" do
+         if not f:sub(0, 1) == "_" then -- TODO:
+            local str = readfile(f, data_dir .. "/sanitize/") -- TODO: further check
+            check_feed_minimal(m.parse_src(str, ""))
+         end
+      end
+   end)
+   it("xml", function()
+      for f in vim.fs.dir "./spec/data/xml" do
+         if not f:sub(0, 1) == "_" then -- TODO:
+            local str = readfile(f, data_dir .. "/xml/") -- TODO: further check
+            check_feed_minimal(m.parse_src(str, ""))
+         end
+      end
    end)
 end)
-
--- describe("real edge cases", function()
---    it("should", function()
---       local xml = require "feed.xml"
---       local str = readfile "fp4.xml"
---       local res = xml.parse(str, "")
---       -- local res = m.parse(str, "", "2020-08-07", { reify = false })
---       vim.print(res.ast)
---       -- assert.is_nil(res)
---    end)
--- end)

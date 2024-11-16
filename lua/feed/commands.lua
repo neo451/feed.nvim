@@ -1,9 +1,10 @@
 local config = require "feed.config"
-local db = require "feed.db"
+
+local ut = require "feed.utils"
+local db = ut.require "feed.db"
 local render = require "feed.render"
 local fetch = require "feed.fetch"
-local ut = require "feed.utils"
-local opml = require "feed.opml"
+local opml = require "feed.parser.opml"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -42,15 +43,16 @@ local function wrap(f)
    end
 end
 
-cmds.log = {
-   impl = function()
-      local buf = vim.api.nvim_create_buf(false, true)
-      local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
-      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-      vim.api.nvim_set_current_buf(buf)
-   end,
-   context = { all = true },
-}
+-- TODO:
+-- cmds.log = {
+--    impl = function()
+--       local buf = vim.api.nvim_create_buf(false, true)
+--       local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
+--       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+--       vim.api.nvim_set_current_buf(buf)
+--    end,
+--    context = { all = true },
+-- }
 
 cmds.load_opml = {
    impl = function(fp)
@@ -60,15 +62,19 @@ cmds.load_opml = {
          local str = read_file(fp)
          if str then
             local outlines = opml.import(str)
-            for k, v in pairs(outlines) do
-               db.feeds[k] = v
+            if outlines then
+               for k, v in pairs(outlines) do
+                  db.feeds[k] = v
+               end
+            else
+               ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
             end
             db:save_feeds()
          else
-            ut.notify("commands", { msg = "failed to open your opml file", level = "INFO" })
+            ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
          end
       else
-         ut.notify("commands", { msg = "failed to find your opml file", level = "INFO" })
+         ut.notify("opml", { msg = "failed to find your opml file", level = "ERROR" })
       end
    end,
    context = { all = true },
@@ -90,25 +96,28 @@ cmds.export_opml = {
    context = { all = true },
 }
 
+local function native(q)
+   render.state.query = q
+   table.insert(render.query_history, q)
+   render.refresh()
+end
+
 cmds.search = {
    impl = function(query)
-      local function native(q)
-         render.state.query = q
-         table.insert(render.query_history, q)
-         render.refresh()
-      end
       if query then
          native(query)
-      end
-      local ok = pcall(vim.cmd.Telescope, "feed")
-      if not ok then
-         query = ui_input { prompt = "Search: " }
-         native(query)
+      else
+         local ok = pcall(vim.cmd.Telescope, "feed")
+         if not ok then
+            query = ui_input { prompt = "Search: " }
+            native(query)
+         end
       end
    end,
    context = { all = true },
 }
 
+-- TODO: Native one with nui
 cmds.grep = {
    impl = function()
       local ok = pcall(vim.cmd.Telescope, "feed_grep")
@@ -218,32 +227,26 @@ cmds.untag = {
          return
       end
       db:untag(id, tag)
-      -- TODO: re-render line in in index
+      -- FIXME: re-render line in in index
    end,
    context = { index = true, entry = true },
-   -- TODO: completion for in-db tags
-   -- complete =
+   -- TODO: completion for in-db tags , tags.lua
 }
-
---- TODO:
----@param link any
----@return string
-local function resolve_url_from_entry(link)
-   local feed = render.get_entry().feed
-   local root_url = db.feeds[feed].htmlUrl
-   return ut.url_resolve(root_url, link)
-end
 
 cmds.open_url = {
    impl = function()
       vim.cmd.normal "yi["
       local text = vim.fn.getreg "0"
+      print(text)
       local item = vim.iter(render.state.urls):find(function(v)
          return v[1] == text
       end)
       if item then
-         local link = resolve_url_from_entry(item[2])
-         vim.ui.open(link)
+         if not ut.looks_like_url(item[2]) then
+            ut.notify("urlview", { msg = "reletive link resolotion is to be implemented", level = "ERROR" })
+         else
+            vim.ui.open(item[2])
+         end
       end
    end,
    context = { entry = true },
@@ -259,8 +262,11 @@ cmds.urlview = {
          end,
       })
       if item then
-         local link = resolve_url_from_entry(item[2])
-         vim.ui.open(link)
+         if not ut.looks_like_url(item[2]) then
+            ut.notify("urlview", { msg = "reletive link resolotion is to be implemented", level = "ERROR" })
+         else
+            vim.ui.open(item[2])
+         end
       end
    end,
    context = { entry = true },
@@ -283,7 +289,7 @@ cmds.list = {
 cmds.update = {
    impl = function()
       local feedlist = list_feeds()
-      fetch.batch_update_feed(feedlist, 5)
+      fetch.batch_update_feed(feedlist, 100)
    end,
    context = { all = true },
 }
@@ -337,7 +343,7 @@ cmds.update_feed = {
 }
 
 cmds.remove = {
-   -- TODO: use this in completion float win
+   -- TODO: use docstring
    doc = "remove a feed from feedlist, but not its entries",
    impl = function(feed)
       feed = feed or ui_select(list_feeds(), {
@@ -402,8 +408,12 @@ end
 ---@param args string[]
 function cmds._load_command(args)
    local cmd = table.remove(args, 1)
-   local item = cmds[cmd]
-   wrap(item.impl)(unpack(args))
+   if cmds[cmd] then
+      local item = cmds[cmd]
+      wrap(item.impl)(unpack(args))
+   else
+      native(table.concat(args, " "))
+   end
 end
 
 function cmds._menu()
@@ -425,29 +435,30 @@ function cmds._register_autocmds()
       callback = function(ev)
          vim.cmd "set cmdheight=0"
          config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-         vim.cmd.colorscheme(config.colorscheme)
+         if config.colorscheme then
+            vim.cmd.colorscheme(config.colorscheme)
+         end
          ut.highlight_entry(ev.buf)
          local conform_ok, conform = pcall(require, "conform")
-         -- local has_null_ls, null_ls = pcall(require, "null-ls")
-         -- local null_ls_ok = has_null_ls and null_ls.builtins.formatting["markdownfmt"] or
-         --     null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"]
+         local has_null_ls, null_ls = pcall(require, "null-ls")
+         local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
 
-         if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-            vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
-            -- elseif null_ls_ok then
-            -- vim.lsp.start({})
-            -- vim.lsp.buf.format({ bufnr = render.state.entry_buf })
+         -- if conform_ok then
+         --    vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
+         --    pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
+         --    print "formated"
+         --    vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
+         -- elseif null_ls_ok then
+         if null_ls_ok then
+            vim.lsp.buf.format { bufnr = render.state.entry_buf }
          end
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf, noremap = true })
             end
             eset("b", cmds.show_in_browser)
             eset("s", cmds.search)
-            eset("y", cmds.link_to_clipboard)
             eset("+", cmds.tag)
             eset("-", cmds.untag)
             eset("q", cmds.quit)
@@ -469,11 +480,12 @@ function cmds._register_autocmds()
       callback = function(ev)
          vim.cmd "set cmdheight=0"
          config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
-         vim.cmd.colorscheme(config.colorscheme)
-
+         if config.colorscheme then
+            vim.cmd.colorscheme(config.colorscheme)
+         end
          if config.enable_default_keybindings then
             local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf })
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf, noremap = true })
             end
             iset("<CR>", cmds.show_entry)
             iset("<M-CR>", cmds.show_in_split)
@@ -497,11 +509,11 @@ function cmds._register_autocmds()
       vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
    end
 
-   vim.api.nvim_create_autocmd("User", {
-      group = augroup,
-      pattern = "QuitEntryPost",
-      callback = restore_state,
-   })
+   -- vim.api.nvim_create_autocmd("User", {
+   --    group = augroup,
+   --    pattern = "QuitEntryPost",
+   --    callback = restore_state,
+   -- })
 
    vim.api.nvim_create_autocmd("User", {
       group = augroup,

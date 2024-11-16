@@ -1,4 +1,4 @@
-local M = require "feed.opml"
+local M = require "feed.parser.opml"
 
 vim.treesitter.language.add("xml", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",

@@ -9,8 +9,8 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
-
-local db = require "feed.db"
+local ut = require "feed.utils"
+local db = ut.require "feed.db"
 local render = require "feed.render"
 local format = require "feed.format"
 local config = require "feed.config"
@@ -31,13 +31,23 @@ local function feed()
                conf.buffer_previewer_maker(db_entry, self.state.bufnr, {
                   bufname = self.state.bufname,
                })
-               vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
-               vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
-               vim.treesitter.start(self.state.bufnr, "markdown")
+               if type(self.state.winid) ~= "number" then
+                  print(self.state.winid, "here")
+               end
+               if self.state.winid then
+                  vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
+                  vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
+               end
+               if self.state.bufnr then
+                  vim.treesitter.start(self.state.bufnr, "markdown")
+               end
             end,
          },
          finder = finders.new_dynamic {
             fn = function(query)
+               if query == "" or not query then
+                  return {}
+               end
                render.on_display = db:filter(query)
                return render.on_display
             end,
@@ -61,7 +71,7 @@ local function feed()
             end)
             actions.send_to_qflist:replace(function()
                actions.close(prompt_bufnr)
-               render.show_index()
+               render.show_index { refresh = true }
                vim.cmd "bd"
             end)
             return true

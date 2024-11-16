@@ -1,10 +1,11 @@
 -- TODO: grey out the entries just read, only hide after refresh
 
-local db = require "feed.db"
 local ut = require "feed.utils"
+local db = ut.require "feed.db"
 local format = require "feed.format"
 local urlview = require "feed.urlview"
 local config = require "feed.config"
+local date = require "feed.parser.date"
 
 local og_colorscheme, og_winbar, og_buffer
 
@@ -83,6 +84,7 @@ function M.show_index(opts)
    -- og_winbar = vim.wo.winbar
    if M.state.indexed_once and not opts.refresh then
       vim.api.nvim_set_current_buf(M.state.index_buf)
+      M.show_winbar()
       vim.api.nvim_exec_autocmds("User", {
          pattern = "ShowIndexPost",
       })
@@ -107,6 +109,10 @@ function M.show_index(opts)
    })
 end
 
+local function kv(k, v)
+   return string.format("%s: %s", k, v)
+end
+
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
@@ -121,20 +127,34 @@ function M.show_entry(opts)
    if untag then
       db:tag(id, "read")
    end
+   local lines = {}
+
+   lines[#lines + 1] = entry.title and kv("Title", entry.title)
+   lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
+   lines[#lines + 1] = entry.author and kv("Author", entry.author)
+
+   lines[#lines + 1] = entry.feed and kv("Feed", entry.feed)
+   lines[#lines + 1] = entry.link and kv("Link", entry.link)
+   lines[#lines + 1] = ""
+
    local raw_str = db:read_entry(id)
    if raw_str then
+      local entry_lines
       -- local lines = vim.split(raw_str, "\n")
-      local lines, urls = urlview(vim.split(raw_str, "\n"))
-      M.state.urls = urls
-      if not M.state.entry_buf then
-         M.state.entry_buf = vim.api.nvim_create_buf(false, true)
-      end
-      show(lines, M.state.entry_buf)
-      M.show_winbar()
-      vim.api.nvim_exec_autocmds("User", {
-         pattern = "ShowEntryPost",
-      })
+      entry_lines, M.state.urls = urlview(vim.split(raw_str, "\n"))
+      vim.list_extend(lines, entry_lines)
    end
+
+   if not M.state.entry_buf then
+      M.state.entry_buf = vim.api.nvim_create_buf(false, true)
+   end
+   vim.bo[M.state.entry_buf].modifiable = true
+   vim.api.nvim_buf_set_lines(M.state.entry_buf, 0, -1, false, lines)
+   vim.api.nvim_set_current_buf(M.state.entry_buf)
+   M.show_winbar()
+   vim.api.nvim_exec_autocmds("User", {
+      pattern = "ShowEntryPost",
+   })
 end
 
 function M.show_winbar()
@@ -175,6 +195,7 @@ function M.get_entry(opts)
 end
 
 function M.refresh()
+   -- FIXME: clear previous lines
    M.on_display = db:filter(M.state.query)
    M.show_index { refresh = true }
 end

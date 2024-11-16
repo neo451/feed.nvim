@@ -6,7 +6,7 @@ local default = {
    ---@type string
    db_dir = vim.fn.stdpath "data" .. "/feed",
    ---@type string
-   colorscheme = "morning",
+   -- colorscheme = vim.g.colorname,
    ---@type string
    date_format = "%Y-%m-%d",
    ---@type string
@@ -44,7 +44,7 @@ local default = {
       {
          "date",
          width = 10,
-         color = "Pmenu",
+         color = "Directory",
       },
       {
          "feed",

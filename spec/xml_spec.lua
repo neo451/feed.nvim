@@ -1,10 +1,11 @@
-local xml = require "feed.xml"
+local xml = require "feed.parser.xml"
 
 local sourced_file = require("plenary.debug_utils").sourced_filepath()
 local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/outliers/"
 
-local function readfile(path)
-   local str = vim.fn.readfile(data_dir .. path)
+local function readfile(path, pre)
+   pre = pre or data_dir
+   local str = vim.fn.readfile(pre .. path)
    return table.concat(str)
 end
 

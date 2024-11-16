@@ -9,7 +9,8 @@
 ---@field htmlUrl string
 ---@field type feed.type
 ---@field tags? string[]
----@field lastUpdated? string
+---@field lastUpdated? string -- TODO: ???
+---@field entries? feed.entry[]
 
 ---@alias feed.opml table<string, feed.feed>
 
@@ -83,4 +84,4 @@
 ---@field must_not_have? string[] #-
 ---@field feed? string #=
 ---@field limit? number ##
----@field re? string[]
+---@field re? vim.regex[]
