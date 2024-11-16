@@ -1,7 +1,5 @@
 local M = {}
 local URL = require "feed.url"
-local config = require "feed.config"
-local hl = vim.hl or vim.highlight
 
 ---@param buf integer
 ---@param lhs string
@@ -26,18 +24,16 @@ function M.highlight_entry(buf)
    end
 end
 
----@param base_url string | table
----@param url string | table
----@return string
+---@param base_url string
+---@param url string
+---@return string?
 function M.url_resolve(base_url, url)
    if not base_url then
-      if url then
-         return tostring(url)
-      end
+      return url
    end
-   -- if not url then
-   -- print(base_url, url, "!")
-   -- end
+   if not url then
+      return base_url
+   end
    return tostring(URL.resolve(base_url, url))
 end
 
@@ -49,7 +45,7 @@ function M.url_rebase(el, base_uri)
    if not xml_base then
       return base_uri
    end
-   return tostring(M.url_resolve(xml_base, base_uri))
+   return tostring(M.url_resolve(base_uri, xml_base))
 end
 
 ---make sure a table is a list insted of a map
@@ -98,6 +94,10 @@ function M.cb_to_co(f)
    return f_co
 end
 
+function M.fire_and_forget(co)
+   coroutine.resume(coroutine.create(co))
+end
+
 function M.pdofile(fp)
    local ok, res = pcall(dofile, fp)
    if ok and res then
@@ -143,6 +143,7 @@ local strings = require "plenary.strings"
 ---@param right_justify boolean
 ---@return string
 function M.align(str, max_len, right_justify)
+   str = str or ""
    right_justify = right_justify or false
    local len = strings.strdisplaywidth(str)
    if len < max_len then
@@ -171,6 +172,24 @@ function M.comp(name, str, width, grp)
    vim.g["feed_" .. name] = str
    M.append("%#" .. grp .. "#")
    M.append("%-" .. width + 1 .. "." .. width + 1 .. "{g:feed_" .. name .. "}")
+end
+
+function M.looks_like_url(str)
+   local allow = { https = true, http = true }
+   return allow[URL.parse(str).scheme] ~= nil
+end
+
+function M.require(mod)
+   return setmetatable({}, {
+      __index = function(t, key)
+         -- return function(...)
+         if vim.tbl_isempty(t) then
+            t = require(mod)
+         end
+         return t[key]
+         -- end
+      end,
+   })
 end
 
 return M

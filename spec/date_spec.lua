@@ -1,4 +1,4 @@
-local M = require "feed.date"
+local M = require "feed.parser.date"
 
 describe("new_from", function()
    it("should new from rfc3339", function()
