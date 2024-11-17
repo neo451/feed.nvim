@@ -18,18 +18,11 @@ local ui_select = ut.cb_to_co(function(cb, items, opts)
 end)
 
 local function list_feeds()
-   local ret = {}
+   local ret = vim.tbl_keys(db.feeds)
    for _, v in ipairs(config.feeds) do
       local url = type(v) == "table" and v[1] or v
-      local name = type(v) == "table" and v.name or nil
-      local tags = type(v) == "table" and v.tags or nil
       if not db.feeds[url] then
-         ret[#ret + 1] = { url, name, tags }
-      end
-   end
-   for url, v in pairs(db.feeds) do
-      if type(v) == "table" then
-         ret[#ret + 1] = { url, v.title, v.tags }
+         ret[#ret + 1] = url
       end
    end
    return ret
@@ -55,6 +48,7 @@ end
 -- }
 
 cmds.load_opml = {
+   doc = "takes filepath of your opml",
    impl = function(fp)
       fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
       if fp then
@@ -81,6 +75,7 @@ cmds.load_opml = {
 }
 
 cmds.export_opml = {
+   doc = "exports opml to a filepath",
    impl = function(fp)
       fp = fp or ui_input { prompt = "export your opml to: ", completion = "file_in_path" }
       fp = vim.fn.expand(fp)
@@ -97,6 +92,7 @@ cmds.export_opml = {
 }
 
 cmds.search = {
+   doc = "query the database by time, tags or regex",
    impl = function(query)
       local buf = vim.api.nvim_get_current_buf()
       if query then
@@ -119,6 +115,7 @@ cmds.search = {
 
 -- TODO: Native one with nui
 cmds.grep = {
+   doc = "full-text search through the entry contents (experimental)",
    impl = function()
       local ok = pcall(vim.cmd.Telescope, "feed_grep")
       if not ok then
@@ -129,6 +126,7 @@ cmds.grep = {
 }
 
 cmds.refresh = {
+   doc = "re-renders the index buffer",
    impl = function()
       render.refresh {}
    end,
@@ -136,6 +134,7 @@ cmds.refresh = {
 }
 
 cmds.show_in_browser = {
+   doc = "open entry link in browser with vim.ui.open",
    impl = function()
       local entry = render.get_entry()
       if entry then
@@ -150,6 +149,7 @@ cmds.show_in_browser = {
 }
 
 cmds.show_in_split = {
+   doc = "show entry in split",
    impl = function()
       vim.cmd(config.split_cmd)
       render.show_entry()
@@ -159,6 +159,7 @@ cmds.show_in_split = {
 }
 
 cmds.show_entry = {
+   doc = "show entry in new buffer",
    impl = function()
       render.show_entry()
    end,
@@ -166,6 +167,7 @@ cmds.show_entry = {
 }
 
 cmds.show_index = {
+   doc = "show query results in new buffer",
    impl = function()
       render.show_index()
    end,
@@ -173,6 +175,7 @@ cmds.show_index = {
 }
 
 cmds.show_next = {
+   doc = "show next query result",
    impl = function()
       if render.current_index == #render.on_display then
          return
@@ -183,6 +186,7 @@ cmds.show_next = {
 }
 
 cmds.show_prev = {
+   doc = "show previous query result",
    impl = function()
       if render.current_index == 1 then
          return
@@ -193,6 +197,7 @@ cmds.show_prev = {
 }
 
 cmds.quit = {
+   doc = "quit current view",
    impl = function()
       render.quit()
    end,
@@ -200,6 +205,7 @@ cmds.quit = {
 }
 
 cmds.link_to_clipboard = {
+   doc = "yank link to system clipboard",
    impl = function()
       vim.fn.setreg("+", render.get_entry().link)
    end,
@@ -207,6 +213,7 @@ cmds.link_to_clipboard = {
 }
 
 cmds.tag = {
+   doc = "tag an entry",
    impl = function(tag)
       local entry, id, row = render.get_entry()
       tag = tag or ui_input { prompt = "Tag: " }
@@ -225,6 +232,7 @@ cmds.tag = {
 
 --- TODO: make tag untag dot repeatable, undoable, visual line mode
 cmds.untag = {
+   doc = "untag an entry",
    impl = function(tag)
       local entry, id, row = render.get_entry()
       tag = tag or ui_input { prompt = "Untag: " }
@@ -243,6 +251,7 @@ cmds.untag = {
 }
 
 cmds.open_url = {
+   doc = "open url under cursor",
    impl = function()
       vim.cmd.normal "yi["
       local text = vim.fn.getreg "0"
@@ -262,6 +271,7 @@ cmds.open_url = {
 }
 
 cmds.urlview = {
+   doc = "list all links in entry and open selected",
    impl = function()
       local items = render.state.urls
       local item = ui_select(items, {
@@ -282,20 +292,18 @@ cmds.urlview = {
 }
 
 cmds.list = {
+   doc = "list all feeds",
    impl = function()
       local feedlist = list_feeds()
-      for _, v in ipairs(feedlist) do
-         if v[3] then
-            print(v[2], v[1], vim.inspect(v[3]))
-         else
-            print(v[2], v[1])
-         end
+      for _, url in ipairs(feedlist) do
+         print(db.feeds[url] and db.feeds[url].title or url, url, db.feeds[url] and db.feeds[url].tags and vim.inspect(db.feeds[url].tags))
       end
    end,
    context = { all = true },
 }
 
 cmds.update = {
+   doc = "update all feeds",
    impl = function()
       local feedlist = list_feeds()
       fetch.batch_update_feed(feedlist, 100)
@@ -305,94 +313,89 @@ cmds.update = {
 
 ---add a feed to database, currently need to actully fetch the feed to be permanent
 cmds.add_feed = {
+   doc = "add a feed to db",
    impl = function(url, name, tags)
       url = url or ui_input { prompt = "Feed url: " }
       name = name or ui_input { prompt = "Feed name (optional): " }
       tags = tags or ui_input { prompt = "Feed tags (optional, comma seperated): " } -- TODO: auto tags
       if url and url ~= "" then
-         if tags then
-            table.insert(config.feeds, { url, name = name, tags = ut.comma_sp(tags) })
-         elseif name then
-            table.insert(config.feeds, { url, name = name })
-         else
-            table.insert(config.feeds, url)
-         end
+         db.feeds[url] = {
+            title = name == "" and nil or name,
+            tags = tags == "" and nil or ut.comma_sp(tags),
+         }
       end
+      db:save_feeds()
    end,
    context = { all = true },
 }
 
 cmds.update_feed = {
+   doc = "update a feed to db",
    impl = function(name)
       name = name
          or ui_select(list_feeds(), {
             prompt = "Feed to update",
-            format_item = function(item)
-               return item[2] or item[1]
+            format_item = function(url)
+               return db.feeds[url].title or url
             end,
          })
       if not name then
          return
       end
-      if type(name) == "string" then
-         -- TODO: check url or name
-         -- name = { name, name }
-      end
       fetch.update_feed(name, 1)
    end,
 
    complete = function()
-      return vim.iter(list_feeds())
-         :map(function(v)
-            return v[2] or v[1]
-         end)
-         :totable()
+      return list_feeds()
    end,
    context = { all = true },
 }
 
-cmds.remove = {
-   -- TODO: use docstring
-   doc = "remove a feed from feedlist, but not its entries",
-   impl = function(feed)
-      feed = feed or ui_select(list_feeds(), {
-         prompt = "Feed to remove",
-         format_item = function(item)
-            return item[2]
-         end,
-      })
-      if not feed then
-         return
-      end
-      db.feeds[feed[1]] = nil
-      db:save_feeds()
-   end,
-   context = { all = true },
-}
-
-cmds.prune = {
-   doc = "remove a feed from feedlist, and all its entries",
-   impl = function(feed)
-      feed = feed or ui_select(list_feeds(), {
-         prompt = "Feed to remove",
-         format_item = function(item)
-            return item[2]
-         end,
-      })
-      if not feed then
-         return
-      end
-      db.feeds[feed[1]] = nil
-      db:save_feeds()
-      for id, entry in db:iter() do
-         if entry.feed == feed[1] then
-            db:rm(id)
-         end
-      end
-   end,
-   context = { all = true },
-}
-
+-- TODO: wrong
+-- cmds.remove = {
+--    doc = "remove a feed from feedlist, but not its entries",
+--    impl = function(url)
+--       url = url
+--          or ui_select(list_feeds(), {
+--             prompt = "Feed to remove",
+--             format_item = function(item)
+--                return db.feeds[item].title
+--             end,
+--          })
+--       if not url then
+--          return
+--       end
+--       db.feeds[url] = nil
+--       db:save_feeds()
+--    end,
+--    context = { all = true },
+-- }
+--
+-- cmds.prune = {
+--    doc = "remove a feed from feedlist, and all its entries",
+--    impl = function(url)
+--       url = url
+--          or ui_select(list_feeds(), {
+--             prompt = "Feed to remove",
+--             format_item = function(item)
+--                return db.feeds[item].title
+--             end,
+--          })
+--       if not url then
+--          return
+--       end
+--       local title = db.feeds[url].title
+--       db.feeds[url] = nil
+--       db:save_feeds()
+--       for id, entry in db:iter() do
+--          if entry.feed == title then
+--             db:rm(id)
+--          end
+--       end
+--    end,
+--    context = { all = true },
+-- }
+--
 function cmds._get_item_by_context()
    local buf = vim.api.nvim_get_current_buf()
    local choices = vim.iter(vim.tbl_keys(cmds)):filter(function(v)
@@ -430,11 +433,7 @@ function cmds._menu()
    vim.ui.select(items, {
       prompt = "Feed commands",
       format_item = function(item)
-         if cmds[item].doc then
-            return item .. ": " .. cmds[item].doc
-         else
-            return item
-         end
+         return item .. ": " .. cmds[item].doc
       end,
    }, function(choice)
       if choice then

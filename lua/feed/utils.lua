@@ -1,20 +1,12 @@
 local M = {}
-local URL = require "feed.url"
-
----@param buf integer
----@param lhs string
----@param rhs string | function
----@param desc? string
-function M.push_keymap(buf, lhs, rhs, desc)
-   vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true, desc = desc, buffer = buf })
-end
+local URL = require "feed.lib.url"
+local strings = require "plenary.strings"
 
 local feed_ns = vim.api.nvim_create_namespace "feed"
 local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
 local light_grp = vim.api.nvim_get_hl(0, { name = "LineNr" })
 vim.api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
 vim.api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
-M.ns = feed_ns -- TODO: ?
 
 ---@param buf integer
 function M.highlight_entry(buf)
@@ -135,8 +127,6 @@ function M.read_file(path)
    return ret
 end
 
-local strings = require "plenary.strings"
-
 ---porperly align, justify and trucate the title
 ---@param str string
 ---@param max_len integer
@@ -154,10 +144,13 @@ function M.align(str, max_len, right_justify)
 end
 
 function M.comma_sp(str)
+   if not str then
+      return {}
+   end
    return vim.iter(vim.gsplit(str, ",")):fold({}, function(acc, v)
       v = v:gsub("%s", "")
       if v ~= "" then
-         acc[v] = true
+         acc[#acc + 1] = v
       end
       return acc
    end)
@@ -182,12 +175,10 @@ end
 function M.require(mod)
    return setmetatable({}, {
       __index = function(t, key)
-         -- return function(...)
          if vim.tbl_isempty(t) then
             t = require(mod)
          end
          return t[key]
-         -- end
       end,
    })
 end

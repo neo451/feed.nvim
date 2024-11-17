@@ -6,18 +6,14 @@ local progress = require "feed.progress"
 local M = {}
 
 ---fetch xml from source and load them into db
----@param feed table
+---@param url string
 ---@param total integer
-function M.update_feed(feed, total)
-   local url, name, tags, last_modified, etag
-   if type(feed) == "table" then
-      url, name, tags = unpack(feed, 1, 3)
-   elseif type(feed) == "string" then
-      url = feed
-   end
+function M.update_feed(url, total)
+   local tags, last_modified, etag
    if db.feeds[url] then
       last_modified = db.feeds[url].last_modified
       etag = db.feeds[url].etag
+      tags = db.feeds[url].tags
    end
    -- TODO: check if new tags from user config? getting to chaotic...
    local d = feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified })
@@ -38,7 +34,7 @@ function M.update_feed(feed, total)
    db.feeds[d.href].last_modified = d.last_modified
    db.feeds[d.href].etag = d.etag
    db:save_feeds()
-   progress.advance(total or 1, name or url)
+   progress.advance(total, d.title or db.feeds[url] or d.href)
 end
 
 local c = 1

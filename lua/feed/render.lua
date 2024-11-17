@@ -7,13 +7,9 @@ local urlview = require "feed.urlview"
 local config = require "feed.config"
 local date = require "feed.parser.date"
 local NuiText = require "nui.text"
+local entities = require "feed.lib.entities"
+local decode = entities.decode
 
--- local _treedoc = require "_treedoc"
-
--- local function html_to_md(path)
---    local obj = vim.system({ "pandoc", "-f", "html", "-t", "gfm", path }, { text = true }):wait()
---    return obj.stdout
--- end
 local treedoc = require "treedoc"
 local conv = require "treedoc.writers.markdown"
 
@@ -34,7 +30,6 @@ local M = {
    state = {
       query = config.search.default_query,
       in_split = false,
-      -- indexed_once = false,
    },
 }
 
@@ -83,7 +78,7 @@ local function show_line(buf, entry, row)
    vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
    local formats = format.get_entry_format(entry, main_comp)
    for _, v in ipairs(formats) do
-      render_text(buf, v.text, v.color, v.width, row)
+      render_text(buf, decode(v.text) or v.text, v.color, v.width, row)
    end
 end
 
@@ -143,7 +138,7 @@ function M.show_entry(opts)
    end
    local lines = {}
 
-   lines[#lines + 1] = entry.title and kv("Title", entry.title)
+   lines[#lines + 1] = entry.title and kv("Title", decode(entry.title))
    lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
    lines[#lines + 1] = entry.author and kv("Author", entry.author)
 
