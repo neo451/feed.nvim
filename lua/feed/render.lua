@@ -31,7 +31,6 @@ local og_colorscheme, og_winbar, og_buffer
 
 local M = {
    on_display = nil,
-   query_history = {},
    state = {
       query = config.search.default_query,
       in_split = false,
@@ -94,11 +93,20 @@ function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    og_colorscheme = vim.g.colors_name
    -- og_winbar = vim.wo.winbar
-   if not M.on_display then
-      M.on_display = db:filter(M.state.query)
-   end
    if not M.state.index_buf then
       M.state.index_buf = vim.api.nvim_create_buf(false, true)
+   end
+   if opts.refresh then
+      local len = #vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      vim.bo[M.state.index_buf].modifiable = true
+      for i = 1, len do
+         vim.api.nvim_buf_set_lines(M.state.index_buf, i, i + 1, false, { "" })
+      end
+      vim.bo[M.state.index_buf].modifiable = false
+   end
+
+   if not M.on_display then
+      M.on_display = db:filter(M.state.query)
    end
    vim.bo[M.state.index_buf].modifiable = true
    for i, id in ipairs(M.on_display) do
@@ -118,6 +126,10 @@ end
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
+   local buf = opts.buf or vim.api.nvim_create_buf(false, true)
+   if not M.state.entry_buf then
+      M.state.entry_buf = buf
+   end
    local untag = vim.F.if_nil(opts.untag, true)
    local entry, id, row = M.get_entry(opts)
    if not entry or not id then
@@ -147,13 +159,12 @@ function M.show_entry(opts)
       vim.list_extend(lines, entry_lines)
    end
 
-   if not M.state.entry_buf then
-      M.state.entry_buf = vim.api.nvim_create_buf(false, true)
+   vim.bo[buf].modifiable = true
+   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+   if not opts.buf then -- weird but for telescope
+      vim.api.nvim_set_current_buf(buf)
+      M.show_winbar()
    end
-   vim.bo[M.state.entry_buf].modifiable = true
-   vim.api.nvim_buf_set_lines(M.state.entry_buf, 0, -1, false, lines)
-   vim.api.nvim_set_current_buf(M.state.entry_buf)
-   M.show_winbar()
    vim.api.nvim_exec_autocmds("User", {
       pattern = "ShowEntryPost",
    })
@@ -196,15 +207,13 @@ function M.get_entry(opts)
    return db[id], id, row
 end
 
-function M.refresh()
+function M.refresh(opts)
    -- TODO: remove trailing empty lines?
-   M.on_display = db:filter(M.state.query)
-   local len = #vim.api.nvim_buf_get_lines(0, 0, -1, false)
-   vim.bo[M.state.index_buf].modifiable = true
-   for i = 1, len do
-      vim.api.nvim_buf_set_lines(M.state.index_buf, i, i + 1, false, { "" })
+   opts = opts or {}
+   if opts.query then
+      M.state.query = opts.query
    end
-   vim.bo[M.state.index_buf].modifiable = false
+   M.on_display = db:filter(M.state.query)
    M.show_index { refresh = true }
 end
 

@@ -23,15 +23,7 @@ function M.update_feed(feed, total)
    local d = feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified })
    if not vim.tbl_isempty(d.entries) then
       for _, entry in ipairs(d.entries) do
-         if tags then
-            for i, v in ipairs(tags) do
-               if not entry.tags then
-                  entry.tags = {}
-               end
-               entry.tags[v] = true
-            end
-         end
-         db:add(entry)
+         db:add(entry, tags)
       end
    end
    if not db.feeds[d.href] then
@@ -40,7 +32,7 @@ function M.update_feed(feed, total)
          title = d.title,
          text = d.desc,
          type = d.type,
-         -- tags = tags, -- TDOO: feed tags
+         tags = tags, -- TDOO: feed tags
       }
    end
    db.feeds[d.href].last_modified = d.last_modified

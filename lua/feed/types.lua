@@ -30,7 +30,7 @@
 ---@field index table
 ---@field tags table<string, table<string, boolean>>
 ---@field is_stored fun(db: feed.db, id: integer): boolean
----@field add fun(db: feed.db, entry: feed.entry)
+---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
 ---@field rm fun(db: feed.db, id: integer)
 ---@field iter Iter
 ---@field filter fun(db: feed.db, query: string) : string[]
@@ -46,6 +46,7 @@
 ---@field row_idx? integer # will default to cursor row
 ---@field untag? boolean # default true
 ---@field id? string # db_id
+---@field buf? integer # db_id
 
 ---@class feed.render
 ---@field show_index fun(opts: table)

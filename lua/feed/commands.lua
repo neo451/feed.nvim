@@ -96,21 +96,21 @@ cmds.export_opml = {
    context = { all = true },
 }
 
-local function native(q)
-   render.state.query = q
-   table.insert(render.query_history, q)
-   render.refresh()
-end
-
 cmds.search = {
    impl = function(query)
+      local buf = vim.api.nvim_get_current_buf()
       if query then
-         native(query)
+         render.refresh { query = query }
       else
-         local ok = pcall(vim.cmd.Telescope, "feed")
-         if not ok then
+         if buf ~= render.state.index_buf then
+            local ok = pcall(vim.cmd.Telescope, "feed")
+            if not ok then
+               query = ui_input { prompt = "Search: " }
+               render.refresh { query = query }
+            end
+         else
             query = ui_input { prompt = "Search: " }
-            native(query)
+            render.refresh { query = query }
          end
       end
    end,
@@ -130,7 +130,7 @@ cmds.grep = {
 
 cmds.refresh = {
    impl = function()
-      render.refresh()
+      render.refresh {}
    end,
    context = { index = true },
 }
@@ -421,13 +421,22 @@ function cmds._load_command(args)
       local item = cmds[cmd]
       wrap(item.impl)(unpack(args))
    else
-      native(table.concat(args, " "))
+      render.refresh { query = table.concat(args, " ") }
    end
 end
 
 function cmds._menu()
    local items = cmds._get_item_by_context()
-   vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
+   vim.ui.select(items, {
+      prompt = "Feed commands",
+      format_item = function(item)
+         if cmds[item].doc then
+            return item .. ": " .. cmds[item].doc
+         else
+            return item
+         end
+      end,
+   }, function(choice)
       if choice then
          local item = cmds[choice]
          wrap(item.impl)()
@@ -442,12 +451,13 @@ function cmds._register_autocmds()
       pattern = "ShowEntryPost",
       group = augroup,
       callback = function(ev)
+         vim.print(ev)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         -- config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
-         ut.highlight_entry(ev.buf)
+         -- ut.highlight_entry(ev.buf)
          local conform_ok, conform = pcall(require, "conform")
          -- local has_null_ls, null_ls = pcall(require, "null-ls")
          -- local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
@@ -455,10 +465,9 @@ function cmds._register_autocmds()
          if conform_ok then
             vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
             pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-            print "formated"
             vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
          else
-            pcall(vim.lsp.buf.format, { bufnr = render.state.entry_buf }) -- TODO:
+            pcall(vim.lsp.buf.format, { bufnr = ev.buf }) -- TODO:
          end
 
          if config.enable_default_keybindings then
@@ -487,7 +496,7 @@ function cmds._register_autocmds()
       group = augroup,
       callback = function(ev)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         -- config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
