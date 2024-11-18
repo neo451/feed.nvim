@@ -92,13 +92,11 @@ function M.show_index(opts)
    -- og_winbar = vim.wo.winbar
    local buf = M.index and M.index or vim.api.nvim_create_buf(false, true)
    M.index = buf
-   -- if opts.refresh then
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
    vim.bo[buf].modifiable = true
    for i = 1, len do
       vim.api.nvim_buf_set_lines(buf, i, i + 1, false, { "" })
    end
-   -- end
    if not M.on_display then
       M.on_display = db:filter(M.state.query)
    end
@@ -108,9 +106,7 @@ function M.show_index(opts)
    end
    vim.api.nvim_set_current_buf(buf)
    M.show_winbar()
-   vim.api.nvim_exec_autocmds("User", {
-      pattern = "ShowIndexPost",
-   })
+   vim.api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
 local function kv(k, v)
@@ -157,9 +153,7 @@ function M.show_entry(opts)
       vim.api.nvim_set_current_buf(buf)
       M.show_winbar()
    end
-   vim.api.nvim_exec_autocmds("User", {
-      pattern = "ShowEntryPost",
-   })
+   vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 end
 
 function M.show_winbar()
@@ -206,7 +200,7 @@ function M.refresh(opts)
       M.state.query = opts.query
    end
    M.on_display = db:filter(M.state.query)
-   M.show_index { refresh = true }
+   M.show_index {}
 end
 
 function M.quit()
@@ -218,15 +212,11 @@ function M.quit()
    elseif M.entry == buf then
       vim.cmd "bd!"
       M.show_index()
-      vim.api.nvim_exec_autocmds("User", {
-         pattern = "QuitEntryPost",
-      })
+      -- vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    elseif M.index == buf then
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
-      vim.api.nvim_exec_autocmds("User", {
-         pattern = "QuitIndexPost",
-      })
+      vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
    end
 end
 

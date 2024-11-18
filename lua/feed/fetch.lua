@@ -4,47 +4,49 @@ local db = ut.require "feed.db"
 local progress = require "feed.progress"
 
 local M = {}
+local feeds = db.feeds
 
----fetch xml from source and load them into db
 ---@param url string
 ---@param total integer
 function M.update_feed(url, total)
    local tags, last_modified, etag
-   if db.feeds[url] then
-      last_modified = db.feeds[url].last_modified
-      etag = db.feeds[url].etag
-      tags = db.feeds[url].tags
+   if feeds[url] then
+      last_modified = feeds[url].last_modified
+      etag = feeds[url].etag
+      tags = feeds[url].tags
    end
-   -- TODO: check if new tags from user config? getting to chaotic...
    local d = feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified })
    if not vim.tbl_isempty(d.entries) then
       for _, entry in ipairs(d.entries) do
          db:add(entry, tags)
       end
    end
-   db.feeds[d.href].htmlUrl = d.link
-   db.feeds[d.href].title = d.title
-   db.feeds[d.href].text = d.desc
-   db.feeds[d.href].type = d.type
-   db.feeds[d.href].tags = tags -- TDOO: feed tags
-   db.feeds[d.href].last_modified = d.last_modified
-   db.feeds[d.href].etag = d.etag
+   local href = d.href
+   feeds[href].htmlUrl = feeds[href].htmlUrl or d.link
+   feeds[href].title = feeds[href].title or d.title
+   feeds[href].text = feeds[href].text or d.desc
+   feeds[href].type = feeds[href].type or d.type
+   feeds[href].tags = feeds[href].tags or tags -- TDOO: feed tags -- TODO: compare new tgs
+   feeds[href].last_modified = d.last_modified
+   feeds[href].etag = d.etag
    db:save_feeds()
-   progress.advance(total, d.title or db.feeds[url] or d.href)
+   progress.advance(total, d.title or feeds[url].title or d.href)
 end
 
+-- FIX: update twice in one session no response
 local c = 1
-local function batch_update_feed(feeds, size)
+local function batch_update_feed(feedlist, size)
+   -- TODO: progress.new
    for i = c, c + size - 1 do
-      local v = feeds[i]
+      local v = feedlist[i]
       if not v then
          break
       end
-      M.update_feed(v, #feeds)
+      M.update_feed(v, #feedlist)
    end
-   if c < #feeds then
+   if c < #feedlist then
       vim.defer_fn(function()
-         batch_update_feed(feeds, size)
+         batch_update_feed(feedlist, size)
       end, 5000)
    else
       c = 1

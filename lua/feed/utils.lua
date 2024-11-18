@@ -143,19 +143,6 @@ function M.align(str, max_len, right_justify)
    end
 end
 
-function M.comma_sp(str)
-   if not str then
-      return {}
-   end
-   return vim.iter(vim.gsplit(str, ",")):fold({}, function(acc, v)
-      v = v:gsub("%s", "")
-      if v ~= "" then
-         acc[#acc + 1] = v
-      end
-      return acc
-   end)
-end
-
 function M.append(str)
    vim.wo.winbar = vim.wo.winbar .. str
 end

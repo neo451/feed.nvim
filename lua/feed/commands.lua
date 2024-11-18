@@ -4,6 +4,7 @@ local db = ut.require "feed.db"
 local render = require "feed.render"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
+local feeds = db.feeds
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -37,7 +38,7 @@ cmds.load_opml = {
          local outlines = opml.import(str)
          if outlines then
             for k, v in pairs(outlines) do
-               db.feeds[k] = v
+               feeds[k] = v
             end
          else
             ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
@@ -58,7 +59,7 @@ cmds.export_opml = {
       if not fp then
          return
       end
-      local str = opml.export(db.feeds)
+      local str = opml.export(feeds)
       local ok = save_file(fp, str)
       if not ok then
          ut.notify("commands", { msg = "failed to open your expert path", level = "INFO" })
@@ -268,9 +269,8 @@ cmds.urlview = {
 cmds.list = {
    doc = "list all feeds",
    impl = function()
-      local feedlist = vim.tbl_keys(db.feeds)
-      for _, url in ipairs(feedlist) do
-         print(db.feeds[url] and db.feeds[url].title or url, url, db.feeds[url] and db.feeds[url].tags and vim.inspect(db.feeds[url].tags))
+      for _, url in ipairs(vim.tbl_keys(feeds)) do
+         print(feeds[url] and feeds[url].title or url, url, feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
       end
    end,
    context = { all = true },
@@ -279,8 +279,7 @@ cmds.list = {
 cmds.update = {
    doc = "update all feeds",
    impl = function()
-      local feedlist = vim.tbl_keys(db.feeds)
-      fetch.batch_update_feed(feedlist, 100)
+      fetch.batch_update_feed(vim.tbl_keys(feeds), 100)
    end,
    context = { all = true },
 }
@@ -289,10 +288,10 @@ cmds.update_feed = {
    doc = "update a feed to db",
    impl = function(url)
       url = url
-         or ui_select(vim.tbl_keys(db.feeds), {
+         or ui_select(vim.tbl_keys(feeds), {
             prompt = "Feed to update",
             format_item = function(item)
-               return db.feeds[item].title or item
+               return feeds[item].title or item
             end,
          })
       if not url then
@@ -302,26 +301,27 @@ cmds.update_feed = {
    end,
 
    complete = function()
-      return vim.tbl_keys(db.feeds)
+      return vim.tbl_keys(feeds)
    end,
    context = { all = true },
 }
 
+-- TODO:
 cmds.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
    impl = function(url)
       url = url
-         or ui_select(vim.tbl_keys(db.feeds), {
+         or ui_select(vim.tbl_keys(feeds), {
             prompt = "Feed to remove",
             format_item = function(item)
-               return db.feeds[item].title or item
+               return feeds[item].title or item
             end,
          })
       if not url then
          return
       end
-      local title = db.feeds[url].title
-      db.feeds[url] = nil
+      local title = feeds[url].title
+      feeds[url] = nil
       db:save_feeds()
       for id, entry in db:iter() do
          if entry.feed == title then
@@ -354,8 +354,9 @@ function cmds._list_commands()
 end
 
 function cmds._load_command(args)
-   local cmd = table.remove(args, 1)
+   local cmd = args[1]
    if cmds[cmd] then
+      table.remove(args, 1)
       local item = cmds[cmd]
       wrap(item.impl)(unpack(args))
    else
@@ -383,8 +384,8 @@ function cmds._sync_feedlist()
       local url = type(v) == "table" and v[1] or v
       local name = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
-      if not db.feeds[url] then
-         db.feeds[url] = {
+      if not feeds[url] then
+         feeds[url] = {
             title = name,
             tags = tags,
          }
