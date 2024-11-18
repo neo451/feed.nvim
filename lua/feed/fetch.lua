@@ -22,15 +22,11 @@ function M.update_feed(url, total)
          db:add(entry, tags)
       end
    end
-   if not db.feeds[d.href] then
-      db.feeds[d.href] = {
-         htmlUrl = d.link,
-         title = d.title,
-         text = d.desc,
-         type = d.type,
-         tags = tags, -- TDOO: feed tags
-      }
-   end
+   db.feeds[d.href].htmlUrl = d.link
+   db.feeds[d.href].title = d.title
+   db.feeds[d.href].text = d.desc
+   db.feeds[d.href].type = d.type
+   db.feeds[d.href].tags = tags -- TDOO: feed tags
    db.feeds[d.href].last_modified = d.last_modified
    db.feeds[d.href].etag = d.etag
    db:save_feeds()

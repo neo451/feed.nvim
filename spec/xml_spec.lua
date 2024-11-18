@@ -29,17 +29,16 @@ describe("sanitize", function()
 
          ]=]
    end)
+   it("should handle xhtml", function()
+      local src = [[
+<content type="xhtml" xml:base="http://example.org/entry/3" xml:lang="en-US">
+  <div xmlns="http://www.w3.org/1999/xhtml">Watch out for <span style="background: url(javascript:window.location='http://example.org/')"> nasty tricks</span></div>
+</content> ]]
+      local res = xml.parse(src, "")
+      assert.same(
+         [[<div xmlns="http://www.w3.org/1999/xhtml">Watch out for <span style="background: url(javascript:window.location='http://example.org/')"> nasty tricks</span></div>]],
+         res.content[1]
+      )
+      assert.same("xhtml", res.content.type)
+   end)
 end)
-
--- describe("sanitize real bad files", function()
---    it("should do html in rss titles", function()
---       local str = readfile "Web Platform News.xml"
---       local ast = xml.parse(str)
---       assert.equal("The difference between <code>:disabled</code> and <code>[disabled]</code> in CSS", ast.rss.channel.item[2].title)
---    end)
---    it("should do html in rss titles", function()
---       local str = readfile "Bastian Allgeier’s Journal.xml"
---       local ast = xml.parse(str, "Bastian Allgeier’s Journal.xml")
---       -- assert.equal("The difference between <code>:disabled</code> and <code>[disabled]</code> in CSS", ast.rss.channel.item[2].title)
---    end)
--- end)

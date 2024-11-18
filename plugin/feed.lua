@@ -31,7 +31,7 @@ end, {
             :totable()
       end
       if line:match "^['<,'>]*Feed*%s+%w*$" then
-         local subcommand_keys = cmds._get_item_by_context()
+         local subcommand_keys = cmds._list_commands()
          return vim.iter(subcommand_keys)
             :filter(function(key)
                return key:find(arg_lead) ~= nil

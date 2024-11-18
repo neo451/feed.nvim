@@ -27,6 +27,8 @@ local og_colorscheme, og_winbar, og_buffer
 
 local M = {
    on_display = nil,
+   index = nil,
+   entry = nil,
    state = {
       query = config.search.default_query,
       in_split = false,
@@ -88,26 +90,23 @@ function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    og_colorscheme = vim.g.colors_name
    -- og_winbar = vim.wo.winbar
-   if not M.state.index_buf then
-      M.state.index_buf = vim.api.nvim_create_buf(false, true)
+   local buf = M.index and M.index or vim.api.nvim_create_buf(false, true)
+   M.index = buf
+   -- if opts.refresh then
+   local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+   vim.bo[buf].modifiable = true
+   for i = 1, len do
+      vim.api.nvim_buf_set_lines(buf, i, i + 1, false, { "" })
    end
-   if opts.refresh then
-      local len = #vim.api.nvim_buf_get_lines(0, 0, -1, false)
-      vim.bo[M.state.index_buf].modifiable = true
-      for i = 1, len do
-         vim.api.nvim_buf_set_lines(M.state.index_buf, i, i + 1, false, { "" })
-      end
-      vim.bo[M.state.index_buf].modifiable = false
-   end
-
+   -- end
    if not M.on_display then
       M.on_display = db:filter(M.state.query)
    end
-   vim.bo[M.state.index_buf].modifiable = true
+   vim.bo[buf].modifiable = true
    for i, id in ipairs(M.on_display) do
-      show_line(M.state.index_buf, db[id], i)
+      show_line(buf, db[id], i)
    end
-   vim.api.nvim_set_current_buf(M.state.index_buf)
+   vim.api.nvim_set_current_buf(buf)
    M.show_winbar()
    vim.api.nvim_exec_autocmds("User", {
       pattern = "ShowIndexPost",
@@ -121,10 +120,8 @@ end
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
-   local buf = opts.buf or vim.api.nvim_create_buf(false, true)
-   if not M.state.entry_buf then
-      M.state.entry_buf = buf
-   end
+   local buf = opts.buf or M.entry or vim.api.nvim_create_buf(false, true)
+   M.entry = buf
    local untag = vim.F.if_nil(opts.untag, true)
    local entry, id, row = M.get_entry(opts)
    if not entry or not id then
@@ -191,9 +188,9 @@ function M.get_entry(opts)
    local row
    if opts.row_idx then
       row = opts.row_idx
-   elseif buf == M.state.entry_buf or M.state.in_split then
+   elseif buf == M.entry or M.state.in_split then
       row = M.current_index
-   elseif buf == M.state.index_buf then
+   elseif buf == M.index then
       row = ut.get_cursor_row()
    else
       return nil, nil, nil
@@ -216,15 +213,15 @@ function M.quit()
    local buf = vim.api.nvim_get_current_buf()
    if M.state.in_split then
       vim.cmd "q"
-      vim.api.nvim_set_current_buf(M.state.index_buf)
+      vim.api.nvim_set_current_buf(M.index)
       M.state.in_split = false
-   elseif M.state.entry_buf == buf then
+   elseif M.entry == buf then
       vim.cmd "bd!"
       M.show_index()
       vim.api.nvim_exec_autocmds("User", {
          pattern = "QuitEntryPost",
       })
-   elseif M.state.index_buf == buf then
+   elseif M.index == buf then
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", {
