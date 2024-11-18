@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.1](https://github.com/neo451/feed.nvim/compare/v1.9.0...v1.9.1) (2024-11-18)
+
+
+### Bug Fixes
+
+* command line short hand to search with "Feed &lt;query&gt;" ([067b576](https://github.com/neo451/feed.nvim/commit/067b576da2367801d601761593a814018147b9da))
+* correct update feed info behavior ([067b576](https://github.com/neo451/feed.nvim/commit/067b576da2367801d601761593a814018147b9da))
+* **db:** add entry with a list of tags ([d31df0a](https://github.com/neo451/feed.nvim/commit/d31df0aab00f3abc588ee911669a8d25f3e86f2f))
+* **parser:** rss feed dup link ([d31df0a](https://github.com/neo451/feed.nvim/commit/d31df0aab00f3abc588ee911669a8d25f3e86f2f))
+* replace entity in rendering! ([9f2c881](https://github.com/neo451/feed.nvim/commit/9f2c88189ce917a4069da3652ac64289713f0683))
+* **telscope:** preview html as markdown (in progress) ([d31df0a](https://github.com/neo451/feed.nvim/commit/d31df0aab00f3abc588ee911669a8d25f3e86f2f))
+* xhtml sanitize ([6806d35](https://github.com/neo451/feed.nvim/commit/6806d355ee32e69dad8776f97f7358c9ed51adb8))
+
 ## [1.9.0](https://github.com/neo451/feed.nvim/compare/v1.8.4...v1.9.0) (2024-11-16)
 
 
