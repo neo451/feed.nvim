@@ -112,22 +112,11 @@ local function feed_grep()
       previewer = previewers.new_buffer_previewer {
          title = "Feed Grep Preview",
          define_preview = function(self, entry, _)
-            jump_to_line(self, self.state.bufnr, entry)
-
-            local path = db.dir .. "/data/" .. entry.filename
+            render.show_entry { buf = self.state.bufnr, id = entry.filename, untag = false }
             vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
             vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
             vim.treesitter.start(self.state.bufnr, "markdown")
-
-            conf.buffer_previewer_maker(path, self.state.bufnr, {
-               bufname = self.state.bufname,
-               callback = function()
-                  vim.api.nvim_win_set_cursor(self.state.winid, { entry.lnum, entry.col })
-                  vim.schedule(function()
-                     jump_to_line(self, self.state.bufnr, entry)
-                  end)
-               end,
-            })
+            -- TODO: jump the line that match query
          end,
       },
       attach_mappings = function(prompt_bufnr, _)

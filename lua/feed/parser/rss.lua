@@ -38,6 +38,9 @@ local function handle_link(node, feed_url) -- TODO: base and rebase modified for
       return node.link.href
       -- return ut.url_resolve(base, entry.link.href)
    end
+   if type(node.link[1]) == "string" then
+      return node.link[1]
+   end
    for _, v in ipairs(node.link) do
       if v.rel == "alternate" then
          return v.href

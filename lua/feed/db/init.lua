@@ -134,7 +134,8 @@ function db_mt:__index(k)
 end
 
 ---@param entry feed.entry
-function db_mt:add(entry)
+---@param tags string[]?
+function db_mt:add(entry, tags)
    if if_path(entry.id) then
       return
    end
@@ -146,6 +147,11 @@ function db_mt:add(entry)
    append_time_id(entry.time, id)
    save_file(data_dir .. id, content)
    save_obj(object_dir .. id, entry)
+   if tags then
+      for _, tag in ipairs(tags) do
+         self:tag(id, tag)
+      end
+   end
 end
 
 function db_mt:tag(id, tag)

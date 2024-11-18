@@ -7,13 +7,9 @@ local urlview = require "feed.urlview"
 local config = require "feed.config"
 local date = require "feed.parser.date"
 local NuiText = require "nui.text"
+local entities = require "feed.lib.entities"
+local decode = entities.decode
 
--- local _treedoc = require "_treedoc"
-
--- local function html_to_md(path)
---    local obj = vim.system({ "pandoc", "-f", "html", "-t", "gfm", path }, { text = true }):wait()
---    return obj.stdout
--- end
 local treedoc = require "treedoc"
 local conv = require "treedoc.writers.markdown"
 
@@ -31,11 +27,11 @@ local og_colorscheme, og_winbar, og_buffer
 
 local M = {
    on_display = nil,
-   query_history = {},
+   index = nil,
+   entry = nil,
    state = {
       query = config.search.default_query,
       in_split = false,
-      -- indexed_once = false,
    },
 }
 
@@ -84,7 +80,7 @@ local function show_line(buf, entry, row)
    vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
    local formats = format.get_entry_format(entry, main_comp)
    for _, v in ipairs(formats) do
-      render_text(buf, v.text, v.color, v.width, row)
+      render_text(buf, decode(v.text) or v.text, v.color, v.width, row)
    end
 end
 
@@ -94,21 +90,23 @@ function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    og_colorscheme = vim.g.colors_name
    -- og_winbar = vim.wo.winbar
+   local buf = M.index and M.index or vim.api.nvim_create_buf(false, true)
+   M.index = buf
+   local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+   vim.bo[buf].modifiable = true
+   for i = 1, len do
+      vim.api.nvim_buf_set_lines(buf, i, i + 1, false, { "" })
+   end
    if not M.on_display then
       M.on_display = db:filter(M.state.query)
    end
-   if not M.state.index_buf then
-      M.state.index_buf = vim.api.nvim_create_buf(false, true)
-   end
-   vim.bo[M.state.index_buf].modifiable = true
+   vim.bo[buf].modifiable = true
    for i, id in ipairs(M.on_display) do
-      show_line(M.state.index_buf, db[id], i)
+      show_line(buf, db[id], i)
    end
-   vim.api.nvim_set_current_buf(M.state.index_buf)
+   vim.api.nvim_set_current_buf(buf)
    M.show_winbar()
-   vim.api.nvim_exec_autocmds("User", {
-      pattern = "ShowIndexPost",
-   })
+   vim.api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
 local function kv(k, v)
@@ -118,6 +116,8 @@ end
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
+   local buf = opts.buf or M.entry or vim.api.nvim_create_buf(false, true)
+   M.entry = buf
    local untag = vim.F.if_nil(opts.untag, true)
    local entry, id, row = M.get_entry(opts)
    if not entry or not id then
@@ -131,7 +131,7 @@ function M.show_entry(opts)
    end
    local lines = {}
 
-   lines[#lines + 1] = entry.title and kv("Title", entry.title)
+   lines[#lines + 1] = entry.title and kv("Title", decode(entry.title))
    lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
    lines[#lines + 1] = entry.author and kv("Author", entry.author)
 
@@ -147,16 +147,13 @@ function M.show_entry(opts)
       vim.list_extend(lines, entry_lines)
    end
 
-   if not M.state.entry_buf then
-      M.state.entry_buf = vim.api.nvim_create_buf(false, true)
+   vim.bo[buf].modifiable = true
+   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+   if not opts.buf then -- weird but for telescope
+      vim.api.nvim_set_current_buf(buf)
+      M.show_winbar()
    end
-   vim.bo[M.state.entry_buf].modifiable = true
-   vim.api.nvim_buf_set_lines(M.state.entry_buf, 0, -1, false, lines)
-   vim.api.nvim_set_current_buf(M.state.entry_buf)
-   M.show_winbar()
-   vim.api.nvim_exec_autocmds("User", {
-      pattern = "ShowEntryPost",
-   })
+   vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 end
 
 function M.show_winbar()
@@ -185,9 +182,9 @@ function M.get_entry(opts)
    local row
    if opts.row_idx then
       row = opts.row_idx
-   elseif buf == M.state.entry_buf or M.state.in_split then
+   elseif buf == M.entry or M.state.in_split then
       row = M.current_index
-   elseif buf == M.state.index_buf then
+   elseif buf == M.index then
       row = ut.get_cursor_row()
    else
       return nil, nil, nil
@@ -196,36 +193,30 @@ function M.get_entry(opts)
    return db[id], id, row
 end
 
-function M.refresh()
+function M.refresh(opts)
    -- TODO: remove trailing empty lines?
-   M.on_display = db:filter(M.state.query)
-   local len = #vim.api.nvim_buf_get_lines(0, 0, -1, false)
-   vim.bo[M.state.index_buf].modifiable = true
-   for i = 1, len do
-      vim.api.nvim_buf_set_lines(M.state.index_buf, i, i + 1, false, { "" })
+   opts = opts or {}
+   if opts.query then
+      M.state.query = opts.query
    end
-   vim.bo[M.state.index_buf].modifiable = false
-   M.show_index { refresh = true }
+   M.on_display = db:filter(M.state.query)
+   M.show_index {}
 end
 
 function M.quit()
    local buf = vim.api.nvim_get_current_buf()
    if M.state.in_split then
       vim.cmd "q"
-      vim.api.nvim_set_current_buf(M.state.index_buf)
+      vim.api.nvim_set_current_buf(M.index)
       M.state.in_split = false
-   elseif M.state.entry_buf == buf then
+   elseif M.entry == buf then
       vim.cmd "bd!"
       M.show_index()
-      vim.api.nvim_exec_autocmds("User", {
-         pattern = "QuitEntryPost",
-      })
-   elseif M.state.index_buf == buf then
+      -- vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
+   elseif M.index == buf then
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
-      vim.api.nvim_exec_autocmds("User", {
-         pattern = "QuitIndexPost",
-      })
+      vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
    end
 end
 

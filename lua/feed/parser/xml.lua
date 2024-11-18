@@ -1,6 +1,5 @@
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
--- local db = require "feed.db" -- vim.g.feed_debug = true
 
 local M = {}
 
@@ -46,7 +45,7 @@ local r_ENTITIES = {
    { '"', "&quot;" },
 }
 
-local function repl_entity(str)
+local function encode(str)
    for _, v in ipairs(r_ENTITIES) do
       if str:find(v[1]) then
          str = str:gsub(v[1], v[2])
@@ -55,14 +54,18 @@ local function repl_entity(str)
    return str
 end
 
+-- * ((1 - P(tag)) ^ 1) ^ -1
 local function gen_tag_rule(tag)
-   local st = P("<" .. tag .. ">")
+   local st = P "<" * P(tag) * P ">" -- TODO: xhtml
    local et = P("</" .. tag .. ">")
-   local rule = C(st) * ((1 - et) ^ 0 / repl_entity) * C(et)
+   local rule = C(st) * ((1 - et) ^ 0 / encode) * C(et)
    return rule
 end
 
-local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / repl_entity) * lpeg.P "]]>"
+-- TODO: xhtml encode html inside <content type="xhtml" ... >X</content>
+
+local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / encode) * lpeg.P "]]>"
+local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) * C(P "</content>")
 
 local function gen_extract_pat(rule)
    return Ct((C((1 - rule) ^ 0) * rule ^ 1 * C((1 - rule) ^ 0)) ^ 1)
@@ -84,8 +87,16 @@ local rm_cdata = function(str)
    return str
 end
 
+local san_xhtml = function(str)
+   local res = gen_extract_pat(xhtml):match(str)
+   if res and not vim.tbl_isempty(res) then
+      return table.concat(res)
+   end
+   return str
+end
+
 function M.sanitize(str)
-   return rm_text(rm_cdata(str))
+   return san_xhtml(rm_text(rm_cdata(str)))
 end
 
 setmetatable(M, {
@@ -205,7 +216,6 @@ function M.parse(src, url) -- TODO: url resolve ?
    local root = get_root(src, "xml")
    if root:has_error() then
       print "ts error!"
-      -- db:save_err("ts", url)
    else
       local iterator = vim.iter(root:iter_children())
       local collected = iterator:fold({}, function(acc, node)

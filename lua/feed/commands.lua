@@ -1,10 +1,10 @@
 local config = require "feed.config"
-
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
 local render = require "feed.render"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
+local feeds = db.feeds
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -17,24 +17,6 @@ local ui_select = ut.cb_to_co(function(cb, items, opts)
    pcall(vim.ui.select, items, opts, cb)
 end)
 
-local function list_feeds()
-   local ret = {}
-   for _, v in ipairs(config.feeds) do
-      local url = type(v) == "table" and v[1] or v
-      local name = type(v) == "table" and v.name or nil
-      local tags = type(v) == "table" and v.tags or nil
-      if not db.feeds[url] then
-         ret[#ret + 1] = { url, name, tags }
-      end
-   end
-   for url, v in pairs(db.feeds) do
-      if type(v) == "table" then
-         ret[#ret + 1] = { url, v.title, v.tags }
-      end
-   end
-   return ret
-end
-
 local cmds = {}
 
 local function wrap(f)
@@ -43,51 +25,41 @@ local function wrap(f)
    end
 end
 
--- TODO:
--- cmds.log = {
---    impl = function()
---       local buf = vim.api.nvim_create_buf(false, true)
---       local lines = vim.fn.readfile(vim.fn.stdpath "data" .. "/feed.nvim.log")
---       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
---       vim.api.nvim_set_current_buf(buf)
---    end,
---    context = { all = true },
--- }
-
 cmds.load_opml = {
+   doc = "takes filepath of your opml",
    impl = function(fp)
       fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
-      if fp then
-         fp = vim.fn.expand(fp)
-         local str = read_file(fp)
-         if str then
-            local outlines = opml.import(str)
-            if outlines then
-               for k, v in pairs(outlines) do
-                  db.feeds[k] = v
-               end
-            else
-               ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
+      if not fp then
+         return
+      end
+      fp = vim.fn.expand(fp)
+      local str = read_file(fp)
+      if str then
+         local outlines = opml.import(str)
+         if outlines then
+            for k, v in pairs(outlines) do
+               feeds[k] = v
             end
-            db:save_feeds()
          else
-            ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
+            ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
          end
+         db:save_feeds()
       else
-         ut.notify("opml", { msg = "failed to find your opml file", level = "ERROR" })
+         ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
       end
    end,
    context = { all = true },
 }
 
 cmds.export_opml = {
+   doc = "exports opml to a filepath",
    impl = function(fp)
       fp = fp or ui_input { prompt = "export your opml to: ", completion = "file_in_path" }
       fp = vim.fn.expand(fp)
       if not fp then
          return
       end
-      local str = opml.export(db.feeds)
+      local str = opml.export(feeds)
       local ok = save_file(fp, str)
       if not ok then
          ut.notify("commands", { msg = "failed to open your expert path", level = "INFO" })
@@ -96,21 +68,22 @@ cmds.export_opml = {
    context = { all = true },
 }
 
-local function native(q)
-   render.state.query = q
-   table.insert(render.query_history, q)
-   render.refresh()
-end
-
 cmds.search = {
+   doc = "query the database by time, tags or regex",
    impl = function(query)
+      local buf = vim.api.nvim_get_current_buf()
       if query then
-         native(query)
+         render.refresh { query = query }
       else
-         local ok = pcall(vim.cmd.Telescope, "feed")
-         if not ok then
+         if buf ~= render.index then
+            local ok = pcall(vim.cmd.Telescope, "feed")
+            if not ok then
+               query = ui_input { prompt = "Search: " }
+               render.refresh { query = query }
+            end
+         else
             query = ui_input { prompt = "Search: " }
-            native(query)
+            render.refresh { query = query }
          end
       end
    end,
@@ -119,6 +92,7 @@ cmds.search = {
 
 -- TODO: Native one with nui
 cmds.grep = {
+   doc = "full-text search through the entry contents (experimental)",
    impl = function()
       local ok = pcall(vim.cmd.Telescope, "feed_grep")
       if not ok then
@@ -129,13 +103,15 @@ cmds.grep = {
 }
 
 cmds.refresh = {
+   doc = "re-renders the index buffer",
    impl = function()
-      render.refresh()
+      render.refresh {}
    end,
    context = { index = true },
 }
 
 cmds.show_in_browser = {
+   doc = "open entry link in browser with vim.ui.open",
    impl = function()
       local entry = render.get_entry()
       if entry then
@@ -150,6 +126,7 @@ cmds.show_in_browser = {
 }
 
 cmds.show_in_split = {
+   doc = "show entry in split",
    impl = function()
       vim.cmd(config.split_cmd)
       render.show_entry()
@@ -159,6 +136,7 @@ cmds.show_in_split = {
 }
 
 cmds.show_entry = {
+   doc = "show entry in new buffer",
    impl = function()
       render.show_entry()
    end,
@@ -166,6 +144,7 @@ cmds.show_entry = {
 }
 
 cmds.show_index = {
+   doc = "show query results in new buffer",
    impl = function()
       render.show_index()
    end,
@@ -173,6 +152,7 @@ cmds.show_index = {
 }
 
 cmds.show_next = {
+   doc = "show next query result",
    impl = function()
       if render.current_index == #render.on_display then
          return
@@ -183,6 +163,7 @@ cmds.show_next = {
 }
 
 cmds.show_prev = {
+   doc = "show previous query result",
    impl = function()
       if render.current_index == 1 then
          return
@@ -193,6 +174,7 @@ cmds.show_prev = {
 }
 
 cmds.quit = {
+   doc = "quit current view",
    impl = function()
       render.quit()
    end,
@@ -200,6 +182,7 @@ cmds.quit = {
 }
 
 cmds.link_to_clipboard = {
+   doc = "yank link to system clipboard",
    impl = function()
       vim.fn.setreg("+", render.get_entry().link)
    end,
@@ -207,17 +190,17 @@ cmds.link_to_clipboard = {
 }
 
 cmds.tag = {
+   doc = "tag an entry",
    impl = function(tag)
-      local entry, id, row = render.get_entry()
+      local _, id, _ = render.get_entry()
       tag = tag or ui_input { prompt = "Tag: " }
       if not tag or not id then
          return
       end
       db:tag(id, tag)
       local buf = vim.api.nvim_get_current_buf()
-      if buf == render.state.index_buf then
+      if buf == render.index then
          render.refresh()
-         --    render.show_line(render.state.index_buf, entry, row)
       end
    end,
    context = { index = true, entry = true },
@@ -225,17 +208,17 @@ cmds.tag = {
 
 --- TODO: make tag untag dot repeatable, undoable, visual line mode
 cmds.untag = {
+   doc = "untag an entry",
    impl = function(tag)
-      local entry, id, row = render.get_entry()
+      local _, id, _ = render.get_entry()
       tag = tag or ui_input { prompt = "Untag: " }
       if not tag or not id then
          return
       end
       db:untag(id, tag)
       local buf = vim.api.nvim_get_current_buf()
-      if buf == render.state.index_buf then
+      if buf == render.index then
          render.refresh()
-         --    render.show_line(render.state.index_buf, entry, row)
       end
    end,
    context = { index = true, entry = true },
@@ -243,6 +226,7 @@ cmds.untag = {
 }
 
 cmds.open_url = {
+   doc = "open url under cursor",
    impl = function()
       vim.cmd.normal "yi["
       local text = vim.fn.getreg "0"
@@ -262,6 +246,7 @@ cmds.open_url = {
 }
 
 cmds.urlview = {
+   doc = "list all links in entry and open selected",
    impl = function()
       local items = render.state.urls
       local item = ui_select(items, {
@@ -282,110 +267,64 @@ cmds.urlview = {
 }
 
 cmds.list = {
+   doc = "list all feeds",
    impl = function()
-      local feedlist = list_feeds()
-      for _, v in ipairs(feedlist) do
-         if v[3] then
-            print(v[2], v[1], vim.inspect(v[3]))
-         else
-            print(v[2], v[1])
-         end
+      for _, url in ipairs(vim.tbl_keys(feeds)) do
+         print(feeds[url] and feeds[url].title or url, url, feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
       end
    end,
    context = { all = true },
 }
 
 cmds.update = {
+   doc = "update all feeds",
    impl = function()
-      local feedlist = list_feeds()
-      fetch.batch_update_feed(feedlist, 100)
-   end,
-   context = { all = true },
-}
-
----add a feed to database, currently need to actully fetch the feed to be permanent
-cmds.add_feed = {
-   impl = function(url, name, tags)
-      url = url or ui_input { prompt = "Feed url: " }
-      name = name or ui_input { prompt = "Feed name (optional): " }
-      tags = tags or ui_input { prompt = "Feed tags (optional, comma seperated): " } -- TODO: auto tags
-      if url and url ~= "" then
-         if tags then
-            table.insert(config.feeds, { url, name = name, tags = ut.comma_sp(tags) })
-         elseif name then
-            table.insert(config.feeds, { url, name = name })
-         else
-            table.insert(config.feeds, url)
-         end
-      end
+      fetch.batch_update_feed(vim.tbl_keys(feeds), 100)
    end,
    context = { all = true },
 }
 
 cmds.update_feed = {
-   impl = function(name)
-      name = name
-         or ui_select(list_feeds(), {
+   doc = "update a feed to db",
+   impl = function(url)
+      url = url
+         or ui_select(vim.tbl_keys(feeds), {
             prompt = "Feed to update",
             format_item = function(item)
-               return item[2] or item[1]
+               return feeds[item].title or item
             end,
          })
-      if not name then
+      if not url then
          return
       end
-      if type(name) == "string" then
-         -- TODO: check url or name
-         -- name = { name, name }
-      end
-      fetch.update_feed(name, 1)
+      fetch.update_feed(url, 1)
    end,
 
    complete = function()
-      return vim.iter(list_feeds())
-         :map(function(v)
-            return v[2] or v[1]
-         end)
-         :totable()
+      return vim.tbl_keys(feeds)
    end,
    context = { all = true },
 }
 
-cmds.remove = {
-   -- TODO: use docstring
-   doc = "remove a feed from feedlist, but not its entries",
-   impl = function(feed)
-      feed = feed or ui_select(list_feeds(), {
-         prompt = "Feed to remove",
-         format_item = function(item)
-            return item[2]
-         end,
-      })
-      if not feed then
-         return
-      end
-      db.feeds[feed[1]] = nil
-      db:save_feeds()
-   end,
-   context = { all = true },
-}
-
-cmds.prune = {
+-- TODO:
+cmds.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
-   impl = function(feed)
-      feed = feed or ui_select(list_feeds(), {
-         prompt = "Feed to remove",
-         format_item = function(item)
-            return item[2]
-         end,
-      })
-      if not feed then
+   impl = function(url)
+      url = url
+         or ui_select(vim.tbl_keys(feeds), {
+            prompt = "Feed to remove",
+            format_item = function(item)
+               return feeds[item].title or item
+            end,
+         })
+      if not url then
          return
       end
-      db.feeds[feed[1]] = nil
+      local title = feeds[url].title
+      feeds[url] = nil
       db:save_feeds()
       for id, entry in db:iter() do
-         if entry.feed == feed[1] then
+         if entry.feed == title then
             db:rm(id)
          end
       end
@@ -393,16 +332,16 @@ cmds.prune = {
    context = { all = true },
 }
 
-function cmds._get_item_by_context()
+function cmds._list_commands()
    local buf = vim.api.nvim_get_current_buf()
    local choices = vim.iter(vim.tbl_keys(cmds)):filter(function(v)
       return v:sub(0, 1) ~= "_"
    end)
-   if render.state.entry_buf == buf then
+   if render.entry == buf then
       choices = choices:filter(function(v)
          return cmds[v].context.entry or cmds[v].context.all
       end)
-   elseif render.state.index_buf == buf then
+   elseif render.index == buf then
       choices = choices:filter(function(v)
          return cmds[v].context.index or cmds[v].context.all
       end)
@@ -414,25 +353,45 @@ function cmds._get_item_by_context()
    return choices:totable()
 end
 
----@param args string[]
 function cmds._load_command(args)
-   local cmd = table.remove(args, 1)
+   local cmd = args[1]
    if cmds[cmd] then
+      table.remove(args, 1)
       local item = cmds[cmd]
       wrap(item.impl)(unpack(args))
    else
-      native(table.concat(args, " "))
+      render.refresh { query = table.concat(args, " ") }
    end
 end
 
 function cmds._menu()
-   local items = cmds._get_item_by_context()
-   vim.ui.select(items, { prompt = "Feed commands" }, function(choice)
+   local items = cmds._list_commands()
+   vim.ui.select(items, {
+      prompt = "Feed commands",
+      format_item = function(item)
+         return item .. ": " .. cmds[item].doc
+      end,
+   }, function(choice)
       if choice then
          local item = cmds[choice]
          wrap(item.impl)()
       end
    end)
+end
+
+function cmds._sync_feedlist()
+   for _, v in ipairs(config.feeds) do
+      local url = type(v) == "table" and v[1] or v
+      local name = type(v) == "table" and v.name or nil
+      local tags = type(v) == "table" and v.tags or nil
+      if not feeds[url] then
+         feeds[url] = {
+            title = name,
+            tags = tags,
+         }
+      end
+   end
+   db:save_feeds()
 end
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
@@ -441,29 +400,28 @@ function cmds._register_autocmds()
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
-      callback = function(ev)
+      callback = function(_)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
-         ut.highlight_entry(ev.buf)
+         ut.highlight_entry(render.entry)
          local conform_ok, conform = pcall(require, "conform")
          -- local has_null_ls, null_ls = pcall(require, "null-ls")
          -- local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
 
          if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = ev.buf })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = ev.buf })
-            print "formated"
-            vim.api.nvim_set_option_value("modifiable", false, { buf = ev.buf })
+            vim.api.nvim_set_option_value("modifiable", true, { buf = render.entry })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
+            vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
          else
-            pcall(vim.lsp.buf.format, { bufnr = render.state.entry_buf }) -- TODO:
+            pcall(vim.lsp.buf.format, { bufnr = render.entry }) -- TODO:
          end
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf, noremap = true })
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.entry, noremap = true })
             end
             eset("b", cmds.show_in_browser)
             eset("s", cmds.search)
@@ -476,7 +434,7 @@ function cmds._register_autocmds()
             eset("gx", cmds.open_url)
          end
          for key, value in pairs(config.options.entry) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.entry })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
       end,
@@ -485,15 +443,15 @@ function cmds._register_autocmds()
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowIndexPost",
       group = augroup,
-      callback = function(ev)
+      callback = function(_)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.state.index_buf, entry = render.state.entry_buf }
+         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
          if config.enable_default_keybindings then
             local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = ev.buf, noremap = true })
+               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.index, noremap = true })
             end
             iset("<CR>", cmds.show_entry)
             iset("<M-CR>", cmds.show_in_split)
@@ -506,7 +464,7 @@ function cmds._register_autocmds()
             iset("q", cmds.quit)
          end
          for key, value in pairs(config.options.index) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = ev.buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.index })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
       end,

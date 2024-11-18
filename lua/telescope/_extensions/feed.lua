@@ -27,20 +27,10 @@ local function feed()
 
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
-               local db_entry = db.dir .. "/data/" .. entry.value
-               conf.buffer_previewer_maker(db_entry, self.state.bufnr, {
-                  bufname = self.state.bufname,
-               })
-               if type(self.state.winid) ~= "number" then
-                  print(self.state.winid, "here")
-               end
-               if self.state.winid then
-                  vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
-                  vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
-               end
-               if self.state.bufnr then
-                  vim.treesitter.start(self.state.bufnr, "markdown")
-               end
+               render.show_entry { buf = self.state.bufnr, id = entry.value, untag = false }
+               vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
+               vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
+               vim.treesitter.start(self.state.bufnr, "markdown")
             end,
          },
          finder = finders.new_dynamic {
