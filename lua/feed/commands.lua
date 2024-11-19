@@ -27,7 +27,7 @@ end
 
 cmds.load_opml = {
    doc = "takes filepath of your opml",
-   impl = function(fp)
+   impl = wrap(function(fp)
       fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
       if not fp then
          return
@@ -47,13 +47,13 @@ cmds.load_opml = {
       else
          ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
       end
-   end,
+   end),
    context = { all = true },
 }
 
 cmds.export_opml = {
    doc = "exports opml to a filepath",
-   impl = function(fp)
+   impl = wrap(function(fp)
       fp = fp or ui_input { prompt = "export your opml to: ", completion = "file_in_path" }
       fp = vim.fn.expand(fp)
       if not fp then
@@ -64,13 +64,13 @@ cmds.export_opml = {
       if not ok then
          ut.notify("commands", { msg = "failed to open your expert path", level = "INFO" })
       end
-   end,
+   end),
    context = { all = true },
 }
 
 cmds.search = {
    doc = "query the database by time, tags or regex",
-   impl = function(query)
+   impl = wrap(function(query)
       local buf = vim.api.nvim_get_current_buf()
       if query then
          render.refresh { query = query }
@@ -86,7 +86,7 @@ cmds.search = {
             render.refresh { query = query }
          end
       end
-   end,
+   end),
    context = { all = true },
 }
 
@@ -120,6 +120,8 @@ cmds.show_in_browser = {
             cmds.untag.impl "unread"
             vim.ui.open(link)
          end
+      else
+         ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
       end
    end,
    context = { index = true, entry = true },
@@ -145,9 +147,7 @@ cmds.show_entry = {
 
 cmds.show_index = {
    doc = "show query results in new buffer",
-   impl = function()
-      render.show_index()
-   end,
+   impl = render.show_index,
    context = { all = true },
 }
 
@@ -175,9 +175,7 @@ cmds.show_prev = {
 
 cmds.quit = {
    doc = "quit current view",
-   impl = function()
-      render.quit()
-   end,
+   impl = render.quit,
    context = { entry = true, index = true },
 }
 
@@ -191,7 +189,7 @@ cmds.link_to_clipboard = {
 
 cmds.tag = {
    doc = "tag an entry",
-   impl = function(tag)
+   impl = wrap(function(tag)
       local _, id, _ = render.get_entry()
       tag = tag or ui_input { prompt = "Tag: " }
       if not tag or not id then
@@ -202,14 +200,14 @@ cmds.tag = {
       if buf == render.index then
          render.refresh()
       end
-   end,
+   end),
    context = { index = true, entry = true },
 }
 
 --- TODO: make tag untag dot repeatable, undoable, visual line mode
 cmds.untag = {
    doc = "untag an entry",
-   impl = function(tag)
+   impl = wrap(function(tag)
       local _, id, _ = render.get_entry()
       tag = tag or ui_input { prompt = "Untag: " }
       if not tag or not id then
@@ -220,17 +218,16 @@ cmds.untag = {
       if buf == render.index then
          render.refresh()
       end
-   end,
+   end),
    context = { index = true, entry = true },
    -- TODO: completion for in-db tags , tags.lua
 }
 
 cmds.open_url = {
    doc = "open url under cursor",
-   impl = function()
+   impl = wrap(function()
       vim.cmd.normal "yi["
       local text = vim.fn.getreg "0"
-      print(text)
       local item = vim.iter(render.state.urls):find(function(v)
          return v[1] == text
       end)
@@ -241,13 +238,13 @@ cmds.open_url = {
             vim.ui.open(item[2])
          end
       end
-   end,
+   end),
    context = { entry = true },
 }
 
 cmds.urlview = {
    doc = "list all links in entry and open selected",
-   impl = function()
+   impl = wrap(function()
       local items = render.state.urls
       local item = ui_select(items, {
          prompt = "urlview",
@@ -262,7 +259,7 @@ cmds.urlview = {
             vim.ui.open(item[2])
          end
       end
-   end,
+   end),
    context = { entry = true },
 }
 
@@ -279,14 +276,14 @@ cmds.list = {
 cmds.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.batch_update_feed(vim.tbl_keys(feeds), 100)
+      fetch.update_feeds(vim.tbl_keys(feeds), 10)
    end,
    context = { all = true },
 }
 
 cmds.update_feed = {
    doc = "update a feed to db",
-   impl = function(url)
+   impl = wrap(function(url)
       url = url
          or ui_select(vim.tbl_keys(feeds), {
             prompt = "Feed to update",
@@ -298,7 +295,7 @@ cmds.update_feed = {
          return
       end
       fetch.update_feed(url, 1)
-   end,
+   end),
 
    complete = function()
       return vim.tbl_keys(feeds)
@@ -309,7 +306,7 @@ cmds.update_feed = {
 -- TODO:
 cmds.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
-   impl = function(url)
+   impl = wrap(function(url)
       url = url
          or ui_select(vim.tbl_keys(feeds), {
             prompt = "Feed to remove",
@@ -328,7 +325,7 @@ cmds.prune_feed = {
             db:rm(id)
          end
       end
-   end,
+   end),
    context = { all = true },
 }
 
@@ -358,7 +355,7 @@ function cmds._load_command(args)
    if cmds[cmd] then
       table.remove(args, 1)
       local item = cmds[cmd]
-      wrap(item.impl)(unpack(args))
+      item.impl(unpack(args))
    else
       render.refresh { query = table.concat(args, " ") }
    end
@@ -374,7 +371,7 @@ function cmds._menu()
    }, function(choice)
       if choice then
          local item = cmds[choice]
-         wrap(item.impl)()
+         item.impl()
       end
    end)
 end
@@ -421,7 +418,7 @@ function cmds._register_autocmds()
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.entry, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.entry, noremap = true })
             end
             eset("b", cmds.show_in_browser)
             eset("s", cmds.search)
@@ -451,7 +448,7 @@ function cmds._register_autocmds()
          end
          if config.enable_default_keybindings then
             local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, wrap(rhs.impl), { buffer = render.index, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.index, noremap = true })
             end
             iset("<CR>", cmds.show_entry)
             iset("<M-CR>", cmds.show_in_split)

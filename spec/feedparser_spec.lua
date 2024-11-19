@@ -3,6 +3,7 @@ local eq = assert.are.same
 local date = require "feed.parser.date"
 local h = require "spec.helpers"
 local is_url = h.is_url
+local readfile = h.readfile
 
 vim.treesitter.language.add("html", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-html/0.0.29-1/parser/html.so",
@@ -11,15 +12,6 @@ vim.treesitter.language.add("html", {
 vim.treesitter.language.add("xml", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
 })
-
-local sourced_file = require("plenary.debug_utils").sourced_filepath()
-local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
-
-local function readfile(path, prefix)
-   prefix = prefix or data_dir
-   local str = vim.fn.readfile(prefix .. path)
-   return table.concat(str)
-end
 
 local check_feed = function(ast)
    assert.is_string(ast.title, "no title")
@@ -108,7 +100,9 @@ end)
 
 describe("url resolve", function()
    it("resolve in atom, fallback to feed link?", function()
-      local src = [[<feed version="0.3">
+      local src = [[
+<?xml version="1.0" encoding="utf-8"?>
+<feed version="0.3">
 <title>Sample Feed</title>
 <tagline>For documentation only</tagline>
 <link rel="alternate" type="text/html" href="index.html"/>
@@ -126,7 +120,8 @@ describe("url resolve", function()
       eq(f.link, "https://placehoder.feed/index.html")
       eq(f.entries[1].link, "http://example.org/archives/000001.html")
 
-      src = [[<feed version="0.3" xml:base="https://example.org">
+      src = [[ <?xml version="1.0" encoding="utf-8"?>
+<feed version="0.3" xml:base="https://example.org">
 <title>Sample Feed</title>
 <tagline>For documentation only</tagline>
 <link rel="alternate" type="text/html" href="index.html"/>
@@ -149,15 +144,14 @@ end)
 describe("feedparser test suite", function()
    it("atom", function()
       for f in vim.fs.dir "./spec/data/atom" do
-         local str = readfile(f, data_dir .. "/atom/")
+         local str = readfile(f, "./spec/data/atom/")
          check_feed_minimal(m.parse_src(str, ""))
       end
    end)
    it("rss", function()
       for f in vim.fs.dir "./spec/data/rss" do
          if not f:sub(0, 1) == "_" then -- TODO:
-            -- print(f)
-            local str = readfile(f, data_dir .. "/rss/")
+            local str = readfile(f, "./spec/data/rss/")
             check_feed_minimal(m.parse_src(str, ""))
          end
       end
@@ -165,7 +159,7 @@ describe("feedparser test suite", function()
    it("sanitize", function()
       for f in vim.fs.dir "./spec/data/sanitize" do
          if not f:sub(0, 1) == "_" then -- TODO:
-            local str = readfile(f, data_dir .. "/sanitize/") -- TODO: further check
+            local str = readfile(f, "./spec/data/sanitize/") -- TODO: further check
             check_feed_minimal(m.parse_src(str, ""))
          end
       end
@@ -173,9 +167,14 @@ describe("feedparser test suite", function()
    it("xml", function()
       for f in vim.fs.dir "./spec/data/xml" do
          if not f:sub(0, 1) == "_" then -- TODO:
-            local str = readfile(f, data_dir .. "/xml/") -- TODO: further check
+            local str = readfile(f, "./spec/data/xml/") -- TODO: further check
             check_feed_minimal(m.parse_src(str, ""))
          end
       end
    end)
+end)
+
+describe("reject encodings that neovim can not handle", function()
+   local d = m.parse_src(readfile("encoding.xml", "./spec/outliers/"), "")
+   eq("gb2312", d.encoding)
 end)

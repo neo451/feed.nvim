@@ -4,12 +4,13 @@
 ---@alias feed.type "rss" | "atom" | "json"
 
 ---@class feed.feed
----@field title string
----@field text string
----@field htmlUrl string
----@field type feed.type
+---@field title? string
+---@field text? string
+---@field htmlUrl? string
+---@field type? feed.type
 ---@field tags? string[]
----@field lastUpdated? string -- TODO: ???
+---@field last_modified? string
+---@field etag? string
 ---@field entries? feed.entry[]
 
 ---@alias feed.opml table<string, feed.feed>

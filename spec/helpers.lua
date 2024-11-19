@@ -34,4 +34,14 @@ function mod.is_url(str, mes)
    assert(looks_like_url(str) == true, mes)
 end
 
+local sourced_file = require("plenary.debug_utils").sourced_filepath()
+local dir = vim.fn.fnamemodify(sourced_file, ":h")
+local data_dir = dir .. "/data/"
+
+function mod.readfile(path, prefix)
+   prefix = prefix or data_dir
+   local str = vim.fn.readfile(prefix .. path)
+   return table.concat(str)
+end
+
 return mod

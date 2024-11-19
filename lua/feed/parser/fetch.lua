@@ -11,8 +11,10 @@ local function parse_header(data)
    local res = {}
    for _, line in ipairs(headers) do
       local k, v = string.match(line, "([%w-]+):%s+(.+)")
-      k = string.lower(k):gsub("-", "_")
-      res[k] = v
+      k = k and string.lower(k):gsub("-", "_")
+      if k then
+         res[k] = v
+      end
    end
    return res, status
 end

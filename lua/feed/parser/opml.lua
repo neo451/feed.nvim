@@ -14,20 +14,24 @@ local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
 ---@param t table
 ---@return string
 local function format_outline(t, xmlUrl)
-   return format(outline_format, t.text, t.title, t.type, xmlUrl, t.htmlUrl)
+   return format(outline_format, t.text or t.title, t.title, t.type or "rss", xmlUrl, t.htmlUrl)
 end
 
 ---@param src string
 ---@return feed.opml?
 function M.import(src)
-   local ast = xml.parse(src, "")
-   if ast then
+   local ok, ast = pcall(xml.parse, src, "")
+   if ok and ast then
       local outline = ast.opml.body.outline
       local ret = {}
       outline = ut.listify(outline)
       for _, v in ipairs(outline) do
          if v.xmlUrl then
             local url = v.xmlUrl
+            if v.text == v.title then
+               v.text = nil -- if same then use fetched info later
+            end
+            v.type = nil
             v.xmlUrl = nil
             ret[url] = v
          end

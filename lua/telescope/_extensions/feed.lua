@@ -25,6 +25,7 @@ local function feed()
       .new(opts, {
          prompt_title = "Feeds",
 
+         -- FIX: weird upper part rendering
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
                render.show_entry { buf = self.state.bufnr, id = entry.value, untag = false }

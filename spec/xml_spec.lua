@@ -30,7 +30,7 @@ describe("sanitize", function()
          ]=]
    end)
    it("should handle xhtml", function()
-      local src = [[
+      local src = [[<?xml version="1.0" encoding="utf-8"?>
 <content type="xhtml" xml:base="http://example.org/entry/3" xml:lang="en-US">
   <div xmlns="http://www.w3.org/1999/xhtml">Watch out for <span style="background: url(javascript:window.location='http://example.org/')"> nasty tricks</span></div>
 </content> ]]

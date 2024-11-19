@@ -44,18 +44,24 @@ end
 
 function M.parse_src(src, url)
    src = src:gsub("\n", "")
+   local ret
    if is_json(src) then
-      return handle_json(vim.json.decode(src), url)
+      ret = handle_json(vim.json.decode(src), url)
+      ret.encoding = ret.encoding or "utf-8"
+      return ret
    else
       local raw_ast = xml.parse(src, url)
       if raw_ast then
          if raw_ast.rss or raw_ast["rdf"] then -- TODO: rdf
-            return handle_rss(raw_ast, url)
+            ret = handle_rss(raw_ast, url)
+            ret.encoding = raw_ast.encoding or "utf-8"
          elseif raw_ast.feed then
-            return handle_atom(raw_ast, url)
+            ret = handle_atom(raw_ast, url)
+            ret.encoding = raw_ast.encoding or "utf-8"
          else
             error "unknown feedtype"
          end
+         return ret
       end
    end
 end
@@ -63,7 +69,7 @@ end
 ---parse feed fetch from source
 ---@param url_or_src string
 ---@param opts? feed.parser_opts
----@return table | boolean
+---@return table
 function M.parse(url_or_src, opts)
    opts = opts or {}
    if looks_like_url(url_or_src) then
@@ -76,7 +82,7 @@ function M.parse(url_or_src, opts)
       end
       return vim.tbl_extend("keep", response, parsed)
    else
-      return M.parse_src(url_or_src) -- url??
+      return M.parse_src(url_or_src)
    end
 end
 

@@ -110,6 +110,26 @@ setmetatable(M, {
    end,
 })
 
+M.XMLDecl = function(node, src)
+   local res = {}
+   for child in node:iter_children() do
+      if child:type() == "EncName" then
+         res.encoding = get_text(child, src)
+      end
+   end
+   return res
+end
+
+M.prolog = function(node, src)
+   local res = {}
+   for child in node:iter_children() do
+      if child:type() == "XMLDecl" then
+         res = M.XMLDecl(child, src)
+      end
+   end
+   return res
+end
+
 ---@param node TSNode
 ---@param src string
 ---@return string
@@ -222,7 +242,10 @@ function M.parse(src, url) -- TODO: url resolve ?
          acc[#acc + 1] = M[node:type()](node, src)
          return acc
       end)
-      return collected[1]
+      if collected[1].encoding then
+         collected[2].encoding = collected[1].encoding
+      end
+      return collected[2]
    end
 end
 

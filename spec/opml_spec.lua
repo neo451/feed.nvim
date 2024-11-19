@@ -1,4 +1,6 @@
 local M = require "feed.parser.opml"
+local h = require "spec.helpers"
+local readfile = h.readfile
 
 vim.treesitter.language.add("xml", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
@@ -28,14 +30,6 @@ describe("opml obj", function()
       assert.same(feeds, feeds2)
    end)
 end)
-
-local sourced_file = require("plenary.debug_utils").sourced_filepath()
-local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/data/"
-
-local function readfile(path)
-   local str = vim.fn.readfile(data_dir .. path)
-   return table.concat(str)
-end
 
 describe("real", function()
    it("should import and export real opml", function()
