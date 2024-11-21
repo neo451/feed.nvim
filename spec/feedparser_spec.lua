@@ -175,6 +175,6 @@ describe("feedparser test suite", function()
 end)
 
 describe("reject encodings that neovim can not handle", function()
-   local d = m.parse_src(readfile("encoding.xml", "./spec/outliers/"), "")
+   local d = m.parse_src(readfile("encoding.xml", "./spec/data/"), "")
    eq("gb2312", d.encoding)
 end)
