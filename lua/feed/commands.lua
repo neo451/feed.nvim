@@ -8,27 +8,30 @@ local feeds = db.feeds
 
 local read_file = ut.read_file
 local save_file = ut.save_file
-
-local ui_input = ut.cb_to_co(function(cb, opts)
-   pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
-end)
-
-local ui_select = ut.cb_to_co(function(cb, items, opts)
-   pcall(vim.ui.select, items, opts, cb)
-end)
+local wrap = ut.wrap
+local input = ut.input
+local select = ut.select
 
 local cmds = {}
 
-local function wrap(f)
-   return function(...)
-      coroutine.wrap(f)(...)
-   end
-end
+cmds.log = {
+   doc = "show log",
+   impl = function()
+      local str = read_file(vim.fn.stdpath "data" .. "/feed.nvim.log")
+      if str then
+         local buf = vim.api.nvim_create_buf(false, true)
+         vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(str, "\n"))
+         vim.api.nvim_set_current_buf(buf)
+         vim.keymap.set("n", "q", "<cmd>bd<cr>", { buffer = buf })
+      end
+   end,
+   context = { all = true },
+}
 
 cmds.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
-      fp = fp or ui_input { prompt = "path to your opml: ", completion = "file_in_path" }
+      fp = fp or input { prompt = "path to your opml: ", completion = "file_in_path" }
       if not fp then
          return
       end
@@ -54,7 +57,7 @@ cmds.load_opml = {
 cmds.export_opml = {
    doc = "exports opml to a filepath",
    impl = wrap(function(fp)
-      fp = fp or ui_input { prompt = "export your opml to: ", completion = "file_in_path" }
+      fp = fp or input { prompt = "export your opml to: ", completion = "file_in_path" }
       fp = vim.fn.expand(fp)
       if not fp then
          return
@@ -78,11 +81,11 @@ cmds.search = {
          if buf ~= render.index then
             local ok = pcall(vim.cmd.Telescope, "feed")
             if not ok then
-               query = ui_input { prompt = "Search: " }
+               query = input { prompt = "Search: " }
                render.refresh { query = query }
             end
          else
-            query = ui_input { prompt = "Search: " }
+            query = input { prompt = "Search: " }
             render.refresh { query = query }
          end
       end
@@ -191,7 +194,7 @@ cmds.tag = {
    doc = "tag an entry",
    impl = wrap(function(tag)
       local _, id, _ = render.get_entry()
-      tag = tag or ui_input { prompt = "Tag: " }
+      tag = tag or input { prompt = "Tag: " }
       if not tag or not id then
          return
       end
@@ -209,7 +212,7 @@ cmds.untag = {
    doc = "untag an entry",
    impl = wrap(function(tag)
       local _, id, _ = render.get_entry()
-      tag = tag or ui_input { prompt = "Untag: " }
+      tag = tag or input { prompt = "Untag: " }
       if not tag or not id then
          return
       end
@@ -246,7 +249,7 @@ cmds.urlview = {
    doc = "list all links in entry and open selected",
    impl = wrap(function()
       local items = render.state.urls
-      local item = ui_select(items, {
+      local item = select(items, {
          prompt = "urlview",
          format_item = function(item)
             return item[1]
@@ -285,7 +288,7 @@ cmds.update_feed = {
    doc = "update a feed to db",
    impl = wrap(function(url)
       url = url
-         or ui_select(vim.tbl_keys(feeds), {
+         or select(vim.tbl_keys(feeds), {
             prompt = "Feed to update",
             format_item = function(item)
                return feeds[item].title or item
@@ -308,7 +311,7 @@ cmds.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
    impl = wrap(function(url)
       url = url
-         or ui_select(vim.tbl_keys(feeds), {
+         or select(vim.tbl_keys(feeds), {
             prompt = "Feed to remove",
             format_item = function(item)
                return feeds[item].title or item

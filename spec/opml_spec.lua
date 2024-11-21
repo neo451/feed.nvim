@@ -1,6 +1,7 @@
 local M = require "feed.parser.opml"
 local h = require "spec.helpers"
 local readfile = h.readfile
+local xml = require "feed.parser.xml"
 
 vim.treesitter.language.add("xml", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
@@ -29,14 +30,23 @@ describe("opml obj", function()
       assert.equal(str, str2)
       assert.same(feeds, feeds2)
    end)
+
+   it("should do nested opml", function()
+      local str = readfile "opml_web.xml"
+      local feeds = M.import(str)
+      assert(feeds)
+      assert.same({ "frontend", "test_nested" }, feeds["http://gruntjs.com/rss"].tag)
+   end)
 end)
 
 describe("real", function()
    it("should import and export real opml", function()
-      local str = readfile "opml_example.opml"
+      local str = readfile "opml_cn.xml"
       local feeds = M.import(str)
       local str2 = M.export(feeds)
       local feeds2 = M.import(str2)
+      assert(feeds)
+      assert(feeds2)
       assert.same(feeds, feeds2)
    end)
 end)

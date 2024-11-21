@@ -3,7 +3,10 @@ local ut = require "feed.utils"
 ---@type feed.db
 local db = ut.require "feed.db"
 local progress = require "feed.progress"
-local run = ut.fire_and_forget
+local log = require "feed.lib.log"
+local run = ut.run
+local entities = require "feed.lib.entities"
+local decode = entities.decode
 
 local M = {}
 local feeds = db.feeds
@@ -23,33 +26,49 @@ function M.update_feed(url, opts)
       etag = feeds[url].etag
       tags = vim.deepcopy(feeds[url].tags)
    end
-   local d = feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified })
-   if encoding_blacklist[d.encoding] then
-      feeds[url] = nil
+   local ok, d = pcall(feedparser.parse, url, { timeout = 10, etag = etag, last_modified = last_modified })
+   if ok and d then
+      if encoding_blacklist[d.encoding] then
+         feeds[url] = nil
+         db:save_feeds()
+         return { title = url }
+      end
+      if not vim.tbl_isempty(d.entries) then
+         for _, entry in ipairs(d.entries) do
+            db:add(entry, tags)
+         end
+      end
+      local href = d.href
+      if not feeds[href] then
+         feeds[href] = {}
+      end
+      if href ~= url then
+         feeds[url] = nil
+      end
+      feeds[href].htmlUrl = feeds[href].htmlUrl or d.link
+      feeds[href].title = feeds[href].title or d.title
+      feeds[href].text = feeds[href].text or d.desc
+      feeds[href].type = feeds[href].type or d.type
+      feeds[href].tags = feeds[href].tags or tags -- TDOO: feed tags -- TODO: compare new tgs
+      feeds[href].last_modified = d.last_modified
+      feeds[href].etag = d.etag
       db:save_feeds()
-      return { title = url }
+      return d
    end
-   if not vim.tbl_isempty(d.entries) then
-      for _, entry in ipairs(d.entries) do
-         db:add(entry, tags)
+end
+
+local function url_to_name(url, d)
+   if d then
+      if d.title then
+         return decode(d.title)
+      else
+         return d.href
       end
    end
-   local href = d.href
-   if not feeds[href] then
-      feeds[href] = {}
+   if feeds[url] then
+      return decode(feeds[url].title or feeds[url].text)
    end
-   if href ~= url then
-      feeds[url] = nil
-   end
-   feeds[href].htmlUrl = feeds[href].htmlUrl or d.link
-   feeds[href].title = feeds[href].title or d.title
-   feeds[href].text = feeds[href].text or d.desc
-   feeds[href].type = feeds[href].type or d.type
-   feeds[href].tags = feeds[href].tags or tags -- TDOO: feed tags -- TODO: compare new tgs
-   feeds[href].last_modified = d.last_modified
-   feeds[href].etag = d.etag
-   db:save_feeds()
-   return d
+   return url
 end
 
 ---@param feedlist string[]
@@ -63,11 +82,13 @@ function M.update_feeds(feedlist, size)
             return
          end
          run(function()
-            local ok, d = pcall(M.update_feed, url, prog)
+            local ok, d = pcall(M.update_feed, url)
+            local name = url_to_name(url, d)
             if ok then
-               prog:update((d.title or feeds[url].title or d.href or url) .. " success")
+               prog:update(name .. " success")
             else
-               prog:update((d.title or feeds[url].title or d.href or url) .. " failed")
+               prog:update(name .. " failed")
+               log.warn(url, d)
             end
             if ii == i + size then
                aux(i + size + 1)

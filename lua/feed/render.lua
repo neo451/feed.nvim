@@ -143,7 +143,7 @@ function M.show_entry(opts)
    if raw_str then
       local entry_lines
       local md = html_to_md(raw_str)
-      entry_lines, M.state.urls = urlview(vim.split(md, "\n"))
+      entry_lines, M.state.urls = urlview(vim.split(md, "\n"), entry.link)
       vim.list_extend(lines, entry_lines)
    end
 

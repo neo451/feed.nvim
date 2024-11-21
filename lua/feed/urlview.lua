@@ -43,13 +43,14 @@ local function get_links(str)
    return res_str, res
 end
 
-local function urlview(lines)
+local function urlview(lines, url)
    local ret_links = {}
    for i, v in ipairs(lines) do
       local line, links = get_links(v)
       lines[i] = line
       vim.list_extend(ret_links, links)
    end
+   table.insert(ret_links, { "entry url", url })
    image_count = 0
    return lines, ret_links
 end

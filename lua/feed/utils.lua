@@ -86,11 +86,22 @@ function M.cb_to_co(f)
    return f_co
 end
 
-function M.fire_and_forget(co)
+function M.run(co)
    coroutine.resume(coroutine.create(co))
 end
 
+---@param f function
+---@return function
+function M.wrap(f)
+   return function(...)
+      coroutine.wrap(f)(...)
+   end
+end
+
 function M.pdofile(fp)
+   if type(fp) == "table" then
+      fp = tostring(fp)
+   end
    local ok, res = pcall(dofile, fp)
    if ok and res then
       return res
@@ -101,28 +112,31 @@ end
 
 ---@param path string
 ---@param content string
----@return boolean
 function M.save_file(path, content)
+   if type(path) == "table" then
+      ---@diagnostic disable-next-line: param-type-mismatch
+      path = tostring(path)
+   end
    local f = io.open(path, "w")
    if f then
       f:write(content)
       f:close()
-      return true
-   else
-      return false
    end
 end
 
---@param path string
+---@param path string
 ---@return string?
 function M.read_file(path)
    local ret
+
+   if type(path) == "table" then
+      ---@diagnostic disable-next-line: param-type-mismatch
+      path = tostring(path)
+   end
    local f = io.open(path, "r")
    if f then
       ret = f:read "*a"
       f:close()
-   else
-      return
    end
    return ret
 end
@@ -169,5 +183,13 @@ function M.require(mod)
       end,
    })
 end
+
+M.input = M.cb_to_co(function(cb, opts)
+   pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
+end)
+
+M.select = M.cb_to_co(function(cb, items, opts)
+   pcall(vim.ui.select, items, opts, cb)
+end)
 
 return M

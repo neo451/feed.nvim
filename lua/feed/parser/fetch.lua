@@ -40,32 +40,51 @@ local function fetch(cb, url, opts)
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
    }
-   local cmds = { "curl", "-i", "-L", "-m", opts.timeout or 10, url }
+   local cmds = { "curl", "-i", "--connect-timeout", opts.timeout or 10, url }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
    vim.system(cmds, { text = true }, function(obj)
       -- TODO: handle curl code 28 timeout, 35 unexpected eof
-      local split = vim.split(obj.stdout, "\n\n")
-      local header = table.remove(split, 1)
-      local headers, status = parse_header(header)
-      obj.href = headers.location or url
-      obj.etag = headers.etag
-      obj.last_modified = headers.last_modified
-      obj.status = status
-      obj.body = obj.stdout:sub(#header + 3, -1)
-      obj.headers = headers
-      vim.schedule_wrap(cb)(obj)
+      -- TODO: curl: (52) Empty reply from server
+      if obj.code == 0 then
+         local split = vim.split(obj.stdout, "\n\n")
+         local header = table.remove(split, 1)
+         local headers, status = parse_header(header)
+         obj.href = headers.location or url
+         obj.etag = headers.etag
+         obj.last_modified = headers.last_modified
+         obj.status = status
+         obj.body = obj.stdout:sub(#header + 3, -1)
+         -- print(obj.body)
+         obj.headers = headers
+         vim.schedule_wrap(cb)(obj)
+      end
+      -- print(obj.code)
    end)
 end
 
 local fetch_co = ut.cb_to_co(fetch)
 
+local redirect = {
+   [301] = true,
+   [302] = true,
+   [307] = true,
+   [308] = true,
+}
+
 function M.fetch_co(url, opts)
    local obj = fetch_co(url, opts)
-   if obj.status == 301 then
-      obj = fetch_co(obj.href, opts)
+   if redirect[obj.status] then
+      local new_loc = ut.url_resolve(url, obj.href)
+      return M.fetch_co(new_loc, opts)
    end
    return obj
 end
+--
+-- local run = require("feed.utils").run
+--
+-- run(function()
+--    print(M.fetch_co("http://rss.badassjs.com/", {}))
+-- end)
 
 return M

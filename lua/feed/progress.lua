@@ -13,13 +13,12 @@ end
 
 local backend = choose_backend()
 
-local notify_ok, notify = pcall(require, "notify")
-local mini_ok, mini = pcall(require, "mini.notify") -- TODO:
-local fidget_ok = pcall(require, "fidget")
+local _, notify = pcall(require, "notify")
+local _, mini = pcall(require, "mini.notify")
 local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
 
 local function format_message(idx, total, message)
-   return ("[%d/%d] got %s"):format(idx, total, message)
+   return ("[%d/%d] %s"):format(idx, total, message)
 end
 
 local mt = {}
@@ -41,9 +40,7 @@ function mt.new(total)
          title = "Feed update",
       })
    elseif backend == "mini" then
-      ret.handle = {
-         id = mini.add("0", "INFO", "Title"),
-      }
+      ret.id = mini.add("0", "INFO", "Title")
    end
    ret.total = total
    ret.count = 0
@@ -54,6 +51,7 @@ end
 local function finish(self)
    local msg = ("Fetched update in %ds"):format(os.time() - self.t)
    if backend == "fidget" then
+      self.handle.message = msg
       self.handle:finish()
    elseif backend == "notify" then
       self.handle = notify(msg, nil, {
@@ -62,7 +60,7 @@ local function finish(self)
          replace = self.handle,
       })
    elseif backend == "mini" then
-      mini.remove(self.handle.id)
+      mini.remove(self.id)
       local opts = { INFO = { duration = 1000 } }
       mini.make_notify(opts)(msg)
    elseif backend == "native" then
@@ -83,7 +81,7 @@ function mt:update(message)
          replace = self.handle,
       })
    elseif backend == "mini" then
-      mini.update(self.handle.id, { msg = msg })
+      mini.update(self.id, { msg = msg })
    else
       print(msg)
    end

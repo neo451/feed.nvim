@@ -1,19 +1,22 @@
-local Path = require "plenary.path"
+-- local Path = require "plenary.path"
+local Path = require "pathlib"
 local config = require "feed.config"
 local query = require "feed.db.query"
 local ut = require "feed.utils"
 
 local db_mt = { __class = "feed.db" }
-local db_dir = vim.fs.normalize(config.db_dir)
 
-local data_dir = db_dir .. "/data/"
-local object_dir = db_dir .. "/object/"
-local feeds_fp = db_dir .. "/feeds.lua"
-local log_fp = db_dir .. "/log.lua"
-local tags_fp = db_dir .. "/tags.lua"
-local index_fp = db_dir .. "/index"
+local db_dir = Path.new(config.db_dir)
 
-local pdofile = ut.pdofile
+local data_dir = db_dir / "data"
+
+local object_dir = db_dir / "object"
+local feeds_fp = db_dir / "feeds.lua"
+local log_fp = db_dir / "log.lua"
+local tags_fp = db_dir / "tags.lua"
+local index_fp = db_dir / "index"
+
+local pdofile = ut.pdofile -- TODO: path ver
 local save_file = ut.save_file
 local save_obj = function(fp, object)
    save_file(fp, "return " .. vim.inspect(object))
@@ -21,49 +24,47 @@ end
 local read_file = ut.read_file
 local remove_file = function(fp)
    if vim.fs.rm then
-      vim.fs.rm(fp, { recursive = true })
+      vim.fs.rm(tostring(fp), { recursive = true })
    else
-      vim.fn.delete(fp, "rf")
+      vim.fn.delete(tostring(fp), "rf")
    end
 end
 
 ---@param id string
 ---@param obj? table
 local save_entry = function(id, obj)
-   save_obj(object_dir .. id, obj)
+   save_obj(object_dir / id, obj)
 end
 
+local permisson = Path.permission "rwxr-xr-x"
+
+---@param fp PathlibPath
+---@param type any
 local ensure_path = function(fp, type)
    if type == "dir" then
-      local dir_handle = Path:new(fp)
-      if not dir_handle:is_dir() then
-         dir_handle:mkdir { parents = true }
+      if not fp:is_dir(true) then
+         fp:mkdir(permisson, true)
       end
    elseif type == "obj" then
-      local feeds_path = Path:new(fp)
-      if not feeds_path:is_file() then
-         feeds_path:touch()
-         feeds_path:write("return " .. vim.inspect {}, "w")
+      if not fp:is_file(true) then
+         fp:touch(permisson, true)
+         ---@diagnostic disable-next-line: param-type-mismatch
+         fp:io_write("return " .. vim.inspect {})
       end
    elseif type == "file" then
-      local feeds_path = Path:new(fp)
-      if not feeds_path:is_file() then
-         feeds_path:touch()
+      if not fp:is_file(true) then
+         fp:touch(permisson, true)
       end
    end
 end
 
 local append_time_id = function(time, id)
-   local f = io.open(index_fp, "a")
-   if f then
-      f:write(time .. " " .. id .. "\n")
-      f:close()
-   end
+   index_fp:fs_append(time .. " " .. id .. "\n")
 end
 
 local function parse_index()
    local res = {}
-   for line in io.lines(index_fp) do
+   for line in io.lines(tostring(index_fp)) do
       local time, id = line:match "(%d+)%s(%S+)"
       res[#res + 1] = { id, tonumber(time) }
    end
@@ -87,8 +88,10 @@ function db_mt.new()
    }, db_mt)
 end
 
+db_mt:new()
+
 local function if_path(k)
-   return vim.fs.find({ k }, { path = db_dir .. "/object/", type = "file" })[1]
+   return vim.fs.find({ k }, { path = tostring(db_dir) .. "/object/", type = "file" })[1] -- TODO: remove
 end
 
 ---@param k any
@@ -145,8 +148,8 @@ function db_mt:add(entry, tags)
    entry.id = nil
    table.insert(self.index, { id, entry.time })
    append_time_id(entry.time, id)
-   save_file(data_dir .. id, content)
-   save_obj(object_dir .. id, entry)
+   save_file(data_dir / id, content)
+   save_obj(object_dir / id, entry)
    if tags then
       for _, tag in ipairs(tags) do
          self:tag(id, tag)
@@ -194,14 +197,14 @@ function db_mt:rm(id)
    end
    mem[id] = nil
    -- TODO: remove in tags
-   remove_file(data_dir .. id)
-   remove_file(object_dir .. id)
+   remove_file(data_dir / id)
+   remove_file(object_dir / id)
 end
 
 -- TODO:
 function db_mt:iter()
-   return vim.iter(vim.fs.dir(object_dir)):map(function(id)
-      local r = pdofile(object_dir .. id)
+   return vim.iter(vim.fs.dir(tostring(object_dir))):map(function(id)
+      local r = pdofile(object_dir / id)
       mem[id] = r
       return id, r
    end)
@@ -269,7 +272,7 @@ function db_mt:filter(str)
 
    if q.re then
       iter = iter:filter(function(id)
-         mem[id] = pdofile(object_dir .. id)
+         mem[id] = pdofile(object_dir / id)
          local entry = self[id]
          if not entry or not entry.title then
             return false
@@ -286,7 +289,7 @@ function db_mt:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         mem[id] = pdofile(object_dir .. id)
+         mem[id] = pdofile(object_dir / id)
          if not q.feed:match_str(self[id].feed) then
             return false
          end
@@ -296,7 +299,7 @@ function db_mt:filter(str)
 
    return iter:fold({}, function(acc, id)
       if not mem[id] then
-         mem[id] = pdofile(object_dir .. id)
+         mem[id] = pdofile(object_dir / id)
       end
       acc[#acc + 1] = id
       return acc
@@ -306,7 +309,7 @@ end
 ---@param id string
 ---@return string?
 function db_mt:read_entry(id)
-   return read_file(data_dir .. id)
+   return read_file(data_dir / id)
 end
 
 ---@return boolean

@@ -1,6 +1,7 @@
 local xml = require "feed.parser.xml"
 local fetch = require "feed.parser.fetch"
 local ut = require "feed.utils"
+local log = require "feed.lib.log"
 
 local handle_rss = require "feed.parser.rss"
 local handle_atom = require "feed.parser.atom"
@@ -42,6 +43,9 @@ end
 ---@field curl_params? table<string, string | number> #?
 ---@field callback? fun(table)
 
+---@param src string
+---@param url string
+---@return table?
 function M.parse_src(src, url)
    src = src:gsub("\n", "")
    local ret
@@ -59,7 +63,7 @@ function M.parse_src(src, url)
             ret = handle_atom(raw_ast, url)
             ret.encoding = raw_ast.encoding or "utf-8"
          else
-            error "unknown feedtype"
+            log.warn "unknown feedtype"
          end
          return ret
       end
@@ -69,20 +73,19 @@ end
 ---parse feed fetch from source
 ---@param url_or_src string
 ---@param opts? feed.parser_opts
----@return table
+---@return table?
 function M.parse(url_or_src, opts)
    opts = opts or {}
    if looks_like_url(url_or_src) then
       local response = fetch.fetch_co(url_or_src, opts) -- TODO:
-      local parsed
-      if response.body == "" or not response.body then
-         parsed = { entries = {} }
-      else
-         parsed = M.parse_src(response.body, url_or_src)
+      if response.body and response.body ~= "" then
+         local d = M.parse_src(response.body, url_or_src)
+         if d then
+            return vim.tbl_extend("keep", response, d)
+         end
+         -- parsed = vim.F.if_nil(d, fallback)
+         return response
       end
-      return vim.tbl_extend("keep", response, parsed)
-   else
-      return M.parse_src(url_or_src)
    end
 end
 

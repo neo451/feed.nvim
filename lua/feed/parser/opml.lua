@@ -21,11 +21,19 @@ end
 ---@return feed.opml?
 function M.import(src)
    local ok, ast = pcall(xml.parse, src, "")
-   if ok and ast then
-      local outline = ast.opml.body.outline
-      local ret = {}
-      outline = ut.listify(outline)
+   local ret = {}
+
+   local function handle(node, tags)
+      local outline = ut.listify(node.outline)
       for _, v in ipairs(outline) do
+         if tags then
+            if not v.tag then
+               v.tag = {}
+            end
+            for _, t in ipairs(tags) do
+               table.insert(v.tag, t)
+            end
+         end
          if v.xmlUrl then
             local url = v.xmlUrl
             if v.text == v.title then
@@ -34,8 +42,13 @@ function M.import(src)
             v.type = nil
             v.xmlUrl = nil
             ret[url] = v
+         elseif v.outline then
+            handle(v, { v.text, unpack(v.tag or {}) })
          end
       end
+   end
+   if ok and ast then
+      handle(ast.opml.body)
       return ret
    end
 end

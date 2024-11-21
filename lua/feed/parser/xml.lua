@@ -1,5 +1,6 @@
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
+local log = require "feed.lib.log"
 
 local M = {}
 
@@ -235,7 +236,7 @@ function M.parse(src, url) -- TODO: url resolve ?
    src = M.sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      print "ts error!"
+      log.warn(url, "treesitter err")
    else
       local iterator = vim.iter(root:iter_children())
       local collected = iterator:fold({}, function(acc, node)

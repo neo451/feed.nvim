@@ -30,6 +30,7 @@ jobs:
             nui.nvim
             treedoc.nvim
             plenary.nvim
+            pathlib.nvim
             tree-sitter-xml
             tree-sitter-markdown
             tree-sitter-html
