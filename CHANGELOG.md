@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.2](https://github.com/neo451/feed.nvim/compare/v1.9.1...v1.9.2) (2024-11-22)
+
+
+### Bug Fixes
+
+* **date:** handle asctime and try each format possible when parsing ([7af1de7](https://github.com/neo451/feed.nvim/commit/7af1de738f6d3f06b02514f4f76f64ee001800c0))
+* **fetch:** recursive impl of fetching ([7af1de7](https://github.com/neo451/feed.nvim/commit/7af1de738f6d3f06b02514f4f76f64ee001800c0))
+* **log:** add vlog.nvim for logging ([21e7f6e](https://github.com/neo451/feed.nvim/commit/21e7f6e86438ef948edaed5f6bedc6496c7885fa))
+* **parser.fetch:** handle redirects ([21e7f6e](https://github.com/neo451/feed.nvim/commit/21e7f6e86438ef948edaed5f6bedc6496c7885fa))
+* **parser.opml:** handle nested opml ([21e7f6e](https://github.com/neo451/feed.nvim/commit/21e7f6e86438ef948edaed5f6bedc6496c7885fa))
+* **progress:** show name and success/fail in progress ([21e7f6e](https://github.com/neo451/feed.nvim/commit/21e7f6e86438ef948edaed5f6bedc6496c7885fa))
+* **progress:** show used time, progress class ([7af1de7](https://github.com/neo451/feed.nvim/commit/7af1de738f6d3f06b02514f4f76f64ee001800c0))
+* **telescope:** render upper bug in telescope search ([75ce6e7](https://github.com/neo451/feed.nvim/commit/75ce6e7bef3b584a23393e8b083359847f9a9af8))
+
 ## [1.9.1](https://github.com/neo451/feed.nvim/compare/v1.9.0...v1.9.1) (2024-11-18)
 
 
