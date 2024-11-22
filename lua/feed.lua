@@ -11,7 +11,8 @@ end
 local render = require "feed.render"
 M.get_entry = render.get_entry
 
-M.register_command = function(name, doc, context, f)
+M.register_command = function(name, doc, context, f, key)
+   local ut = require "feed.utils"
    -- TODO: bind key here?
    local cmds = require "feed.commands"
    cmds[name] = {
@@ -19,6 +20,17 @@ M.register_command = function(name, doc, context, f)
       doc = doc,
       context = context,
    }
+   if key then
+      if context["all"] then
+         vim.keymap.set("n", key, ut.wrap(f))
+      end
+      if context["index"] then
+         vim.keymap.set("n", key, ut.wrap(f), { buffer = render.index })
+      end
+      if context["index"] then
+         vim.keymap.set("n", key, ut.wrap(f), { buffer = render.entry }) -- TODO:??
+      end
+   end
 end
 
 return M

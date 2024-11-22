@@ -60,12 +60,7 @@ local function handle_content(entry)
       return "this feed seems to be empty..."
    end
    -- TODO: use urlview to get relative links and resolve
-   if content.type == "html" then
-      return content[1]
-   else
-      -- TODO: treedoc power!
-      return "xhtml not supported now"
-   end
+   return content[1]
 end
 
 local function handle_date(entry)

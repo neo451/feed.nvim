@@ -148,12 +148,12 @@ function M.show_entry(opts)
    end
 
    vim.bo[buf].modifiable = true
+   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
    if not opts.buf then -- weird but for telescope
       vim.api.nvim_set_current_buf(buf)
       M.show_winbar()
+      vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
    end
-   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-   vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 end
 
 function M.show_winbar()

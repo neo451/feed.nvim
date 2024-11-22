@@ -25,7 +25,6 @@ local function feed()
       .new(opts, {
          prompt_title = "Feeds",
 
-         -- FIX: weird upper part rendering
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
                render.show_entry { buf = self.state.bufnr, id = entry.value, untag = false }
@@ -50,7 +49,7 @@ local function feed()
                   display = function(entry)
                      return format.entry_name(db[entry.value])
                   end,
-                  ordinal = line, -- TODO: sort by time
+                  ordinal = line,
                }
             end,
          },
