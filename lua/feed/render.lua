@@ -25,6 +25,8 @@ end
 
 local og_colorscheme, og_winbar, og_buffer
 
+og_colorscheme = vim.g.colors_name
+
 local M = {
    on_display = nil,
    index = nil,
@@ -36,16 +38,16 @@ local M = {
 }
 
 local main_comp = vim.iter(config.layout)
-   :filter(function(v)
-      return not v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return not v.right
+    end)
+    :totable()
 
 local extra_comp = vim.iter(config.layout)
-   :filter(function(v)
-      return v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return v.right
+    end)
+    :totable()
 
 local providers = {}
 
@@ -88,9 +90,7 @@ M.show_line = show_line
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
-   og_colorscheme = vim.g.colors_name
-   -- og_winbar = vim.wo.winbar
-   local buf = M.index and M.index or vim.api.nvim_create_buf(false, true)
+   local buf = M.index or vim.api.nvim_create_buf(false, true)
    M.index = buf
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
    vim.bo[buf].modifiable = true
@@ -149,6 +149,7 @@ function M.show_entry(opts)
 
    vim.bo[buf].modifiable = true
    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+   vim.api.nvim_set_option_value("filetype", "markdown", { buf = M.entry })
    if not opts.buf then -- weird but for telescope
       vim.api.nvim_set_current_buf(buf)
       M.show_winbar()
@@ -210,10 +211,12 @@ function M.quit()
       vim.api.nvim_set_current_buf(M.index)
       M.state.in_split = false
    elseif M.entry == buf then
+      print "quit entry"
       vim.cmd "bd!"
       M.show_index()
-      -- vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
+      vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    elseif M.index == buf then
+      print "quit index"
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
