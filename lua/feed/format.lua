@@ -3,21 +3,41 @@ local date = require "feed.parser.date"
 local config = require "feed.config"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
+local _, MiniIcons = pcall(require, "mini.icons")
 
 local align = ut.align
 
 -- TODO: this whole module should be user definable
 
+-- TODO: move to config
+local tag2emoji = {
+   pod = "📻", -- "󰈣",
+   unread = "👀",
+   read = "✅",
+   star = "🌟",
+   news = "📰",
+   tech = "🦾",
+   app = "📱",
+   blog = "📝",
+   -- zig = MiniIcons.get("file", "file.zig"),
+   -- linux = MiniIcons.get('os', 'linux')
+}
+
 ---@param tags string[]
 ---@return string
 function M.tags(tags)
    if not tags then
-      return "[unread]"
+      return tag2emoji and "[👀]" or "[unread]"
    end
-   local taglist = vim.tbl_keys(tags)
    if not tags["read"] then
-      taglist[#taglist + 1] = "unread"
+      tags["unread"] = true
    end
+   local taglist = vim.iter(vim.spairs(tags)):map(function(k)
+      if tag2emoji[k] then
+         return tag2emoji[k]
+      end
+      return k
+   end):totable()
    return "[" .. table.concat(taglist, ", ") .. "]"
 end
 
@@ -53,8 +73,8 @@ end
 function M.entry_name(entry)
    local buf = {}
    local comps = M.get_entry_format(entry, {
-      { "feed", width = 15 },
-      { "tags", width = 15 },
+      { "feed",  width = 15 },
+      { "tags",  width = 15 },
       { "title", width = 80 },
    })
    for _, v in ipairs(comps) do

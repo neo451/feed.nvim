@@ -15,7 +15,7 @@
 
 🚧 🚧 🚧
 
-*This project is in beta, many features are incomplete, and database format is prune to breaking changes, but the parser and renderer is already very powerful for most feeds, if you just wanna do some simple reading, this is very useable. Contributions are welcome!*
+    *This project is in beta, many features are incomplete, and database format is prune to breaking changes, but the parser and renderer is already very powerful for most feeds, if you just wanna do some simple reading, this is very useable. Contributions are welcome!*
 
 *see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
 
@@ -43,12 +43,13 @@ Rocks install feed.nvim
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-return { 'neo451/feed.nvim' }
+return { "neo451/feed.nvim" }
 ```
 
 For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `neo451/treedoc.nvim`, and tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
 
 ### Health Check
+
 - run `:checkhealth feed` to see your installation status
 
 ### Optional Integrations

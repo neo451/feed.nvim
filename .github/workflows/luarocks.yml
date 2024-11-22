@@ -28,7 +28,6 @@ jobs:
         with:
           dependencies: |
             nui.nvim
-            treedoc.nvim
             plenary.nvim
             pathlib.nvim
             tree-sitter-xml

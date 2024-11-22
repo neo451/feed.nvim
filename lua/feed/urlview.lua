@@ -22,9 +22,8 @@ local function get_links(str)
    for _, node in image_query:iter_captures(root, str) do
       local link = get_text(node:child(5), str)
       image_count = image_count + 1
-      local text = "image " .. image_count
+      local text = "Image " .. image_count
       res_str = res_str:gsub("%(" .. vim.pesc(link) .. "%)", "", 1)
-      res_str = res_str:gsub("image", text, 1)
       res[#res + 1] = { text, link }
    end
 

@@ -47,7 +47,6 @@ end
 ---@param url string
 ---@return table?
 function M.parse_src(src, url)
-   src = src:gsub("\n", "")
    local ret
    if is_json(src) then
       ret = handle_json(vim.json.decode(src), url)

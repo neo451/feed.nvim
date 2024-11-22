@@ -10,17 +10,20 @@ local NuiText = require "nui.text"
 local entities = require "feed.lib.entities"
 local decode = entities.decode
 
-local treedoc = require "treedoc"
-local conv = require "treedoc.writers.markdown"
-
-local function html_to_md(str)
-   local ok, md = pcall(conv, treedoc.parse("<html>" .. str .. "</html>", { language = "html" })[1])
-   -- local ok, md = pcall(_treedoc.write, _treedoc.read(str, "html"), "markdown")
-   if ok then
-      return md
-   else
-      return "failed to convert feed... wait for a more powerful renderer lol"
-   end
+--- FIX:  check pandoc existance
+local function html_to_md(str, id)
+   local md = vim.system(
+          { "pandoc",
+             "-f",
+             "html",
+             "-t",
+             "/home/n451/Plugins/feed.nvim/lua/feed/pandoc_filter.lua",
+             "--wrap=none",
+             db.dir ..
+             "/data/" .. id }, { text = true })
+       :wait()
+       .stdout
+   return ut.unescape(md)
 end
 
 local og_colorscheme, og_winbar, og_buffer
@@ -142,7 +145,7 @@ function M.show_entry(opts)
    local raw_str = db:read_entry(id)
    if raw_str then
       local entry_lines
-      local md = html_to_md(raw_str)
+      local md = html_to_md(raw_str, id)
       entry_lines, M.state.urls = urlview(vim.split(md, "\n"), entry.link)
       vim.list_extend(lines, entry_lines)
    end
@@ -211,12 +214,10 @@ function M.quit()
       vim.api.nvim_set_current_buf(M.index)
       M.state.in_split = false
    elseif M.entry == buf then
-      print "quit entry"
       vim.cmd "bd!"
       M.show_index()
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    elseif M.index == buf then
-      print "quit index"
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })

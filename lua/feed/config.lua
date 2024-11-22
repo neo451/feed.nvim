@@ -11,7 +11,6 @@ local default = {
    date_format = "%Y-%m-%d",
    ---@type string
    split_cmd = "13split",
-   colorscheme = "default",
    ---@type boolean
    enable_default_keybindings = true,
    options = {
