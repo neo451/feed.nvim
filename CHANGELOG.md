@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.3](https://github.com/neo451/feed.nvim/compare/v1.9.2...v1.9.3) (2024-11-23)
+
+
+### Bug Fixes
+
+* **commands:** make tag/untag dot repeatable and undoable ([1cd5ccb](https://github.com/neo451/feed.nvim/commit/1cd5ccbddedb27eb642999527d7a1381eed34d43))
+* format ([b74568a](https://github.com/neo451/feed.nvim/commit/b74568a5d408a2ceec63d8731e31d0b17fd04a32))
+* **health:** check for nui.nvim ([4cf7a18](https://github.com/neo451/feed.nvim/commit/4cf7a18209680b1a3e43908183f37ed88734d59d))
+* **render:** handle colorscheme change normal ([1cd5ccb](https://github.com/neo451/feed.nvim/commit/1cd5ccbddedb27eb642999527d7a1381eed34d43))
+
 ## [1.9.2](https://github.com/neo451/feed.nvim/compare/v1.9.1...v1.9.2) (2024-11-22)
 
 
