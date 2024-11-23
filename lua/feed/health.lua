@@ -15,6 +15,7 @@ local dependencies = {
 local plugins = {
    { lib = "plenary", optional = false, info = "required for feed.nvim to work" },
    { lib = "pathlib", optional = false, info = "required for handling path" },
+   { lib = "nui", optional = false, info = "required for text rendering" },
    --- TODO: optional and good if one is found
    { lib = "nvim-treesitter", optional = true, info = "required for installing TS parsers if you don't use rocks.nvim" },
 }
