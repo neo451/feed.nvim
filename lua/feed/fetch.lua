@@ -43,7 +43,7 @@ function M.update_feed(url, opts)
          feeds[href] = {}
       end
       if href ~= url then
-         feeds[url] = nil
+         feeds[url] = href
       end
       feeds[href].htmlUrl = feeds[href].htmlUrl or d.link
       feeds[href].title = feeds[href].title or d.title

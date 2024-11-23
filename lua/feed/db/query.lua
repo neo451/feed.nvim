@@ -30,7 +30,7 @@ function M.parse_query(str)
    for q in vim.gsplit(str, " ") do
       local kind = filter_symbols[q:sub(1, 1)] or "re"
       if kind == "date" then
-         local ok, after, before = pcall(date.new_from.filter, q)
+         local ok, after, before = pcall(date.parse_filter, q)
          if ok then
             query.after = after
             query.before = before

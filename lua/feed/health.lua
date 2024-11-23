@@ -9,11 +9,13 @@ local is_win = vim.api.nvim_call_function("has", { "win32" }) == 1
 
 local dependencies = {
    { name = "curl", optional = false },
+   { name = "pandoc", optional = false },
 }
 
 local plugins = {
    { lib = "plenary", optional = false, info = "required for feed.nvim to work" },
-   { lib = "conform", optional = true, info = "required for formatting markdowns" },
+   { lib = "pathlib", optional = false, info = "required for handling path" },
+   --- TODO: optional and good if one is found
    { lib = "nvim-treesitter", optional = true, info = "required for installing TS parsers if you don't use rocks.nvim" },
 }
 
@@ -63,13 +65,16 @@ local check_binary_installed = function(package)
       end
    end
 end
+M.check_binary_installed = check_binary_installed
 
 M.check = function()
    vim.health.start "feed report"
-   if check_binary_installed(dependencies[1]) then
-      ok "curl installed"
-   else
-      warn "curl not found"
+   for _, binary in ipairs(dependencies) do
+      if check_binary_installed(binary) then
+         ok(binary.name .. " installed")
+      else
+         warn(binary.name .. " not found")
+      end
    end
    for _, plug in ipairs(plugins) do
       check_lualib_installed(plug)

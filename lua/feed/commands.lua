@@ -313,8 +313,7 @@ cmds.list = {
    doc = "list all feeds",
    impl = function()
       for _, url in ipairs(vim.tbl_keys(feeds)) do
-         print(feeds[url] and feeds[url].title or url, url,
-            feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
+         print(feeds[url] and feeds[url].title or url, url, feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
       end
    end,
    context = { all = true },
@@ -323,7 +322,15 @@ cmds.list = {
 cmds.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(vim.tbl_keys(feeds), 10)
+      local feedlist = vim.iter(feeds)
+         :filter(function(_, v)
+            return type(v) == "table"
+         end)
+         :fold({}, function(acc, k)
+            table.insert(acc, k)
+            return acc
+         end)
+      fetch.update_feeds(feedlist, 10)
    end,
    context = { all = true },
 }
@@ -332,12 +339,12 @@ cmds.update_feed = {
    doc = "update a feed to db",
    impl = wrap(function(url)
       url = url
-          or select(vim.tbl_keys(feeds), {
-             prompt = "Feed to update",
-             format_item = function(item)
-                return feeds[item].title or item
-             end,
-          })
+         or select(vim.tbl_keys(feeds), {
+            prompt = "Feed to update",
+            format_item = function(item)
+               return feeds[item].title or item
+            end,
+         })
       if not url then
          return
       end
@@ -355,12 +362,12 @@ cmds.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
    impl = wrap(function(url)
       url = url
-          or select(vim.tbl_keys(feeds), {
-             prompt = "Feed to remove",
-             format_item = function(item)
-                return feeds[item].title or item
-             end,
-          })
+         or select(vim.tbl_keys(feeds), {
+            prompt = "Feed to remove",
+            format_item = function(item)
+               return feeds[item].title or item
+            end,
+         })
       if not url then
          return
       end
@@ -478,7 +485,7 @@ function cmds._register_autocmds()
             pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
             vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
          else
-            vim.lsp.buf.format({ bufnr = render.entry })
+            vim.lsp.buf.format { bufnr = render.entry }
          end
       end,
    })

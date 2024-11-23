@@ -19,6 +19,7 @@ local tag2emoji = {
    tech = "🦾",
    app = "📱",
    blog = "📝",
+   email = "📧",
    -- zig = MiniIcons.get("file", "file.zig"),
    -- linux = MiniIcons.get('os', 'linux')
 }
@@ -32,12 +33,14 @@ function M.tags(tags)
    if not tags["read"] then
       tags["unread"] = true
    end
-   local taglist = vim.iter(vim.spairs(tags)):map(function(k)
-      if tag2emoji[k] then
-         return tag2emoji[k]
-      end
-      return k
-   end):totable()
+   local taglist = vim.iter(vim.spairs(tags))
+      :map(function(k)
+         if tag2emoji[k] then
+            return tag2emoji[k]
+         end
+         return k
+      end)
+      :totable()
    return "[" .. table.concat(taglist, ", ") .. "]"
 end
 
@@ -59,7 +62,7 @@ function M.get_entry_format(entry, comps)
             text = entry.feed
          end
       elseif v[1] == "date" then
-         text = date.new_from.number(entry.time):format(config.date_format)
+         text = date.parse(entry.time):format(config.date_format)
       end
       text = align(text, v.width, v.right_justify) .. " "
       res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
@@ -73,8 +76,8 @@ end
 function M.entry_name(entry)
    local buf = {}
    local comps = M.get_entry_format(entry, {
-      { "feed",  width = 15 },
-      { "tags",  width = 15 },
+      { "feed", width = 15 },
+      { "tags", width = 15 },
       { "title", width = 80 },
    })
    for _, v in ipairs(comps) do

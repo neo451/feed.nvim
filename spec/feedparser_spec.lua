@@ -38,7 +38,7 @@ local check_feed_minimal = function(ast)
 end
 
 local dump_date = function(time)
-   return tostring(date.new_from.number(time))
+   return tostring(date.parse(time))
 end
 
 describe("rss", function()
@@ -93,6 +93,9 @@ end)
 describe("json", function()
    it("should parse", function()
       local f = m.parse_src(readfile "json1.json", "http://placehoder.feed")
+      eq("json1", f.version)
+      check_feed(f)
+      local f = m.parse_src(readfile "json2.json", "http://placehoder.feed")
       eq("json1", f.version)
       check_feed(f)
    end)

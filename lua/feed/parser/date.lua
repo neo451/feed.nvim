@@ -1,5 +1,7 @@
-local M = { __class = "date" }
+---@diagnostic disable: param-type-mismatch, return-type-mismatch
+local M = {}
 M.__index = M
+-- TODO: handle zone?
 
 --- get absolute time value
 ---@return integer
@@ -25,21 +27,26 @@ end
 ---@param num integer
 ---@return feed.date
 function M:days_ago(num)
-   local new = vim.deepcopy(M.today, true)
-   new.day = new.day - num
-   return new
+   local new_time = os.time(M.today) - (num * 24 * 60 * 60)
+   return M.new(os.date("*t", new_time))
 end
 
 function M:years_ago(num)
-   local new = vim.deepcopy(M.today, true)
-   new.year = new.year - num
-   return new
+   local new_time = os.time(M.today)
+   local new_date = os.date("*t", new_time)
+   new_date.year = new_date.year - num
+   return M.new(new_date)
 end
 
 function M:months_ago(num)
-   local new = vim.deepcopy(M.today, true)
-   new.month = new.month - num
-   return new
+   local new_time = os.time(M.today)
+   local new_date = os.date("*t", new_time)
+   new_date.month = new_date.month - num
+   if new_date.month <= 0 then
+      new_date.year = new_date.year + math.floor((new_date.month - 1) / 12)
+      new_date.month = new_date.month % 12 + 12
+   end
+   return M.new(new_date)
 end
 
 M.day_ago = M.days_ago
@@ -55,16 +62,6 @@ end
 ---@type feed.date
 M.today = M.new(os.date "*t")
 
----@param str string
----@return feed.date?
-local function W3CDTF(str)
-   local a, b, c = unpack(vim.split(str, "-"))
-   if not a then
-      return
-   end
-   return M.new { year = tonumber(a), month = tonumber(b) or 1, day = tonumber(c) or 1 }
-end
-
 local function filter_part(str)
    local a, b, c = unpack(vim.split(str, "-"))
    if not a then
@@ -79,7 +76,7 @@ end
 ---@param str string
 ---@return feed.date
 ---@return feed.date?
-local function parse_date_filter(str)
+function M.parse_filter(str)
    local sep = string.find(str, "%-%-")
    if not sep then
       str = string.sub(str, 2, #str)
@@ -88,12 +85,6 @@ local function parse_date_filter(str)
       local start, stop = string.sub(str, 2, sep - 1), string.sub(str, sep + 2, #str)
       return filter_part(start):absolute(), filter_part(stop):absolute()
    end
-end
-
----@param time integer
----@return feed.date
-local function int_to_date(time)
-   return M.new(os.date("*t", time))
 end
 
 local patterns = {}
@@ -118,18 +109,19 @@ do
 end
 
 local function asctime(str)
-   local weekday, month, day, year, hour, min, sec, _ = patterns.ASCTIME:match(str) -- TODO: handle zone?
+   local weekday, month, day, year, hour, min, sec, _ = patterns.ASCTIME:match(str)
    if not weekday then
       return nil
    end
    return M.new { year = year, month = month, day = day, hour = hour, min = min, sec = sec }
 end
 
---- [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 2822, with the exception that the year may be expressed with two characters or four characters (four preferred).
+--- TODO: [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 2822, with the exception that the year may be expressed with two characters or four characters (four preferred).
+
 ---@param str string
 ---@return feed.date?
 local function rfc2822(str)
-   local weekday, day, month, year, hour, min, sec, _ = patterns.RFC2822:match(str) -- TODO: handle zone?
+   local weekday, day, month, year, hour, min, sec, _ = patterns.RFC2822:match(str)
    if not weekday then
       return nil
    end
@@ -146,6 +138,16 @@ local function rfc3339(str)
    return M.new { year = year, month = month, day = day, hour = hour, min = min, sec = sec }
 end
 
+---@param str string
+---@return feed.date?
+local function W3CDTF(str)
+   local a, b, c = unpack(vim.split(str, "-"))
+   if not a then
+      return
+   end
+   return M.new { year = tonumber(a), month = tonumber(b) or 1, day = tonumber(c) or 1 }
+end
+
 local order = {
    "rfc3339",
    "rfc2822",
@@ -158,43 +160,25 @@ M.rfc3339 = rfc3339
 M.W3CDTF = W3CDTF
 M.asctime = asctime
 
-M.new_from = {
-   rss = function(str)
-      if not str then
-         return os.time()
-      end
+M.parse = function(t, feed_type)
+   if type(t) == "number" then
+      return M.new(os.date("*t", t))
+   end
+   if not t then
+      return os.time()
+   end
+   local time
+   if feed_type == "rss" or feed_type == "atom" then
       for _, p in ipairs(order) do
-         local time = M[p](str)
+         time = M[p](t)
          if time then
             return time:absolute()
          end
       end
-      return os.time()
-   end,
-   json = function(str)
-      if not str then
-         return os.time()
-      end
-      local time = rfc3339(str)
-      if time then
-         return time:absolute()
-      else
-         return os.time()
-      end
-   end,
-   atom = function(str)
-      if not str then
-         return os.time()
-      end
-      local time = rfc3339(str)
-      if time then
-         return time:absolute()
-      else
-         return os.time()
-      end
-   end,
-   filter = parse_date_filter,
-   number = int_to_date,
-}
+   elseif feed_type == "json" then
+      time = rfc3339(t):absolute()
+   end
+   return time and time or os.time()
+end
 
 return M
