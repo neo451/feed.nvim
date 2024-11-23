@@ -12,9 +12,9 @@ describe("urlview", function()
       }
       local expected_links = {
          { "https://neovim.io/news", "https://neovim.io/news" },
-         { "neovim",                 "https://neovim.io" },
-         { "Image 1",                "https://neovim.io/image1" },
-         { "entry url",              "https://neovim.io" },
+         { "neovim", "https://neovim.io" },
+         { "Image 1", "https://neovim.io/image1" },
+         { "entry url", "https://neovim.io" },
       }
       local res, res_links = urlview(vim.split(str, "\n"), "https://neovim.io")
       assert.same(expected, res)
