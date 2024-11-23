@@ -14,8 +14,9 @@
 **feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
 
 > [!WARNING]
-> *This project is in beta, many features are incomplete, and database format is prune to breaking changes, but the parser and renderer is already very powerful for most feeds, if you just wanna do some simple reading, this is very useable. Contributions are welcome!*
-> *see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes*
+> This project is young, things like database format is prune to breaking changes, but the parser and renderer can deal with most feeds you can find, if you just wanna do some simple reading, go ahead and enjoy! 
+>
+> see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
 ## 🌟 Features
 
@@ -30,6 +31,7 @@
 
 > [!NOTE]
 > requires `nvim 0.10` and above
+> 
 > requires `pandoc` and `curl` to be installed on your path.
 
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
@@ -44,7 +46,7 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 return { "neo451/feed.nvim" }
 ```
 
-For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `neo451/treedoc.nvim`, and tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
+For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `pysan3/pathlib.nvim` and `MunifTanjim/nui.nvim`, plus tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
 
 ### Health Check
 
