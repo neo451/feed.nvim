@@ -30,3 +30,37 @@ describe("format", function()
       eq("2010-02-07", res:format "%Y-%m-%d")
    end)
 end)
+
+describe("relative time func", function()
+   it("should calculate days ago correctly", function()
+      local today = M.today
+      local days_ago_5 = today:days_ago(5)
+      local expected_time = os.time(today) - (5 * 24 * 60 * 60)
+      local expected_date = M.new(os.date("*t", expected_time))
+      assert.are.same(expected_date, days_ago_5)
+   end)
+
+   it("should calculate months ago correctly", function()
+      local today = M.today
+      local months_ago_2 = today:months_ago(2)
+      local expected_time = os.time(today)
+      local expected_date = os.date("*t", expected_time)
+      expected_date.month = expected_date.month - 2
+      if expected_date.month <= 0 then
+         expected_date.year = expected_date.year + math.floor((expected_date.month - 1) / 12)
+         expected_date.month = expected_date.month % 12 + 12
+      end
+      expected_date = M.new(expected_date)
+      assert.are.same(expected_date, months_ago_2)
+   end)
+
+   it("should calculate years ago correctly", function()
+      local today = M.today
+      local years_ago_3 = today:years_ago(3)
+      local expected_time = os.time(today)
+      local expected_date = os.date("*t", expected_time)
+      expected_date.year = expected_date.year - 3
+      expected_date = M.new(expected_date)
+      assert.are.same(expected_date, years_ago_3)
+   end)
+end)

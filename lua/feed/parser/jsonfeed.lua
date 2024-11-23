@@ -1,11 +1,10 @@
 local date = require "feed.parser.date"
 local sha = vim.fn.sha256
 local ut = require "feed.utils"
-local strings = require "plenary.strings"
 
 local function handle_title(entry)
    if not entry.title then
-      return strings.truncate(entry.content_html, 20)
+      return "no title"
    end
    return entry.title
 end
@@ -15,7 +14,7 @@ local function handle_entry(entry, author, feed_name)
    res.link = entry.url
    res.id = sha(entry.url)
    res.title = handle_title(entry)
-   res.time = date.new_from.json(entry.date_published)
+   res.time = date.parse(entry.date_published, "json")
    res.author = author
    res.content = entry.content_html or ""
    res.feed = feed_name

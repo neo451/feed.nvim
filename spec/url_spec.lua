@@ -8,12 +8,12 @@ describe("urlview", function()
       local expected = {
          "1. autolink: <https://neovim.io/news>",
          "2. link: [neovim]",
-         "3. img: ![image 1]",
+         "3. img: ![image]",
       }
       local expected_links = {
          { "https://neovim.io/news", "https://neovim.io/news" },
          { "neovim", "https://neovim.io" },
-         { "image 1", "https://neovim.io/image1" },
+         { "Image 1", "https://neovim.io/image1" },
          { "entry url", "https://neovim.io" },
       }
       local res, res_links = urlview(vim.split(str, "\n"), "https://neovim.io")

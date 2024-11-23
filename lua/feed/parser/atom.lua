@@ -1,7 +1,6 @@
 local date = require "feed.parser.date"
 local sha = vim.fn.sha256
 local ut = require "feed.utils"
-local strings = require "plenary.strings"
 local p_ut = require "feed.parser.utils"
 local sensible = p_ut.sensible
 
@@ -34,8 +33,7 @@ local function handle_link(ast, base)
    end
 end
 
--- TODO: fallback to content:sub()
-local function handle_title(entry)
+local function handle_title(entry, fallback)
    local function handle(v)
       if type(v) == "table" then
          return v[1] or ""
@@ -51,13 +49,13 @@ local function handle_title(entry)
       end
       return handle(entry.title[1])
    end
-   return handle(entry.title)
+   return handle(entry.title or fallback)
 end
 
-local function handle_content(entry)
+local function handle_content(entry, fallback)
    local content = entry["content"] or entry["summary"]
    if not content then
-      return "this feed seems to be empty..."
+      return fallback
    end
    -- TODO: use urlview to get relative links and resolve
    return content[1]
@@ -65,7 +63,7 @@ end
 
 local function handle_date(entry)
    local time = sensible(entry["published"] or entry["updated"], 1)
-   return date.new_from.atom(time)
+   return date.parse(time, "atom")
 end
 
 local function handle_feed_title(ast, url)
@@ -90,10 +88,10 @@ local function handle_entry(entry, base, feed_name)
    local entry_base = ut.url_rebase(entry, base)
    res.link = handle_link(entry, entry_base)
    res.id = sha(res.link)
-   res.title = handle_title(entry)
+   res.title = handle_title(entry, "no title")
    res.time = handle_date(entry)
    res.author = handle_author(entry, feed_name)
-   res.content = handle_content(entry)
+   res.content = handle_content(entry, "empty entry")
    res.feed = feed_name
    return res
 end

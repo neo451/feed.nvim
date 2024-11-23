@@ -190,11 +190,39 @@ cmds.link_to_clipboard = {
    context = { index = true, entry = true },
 }
 
+local dot = function() end
+local tag_hist = {}
+
+cmds._undo = {
+   impl = function()
+      local act = table.remove(tag_hist, #tag_hist)
+      if not act then
+         return
+      end
+      if act.type == "tag" then
+         cmds.untag.impl(act.tag, act.id, false)
+      elseif act.type == "untag" then
+         cmds.tag.impl(act.tag, act.id, false)
+      end
+   end,
+   context = { index = true },
+}
+
+cmds._dot = {
+   impl = function()
+      dot()
+   end,
+   context = { index = true },
+}
+
 cmds.tag = {
    doc = "tag an entry",
-   impl = wrap(function(tag)
-      local _, id, _ = render.get_entry()
+   impl = wrap(function(tag, id, save_hist)
+      if not id then
+         _, id, _ = render.get_entry()
+      end
       tag = tag or input { prompt = "Tag: " }
+      save_hist = vim.F.if_nil(save_hist, true)
       if not tag or not id then
          return
       end
@@ -203,15 +231,24 @@ cmds.tag = {
       if buf == render.index then
          render.refresh()
       end
+      dot = function()
+         cmds.tag.impl(tag)
+      end
+      if save_hist then
+         table.insert(tag_hist, { type = "tag", tag = tag, id = id })
+      end
    end),
    context = { index = true, entry = true },
 }
 
---- TODO: make tag untag dot repeatable, undoable, visual line mode
+--- TODO: make tag untag visual line mode
 cmds.untag = {
    doc = "untag an entry",
-   impl = wrap(function(tag)
-      local _, id, _ = render.get_entry()
+   impl = wrap(function(tag, id, save_hist)
+      if not id then
+         _, id, _ = render.get_entry()
+      end
+      save_hist = vim.F.if_nil(save_hist, true)
       tag = tag or input { prompt = "Untag: " }
       if not tag or not id then
          return
@@ -220,6 +257,12 @@ cmds.untag = {
       local buf = vim.api.nvim_get_current_buf()
       if buf == render.index then
          render.refresh()
+      end
+      dot = function()
+         cmds.untag.impl(tag)
+      end
+      if save_hist then
+         table.insert(tag_hist, { type = "untag", tag = tag, id = id })
       end
    end),
    context = { index = true, entry = true },
@@ -279,7 +322,15 @@ cmds.list = {
 cmds.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(vim.tbl_keys(feeds), 10)
+      local feedlist = vim.iter(feeds)
+         :filter(function(_, v)
+            return type(v) == "table"
+         end)
+         :fold({}, function(acc, k)
+            table.insert(acc, k)
+            return acc
+         end)
+      fetch.update_feeds(feedlist, 10)
    end,
    context = { all = true },
 }
@@ -407,17 +458,6 @@ function cmds._register_autocmds()
             vim.cmd.colorscheme(config.colorscheme)
          end
          ut.highlight_entry(render.entry)
-         local conform_ok, conform = pcall(require, "conform")
-         -- local has_null_ls, null_ls = pcall(require, "null-ls")
-         -- local null_ls_ok = has_null_ls and (null_ls.builtins.formatting["markdownfmt"] or null_ls.builtins.formatting["mdformat"] or null_ls.builtins.formatting["markdownlint"])
-
-         if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = render.entry })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
-            vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
-         else
-            pcall(vim.lsp.buf.format, { bufnr = render.entry }) -- TODO:
-         end
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
@@ -437,6 +477,16 @@ function cmds._register_autocmds()
             pcall(vim.api.nvim_set_option_value, key, value, { buf = render.entry })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
+
+         local conform_ok, conform = pcall(require, "conform")
+
+         if conform_ok then
+            vim.api.nvim_set_option_value("modifiable", true, { buf = render.entry })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
+            vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
+         else
+            vim.lsp.buf.format { bufnr = render.entry }
+         end
       end,
    })
 
@@ -453,6 +503,8 @@ function cmds._register_autocmds()
             local function iset(lhs, rhs)
                vim.keymap.set("n", lhs, rhs.impl, { buffer = render.index, noremap = true })
             end
+            iset(".", cmds._dot)
+            iset("u", cmds._undo)
             iset("<CR>", cmds.show_entry)
             iset("<M-CR>", cmds.show_in_split)
             iset("r", cmds.refresh)
@@ -475,11 +527,11 @@ function cmds._register_autocmds()
       vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
    end
 
-   -- vim.api.nvim_create_autocmd("User", {
-   --    group = augroup,
-   --    pattern = "QuitEntryPost",
-   --    callback = restore_state,
-   -- })
+   vim.api.nvim_create_autocmd("User", {
+      group = augroup,
+      pattern = "QuitEntryPost",
+      callback = restore_state,
+   })
 
    vim.api.nvim_create_autocmd("User", {
       group = augroup,

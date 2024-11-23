@@ -192,4 +192,10 @@ M.select = M.cb_to_co(function(cb, items, opts)
    pcall(vim.ui.select, items, opts, cb)
 end)
 
+M.unescape = function(str)
+   return string.gsub(str, "(\\[%[%]`*!|#])", function(s)
+      return s:sub(2)
+   end)
+end
+
 return M

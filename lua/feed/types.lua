@@ -13,7 +13,7 @@
 ---@field etag? string
 ---@field entries? feed.entry[]
 
----@alias feed.opml table<string, feed.feed>
+---@alias feed.opml table<string, feed.feed | string>
 
 ---@class feed.entry
 ---@field time integer # falls back to the current os.time

@@ -1,5 +1,3 @@
--- TODO: grey out the entries just read, only hide after refresh
-
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
 local format = require "feed.format"
@@ -9,21 +7,31 @@ local date = require "feed.parser.date"
 local NuiText = require "nui.text"
 local entities = require "feed.lib.entities"
 local decode = entities.decode
+local health = require "feed.health"
 
-local treedoc = require "treedoc"
-local conv = require "treedoc.writers.markdown"
-
-local function html_to_md(str)
-   local ok, md = pcall(conv, treedoc.parse("<html>" .. str .. "</html>", { language = "html" })[1])
-   -- local ok, md = pcall(_treedoc.write, _treedoc.read(str, "html"), "markdown")
-   if ok then
-      return md
-   else
-      return "failed to convert feed... wait for a more powerful renderer lol"
+-- TODO: grey out the entries just read, only hide after refresh
+local function html_to_md(str, id)
+   if not health.check_binary_installed { name = "pandoc" } then
+      return "you need pandoc to view feeds https://pandoc.org"
    end
+   local sourced_file = require("plenary.debug_utils").sourced_filepath()
+   local filter = vim.fn.fnamemodify(sourced_file, ":h") .. "/pandoc_filter.lua"
+   local md = vim.system({
+      "pandoc",
+      "-f",
+      "html",
+      "-t",
+      filter,
+      "--wrap=none",
+      db.dir .. "/data/" .. id,
+   }, { text = true })
+      :wait().stdout
+   return ut.unescape(md)
 end
 
 local og_colorscheme, og_winbar, og_buffer
+
+og_colorscheme = vim.g.colors_name
 
 local M = {
    on_display = nil,
@@ -88,9 +96,7 @@ M.show_line = show_line
 
 function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
-   og_colorscheme = vim.g.colors_name
-   -- og_winbar = vim.wo.winbar
-   local buf = M.index and M.index or vim.api.nvim_create_buf(false, true)
+   local buf = M.index or vim.api.nvim_create_buf(false, true)
    M.index = buf
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
    vim.bo[buf].modifiable = true
@@ -132,7 +138,7 @@ function M.show_entry(opts)
    local lines = {}
 
    lines[#lines + 1] = entry.title and kv("Title", decode(entry.title))
-   lines[#lines + 1] = entry.time and kv("Date", date.new_from.number(entry.time))
+   lines[#lines + 1] = entry.time and kv("Date", date.parse(entry.time))
    lines[#lines + 1] = entry.author and kv("Author", entry.author)
 
    lines[#lines + 1] = entry.feed and kv("Feed", entry.feed)
@@ -142,14 +148,16 @@ function M.show_entry(opts)
    local raw_str = db:read_entry(id)
    if raw_str then
       local entry_lines
-      local md = html_to_md(raw_str)
+      local md = html_to_md(raw_str, id)
+      -- local entry_lines = vim.split(md, "\n")
       entry_lines, M.state.urls = urlview(vim.split(md, "\n"), entry.link)
       vim.list_extend(lines, entry_lines)
    end
 
    vim.bo[buf].modifiable = true
    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-   if not opts.buf then -- weird but for telescope
+   vim.api.nvim_set_option_value("filetype", "markdown", { buf = M.entry })
+   if not opts.buf then
       vim.api.nvim_set_current_buf(buf)
       M.show_winbar()
       vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
@@ -212,7 +220,7 @@ function M.quit()
    elseif M.entry == buf then
       vim.cmd "bd!"
       M.show_index()
-      -- vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
+      vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    elseif M.index == buf then
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)

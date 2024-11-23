@@ -1,7 +1,6 @@
 local date = require "feed.parser.date"
 local sha = vim.fn.sha256
 local ut = require "feed.utils"
-local strings = require "plenary.strings"
 local p_ut = require "feed.parser.utils"
 local sensible = p_ut.sensible
 
@@ -59,16 +58,16 @@ end
 
 local function handle_date(entry)
    local time = sensible(entry.pubDate or entry["dc:date"], 1)
-   return date.new_from.rss(time)
+   return date.parse(time, "rss")
 end
 
-local function handle_content(entry)
+local function handle_content(entry, fallback)
    -- TODO: type of content not relevant?
    local content = sensible(entry["content:encoded"] or entry.description, 1)
    if content then
       return content
    else
-      return "this feed seems to be empty..."
+      return fallback
    end
 end
 
@@ -86,8 +85,8 @@ local function handle_entry(entry, feed_url, feed_name, feed_author)
    local res = {}
    res.link = handle_link(entry, feed_url)
    res.id = sha(res.link)
-   res.content = handle_content(entry)
-   res.title = handle_entry_title(entry, strings.truncate(res.content, 20))
+   res.content = handle_content(entry, "empty entry")
+   res.title = handle_entry_title(entry, "no title")
    res.time = handle_date(entry)
    res.author = handle_author(entry, feed_author or feed_name)
    res.feed = feed_name
