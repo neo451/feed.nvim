@@ -10,7 +10,7 @@ local decode = entities.decode
 local health = require "feed.health"
 
 -- TODO: grey out the entries just read, only hide after refresh
-local function html_to_md(str, id)
+local function html_to_md(id)
    if not health.check_binary_installed { name = "pandoc" } then
       return "you need pandoc to view feeds https://pandoc.org"
    end
@@ -29,7 +29,7 @@ local function html_to_md(str, id)
    return ut.unescape(md)
 end
 
-local og_colorscheme, og_winbar, og_buffer
+local og_colorscheme, og_winbar
 
 og_colorscheme = vim.g.colors_name
 
@@ -122,8 +122,11 @@ end
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
-   local buf = opts.buf or M.entry or vim.api.nvim_create_buf(false, true)
-   M.entry = buf
+   ---@type integer
+   local buf = vim.F.if_nil(opts.buf, M.entry, vim.api.nvim_create_buf(false, true))
+   if not opts.buf then
+      M.entry = buf
+   end
    local untag = vim.F.if_nil(opts.untag, true)
    local entry, id, row = M.get_entry(opts)
    if not entry or not id then
@@ -145,21 +148,17 @@ function M.show_entry(opts)
    lines[#lines + 1] = entry.link and kv("Link", entry.link)
    lines[#lines + 1] = ""
 
-   local raw_str = db:read_entry(id)
-   if raw_str then
-      local entry_lines
-      local md = html_to_md(raw_str, id)
-      -- local entry_lines = vim.split(md, "\n")
-      entry_lines, M.state.urls = urlview(vim.split(md, "\n"), entry.link)
-      vim.list_extend(lines, entry_lines)
-   end
+   local entry_lines
+   local md = html_to_md(id)
+   entry_lines, M.state.urls = urlview(vim.split(md, "\n"), entry.link)
+   vim.list_extend(lines, entry_lines)
 
    vim.bo[buf].modifiable = true
    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
    vim.api.nvim_set_option_value("filetype", "markdown", { buf = M.entry })
    if not opts.buf then
       vim.api.nvim_set_current_buf(buf)
-      M.show_winbar()
+      vim.wo.winbar = ""
       vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
    end
 end
@@ -211,20 +210,24 @@ function M.refresh(opts)
    M.show_index {}
 end
 
+local function restore_state()
+   vim.cmd "set cmdheight=1"
+   vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
+   pcall(vim.cmd.colorscheme, og_colorscheme)
+end
+
 function M.quit()
    local buf = vim.api.nvim_get_current_buf()
-   if M.state.in_split then
-      vim.cmd "q"
-      vim.api.nvim_set_current_buf(M.index)
-      M.state.in_split = false
-   elseif M.entry == buf then
+   if M.entry == buf then
       vim.cmd "bd!"
       M.show_index()
+      M.show_winbar()
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    elseif M.index == buf then
       vim.cmd "bd!"
       pcall(vim.cmd.colorscheme, og_colorscheme)
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
+      restore_state()
    end
 end
 

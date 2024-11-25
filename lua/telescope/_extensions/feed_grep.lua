@@ -124,8 +124,9 @@ local function feed_grep()
             actions.close(prompt_bufnr)
             local selection = action_state.get_selected_entry()
             local id = selection.filename
+            render.entry = vim.api.nvim_create_buf(false, true)
             render.show_entry { id = id, untag = false }
-            jump_to_line(nil, render.state.entry_buf, selection)
+            -- jump_to_line(nil, render.state.entry_buf, selection)
          end)
          return true
       end,

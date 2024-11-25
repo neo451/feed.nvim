@@ -14,12 +14,7 @@ function Writer(doc, opts)
          end
       end,
       Div = function(elem)
-         local res = {}
-         for _, v in ipairs(elem.content) do
-            res[#res + 1] = v
-            res[#res + 1] = pandoc.Space()
-         end
-         return res
+         return elem.content
       end,
       Span = function(elem)
          local res = {}

@@ -12,9 +12,9 @@ local wrap = ut.wrap
 local input = ut.input
 local select = ut.select
 
-local cmds = {}
+local M = {}
 
-cmds.log = {
+M.log = {
    doc = "show log",
    impl = function()
       local str = read_file(vim.fn.stdpath "data" .. "/feed.nvim.log")
@@ -28,7 +28,7 @@ cmds.log = {
    context = { all = true },
 }
 
-cmds.load_opml = {
+M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
       fp = fp or input { prompt = "path to your opml: ", completion = "file_in_path" }
@@ -54,7 +54,7 @@ cmds.load_opml = {
    context = { all = true },
 }
 
-cmds.export_opml = {
+M.export_opml = {
    doc = "exports opml to a filepath",
    impl = wrap(function(fp)
       fp = fp or input { prompt = "export your opml to: ", completion = "file_in_path" }
@@ -71,7 +71,7 @@ cmds.export_opml = {
    context = { all = true },
 }
 
-cmds.search = {
+M.search = {
    doc = "query the database by time, tags or regex",
    impl = wrap(function(query)
       local buf = vim.api.nvim_get_current_buf()
@@ -94,7 +94,7 @@ cmds.search = {
 }
 
 -- TODO: Native one with nui
-cmds.grep = {
+M.grep = {
    doc = "full-text search through the entry contents (experimental)",
    impl = function()
       local ok = pcall(vim.cmd.Telescope, "feed_grep")
@@ -105,22 +105,20 @@ cmds.grep = {
    context = { all = true },
 }
 
-cmds.refresh = {
+M.refresh = {
    doc = "re-renders the index buffer",
-   impl = function()
-      render.refresh {}
-   end,
+   impl = render.refresh,
    context = { index = true },
 }
 
-cmds.show_in_browser = {
+M.show_in_browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = function()
       local entry = render.get_entry()
       if entry then
          local link = entry.link
          if link then
-            cmds.untag.impl "unread"
+            M.untag.impl "unread"
             vim.ui.open(link)
          end
       else
@@ -130,31 +128,51 @@ cmds.show_in_browser = {
    context = { index = true, entry = true },
 }
 
-cmds.show_in_split = {
+M.show_in_split = {
    doc = "show entry in split",
    impl = function()
-      vim.cmd(config.split_cmd)
-      render.show_entry()
-      render.state.in_split = true
+      local Split = require "nui.split"
+      local event = require("nui.utils.autocmd").event
+
+      local split = Split {
+         relative = "editor",
+         position = "bottom",
+         size = "50%",
+      }
+      local _, id = render.get_entry()
+      split:mount()
+      -- TODO: fix ShowEntryPost
+      -- TODO: move to render.lua
+      render.show_entry { buf = split.bufnr, id = id }
+      vim.keymap.set("n", "q", function()
+         split:unmount()
+      end, { buffer = split.bufnr, noremap = true })
+      split:on(event.BufLeave, function()
+         split:unmount()
+      end)
    end,
    context = { index = true },
 }
 
-cmds.show_entry = {
+M.show_entry = {
    doc = "show entry in new buffer",
-   impl = function()
-      render.show_entry()
-   end,
+   impl = render.show_entry,
    context = { index = true },
 }
 
-cmds.show_index = {
+M.show_index = {
    doc = "show query results in new buffer",
    impl = render.show_index,
    context = { all = true },
 }
 
-cmds.show_next = {
+M.quit = {
+   doc = "quit current view",
+   impl = render.quit,
+   context = { entry = true, index = true },
+}
+
+M.show_next = {
    doc = "show next query result",
    impl = function()
       if render.current_index == #render.on_display then
@@ -165,7 +183,7 @@ cmds.show_next = {
    context = { entry = true },
 }
 
-cmds.show_prev = {
+M.show_prev = {
    doc = "show previous query result",
    impl = function()
       if render.current_index == 1 then
@@ -176,13 +194,7 @@ cmds.show_prev = {
    context = { entry = true },
 }
 
-cmds.quit = {
-   doc = "quit current view",
-   impl = render.quit,
-   context = { entry = true, index = true },
-}
-
-cmds.link_to_clipboard = {
+M.link_to_clipboard = {
    doc = "yank link to system clipboard",
    impl = function()
       vim.fn.setreg("+", render.get_entry().link)
@@ -193,29 +205,29 @@ cmds.link_to_clipboard = {
 local dot = function() end
 local tag_hist = {}
 
-cmds._undo = {
+M._undo = {
    impl = function()
       local act = table.remove(tag_hist, #tag_hist)
       if not act then
          return
       end
       if act.type == "tag" then
-         cmds.untag.impl(act.tag, act.id, false)
+         M.untag.impl(act.tag, act.id, false)
       elseif act.type == "untag" then
-         cmds.tag.impl(act.tag, act.id, false)
+         M.tag.impl(act.tag, act.id, false)
       end
    end,
    context = { index = true },
 }
 
-cmds._dot = {
+M._dot = {
    impl = function()
       dot()
    end,
    context = { index = true },
 }
 
-cmds.tag = {
+M.tag = {
    doc = "tag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
@@ -232,7 +244,7 @@ cmds.tag = {
          render.refresh()
       end
       dot = function()
-         cmds.tag.impl(tag)
+         M.tag.impl(tag)
       end
       if save_hist then
          table.insert(tag_hist, { type = "tag", tag = tag, id = id })
@@ -242,7 +254,7 @@ cmds.tag = {
 }
 
 --- TODO: make tag untag visual line mode
-cmds.untag = {
+M.untag = {
    doc = "untag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
@@ -259,7 +271,7 @@ cmds.untag = {
          render.refresh()
       end
       dot = function()
-         cmds.untag.impl(tag)
+         M.untag.impl(tag)
       end
       if save_hist then
          table.insert(tag_hist, { type = "untag", tag = tag, id = id })
@@ -269,7 +281,7 @@ cmds.untag = {
    -- TODO: completion for in-db tags , tags.lua
 }
 
-cmds.open_url = {
+M.open_url = {
    doc = "open url under cursor",
    impl = wrap(function()
       vim.cmd.normal "yi["
@@ -288,7 +300,7 @@ cmds.open_url = {
    context = { entry = true },
 }
 
-cmds.urlview = {
+M.urlview = {
    doc = "list all links in entry and open selected",
    impl = wrap(function()
       local items = render.state.urls
@@ -309,7 +321,7 @@ cmds.urlview = {
    context = { entry = true },
 }
 
-cmds.list = {
+M.list = {
    doc = "list all feeds",
    impl = function()
       for _, url in ipairs(vim.tbl_keys(feeds)) do
@@ -319,7 +331,7 @@ cmds.list = {
    context = { all = true },
 }
 
-cmds.update = {
+M.update = {
    doc = "update all feeds",
    impl = function()
       local feedlist = vim.iter(feeds)
@@ -335,7 +347,7 @@ cmds.update = {
    context = { all = true },
 }
 
-cmds.update_feed = {
+M.update_feed = {
    doc = "update a feed to db",
    impl = wrap(function(url)
       url = url
@@ -358,7 +370,7 @@ cmds.update_feed = {
 }
 
 -- TODO:
-cmds.prune_feed = {
+M.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
    impl = wrap(function(url)
       url = url
@@ -383,54 +395,54 @@ cmds.prune_feed = {
    context = { all = true },
 }
 
-function cmds._list_commands()
+function M._list_commands()
    local buf = vim.api.nvim_get_current_buf()
-   local choices = vim.iter(vim.tbl_keys(cmds)):filter(function(v)
+   local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
       return v:sub(0, 1) ~= "_"
    end)
    if render.entry == buf then
       choices = choices:filter(function(v)
-         return cmds[v].context.entry or cmds[v].context.all
+         return M[v].context.entry or M[v].context.all
       end)
    elseif render.index == buf then
       choices = choices:filter(function(v)
-         return cmds[v].context.index or cmds[v].context.all
+         return M[v].context.index or M[v].context.all
       end)
    else
       choices = choices:filter(function(v)
-         return cmds[v].context.all
+         return M[v].context.all
       end)
    end
    return choices:totable()
 end
 
-function cmds._load_command(args)
+function M._load_command(args)
    local cmd = args[1]
-   if cmds[cmd] then
+   if M[cmd] then
       table.remove(args, 1)
-      local item = cmds[cmd]
+      local item = M[cmd]
       item.impl(unpack(args))
    else
       render.refresh { query = table.concat(args, " ") }
    end
 end
 
-function cmds._menu()
-   local items = cmds._list_commands()
+function M._menu()
+   local items = M._list_commands()
    vim.ui.select(items, {
       prompt = "Feed commands",
       format_item = function(item)
-         return item .. ": " .. cmds[item].doc
+         return item .. ": " .. M[item].doc
       end,
    }, function(choice)
       if choice then
-         local item = cmds[choice]
+         local item = M[choice]
          item.impl()
       end
    end)
 end
 
-function cmds._sync_feedlist()
+function M._sync_feedlist()
    for _, v in ipairs(config.feeds) do
       local url = type(v) == "table" and v[1] or v
       local name = type(v) == "table" and v.name or nil
@@ -447,7 +459,7 @@ end
 
 local augroup = vim.api.nvim_create_augroup("Feed", {})
 
-function cmds._register_autocmds()
+function M._register_autocmds()
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
@@ -463,15 +475,15 @@ function cmds._register_autocmds()
             local function eset(lhs, rhs)
                vim.keymap.set("n", lhs, rhs.impl, { buffer = render.entry, noremap = true })
             end
-            eset("b", cmds.show_in_browser)
-            eset("s", cmds.search)
-            eset("+", cmds.tag)
-            eset("-", cmds.untag)
-            eset("q", cmds.quit)
-            eset("r", cmds.urlview)
-            eset("}", cmds.show_next)
-            eset("{", cmds.show_prev)
-            eset("gx", cmds.open_url)
+            eset("b", M.show_in_browser)
+            eset("s", M.search)
+            eset("+", M.tag)
+            eset("-", M.untag)
+            eset("q", M.quit)
+            eset("r", M.urlview)
+            eset("}", M.show_next)
+            eset("{", M.show_prev)
+            eset("gx", M.open_url)
          end
          for key, value in pairs(config.options.entry) do
             pcall(vim.api.nvim_set_option_value, key, value, { buf = render.entry })
@@ -503,17 +515,17 @@ function cmds._register_autocmds()
             local function iset(lhs, rhs)
                vim.keymap.set("n", lhs, rhs.impl, { buffer = render.index, noremap = true })
             end
-            iset(".", cmds._dot)
-            iset("u", cmds._undo)
-            iset("<CR>", cmds.show_entry)
-            iset("<M-CR>", cmds.show_in_split)
-            iset("r", cmds.refresh)
-            iset("b", cmds.show_in_browser)
-            iset("s", cmds.search)
-            iset("y", cmds.link_to_clipboard)
-            iset("+", cmds.tag)
-            iset("-", cmds.untag)
-            iset("q", cmds.quit)
+            iset(".", M._dot)
+            iset("u", M._undo)
+            iset("<CR>", M.show_entry)
+            iset("<M-CR>", M.show_in_split)
+            iset("r", M.refresh)
+            iset("b", M.show_in_browser)
+            iset("s", M.search)
+            iset("y", M.link_to_clipboard)
+            iset("+", M.tag)
+            iset("-", M.untag)
+            iset("q", M.quit)
          end
          for key, value in pairs(config.options.index) do
             pcall(vim.api.nvim_set_option_value, key, value, { buf = render.index })
@@ -521,23 +533,6 @@ function cmds._register_autocmds()
          end
       end,
    })
-
-   local function restore_state()
-      vim.cmd "set cmdheight=1"
-      vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
-   end
-
-   vim.api.nvim_create_autocmd("User", {
-      group = augroup,
-      pattern = "QuitEntryPost",
-      callback = restore_state,
-   })
-
-   vim.api.nvim_create_autocmd("User", {
-      group = augroup,
-      pattern = "QuitIndexPost",
-      callback = restore_state,
-   })
 end
 
-return cmds
+return M

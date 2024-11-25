@@ -57,7 +57,8 @@ local function feed()
             actions.select_default:replace(function()
                actions.close(prompt_bufnr)
                local selection = action_state.get_selected_entry()
-               render.show_entry { row_idx = selection.index }
+               render.entry = vim.api.nvim_create_buf(false, true)
+               render.show_entry { id = selection.value }
             end)
             actions.send_to_qflist:replace(function()
                actions.close(prompt_bufnr)
