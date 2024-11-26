@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.10.0](https://github.com/neo451/feed.nvim/compare/v1.9.3...v1.10.0) (2024-11-26)
+
+
+### Features
+
+* **parser.fetch:** support links like rsshub://{route}, DIY power! ([2a052f3](https://github.com/neo451/feed.nvim/commit/2a052f3186e0360d7f695081e74dd747707b5dc4))
+
+
+### Bug Fixes
+
+* **fetch:** use -D flag to avoid proxy header, handles more feeds! ([656aa4f](https://github.com/neo451/feed.nvim/commit/656aa4f0e1fbd6144cb9231f4e71f1b6605ecb68))
+* **render:** better health with version check for curl and pandoc ([2a052f3](https://github.com/neo451/feed.nvim/commit/2a052f3186e0360d7f695081e74dd747707b5dc4))
+* **telescope:** open entry on enter ([656aa4f](https://github.com/neo451/feed.nvim/commit/656aa4f0e1fbd6144cb9231f4e71f1b6605ecb68))
+
 ## [1.9.3](https://github.com/neo451/feed.nvim/compare/v1.9.2...v1.9.3) (2024-11-23)
 
 
