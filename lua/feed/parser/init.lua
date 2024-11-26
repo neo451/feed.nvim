@@ -82,7 +82,6 @@ function M.parse(url_or_src, opts)
          if d then
             return vim.tbl_extend("keep", response, d)
          end
-         -- parsed = vim.F.if_nil(d, fallback)
          return response
       end
    end

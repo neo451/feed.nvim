@@ -8,8 +8,8 @@ local error = health.error or health.report_error
 local is_win = vim.api.nvim_call_function("has", { "win32" }) == 1
 
 local dependencies = {
-   { name = "curl", optional = false },
-   { name = "pandoc", optional = false },
+   { name = "curl", optional = false, min_ver = 8 },
+   { name = "pandoc", optional = false, min_ver = 3 },
 }
 
 local plugins = {
@@ -58,24 +58,26 @@ local check_binary_installed = function(package)
       found = vim.fn.executable(binary) == 1
    end
    if found then
-      local handle = io.popen(binary .. " --version")
-      if handle then
-         local binary_version = handle:read "*a"
-         handle:close()
-         return true, binary_version
+      local results = vim.system({ binary, "--version" }):wait()
+      local version = vim.version.parse(results.stdout)
+      if version then
+         if version.major < package.min_ver then
+            warn(binary .. " found: but version is too old", "Please install " .. package.min_ver .. ".xx")
+            return false
+         else
+            ok(binary .. " " .. version.major .. "." .. version.minor .. " found")
+            return true
+         end
       end
    end
 end
+
 M.check_binary_installed = check_binary_installed
 
 M.check = function()
    vim.health.start "feed report"
    for _, binary in ipairs(dependencies) do
-      if check_binary_installed(binary) then
-         ok(binary.name .. " installed")
-      else
-         warn(binary.name .. " not found")
-      end
+      check_binary_installed(binary)
    end
    for _, plug in ipairs(plugins) do
       check_lualib_installed(plug)

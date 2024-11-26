@@ -124,11 +124,11 @@ log.new = function(config, standalone)
    end
 
    for i, x in ipairs(config.modes) do
-      obj[x.name] = function(...)
+      obj[x.name] = vim.schedule_wrap(function(...)
          return log_at_level(i, x, make_string, ...)
-      end
+      end)
 
-      obj[("fmt_%s"):format(x.name)] = function()
+      obj[("fmt_%s"):format(x.name)] = vim.schedule_wrap(function()
          return log_at_level(i, x, function(...)
             local passed = { ... }
             local fmt = table.remove(passed, 1)
@@ -138,7 +138,7 @@ log.new = function(config, standalone)
             end
             return string.format(fmt, unpack(inspected))
          end)
-      end
+      end)
    end
 end
 

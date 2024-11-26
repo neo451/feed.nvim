@@ -1,11 +1,13 @@
 ---@diagnostic disable: inject-field
 local ut = require "feed.utils"
+local log = require "feed.lib.log"
+local config = require "feed.config"
 
 local M = {}
+local read_file = ut.read_file
 
-local function parse_header(data)
-   data = data:gsub("\r", "")
-   local headers = vim.split(data, "\n")
+local function parse(data)
+   local headers = vim.split(data, "\r\n")
    local code = table.remove(headers, 1)
    local status = tonumber(string.match(code, "([%w+]%d+)"))
    local res = {}
@@ -16,7 +18,23 @@ local function parse_header(data)
          res[k] = v
       end
    end
-   return res, status
+   res.status = status
+   return res
+end
+
+local function parse_header(fp)
+   local data = read_file(fp)
+   vim.uv.fs_unlink(fp)
+   if data then
+      local sects = vim.split(data, "\r\n\r\n")
+      local headers = {}
+      for _, sect in ipairs(sects) do
+         headers = vim.tbl_extend("keep", headers, parse(sect))
+      end
+      return headers
+   else
+      log.warn "invalid header!!!" -- TODO:
+   end
 end
 
 local function build_header(t)
@@ -35,56 +53,36 @@ local function build_header(t)
 end
 
 local function fetch(cb, url, opts)
+   assert(type(url) == "string", "url must be a string")
+   assert(type(cb) == "function", "callback is required")
+   if url:find "rsshub://" then
+      url = url:gsub("rsshub:/", config.rsshub_instance)
+   end
    opts = opts or {}
    local additional = build_header {
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
    }
-   local cmds = { "curl", "-i", "--connect-timeout", opts.timeout or 10, url }
+   local dump_fp = vim.fn.tempname()
+   local cmds = { "curl", "-sSL", "-D", dump_fp, "--connect-timeout", opts.timeout or 10, url }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
    vim.system(cmds, { text = true }, function(obj)
-      -- TODO: handle curl code 28 timeout, 35 unexpected eof
-      -- TODO: curl: (52) Empty reply from server
       if obj.code == 0 then
-         local split = vim.split(obj.stdout, "\n\n")
-         local header = table.remove(split, 1)
-         local headers, status = parse_header(header)
+         local headers = parse_header(dump_fp)
          obj.href = headers.location or url
          obj.etag = headers.etag
          obj.last_modified = headers.last_modified
-         obj.status = status
-         obj.body = obj.stdout:sub(#header + 3, -1)
-         -- print(obj.body)
+         obj.status = headers.status
+         obj.body = obj.stdout
          obj.headers = headers
          vim.schedule_wrap(cb)(obj)
+      else
+         log.warn("[feed.nvim]:", url, obj.stderr)
       end
-      -- print(obj.code)
    end)
 end
 
-local fetch_co = ut.cb_to_co(fetch)
-
-local redirect = {
-   [301] = true,
-   [302] = true,
-   [307] = true,
-   [308] = true,
-}
-
-function M.fetch_co(url, opts)
-   local obj = fetch_co(url, opts)
-   if redirect[obj.status] then
-      local new_loc = ut.url_resolve(url, obj.href)
-      return M.fetch_co(new_loc, opts)
-   end
-   return obj
-end
---
--- local run = require("feed.utils").run
---
--- run(function()
---    print(M.fetch_co("http://rss.badassjs.com/", {}))
--- end)
+M.fetch_co = ut.cb_to_co(fetch)
 
 return M

@@ -13,6 +13,7 @@ local default = {
    split_cmd = "13split",
    ---@type boolean
    enable_default_keybindings = true,
+   rsshub_instance = "https://rsshub.app",
    options = {
       ---@type table<string, any>
       index = {
