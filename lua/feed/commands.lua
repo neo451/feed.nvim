@@ -14,6 +14,17 @@ local select = ut.select
 
 local M = {}
 
+local function feedlist()
+   return vim.iter(feeds)
+      :filter(function(_, v)
+         return type(v) == "table"
+      end)
+      :fold({}, function(acc, k)
+         table.insert(acc, k)
+         return acc
+      end)
+end
+
 M.log = {
    doc = "show log",
    impl = function()
@@ -324,7 +335,7 @@ M.urlview = {
 M.list = {
    doc = "list all feeds",
    impl = function()
-      for _, url in ipairs(vim.tbl_keys(feeds)) do
+      for _, url in ipairs(feedlist()) do
          print(feeds[url] and feeds[url].title or url, url, feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
       end
    end,
@@ -334,15 +345,7 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      local feedlist = vim.iter(feeds)
-         :filter(function(_, v)
-            return type(v) == "table"
-         end)
-         :fold({}, function(acc, k)
-            table.insert(acc, k)
-            return acc
-         end)
-      fetch.update_feeds(feedlist, 10)
+      fetch.update_feeds(feedlist(), 10)
    end,
    context = { all = true },
 }
@@ -351,7 +354,7 @@ M.update_feed = {
    doc = "update a feed to db",
    impl = wrap(function(url)
       url = url
-         or select(vim.tbl_keys(feeds), {
+         or select(feedlist(), {
             prompt = "Feed to update",
             format_item = function(item)
                return feeds[item].title or item
@@ -364,7 +367,7 @@ M.update_feed = {
    end),
 
    complete = function()
-      return vim.tbl_keys(feeds)
+      return feedlist()
    end,
    context = { all = true },
 }
@@ -374,7 +377,7 @@ M.prune_feed = {
    doc = "remove a feed from feedlist, and all its entries",
    impl = wrap(function(url)
       url = url
-         or select(vim.tbl_keys(feeds), {
+         or select(feedlist(), {
             prompt = "Feed to remove",
             format_item = function(item)
                return feeds[item].title or item

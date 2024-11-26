@@ -18,7 +18,7 @@ local encoding_blacklist = {
 -- TODO: force_update option, ignore etag and last_modified
 
 ---@param url string
----@return table
+---@return table?
 function M.update_feed(url, opts)
    local tags, last_modified, etag
    if feeds[url] then

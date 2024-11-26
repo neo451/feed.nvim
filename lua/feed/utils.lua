@@ -2,14 +2,14 @@ local M = {}
 local URL = require "feed.lib.url"
 local strings = require "plenary.strings"
 
-local feed_ns = vim.api.nvim_create_namespace "feed"
-local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
-local light_grp = vim.api.nvim_get_hl(0, { name = "LineNr" })
-vim.api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-vim.api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
-
 ---@param buf integer
 function M.highlight_entry(buf)
+   -- TODO: move to plugin/
+   local feed_ns = vim.api.nvim_create_namespace "feed"
+   local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
+   local light_grp = vim.api.nvim_get_hl(0, { name = "LineNr" })
+   vim.api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
+   vim.api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
    local len = { 6, 5, 7, 5, 5 }
    for i = 0, 4 do
       vim.highlight.range(buf, feed_ns, "Title", { i, 0 }, { i, len[i + 1] })
@@ -170,7 +170,7 @@ end
 
 function M.looks_like_url(str)
    local allow = { https = true, http = true }
-   return allow[URL.parse(str).scheme] ~= nil
+   return allow[URL.parse(str).scheme] ~= nil or str:match "rsshub://(.+)" ~= nil
 end
 
 function M.require(mod)
@@ -193,7 +193,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>])", function(s)
+   return string.gsub(str, "(\\[%[%]`*!|#<>_])", function(s)
       return s:sub(2)
    end)
 end

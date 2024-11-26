@@ -11,7 +11,7 @@ local health = require "feed.health"
 
 -- TODO: grey out the entries just read, only hide after refresh
 local function html_to_md(id)
-   if not health.check_binary_installed { name = "pandoc" } then
+   if not health.check_binary_installed { name = "pandoc", min_ver = 3 } then
       return "you need pandoc to view feeds https://pandoc.org"
    end
    local sourced_file = require("plenary.debug_utils").sourced_filepath()
