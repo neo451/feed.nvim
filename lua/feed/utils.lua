@@ -170,7 +170,7 @@ end
 
 function M.looks_like_url(str)
    local allow = { https = true, http = true }
-   return allow[URL.parse(str).scheme] ~= nil or str:match "rsshub://(.+)" ~= nil
+   return allow[URL.parse(str).scheme] ~= nil
 end
 
 function M.require(mod)

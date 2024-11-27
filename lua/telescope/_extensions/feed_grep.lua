@@ -10,8 +10,8 @@ local builtins = require "telescope.builtin"
 
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local render = require "feed.render"
-local format = require "feed.format"
+local render = require "feed.ui"
+local format = require "feed.ui.format"
 local config = require "feed.config"
 
 local parse = function(t)
@@ -51,7 +51,7 @@ local mt
 mt = {
    display = function(entry)
       local en = db[entry.filename]
-      return format.entry_name(en)
+      return format.entry(en)
    end,
 
    __index = function(t, k)

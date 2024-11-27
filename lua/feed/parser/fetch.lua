@@ -55,9 +55,6 @@ end
 local function fetch(cb, url, opts)
    assert(type(url) == "string", "url must be a string")
    assert(type(cb) == "function", "callback is required")
-   if url:find "rsshub://" then
-      url = url:gsub("rsshub:/", config.rsshub_instance)
-   end
    opts = opts or {}
    local additional = build_header {
       is_none_match = opts.etag,

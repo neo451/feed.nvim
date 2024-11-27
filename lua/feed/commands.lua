@@ -1,7 +1,7 @@
 local config = require "feed.config"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local render = require "feed.render"
+local render = require "feed.ui"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds

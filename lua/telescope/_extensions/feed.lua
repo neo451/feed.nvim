@@ -11,8 +11,8 @@ local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local render = require "feed.render"
-local format = require "feed.format"
+local render = require "feed.ui"
+local format = require "feed.ui.format"
 local config = require "feed.config"
 local cmds = require "feed.commands"
 
@@ -44,10 +44,10 @@ local function feed()
             entry_maker = function(line)
                return {
                   value = line,
-                  text = format.entry_name(db[line]),
+                  text = format.entry(db[line]),
                   filename = db.dir .. "/data/" .. line,
                   display = function(entry)
-                     return format.entry_name(db[entry.value])
+                     return format.entry(db[entry.value])
                   end,
                   ordinal = line,
                }

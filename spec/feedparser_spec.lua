@@ -38,7 +38,7 @@ local check_feed_minimal = function(ast)
 end
 
 local dump_date = function(time)
-   return tostring(date.parse(time))
+   return os.date("%Y-%m-%d", time)
 end
 
 describe("rss", function()

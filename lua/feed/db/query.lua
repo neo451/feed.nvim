@@ -2,6 +2,15 @@ local date = require "feed.parser.date"
 
 local M = {}
 
+---@class feed.query
+---@field after? integer #@
+---@field before? integer #@
+---@field must_have? string[] #+
+---@field must_not_have? string[] #-
+---@field feed? string #=
+---@field limit? number ##
+---@field re? string[]
+
 local filter_symbols = {
    ["+"] = "must_have",
    ["-"] = "must_not_have",

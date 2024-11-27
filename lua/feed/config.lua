@@ -1,18 +1,29 @@
 --- Default configuration.
 --- Provides fallback values not specified in the user config.
 
+---@class feed.config
+---@field feeds? string | { name: string, tags: table }
+---@field colorscheme? string
+---@field split_cmd? string
+---@field db_dir? string
+---@field date_format? string
+---@field enable_default_keymaps? boolean
+---@field layout? table
+---@field search? table
+---@field options? table
+---@field on_attach? fun(bufs: table<string, integer>)
+
 ---@class feed._config
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath "data" .. "/feed",
    ---@type string
-   -- colorscheme = vim.g.colorname,
+   colorscheme = vim.g.colorname,
    ---@type string
    date_format = "%Y-%m-%d",
-   ---@type string
-   split_cmd = "13split",
    ---@type boolean
    enable_default_keybindings = true,
+   ---@type string
    rsshub_instance = "https://rsshub.app",
    options = {
       ---@type table<string, any>

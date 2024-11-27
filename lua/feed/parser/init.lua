@@ -3,6 +3,28 @@ local fetch = require "feed.parser.fetch"
 local ut = require "feed.utils"
 local log = require "feed.lib.log"
 
+---@alias feed.type "rss" | "atom" | "json"
+---@alias feed.opml table<string, feed.feed | string>
+
+---@class feed.feed
+---@field title? string
+---@field text? string
+---@field htmlUrl? string
+---@field type? feed.type
+---@field tags? string[]
+---@field last_modified? string
+---@field etag? string
+---@field entries? feed.entry[]
+
+---@class feed.entry
+---@field time integer # falls back to the current os.time
+---@field feed string # name of feed
+---@field title string
+---@field link? string # link to the entry
+---@field author? string # falls back to the feed
+---@field content? string
+---@field tags? table<string, boolean>
+
 local handle_rss = require "feed.parser.rss"
 local handle_atom = require "feed.parser.atom"
 local handle_json = require "feed.parser.jsonfeed"
@@ -15,7 +37,7 @@ local looks_like_url = ut.looks_like_url
 ---@param str string
 ---@return boolean
 local function is_json(str)
-   return pcall(vim.json.decode, str)
+   return (vim.trim(str):sub(1, 1) == "{")
 end
 
 ---Note:
@@ -29,19 +51,15 @@ end
 ---2. entry
 --- 2.1 link
 --- 2.2 feed
---- 2.3 title >> content:sub(0, 20) .. "..."
+--- 2.3 title >> no title
 --- 2.4 author >> feed.title
 --- 2.5 time >> lastUpdated >> os.time()
 --- 2.6 content >> "" -> resolve links in html
 
--- FIX: vim.validate
--- TODO: bozo flag
-
 ---@class feed.parser_opts
 ---@field etag? string
----@field last_modified? string #?
----@field curl_params? table<string, string | number> #?
----@field callback? fun(table)
+---@field last_modified? string
+---@field timeout? integer
 
 ---@param src string
 ---@param url string
@@ -76,7 +94,7 @@ end
 function M.parse(url_or_src, opts)
    opts = opts or {}
    if looks_like_url(url_or_src) then
-      local response = fetch.fetch_co(url_or_src, opts) -- TODO:
+      local response = fetch.fetch_co(url_or_src, opts)
       if response.body and response.body ~= "" then
          local d = M.parse_src(response.body, url_or_src)
          if d then
