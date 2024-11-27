@@ -11,10 +11,10 @@
   </a>
 </p>
 
-**feed.nvim** is a web feed reader in neovim, leveraging modern neovim features and plugin system
+**feed.nvim** is a web feed reader in Neovim.
 
 > [!WARNING]
-> This project is young, things like database format is prune to breaking changes, but the parser and renderer can deal with most feeds you can find, if you just wanna do some simple reading, go ahead and enjoy! 
+> This project is young, things like database format is prune to breaking changes, but it can deal with most feeds you can find, if you just wanna do some simple reading, go ahead and enjoy! 
 >
 > see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
