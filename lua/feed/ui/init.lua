@@ -1,13 +1,12 @@
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local format = require "feed.format"
-local urlview = require "feed.urlview"
+local format = require "feed.ui.format"
+local urlview = require "feed.ui.urlview"
 local config = require "feed.config"
-local date = require "feed.parser.date"
 local NuiText = require "nui.text"
+local health = require "feed.health"
 local entities = require "feed.lib.entities"
 local decode = entities.decode
-local health = require "feed.health"
 
 -- TODO: grey out the entries just read, only hide after refresh
 local function html_to_md(id)
@@ -86,7 +85,7 @@ end
 ---@param row integer
 local function show_line(buf, entry, row)
    vim.api.nvim_buf_set_lines(buf, row - 1, row, false, { "" })
-   local formats = format.get_entry_format(entry, main_comp)
+   local formats = format.gen_format(entry, main_comp)
    for _, v in ipairs(formats) do
       render_text(buf, decode(v.text) or v.text, v.color, v.width, row)
    end
@@ -98,6 +97,7 @@ function M.show_index(opts)
    opts = vim.F.if_nil(opts, {})
    local buf = M.index or vim.api.nvim_create_buf(false, true)
    M.index = buf
+   vim.api.nvim_buf_set_name(buf, "FeedIndex")
    local len = #vim.api.nvim_buf_get_lines(buf, 0, -1, false)
    vim.bo[buf].modifiable = true
    for i = 1, len do
@@ -119,11 +119,20 @@ local function kv(k, v)
    return string.format("%s: %s", k, v)
 end
 
+---@class feed.entry_opts
+---@field row_idx? integer # will default to cursor row
+---@field untag? boolean # default true
+---@field id? string # db_id
+---@field buf? integer # db_id
+
 ---@param opts? feed.entry_opts
 function M.show_entry(opts)
    opts = opts or {}
    ---@type integer
    local buf = vim.F.if_nil(opts.buf, M.entry, vim.api.nvim_create_buf(false, true))
+   if not vim.api.nvim_buf_get_name(buf) then
+      vim.api.nvim_buf_set_name(buf, "FeedEntry")
+   end
    if not opts.buf then
       M.entry = buf
    end
@@ -140,10 +149,10 @@ function M.show_entry(opts)
    end
    local lines = {}
 
-   lines[#lines + 1] = entry.title and kv("Title", decode(entry.title))
-   lines[#lines + 1] = entry.time and kv("Date", date.parse(entry.time))
+   -- TODO: use render_text
+   lines[#lines + 1] = entry.title and kv("Title", format.title(entry))
+   lines[#lines + 1] = entry.time and kv("Date", format.date(entry))
    lines[#lines + 1] = entry.author and kv("Author", entry.author)
-
    lines[#lines + 1] = entry.feed and kv("Feed", entry.feed)
    lines[#lines + 1] = entry.link and kv("Link", entry.link)
    lines[#lines + 1] = ""
@@ -201,7 +210,7 @@ function M.get_entry(opts)
 end
 
 function M.refresh(opts)
-   -- TODO: remove trailing empty lines?
+   -- TODO: remove trailing empty lines
    opts = opts or {}
    if opts.query then
       M.state.query = opts.query

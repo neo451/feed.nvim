@@ -2,11 +2,12 @@ local feedparser = require "feed.parser"
 local ut = require "feed.utils"
 ---@type feed.db
 local db = ut.require "feed.db"
-local progress = require "feed.progress"
+local progress = require "feed.ui.progress"
 local log = require "feed.lib.log"
 local run = ut.run
 local entities = require "feed.lib.entities"
 local decode = entities.decode
+local config = require "feed.config"
 
 local M = {}
 local feeds = db.feeds
@@ -26,7 +27,7 @@ function M.update_feed(url, opts)
       etag = feeds[url].etag
       tags = vim.deepcopy(feeds[url].tags)
    end
-   local ok, d = pcall(feedparser.parse, url, { timeout = 10, etag = etag, last_modified = last_modified })
+   local ok, d = pcall(feedparser.parse, url:gsub("rsshub:/", config.rsshub_instance), { timeout = 10, etag = etag, last_modified = last_modified })
    if ok and d then
       if encoding_blacklist[d.encoding] then
          feeds[url] = nil
@@ -38,12 +39,12 @@ function M.update_feed(url, opts)
             db:add(entry, tags)
          end
       end
-      local href = d.href
+      local href = (d.status == 301) and d.href or url
+      if d.status == 301 then
+         feeds[url] = href -- to keep config consistent
+      end
       if not feeds[href] then
          feeds[href] = {}
-      end
-      if href ~= url then
-         feeds[url] = href
       end
       feeds[href].htmlUrl = feeds[href].htmlUrl or d.link
       feeds[href].title = feeds[href].title or d.title
@@ -98,5 +99,32 @@ function M.update_feeds(feedlist, size)
    end
    aux(1)
 end
+
+-- local uv = vim.uv
+--
+-- ---@param feedlist string[]
+-- ---@param size integer
+-- function M.update_feeds(feedlist, size)
+--    local ctx = uv.new_work(function(url)
+--       print(url)
+--       -- local progress = require "feed.progress"
+--       -- local prog = progress.new(#feedlist)
+--       -- local run = require("feed.utils").run
+--       -- run(function()
+--       --    local ok, d = pcall(M.update_feed, url)
+--       --    local name = url_to_name(url, d)
+--       --    if ok then
+--       --       prog:update(name .. " success")
+--       --    else
+--       --       prog:update(name .. " failed")
+--       --       log.warn(url, d)
+--       --    end
+--       -- end)
+--    end, function() end)
+--
+--    for i = 1, #feedlist do
+--       uv.queue_work(ctx, feedlist[i])
+--    end
+-- end
 
 return M

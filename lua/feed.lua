@@ -8,7 +8,7 @@ M.setup = function(usr_config)
    cmds._sync_feedlist()
 end
 
-local render = require "feed.render"
+local render = require "feed.ui"
 M.get_entry = render.get_entry
 
 M.register_command = function(name, doc, context, f, key)

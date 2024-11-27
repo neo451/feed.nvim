@@ -1,8 +1,23 @@
--- local Path = require "plenary.path"
 local Path = require "pathlib"
 local config = require "feed.config"
 local query = require "feed.db.query"
 local ut = require "feed.utils"
+
+---@class feed.db
+---@field dir string
+---@field feeds feed.opml
+---@field index table
+---@field tags table<string, table<string, boolean>>
+---@field is_stored fun(db: feed.db, id: integer): boolean
+---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
+---@field rm fun(db: feed.db, id: integer)
+---@field iter Iter
+---@field filter fun(db: feed.db, query: string) : string[]
+---@field save_entry fun(db: feed.db, id: string): boolean
+---@field save_feeds fun(db: feed.db): boolean
+---@field tag fun(db: feed.db, id: string, tag: string)
+---@field untag fun(db: feed.db, id: string, tag: string)
+---@field blowup fun(db: feed.db)
 
 local db_mt = { __class = "feed.db" }
 
@@ -12,16 +27,14 @@ local data_dir = db_dir / "data"
 
 local object_dir = db_dir / "object"
 local feeds_fp = db_dir / "feeds.lua"
-local log_fp = db_dir / "log.lua"
 local tags_fp = db_dir / "tags.lua"
 local index_fp = db_dir / "index"
 
-local pdofile = ut.pdofile -- TODO: path ver
+local pdofile = ut.pdofile
 local save_file = ut.save_file
 local save_obj = function(fp, object)
    save_file(fp, "return " .. vim.inspect(object))
 end
-local read_file = ut.read_file
 local remove_file = function(fp)
    if vim.fs.rm then
       vim.fs.rm(tostring(fp), { recursive = true })
@@ -78,7 +91,6 @@ function db_mt.new()
    ensure_path(data_dir, "dir")
    ensure_path(object_dir, "dir")
    ensure_path(feeds_fp, "obj")
-   ensure_path(log_fp, "obj")
    ensure_path(tags_fp, "obj")
    ensure_path(index_fp, "file")
 
@@ -117,12 +129,6 @@ function db_mt:__index(k)
          rawset(self, "tags", tags)
       end
       return rawget(self, "tags")
-   elseif k == "log" then
-      if not rawget(self, k) then
-         local log = pdofile(log_fp)
-         rawset(self, "log", log)
-      end
-      return rawget(self, "log")
    else
       local r = mem[k]
       if not r then
@@ -201,7 +207,6 @@ function db_mt:rm(id)
    remove_file(object_dir / id)
 end
 
--- TODO:
 function db_mt:iter()
    return vim.iter(vim.fs.dir(tostring(object_dir))):map(function(id)
       local r = pdofile(object_dir / id)
@@ -306,27 +311,10 @@ function db_mt:filter(str)
    end)
 end
 
----@param id string
----@return string?
-function db_mt:read_entry(id)
-   return read_file(data_dir / id)
-end
-
 ---@return boolean
 function db_mt:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds))
 end
-
-function db_mt:save_err(type, url, mes)
-   if not self.log[type] then
-      self.log[type] = {}
-   end
-   self.log[type][url] = mes or true
-   return save_file(log_fp, "return " .. vim.inspect(self.log))
-end
-
--- TOOD: metadate file
--- self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
 
 function db_mt:blowup()
    remove_file(db_dir)

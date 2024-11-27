@@ -1,4 +1,4 @@
-local urlview = require "feed.urlview"
+local urlview = require "feed.ui.urlview"
 
 describe("urlview", function()
    it("should remove links from text and return all links as a list", function()

@@ -23,8 +23,7 @@ end
 describe("parse_query", function()
    it("should split query into parts", function()
       local query = M.parse_query "+read -star @5-days-ago linu[xs]"
-      local expected =
-         { must_have = { "read" }, must_not_have = { "star" }, after = date.today:days_ago(5):absolute(), before = date.today:absolute(), re = { vim.regex "linu[xs]" } }
+      local expected = { must_have = { "read" }, must_not_have = { "star" }, after = date.days_ago(5), before = os.time(), re = { vim.regex "linu[xs]" } }
       assert.same(expected.must_have, query.must_have)
       assert.same(expected.must_not_have, query.must_not_have)
       assert.same(expected.after, query.after)
@@ -79,10 +78,10 @@ describe("filter", function()
    --
    it("filter by date", function()
       DB {
-         { time = date.today:days_ago(6):absolute() },
-         { time = date.today:days_ago(7):absolute() },
-         { time = date.today:days_ago(1):absolute() },
-         { time = date.today:absolute() },
+         { time = date.days_ago(6) },
+         { time = date.days_ago(7) },
+         { time = date.days_ago(1) },
+         { time = os.time() },
       }
       db:sort()
       local res = db:filter "@5-days-ago"
