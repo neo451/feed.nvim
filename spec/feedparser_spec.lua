@@ -72,6 +72,10 @@ describe("rss", function()
       eq("rss20", f.version)
       eq("2021-06-14", dump_date(f.entries[1].time))
       check_feed(f)
+
+      f = m.parse_src(readfile "rdf.xml", "http://placehoder.feed")
+      eq("rss10", f.version)
+      check_feed(f)
    end)
 end)
 

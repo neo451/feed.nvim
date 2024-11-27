@@ -289,7 +289,6 @@ M.untag = {
       end
    end),
    context = { index = true, entry = true },
-   -- TODO: completion for in-db tags , tags.lua
 }
 
 M.open_url = {

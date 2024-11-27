@@ -73,14 +73,14 @@ function M.parse_src(src, url)
    else
       local raw_ast = xml.parse(src, url)
       if raw_ast then
-         if raw_ast.rss or raw_ast["rdf"] then -- TODO: rdf
+         if raw_ast.rss or raw_ast["rdf:RDF"] then
             ret = handle_rss(raw_ast, url)
             ret.encoding = raw_ast.encoding or "utf-8"
          elseif raw_ast.feed then
             ret = handle_atom(raw_ast, url)
             ret.encoding = raw_ast.encoding or "utf-8"
          else
-            log.warn "unknown feedtype"
+            log.warn(url, "unknown feedtype")
          end
          return ret
       end

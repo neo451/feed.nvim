@@ -6,7 +6,9 @@ local sensible = p_ut.sensible
 
 local function handle_version(ast)
    local version
-   if ast.rss.version == "2.0" then
+   if ast["rdf:RDF"] then
+      version = "rss10"
+   elseif ast.rss.version == "2.0" then
       version = "rss20"
    elseif ast.rss.version == "0.91" then
       version = "rss091" -- Userland and Netscape
@@ -96,7 +98,7 @@ end
 local function handle_rss(ast, feed_url)
    local res = {}
    res.version = handle_version(ast)
-   local channel = ast.rss.channel
+   local channel = ast.rss and ast.rss.channel or ast["rdf:RDF"].channel
    local root_base = ut.url_rebase(channel, feed_url)
    local feed_author = handle_author(channel)
    res.link = handle_link(channel, feed_url) -- TODO: url resolver

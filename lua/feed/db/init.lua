@@ -30,7 +30,7 @@ local feeds_fp = db_dir / "feeds.lua"
 local tags_fp = db_dir / "tags.lua"
 local index_fp = db_dir / "index"
 
-local pdofile = ut.pdofile -- TODO: path ver
+local pdofile = ut.pdofile
 local save_file = ut.save_file
 local save_obj = function(fp, object)
    save_file(fp, "return " .. vim.inspect(object))
@@ -207,7 +207,6 @@ function db_mt:rm(id)
    remove_file(object_dir / id)
 end
 
--- TODO:
 function db_mt:iter()
    return vim.iter(vim.fs.dir(tostring(object_dir))):map(function(id)
       local r = pdofile(object_dir / id)
@@ -316,9 +315,6 @@ end
 function db_mt:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds))
 end
-
--- TOOD: metadate file
--- self.feeds.lastUpdated = os.time() -- TODO: opt to update time only after fetch -- TODO: put somewhre?...
 
 function db_mt:blowup()
    remove_file(db_dir)
