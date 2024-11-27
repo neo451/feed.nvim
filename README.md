@@ -20,10 +20,12 @@
 
 ## 🌟 Features
 
-- 🌲 fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
-- 📝 view entries as beautiful markdown
-- 🏪 pure lua database with no extra dependency
-- 📚 powerful filtering of feeds and entries, inspired by [elfeed](https://github.com/skeeto/elfeed)
+- 🌲 Fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 📝 View entries as beautiful markdown
+- 🏪 Lua database with no extra dependency
+- 📚 Powerful entry filtering, inspired by [elfeed](https://github.com/skeeto/elfeed)
+- 📂 OPML support to import and export all your feeds and podcasts
+- 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track *everything*
 
 ## 🚀 Installation
 
