@@ -76,6 +76,10 @@ describe("rss", function()
       f = m.parse_src(readfile "rdf.xml", "http://placehoder.feed")
       eq("rss10", f.version)
       check_feed(f)
+
+      f = m.parse_src(readfile "rdf/rss090_item_title.xml", "http://placehoder.feed")
+      eq("rss090", f.version)
+      check_feed(f)
    end)
 end)
 
@@ -165,20 +169,25 @@ describe("feedparser test suite", function()
    end)
    it("sanitize", function()
       for f in vim.fs.dir "./spec/data/sanitize" do
-         if not f:sub(0, 1) == "_" then -- TODO:
-            local str = readfile(f, "./spec/data/sanitize/") -- TODO: further check
-            check_feed_minimal(m.parse_src(str, ""))
-         end
+         -- if not f:sub(0, 1) == "_" then -- TODO:
+         local str = readfile(f, "./spec/data/sanitize/") -- TODO: further check
+         check_feed_minimal(m.parse_src(str, ""))
+         -- end
       end
    end)
    it("xml", function()
       for f in vim.fs.dir "./spec/data/xml" do
-         if not f:sub(0, 1) == "_" then -- TODO:
-            local str = readfile(f, "./spec/data/xml/") -- TODO: further check
-            check_feed_minimal(m.parse_src(str, ""))
-         end
+         local str = readfile(f, "./spec/data/xml/") -- TODO: further check
+         check_feed_minimal(m.parse_src(str, ""))
       end
    end)
+
+   -- it("rdf", function()
+   --    for f in vim.fs.dir "./spec/data/rdf" do
+   --       local str = readfile(f, "./spec/data/rdf/") -- TODO: further check
+   --       check_feed_minimal(m.parse_src(str, ""))
+   --    end
+   -- end)
 end)
 
 describe("reject encodings that neovim can not handle", function()

@@ -7,13 +7,19 @@ local sensible = p_ut.sensible
 local function handle_version(ast)
    local version
    if ast["rdf:RDF"] then
-      version = "rss10"
+      if ast["rdf:RDF"].xmlns == "http://purl.org/rss/1.0/" then
+         version = "rss10"
+      elseif ast["rdf:RDF"].xmlns == "http://my.netscape.com/rdf/simple/0.9/" then
+         version = "rss090"
+      end
    elseif ast.rss.version == "2.0" then
       version = "rss20"
    elseif ast.rss.version == "0.91" then
       version = "rss091" -- Userland and Netscape
    elseif ast.rss.version == "0.92" then
       version = "rss092"
+   else
+      version = "rss"
    end
    return version
 end
