@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.1](https://github.com/neo451/feed.nvim/compare/v1.10.0...v1.10.1) (2024-11-27)
+
+
+### Bug Fixes
+
+* **fetch:** rsshub links as first class citizen ([8af8a22](https://github.com/neo451/feed.nvim/commit/8af8a221cb4e69264fa4e72e80ce25e7c82b8135))
+* **parser:** handle rdf in rss090&rss10 ([1ad3877](https://github.com/neo451/feed.nvim/commit/1ad387771f124980808dfe8325e6b7baef5517a4))
+* **parser:** handle rss1.0's rdf tag ([3ee96b1](https://github.com/neo451/feed.nvim/commit/3ee96b1a6cdf0e2e10914db4200dffa0869c8f27))
+
 ## [1.10.0](https://github.com/neo451/feed.nvim/compare/v1.9.3...v1.10.0) (2024-11-26)
 
 
