@@ -89,8 +89,9 @@ M.search = {
       if query then
          render.refresh { query = query }
       else
+         local telescope = require "feed.ui.telescope"
          if buf ~= render.index then
-            local ok = pcall(vim.cmd.Telescope, "feed")
+            local ok = pcall(telescope.feed_search)
             if not ok then
                query = input { prompt = "Search: " }
                render.refresh { query = query }
@@ -108,7 +109,7 @@ M.search = {
 M.grep = {
    doc = "full-text search through the entry contents (experimental)",
    impl = function()
-      local ok = pcall(vim.cmd.Telescope, "feed_grep")
+      local ok = pcall(require("feed.ui.telescope").feed_grep)
       if not ok then
          ut.notify("commands", { msg = "need telescope.nvim and rg to grep feeds", level = "INFO" })
       end
@@ -398,15 +399,14 @@ M.prune_feed = {
 }
 
 function M._list_commands()
-   local buf = vim.api.nvim_get_current_buf()
    local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
       return v:sub(0, 1) ~= "_"
    end)
-   if render.entry == buf then
+   if ut.in_entry() then
       choices = choices:filter(function(v)
          return M[v].context.entry or M[v].context.all
       end)
-   elseif render.index == buf then
+   elseif ut.in_index() then
       choices = choices:filter(function(v)
          return M[v].context.index or M[v].context.all
       end)
@@ -465,17 +465,16 @@ function M._register_autocmds()
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
-      callback = function(_)
+      callback = function()
+         local buf = vim.api.nvim_get_current_buf()
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
-         ut.highlight_entry(render.entry)
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.entry, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
             end
             eset("b", M.show_in_browser)
             eset("s", M.search)
@@ -488,18 +487,18 @@ function M._register_autocmds()
             eset("gx", M.open_url)
          end
          for key, value in pairs(config.options.entry) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.entry })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
 
          local conform_ok, conform = pcall(require, "conform")
 
          if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = render.entry })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
-            vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
+            vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = buf })
+            vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
          else
-            vim.lsp.buf.format { bufnr = render.entry }
+            vim.lsp.buf.format { bufnr = buf }
          end
       end,
    })
@@ -509,13 +508,14 @@ function M._register_autocmds()
       group = augroup,
       callback = function(_)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
+         local buf = vim.api.nvim_get_current_buf()
+         local win = vim.api.nvim_get_current_win()
          if config.enable_default_keybindings then
             local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.index, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
             end
             iset(".", M._dot)
             iset("u", M._undo)
@@ -530,8 +530,8 @@ function M._register_autocmds()
             iset("q", M.quit)
          end
          for key, value in pairs(config.options.index) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.index })
-            pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
          end
       end,
    })

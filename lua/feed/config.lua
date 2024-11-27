@@ -86,10 +86,6 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
-   integrations = {
-      telescope = {},
-   },
-   on_attach = function() end,
    progress = {
       "fidget",
       "notify",

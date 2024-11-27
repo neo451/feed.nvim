@@ -1,18 +1,68 @@
-local has_telescope, telescope = pcall(require, "telescope")
-if not has_telescope then
-   error "This extension requires telescope.nvim"
-end
-local conf = require("telescope.config").values
+local pickers = require "telescope.pickers"
+local finders = require "telescope.finders"
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
-local builtins = require "telescope.builtin"
-
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
 local render = require "feed.ui"
 local format = require "feed.ui.format"
-local config = require "feed.config"
+local cmds = require "feed.commands"
+local builtins = require "telescope.builtin"
+
+local function feed_search()
+   cmds._register_autocmds()
+
+   local opts = {}
+
+   pickers
+      .new(opts, {
+         prompt_title = "Feeds",
+
+         previewer = previewers.new_buffer_previewer {
+            define_preview = function(self, entry, _)
+               render.show_entry { buf = self.state.bufnr, id = entry.value, untag = false, show = false }
+               vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
+               vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
+               vim.treesitter.start(self.state.bufnr, "markdown")
+            end,
+         },
+         finder = finders.new_dynamic {
+            fn = function(query)
+               if query == "" or not query then
+                  return {}
+               end
+               render.on_display = db:filter(query)
+               return render.on_display
+            end,
+            entry_maker = function(line)
+               return {
+                  value = line,
+                  text = format.entry(db[line]),
+                  filename = db.dir .. "/data/" .. line,
+                  display = function(entry)
+                     return format.entry(db[entry.value])
+                  end,
+                  ordinal = line,
+               }
+            end,
+         },
+         attach_mappings = function(prompt_bufnr)
+            actions.select_default:replace(function()
+               actions.close(prompt_bufnr)
+               local selection = action_state.get_selected_entry()
+               render.show_entry { id = selection.value }
+            end)
+            actions.send_to_qflist:replace(function()
+               actions.close(prompt_bufnr)
+               render.show_index {}
+               vim.cmd "bd"
+            end)
+            return true
+         end,
+      })
+      :find()
+end
 
 local parse = function(t)
    local _, _, filename, lnum, col, text = string.find(t.value, [[(..-):(%d+):(%d+):(.*)]])
@@ -112,7 +162,7 @@ local function feed_grep()
       previewer = previewers.new_buffer_previewer {
          title = "Feed Grep Preview",
          define_preview = function(self, entry, _)
-            render.show_entry { buf = self.state.bufnr, id = entry.filename, untag = false }
+            render.show_entry { buf = self.state.bufnr, id = entry.filename, untag = false, show = false }
             vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
             vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
             vim.treesitter.start(self.state.bufnr, "markdown")
@@ -124,19 +174,17 @@ local function feed_grep()
             actions.close(prompt_bufnr)
             local selection = action_state.get_selected_entry()
             local id = selection.filename
-            render.entry = vim.api.nvim_create_buf(false, true)
             render.show_entry { id = id, untag = false }
             -- jump_to_line(nil, render.state.entry_buf, selection)
          end)
          return true
       end,
    }
-   opts = vim.tbl_extend("force", opts, config.integrations.telescope)
+   -- opts = vim.tbl_extend("force", opts, config.integrations.telescope)
    builtins.live_grep(opts)
 end
 
-return telescope.register_extension {
-   exports = {
-      feed_grep = feed_grep,
-   },
+return {
+   feed_search = feed_search,
+   feed_grep = feed_grep,
 }

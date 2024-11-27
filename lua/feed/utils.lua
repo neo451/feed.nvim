@@ -214,4 +214,24 @@ function M.get_selection()
    end
 end
 
+function M.in_index()
+   return vim.api.nvim_buf_get_name(0):find "FeedIndex" ~= nil
+end
+
+function M.in_entry()
+   return vim.api.nvim_buf_get_name(0):find "FeedEntry" ~= nil
+end
+
+--- Trim last blank lines
+M.trim_last_lines = function()
+   local n_lines = vim.api.nvim_buf_line_count(0)
+   local last_nonblank = vim.fn.prevnonblank(n_lines)
+   local buf = vim.api.nvim_get_current_buf()
+   vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+   if last_nonblank < n_lines then
+      vim.api.nvim_buf_set_lines(0, last_nonblank, n_lines, true, {})
+   end
+   vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+end
+
 return M
