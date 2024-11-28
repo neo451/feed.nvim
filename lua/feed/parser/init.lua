@@ -95,12 +95,11 @@ function M.parse(url_or_src, opts)
    opts = opts or {}
    if looks_like_url(url_or_src) then
       local response = fetch.fetch_co(url_or_src, opts)
-      if response.body and response.body ~= "" then
+      if response and response.body and response.body ~= "" then
          local d = M.parse_src(response.body, url_or_src)
          if d then
             return vim.tbl_extend("keep", response, d)
          end
-         return response
       end
    end
 end

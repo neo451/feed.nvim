@@ -25,6 +25,7 @@ local default = {
    enable_default_keybindings = true,
    ---@type string
    rsshub_instance = "https://rsshub.app",
+   curl_params = {},
    options = {
       ---@type table<string, any>
       index = {

@@ -1,7 +1,6 @@
 ---@diagnostic disable: inject-field
 local ut = require "feed.utils"
 local log = require "feed.lib.log"
-local config = require "feed.config"
 
 local M = {}
 local read_file = ut.read_file
@@ -29,7 +28,7 @@ local function parse_header(fp)
       local sects = vim.split(data, "\r\n\r\n")
       local headers = {}
       for _, sect in ipairs(sects) do
-         headers = vim.tbl_extend("keep", headers, parse(sect))
+         headers = vim.tbl_extend("force", headers, parse(sect))
       end
       return headers
    else
@@ -73,6 +72,10 @@ local function fetch(cb, url, opts)
          obj.status = headers.status
          obj.body = obj.stdout
          obj.headers = headers
+         if obj.body:find "<!DOCTYPE html>" then
+            cb()
+            return
+         end
          vim.schedule_wrap(cb)(obj)
       else
          log.warn("[feed.nvim]:", url, obj.stderr)

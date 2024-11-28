@@ -27,7 +27,7 @@ function M.update_feed(url, opts)
       etag = feeds[url].etag
       tags = vim.deepcopy(feeds[url].tags)
    end
-   local ok, d = pcall(feedparser.parse, url:gsub("rsshub:/", config.rsshub_instance), { timeout = 10, etag = etag, last_modified = last_modified })
+   local ok, d = pcall(feedparser.parse, url:gsub("rsshub:/", config.rsshub_instance), { timeout = 10, etag = etag, last_modified = last_modified, cmds = config.curl_params })
    if ok and d then
       if encoding_blacklist[d.encoding] then
          feeds[url] = nil
@@ -67,7 +67,10 @@ local function url_to_name(url, d)
       end
    end
    if feeds[url] then
-      return decode(feeds[url].title or feeds[url].text)
+      local feed = feeds[url]
+      if feed.title then
+         return decode(feed.title) or url
+      end
    end
    return url
 end
@@ -77,13 +80,14 @@ end
 function M.update_feeds(feedlist, size)
    local prog = progress.new(#feedlist)
    local function aux(i)
-      for ii = i, i + size do
-         local url = feedlist[ii]
+      for j = i, i + size do
+         local url = feedlist[j]
          if not url then
             return
          end
          run(function()
             local ok, d = pcall(M.update_feed, url)
+            -- local name = url
             local name = url_to_name(url, d)
             if ok then
                prog:update(name .. " success")
@@ -91,7 +95,7 @@ function M.update_feeds(feedlist, size)
                prog:update(name .. " failed")
                log.warn(url, d)
             end
-            if ii == i + size then
+            if j == i + size then
                aux(i + size + 1)
             end
          end)

@@ -70,13 +70,14 @@ function M.cb_to_co(f)
    local f_co = function(...)
       local co = coroutine.running()
       assert(co ~= nil, "The result of cb_to_co must be called within a coroutine.")
+      local args = { ... }
 
       -- f needs to have the callback as its first argument, because varargs
       -- passing doesn’t work otherwise.
       f(function(ret)
          local ok = coroutine.resume(co, ret)
          if not ok then
-            print "coroutine failed"
+            print("coroutine failed", unpack(args))
             -- error "The coroutine failed"
          end
       end, ...)
