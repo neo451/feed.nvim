@@ -1,7 +1,7 @@
 vim.cmd [[let &rtp.=','.getcwd()]]
 
 vim.cmd "set rtp+=deps/mini.nvim"
-require("mini.deps").setup {}
+require("mini.deps").setup { path = { package = "deps/" } }
 
 local add = MiniDeps.add
 
