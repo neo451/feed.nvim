@@ -6,8 +6,6 @@
   <a href="https://github.com/neo451/feed.nvim">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
   </a>
-  <a href="https://github.com/neo451/feed.nvim/actions/workflows/busted.yml">
-  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/neo451/feed.nvim/busted.yml?style=for-the-badge&label=TESTS&color=green">
   </a>
 </p>
 
