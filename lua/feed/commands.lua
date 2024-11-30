@@ -1,7 +1,7 @@
 local config = require "feed.config"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local render = require "feed.ui"
+local ui = require "feed.ui"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
@@ -87,17 +87,18 @@ M.search = {
    impl = wrap(function(query)
       local buf = vim.api.nvim_get_current_buf()
       if query then
-         render.refresh { query = query }
+         ui.refresh { query = query }
       else
-         if buf ~= render.index then
-            local ok = pcall(vim.cmd.Telescope, "feed")
+         local telescope = require "feed.ui.telescope"
+         if buf ~= ui.index then
+            local ok = pcall(telescope.feed_search)
             if not ok then
                query = input { prompt = "Search: " }
-               render.refresh { query = query }
+               ui.refresh { query = query }
             end
          else
             query = input { prompt = "Search: " }
-            render.refresh { query = query }
+            ui.refresh { query = query }
          end
       end
    end),
@@ -108,7 +109,7 @@ M.search = {
 M.grep = {
    doc = "full-text search through the entry contents (experimental)",
    impl = function()
-      local ok = pcall(vim.cmd.Telescope, "feed_grep")
+      local ok = pcall(require("feed.ui.telescope").feed_grep)
       if not ok then
          ut.notify("commands", { msg = "need telescope.nvim and rg to grep feeds", level = "INFO" })
       end
@@ -118,14 +119,14 @@ M.grep = {
 
 M.refresh = {
    doc = "re-renders the index buffer",
-   impl = render.refresh,
+   impl = ui.refresh,
    context = { index = true },
 }
 
 M.show_in_browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = function()
-      local entry = render.get_entry()
+      local entry = ui.get_entry()
       if entry then
          local link = entry.link
          if link then
@@ -141,74 +142,50 @@ M.show_in_browser = {
 
 M.show_in_split = {
    doc = "show entry in split",
-   impl = function()
-      local Split = require "nui.split"
-      local event = require("nui.utils.autocmd").event
-
-      local split = Split {
-         relative = "editor",
-         position = "bottom",
-         size = "50%",
-      }
-      local _, id = render.get_entry()
-      split:mount()
-      -- TODO: fix ShowEntryPost
-      -- TODO: move to render.lua
-      render.show_entry { buf = split.bufnr, id = id }
-      vim.keymap.set("n", "q", function()
-         split:unmount()
-      end, { buffer = split.bufnr, noremap = true })
-      split:on(event.BufLeave, function()
-         split:unmount()
-      end)
-   end,
+   impl = ui.show_split,
    context = { index = true },
 }
 
 M.show_entry = {
    doc = "show entry in new buffer",
-   impl = render.show_entry,
+   impl = ui.show_entry,
    context = { index = true },
 }
 
 M.show_index = {
    doc = "show query results in new buffer",
-   impl = render.show_index,
+   impl = ui.show_index,
    context = { all = true },
-}
-
-M.quit = {
-   doc = "quit current view",
-   impl = render.quit,
-   context = { entry = true, index = true },
 }
 
 M.show_next = {
    doc = "show next query result",
-   impl = function()
-      if render.current_index == #render.on_display then
-         return
-      end
-      render.show_entry { row_idx = render.current_index + 1 }
-   end,
+   impl = ui.show_next,
    context = { entry = true },
 }
 
 M.show_prev = {
    doc = "show previous query result",
-   impl = function()
-      if render.current_index == 1 then
-         return
-      end
-      render.show_entry { row_idx = render.current_index - 1 }
-   end,
+   impl = ui.show_prev,
    context = { entry = true },
+}
+
+M.show_hints = {
+   doc = "show keymap hints",
+   impl = ui.show_hints,
+   context = { entry = true, index = true },
+}
+
+M.quit = {
+   doc = "quit current view",
+   impl = ui.quit,
+   context = { entry = true, index = true },
 }
 
 M.link_to_clipboard = {
    doc = "yank link to system clipboard",
    impl = function()
-      vim.fn.setreg("+", render.get_entry().link)
+      vim.fn.setreg("+", ui.get_entry().link)
    end,
    context = { index = true, entry = true },
 }
@@ -242,7 +219,7 @@ M.tag = {
    doc = "tag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
-         _, id, _ = render.get_entry()
+         _, id, _ = ui.get_entry()
       end
       tag = tag or input { prompt = "Tag: " }
       save_hist = vim.F.if_nil(save_hist, true)
@@ -251,8 +228,8 @@ M.tag = {
       end
       db:tag(id, tag)
       local buf = vim.api.nvim_get_current_buf()
-      if buf == render.index then
-         render.refresh()
+      if buf == ui.index then
+         ui.refresh()
       end
       dot = function()
          M.tag.impl(tag)
@@ -269,7 +246,7 @@ M.untag = {
    doc = "untag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
-         _, id, _ = render.get_entry()
+         _, id, _ = ui.get_entry()
       end
       save_hist = vim.F.if_nil(save_hist, true)
       tag = tag or input { prompt = "Untag: " }
@@ -278,8 +255,8 @@ M.untag = {
       end
       db:untag(id, tag)
       local buf = vim.api.nvim_get_current_buf()
-      if buf == render.index then
-         render.refresh()
+      if buf == ui.index then
+         ui.refresh()
       end
       dot = function()
          M.untag.impl(tag)
@@ -296,7 +273,7 @@ M.open_url = {
    impl = wrap(function()
       vim.cmd.normal "yi["
       local text = vim.fn.getreg "0"
-      local item = vim.iter(render.state.urls):find(function(v)
+      local item = vim.iter(ui.state.urls):find(function(v)
          return v[1] == text
       end)
       if item then
@@ -312,32 +289,13 @@ M.open_url = {
 
 M.urlview = {
    doc = "list all links in entry and open selected",
-   impl = wrap(function()
-      local items = render.state.urls
-      local item = select(items, {
-         prompt = "urlview",
-         format_item = function(item)
-            return item[1]
-         end,
-      })
-      if item then
-         if not ut.looks_like_url(item[2]) then
-            ut.notify("urlview", { msg = "reletive link resolotion is to be implemented", level = "ERROR" })
-         else
-            vim.ui.open(item[2])
-         end
-      end
-   end),
+   impl = ui.show_urls,
    context = { entry = true },
 }
 
 M.list = {
    doc = "list all feeds",
-   impl = function()
-      for _, url in ipairs(feedlist()) do
-         print(feeds[url] and feeds[url].title or url, url, feeds[url] and feeds[url].tags and vim.inspect(feeds[url].tags))
-      end
-   end,
+   impl = ui.show_feeds,
    context = { all = true },
 }
 
@@ -398,15 +356,14 @@ M.prune_feed = {
 }
 
 function M._list_commands()
-   local buf = vim.api.nvim_get_current_buf()
    local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
       return v:sub(0, 1) ~= "_"
    end)
-   if render.entry == buf then
+   if ut.in_entry() then
       choices = choices:filter(function(v)
          return M[v].context.entry or M[v].context.all
       end)
-   elseif render.index == buf then
+   elseif ut.in_index() then
       choices = choices:filter(function(v)
          return M[v].context.index or M[v].context.all
       end)
@@ -425,7 +382,7 @@ function M._load_command(args)
       local item = M[cmd]
       item.impl(unpack(args))
    else
-      render.refresh { query = table.concat(args, " ") }
+      ui.refresh { query = table.concat(args, " ") }
    end
 end
 
@@ -465,17 +422,16 @@ function M._register_autocmds()
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
-      callback = function(_)
+      callback = function()
+         local buf = vim.api.nvim_get_current_buf()
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
-         ut.highlight_entry(render.entry)
 
          if config.enable_default_keybindings then
             local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.entry, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
             end
             eset("b", M.show_in_browser)
             eset("s", M.search)
@@ -486,20 +442,21 @@ function M._register_autocmds()
             eset("}", M.show_next)
             eset("{", M.show_prev)
             eset("gx", M.open_url)
+            eset("?", M.show_hints)
          end
          for key, value in pairs(config.options.entry) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.entry })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
 
          local conform_ok, conform = pcall(require, "conform")
 
          if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = render.entry })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = render.entry })
-            vim.api.nvim_set_option_value("modifiable", false, { buf = render.entry })
+            vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = buf })
+            vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
          else
-            vim.lsp.buf.format { bufnr = render.entry }
+            vim.lsp.buf.format { bufnr = buf }
          end
       end,
    })
@@ -509,17 +466,19 @@ function M._register_autocmds()
       group = augroup,
       callback = function(_)
          vim.cmd "set cmdheight=0"
-         config.on_attach { index = render.index, entry = render.entry }
          if config.colorscheme then
             vim.cmd.colorscheme(config.colorscheme)
          end
+         local buf = vim.api.nvim_get_current_buf()
+         local win = vim.api.nvim_get_current_win()
          if config.enable_default_keybindings then
             local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = render.index, noremap = true })
+               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
             end
             iset(".", M._dot)
             iset("u", M._undo)
             iset("<CR>", M.show_entry)
+            iset("?", M.show_hints)
             iset("<M-CR>", M.show_in_split)
             iset("r", M.refresh)
             iset("b", M.show_in_browser)
@@ -530,8 +489,8 @@ function M._register_autocmds()
             iset("q", M.quit)
          end
          for key, value in pairs(config.options.index) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = render.index })
-            pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
          end
       end,
    })

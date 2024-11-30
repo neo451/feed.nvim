@@ -86,7 +86,7 @@ end
 function M.gen_format(entry, comps)
    local acc_width = 0
    local res = {}
-   for i, v in ipairs(comps) do
+   for _, v in ipairs(comps) do
       local text = entry[v[1]] or ""
       if M[v[1]] then
          text = M[v[1]](entry)

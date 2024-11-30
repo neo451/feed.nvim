@@ -1,17 +1,14 @@
 local xml = require "feed.parser.xml"
-
-vim.treesitter.language.add("xml", {
-   path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
-})
+local eq = MiniTest.expect.equality
 
 describe("sanitize", function()
    it("shoud handle entities in all tags", function()
       local res = xml.sanitize "<title>Love & Fear</title>"
-      assert.equal("<title>Love &amp; Fear</title>", res)
+      eq("<title>Love &amp; Fear</title>", res)
    end)
    it("shoud handle CDATA", function()
       local res = xml.sanitize "<desc><![CDATA[Love & Fear]]></desc>"
-      assert.equal("<desc>Love &amp; Fear</desc>", res)
+      eq("<desc>Love &amp; Fear</desc>", res)
       local res2 = xml.sanitize [=[
    <![CDATA[
           
@@ -26,10 +23,10 @@ describe("sanitize", function()
   <div xmlns="http://www.w3.org/1999/xhtml">Watch out for <span style="background: url(javascript:window.location='http://example.org/')"> nasty tricks</span></div>
 </content> ]]
       local res = xml.parse(src, "")
-      assert.same(
+      eq(
          [[<div xmlns="http://www.w3.org/1999/xhtml">Watch out for <span style="background: url(javascript:window.location='http://example.org/')"> nasty tricks</span></div>]],
          res.content[1]
       )
-      assert.same("xhtml", res.content.type)
+      eq("xhtml", res.content.type)
    end)
 end)

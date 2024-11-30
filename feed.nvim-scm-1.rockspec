@@ -11,6 +11,9 @@ dependencies = {
    "nui.nvim",
    "pathlib.nvim",
    "plenary.nvim",
+   "tree-sitter-markdown",
+   "tree-sitter-html",
+   "tree-sitter-xml",
 }
 
 test_dependencies = {

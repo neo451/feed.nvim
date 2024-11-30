@@ -29,7 +29,7 @@ local function parse_header(fp)
       local sects = vim.split(data, "\r\n\r\n")
       local headers = {}
       for _, sect in ipairs(sects) do
-         headers = vim.tbl_extend("keep", headers, parse(sect))
+         headers = vim.tbl_extend("force", headers, parse(sect))
       end
       return headers
    else
@@ -60,6 +60,7 @@ local function fetch(cb, url, opts)
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
    }
+   url = url:gsub("rsshub:/", config.rsshub_instance)
    local dump_fp = vim.fn.tempname()
    local cmds = { "curl", "-sSL", "-D", dump_fp, "--connect-timeout", opts.timeout or 10, url }
    cmds = vim.list_extend(cmds, additional)
@@ -73,6 +74,10 @@ local function fetch(cb, url, opts)
          obj.status = headers.status
          obj.body = obj.stdout
          obj.headers = headers
+         if obj.body:find "<!DOCTYPE html>" then
+            cb { status = 404 }
+            return
+         end
          vim.schedule_wrap(cb)(obj)
       else
          log.warn("[feed.nvim]:", url, obj.stderr)

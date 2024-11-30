@@ -8,11 +8,10 @@ M.setup = function(usr_config)
    cmds._sync_feedlist()
 end
 
-local render = require "feed.ui"
-M.get_entry = render.get_entry
+local ui = require "feed.ui"
+M.get_entry = ui.get_entry
 
 M.register_command = function(name, doc, context, f, key)
-   local ut = require "feed.utils"
    local cmds = require "feed.commands"
    cmds[name] = {
       impl = f,
@@ -20,18 +19,27 @@ M.register_command = function(name, doc, context, f, key)
       context = context,
    }
    if key then
-      if context["all"] then
-         vim.keymap.set("n", key, ut.wrap(f))
+      local function map()
+         local buf = vim.api.nvim_get_current_buf()
+         vim.keymap.set("n", key, f, { silent = true, noremap = true, buffer = buf })
       end
-      if context["index"] then
-         if render.index then
-            vim.keymap.set("n", key, ut.wrap(f), { buffer = render.index })
-         end
-      end
-      if context["entry"] then
-         if render.entry then
-            vim.keymap.set("n", key, ut.wrap(f), { buffer = render.entry }) -- TODO:??
-         end
+      if context.all then
+         vim.keymap.set("n", key, f, { silent = true, noremap = true })
+      elseif context.index and context.entry then
+         vim.api.nvim_create_autocmd("User", {
+            pattern = { "FeedIndex", "FeedEntry" },
+            callback = map,
+         })
+      elseif context.index then
+         vim.api.nvim_create_autocmd("User", {
+            pattern = "FeedIndex",
+            callback = map,
+         })
+      elseif context.entry then
+         vim.api.nvim_create_autocmd("User", {
+            pattern = "FeedEntry",
+            callback = map,
+         })
       end
    end
 end

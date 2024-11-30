@@ -1,6 +1,5 @@
 local xml = require "feed.parser.xml"
 local fetch = require "feed.parser.fetch"
-local ut = require "feed.utils"
 local log = require "feed.lib.log"
 
 ---@alias feed.type "rss" | "atom" | "json"
@@ -30,8 +29,6 @@ local handle_atom = require "feed.parser.atom"
 local handle_json = require "feed.parser.jsonfeed"
 
 local M = {}
-
-local looks_like_url = ut.looks_like_url
 
 ---check if json
 ---@param str string
@@ -88,20 +85,20 @@ function M.parse_src(src, url)
 end
 
 ---parse feed fetch from source
----@param url_or_src string
+---@param url string
 ---@param opts? feed.parser_opts
 ---@return table?
-function M.parse(url_or_src, opts)
+function M.parse(url, opts)
    opts = opts or {}
-   if looks_like_url(url_or_src) then
-      local response = fetch.fetch_co(url_or_src, opts)
+   local response = fetch.fetch_co(url, opts)
+   if response then
       if response.body and response.body ~= "" then
-         local d = M.parse_src(response.body, url_or_src)
-         if d then
+         local ok, d = pcall(M.parse_src, response.body, url)
+         if ok and d then
             return vim.tbl_extend("keep", response, d)
          end
-         return response
       end
+      return response
    end
 end
 

@@ -1,15 +1,15 @@
 local M = {}
 local URL = require "feed.lib.url"
-local strings = require "plenary.strings"
+local api = vim.api
 
 ---@param buf integer
 function M.highlight_entry(buf)
    -- TODO: move to plugin/
-   local feed_ns = vim.api.nvim_create_namespace "feed"
-   local normal_grp = vim.api.nvim_get_hl(0, { name = "Normal" })
-   local light_grp = vim.api.nvim_get_hl(0, { name = "LineNr" })
-   vim.api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-   vim.api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
+   local feed_ns = api.nvim_create_namespace "feed"
+   local normal_grp = api.nvim_get_hl(0, { name = "Normal" })
+   local light_grp = api.nvim_get_hl(0, { name = "LineNr" })
+   api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
+   api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
    local len = { 6, 5, 7, 5, 5 }
    for i = 0, 4 do
       vim.highlight.range(buf, feed_ns, "Title", { i, 0 }, { i, len[i + 1] })
@@ -47,7 +47,7 @@ end
 
 ---@return integer
 function M.get_cursor_row()
-   return vim.api.nvim_win_get_cursor(0)[1]
+   return api.nvim_win_get_cursor(0)[1]
 end
 
 --- Telescope Wrapper around vim.notify
@@ -70,13 +70,14 @@ function M.cb_to_co(f)
    local f_co = function(...)
       local co = coroutine.running()
       assert(co ~= nil, "The result of cb_to_co must be called within a coroutine.")
+      local args = { ... }
 
       -- f needs to have the callback as its first argument, because varargs
       -- passing doesn’t work otherwise.
       f(function(ret)
          local ok = coroutine.resume(co, ret)
          if not ok then
-            print "coroutine failed"
+            print("coroutine failed", unpack(args))
             -- error "The coroutine failed"
          end
       end, ...)
@@ -147,6 +148,7 @@ end
 ---@param right_justify boolean
 ---@return string
 function M.align(str, max_len, right_justify)
+   local strings = require "plenary.strings"
    str = str or ""
    right_justify = right_justify or false
    local len = strings.strdisplaywidth(str)
@@ -199,7 +201,7 @@ M.unescape = function(str)
 end
 
 function M.get_selection()
-   local mode = vim.api.nvim_get_mode().mode
+   local mode = api.nvim_get_mode().mode
 
    if mode == "n" then
       return { vim.fn.expand "<cexpr>" }
@@ -212,6 +214,26 @@ function M.get_selection()
    if ok then
       return selection
    end
+end
+
+function M.in_index()
+   return api.nvim_buf_get_name(0):find "FeedIndex" ~= nil
+end
+
+function M.in_entry()
+   return api.nvim_buf_get_name(0):find "FeedEntry" ~= nil
+end
+
+--- Trim last blank lines
+M.trim_last_lines = function()
+   local n_lines = api.nvim_buf_line_count(0)
+   local last_nonblank = vim.fn.prevnonblank(n_lines)
+   local buf = api.nvim_get_current_buf()
+   api.nvim_set_option_value("modifiable", true, { buf = buf })
+   if last_nonblank < n_lines then
+      api.nvim_buf_set_lines(0, last_nonblank, n_lines, true, {})
+   end
+   api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
 return M
