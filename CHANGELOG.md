@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.11.0](https://github.com/neo451/feed.nvim/compare/v1.10.1...v1.11.0) (2024-11-30)
+
+
+### Features
+
+* **ui:** nui based key hints, feed-tree-view, split-view ([fd67ea1](https://github.com/neo451/feed.nvim/commit/fd67ea1a4bd9dd28ed9ff2b47bda4e18d3d6cbe1))
+
+
+### Bug Fixes
+
+* allow user to pass in additional curl params ([9d5b2e9](https://github.com/neo451/feed.nvim/commit/9d5b2e9e44805a8eb442ba8e2e3612b9e0cd6ce5))
+* **db:** filter by tag also sort by time ([fd67ea1](https://github.com/neo451/feed.nvim/commit/fd67ea1a4bd9dd28ed9ff2b47bda4e18d3d6cbe1))
+* **fetch:** proper logic of handling https status code ([fd67ea1](https://github.com/neo451/feed.nvim/commit/fd67ea1a4bd9dd28ed9ff2b47bda4e18d3d6cbe1))
+* handle 404 more elegantly ([9d5b2e9](https://github.com/neo451/feed.nvim/commit/9d5b2e9e44805a8eb442ba8e2e3612b9e0cd6ce5))
+* **ui.search:** pick backend for feed_search ([5ede8f1](https://github.com/neo451/feed.nvim/commit/5ede8f188365785c0ad5fcbc8fac656c01a5ae1a))
+* **ui.search:** proper logic of choosing search backend! telescope/pick/vim.ui ([04d8931](https://github.com/neo451/feed.nvim/commit/04d89310e293703894e96a3ed80f7986358a1854))
+* **ui:** dynamic entry buf creation ([5ede8f1](https://github.com/neo451/feed.nvim/commit/5ede8f188365785c0ad5fcbc8fac656c01a5ae1a))
+* **ui:** no prune_feed, implement sync_feed in the future ([04d8931](https://github.com/neo451/feed.nvim/commit/04d89310e293703894e96a3ed80f7986358a1854))
+
 ## [1.10.1](https://github.com/neo451/feed.nvim/compare/v1.10.0...v1.10.1) (2024-11-27)
 
 
