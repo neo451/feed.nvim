@@ -1,9 +1,9 @@
 -- Add current directory to 'runtimepath' to be able to use 'lua' files
 vim.cmd [[let &rtp.=','.getcwd()]]
 
-vim.opt.runtimepath:append ",~/.local/share/nvim/site/pack/deps/opt/nvim-treesitter/"
-vim.opt.runtimepath:append ",~/.local/share/nvim/site/pack/deps/opt/pathlib.nvim/"
-vim.opt.runtimepath:append ",~/.local/share/nvim/site/pack/deps/opt/nvim-nio/"
+vim.opt.runtimepath:append("," .. (vim.fn.stdpath "data") .. "/site/pack/deps/opt/nvim-treesitter/")
+vim.opt.runtimepath:append("," .. (vim.fn.stdpath "data") .. "/site/pack/deps/opt/nvim-nio/")
+vim.opt.runtimepath:append("," .. (vim.fn.stdpath "data") .. "/site/pack/deps/opt/pathlib.nvim/")
 
 -- Set up 'mini.test' only when calling headless Neovim (like with `make test`)
 if #vim.api.nvim_list_uis() == 0 then
