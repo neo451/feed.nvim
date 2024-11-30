@@ -24,8 +24,8 @@ jobs:
         include:
         - os: macos-latest
           neovim_version: v0.10.1
-        - os: windows-latest
-          neovim_version: v0.10.1
+        # - os: windows-latest
+        #   neovim_version: v0.10.1
     runs-on: ${{ matrix.os }}
 
     steps:

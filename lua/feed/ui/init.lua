@@ -61,6 +61,10 @@ providers.query = function()
    return query
 end
 
+providers.hints = function()
+   return "<?> to show hints"
+end
+
 providers.lastUpdated = function() end
 
 local function show_winbar()
@@ -185,14 +189,24 @@ local function show_entry(opts)
    vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 end
 
+--- TODO: register some state(tag/untag at leaset once) to tell refresh is needed, and then reset them, else do nothing
 local function refresh(opts)
    opts = opts or {}
+   opts.show = vim.F.if_nil(opts.show, true)
    if opts.query then
       query = opts.query
    end
-   on_display = db:filter(query)
-   show_index()
-   ut.trim_last_lines()
+   on_display = db:filter(opts.query)
+   if opts.show then
+      if index then
+         vim.api.nvim_set_option_value("modifiable", true, { buf = index })
+         for i = 1, vim.api.nvim_buf_line_count(0) do
+            vim.api.nvim_buf_set_lines(index, i, i + 1, false, { "" })
+         end
+      end
+      show_index()
+      ut.trim_last_lines()
+   end
    return on_display
 end
 
@@ -395,6 +409,21 @@ local function show_feeds()
    end)
 end
 
+local function open_url()
+   vim.cmd.normal "yi["
+   local text = vim.fn.getreg "0"
+   local item = vim.iter(urls):find(function(v)
+      return v[1] == text
+   end)
+   if item then
+      if not ut.looks_like_url(item[2]) then
+         ut.notify("urlview", { msg = "reletive link resolotion is to be implemented", level = "ERROR" })
+      else
+         vim.ui.open(item[2])
+      end
+   end
+end
+
 return {
    show_index = show_index,
    get_entry = get_entry,
@@ -405,6 +434,7 @@ return {
    show_split = show_split,
    show_hints = show_hints,
    show_feeds = show_feeds,
+   open_url = open_url,
    quit = quit,
    refresh = refresh,
 }

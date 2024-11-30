@@ -100,8 +100,6 @@ function db_mt.new()
    }, db_mt)
 end
 
-db_mt:new()
-
 local function if_path(k)
    return vim.fs.find({ k }, { path = tostring(db_dir) .. "/object/", type = "file" })[1] -- TODO: remove
 end

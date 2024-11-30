@@ -70,7 +70,8 @@ end
 
 ---@param feedlist string[]
 ---@param size integer
-function M.update_feeds(feedlist, size)
+---@param opts table
+function M.update_feeds(feedlist, size, opts)
    local prog = progress.new(#feedlist)
    local function aux(i)
       for j = i, i + size do
@@ -79,7 +80,7 @@ function M.update_feeds(feedlist, size)
             return
          end
          run(function()
-            local d = M.update_feed(url, {})
+            local d = M.update_feed(url, opts)
             local name = url2name(url)
             if d then
                prog:update(name .. " success")

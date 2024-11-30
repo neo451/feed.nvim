@@ -236,4 +236,15 @@ M.trim_last_lines = function()
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
+M.choose_search_backend = function()
+   for _, v in ipairs(require("feed.config").search.backends) do
+      if pcall(require, v) then
+         if v == "mini.pick" then
+            return "pick"
+         end
+         return v
+      end
+   end
+end
+
 return M

@@ -1,7 +1,7 @@
 local M = {}
 
 local dir = vim.uv.cwd()
-local data_dir = dir .. "/spec/data/"
+local data_dir = dir .. "/data/"
 
 function M.readfile(path, prefix)
    prefix = prefix or data_dir
