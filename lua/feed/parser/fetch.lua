@@ -1,6 +1,7 @@
 ---@diagnostic disable: inject-field
 local ut = require "feed.utils"
 local log = require "feed.lib.log"
+local config = require "feed.config"
 
 local M = {}
 local read_file = ut.read_file
@@ -59,6 +60,7 @@ local function fetch(cb, url, opts)
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
    }
+   url = url:gsub("rsshub:/", config.rsshub_instance)
    local dump_fp = vim.fn.tempname()
    local cmds = { "curl", "-sSL", "-D", dump_fp, "--connect-timeout", opts.timeout or 10, url }
    cmds = vim.list_extend(cmds, additional)
@@ -73,7 +75,7 @@ local function fetch(cb, url, opts)
          obj.body = obj.stdout
          obj.headers = headers
          if obj.body:find "<!DOCTYPE html>" then
-            cb()
+            cb { status = 404 }
             return
          end
          vim.schedule_wrap(cb)(obj)

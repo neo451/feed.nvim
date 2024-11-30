@@ -207,8 +207,14 @@ function db_mt:rm(id)
    remove_file(object_dir / id)
 end
 
-function db_mt:iter()
-   return vim.iter(vim.fs.dir(tostring(object_dir))):map(function(id)
+---@param sort any
+---@return Iter
+function db_mt:iter(sort)
+   if sort then
+      self:sort()
+   end
+   return vim.iter(self.index):map(function(v)
+      local id = v[1]
       local r = pdofile(object_dir / id)
       mem[id] = r
       return id, r
@@ -302,13 +308,21 @@ function db_mt:filter(str)
       end)
    end
 
-   return iter:fold({}, function(acc, id)
+   local ret = iter:fold({}, function(acc, id)
       if not mem[id] then
          mem[id] = pdofile(object_dir / id)
       end
       acc[#acc + 1] = id
       return acc
    end)
+
+   if q.must_have then
+      table.sort(ret, function(a, b)
+         return self[a].time > self[b].time
+      end)
+   end
+
+   return ret
 end
 
 ---@return boolean

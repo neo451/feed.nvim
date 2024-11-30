@@ -5,7 +5,7 @@ local action_state = require "telescope.actions.state"
 local previewers = require "telescope.previewers"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
-local render = require "feed.ui"
+local ui = require "feed.ui"
 local format = require "feed.ui.format"
 local cmds = require "feed.commands"
 local builtins = require "telescope.builtin"
@@ -21,7 +21,7 @@ local function feed_search()
 
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
-               render.show_entry { buf = self.state.bufnr, id = entry.value, untag = false, show = false }
+               ui.show_entry { buf = self.state.bufnr, id = entry.value, untag = false, show = false }
                vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
                vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
                vim.treesitter.start(self.state.bufnr, "markdown")
@@ -29,11 +29,10 @@ local function feed_search()
          },
          finder = finders.new_dynamic {
             fn = function(query)
-               if query == "" or not query then
+               if query == "" or not query then -- TODO: move to query.lua
                   return {}
                end
-               render.on_display = db:filter(query)
-               return render.on_display
+               return ui.refresh { query = query }
             end,
             entry_maker = function(line)
                return {
@@ -51,11 +50,11 @@ local function feed_search()
             actions.select_default:replace(function()
                actions.close(prompt_bufnr)
                local selection = action_state.get_selected_entry()
-               render.show_entry { id = selection.value }
+               ui.show_entry { id = selection.value }
             end)
             actions.send_to_qflist:replace(function()
                actions.close(prompt_bufnr)
-               render.show_index {}
+               ui.show_index()
                vim.cmd "bd"
             end)
             return true
@@ -162,7 +161,7 @@ local function feed_grep()
       previewer = previewers.new_buffer_previewer {
          title = "Feed Grep Preview",
          define_preview = function(self, entry, _)
-            render.show_entry { buf = self.state.bufnr, id = entry.filename, untag = false, show = false }
+            ui.show_entry { buf = self.state.bufnr, id = entry.filename, untag = false }
             vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
             vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
             vim.treesitter.start(self.state.bufnr, "markdown")
@@ -174,7 +173,7 @@ local function feed_grep()
             actions.close(prompt_bufnr)
             local selection = action_state.get_selected_entry()
             local id = selection.filename
-            render.show_entry { id = id, untag = false }
+            ui.show_entry { id = id, untag = false }
             -- jump_to_line(nil, render.state.entry_buf, selection)
          end)
          return true

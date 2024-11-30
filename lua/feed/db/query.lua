@@ -11,14 +11,6 @@ local M = {}
 ---@field limit? number ##
 ---@field re? string[]
 
-local filter_symbols = {
-   ["+"] = "must_have",
-   ["-"] = "must_not_have",
-   ["@"] = "date",
-   ["#"] = "limit",
-   ["="] = "feed",
-}
-
 -- TODO: memoize
 local function build_regex(str)
    -- local rev = str:sub(0, 1) == "!"
@@ -37,23 +29,16 @@ function M.parse_query(str)
    end
    local query = {}
    for q in vim.gsplit(str, " ") do
-      local kind = filter_symbols[q:sub(1, 1)] or "re"
-      if kind == "date" then
+      local kind = q:sub(1, 1)
+      if kind == "@" then
          local ok, after, before = pcall(date.parse_filter, q)
          if ok then
             query.after = after
             query.before = before
          end
-      elseif kind == "re" then
-         if q ~= "" then
-            if not query.re then
-               query.re = {}
-            end
-            table.insert(query.re, build_regex(q))
-         end
-      elseif kind == "feed" then
+      elseif kind == "=" then
          query.feed = build_regex(q:sub(2))
-      elseif kind == "must_have" then
+      elseif kind == "+" then
          if q:sub(2) == "unread" then
             if not query.must_not_have then
                query.must_not_have = {}
@@ -65,7 +50,7 @@ function M.parse_query(str)
             end
             table.insert(query.must_have, q:sub(2))
          end
-      elseif kind == "must_not_have" then
+      elseif kind == "-" then
          if q:sub(2) == "unread" then
             if not query.must_have then
                query.must_have = {}
@@ -77,8 +62,15 @@ function M.parse_query(str)
             end
             table.insert(query.must_not_have, q:sub(2))
          end
-      elseif kind == "limit" then
+      elseif kind == "#" then
          query.limit = tonumber(q:sub(2))
+      else
+         if q ~= "" then
+            if not query.re then
+               query.re = {}
+            end
+            table.insert(query.re, build_regex(q))
+         end
       end
    end
    return query
