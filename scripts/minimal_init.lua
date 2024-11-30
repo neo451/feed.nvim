@@ -1,7 +1,7 @@
 -- Add current directory to 'runtimepath' to be able to use 'lua' files
 vim.cmd [[let &rtp.=','.getcwd()]]
 vim.opt.runtimepath:append ",~/.local/share/nvim/lazy/nvim-treesitter/"
--- print(package.path)
+
 package.path = package.path .. ";" .. vim.fn.expand "~/.luarocks/share/lua/5.1/?/init.lua"
 package.path = package.path .. ";" .. vim.fn.expand "~/.luarocks/share/lua/5.1/?.lua"
 
@@ -14,7 +14,3 @@ if #vim.api.nvim_list_uis() == 0 then
    -- Set up 'mini.test'
    require("mini.test").setup()
 end
-
--- vim.treesitter.language.add("xml", {
---    path = vim.api.nvim_get_runtime_file("parser/xml.so", false)[1],
--- })

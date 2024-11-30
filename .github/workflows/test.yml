@@ -8,9 +8,9 @@ on:
     branches-ignore: [ sync, stable ]
     paths: [ 'colors/**', 'lua/**', 'tests/**' ]
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -28,12 +28,27 @@ jobs:
           neovim_version: v0.10.1
     runs-on: ${{ matrix.os }}
 
+
     steps:
+      - name: Setup Lua
+        uses: leso-kn/gh-actions-lua@master
+        with:
+          luaVersion: "5.1"
+
+      - name: Setup LuaRocks
+        uses: hishamhm/gh-actions-luarocks@master
+
+      - name: Install busted and nlua
+        run: |
+          luarocks build --local --lua-version=5.1
+        shell: bash
+
       - uses: actions/checkout@v4
       - name: Setup neovim
         uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
           version: ${{ matrix.neovim_version }}
+
       - name: Run tests
         run: make test
