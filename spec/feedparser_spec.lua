@@ -1,6 +1,5 @@
 local m = require "feed.parser"
 local eq = assert.are.same
-local date = require "feed.parser.date"
 local h = require "spec.helpers"
 local is_url = h.is_url
 local readfile = h.readfile

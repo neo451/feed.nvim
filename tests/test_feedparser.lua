@@ -2,16 +2,8 @@ local M = require "feed.parser"
 local eq = MiniTest.expect.equality
 local is_url = require("feed.utils").looks_like_url
 
-local dir = vim.uv.cwd()
-local data_dir = dir .. "/spec/data/"
-local function readfile(path, prefix)
-   prefix = prefix or data_dir
-   local str = vim.fn.readfile(prefix .. path)
-   return table.concat(str)
-end
--- local h = require "spec.helpers"
--- local is_url = h.is_url
--- local readfile = h.readfile
+local h = require "tests.helpers"
+local readfile = h.readfile
 
 local is_string = function(v)
    eq("string", type(v))

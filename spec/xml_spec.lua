@@ -1,14 +1,5 @@
 local xml = require "feed.parser.xml"
 
-local sourced_file = require("plenary.debug_utils").sourced_filepath()
-local data_dir = vim.fn.fnamemodify(sourced_file, ":h") .. "/outliers/"
-
-local function readfile(path, pre)
-   pre = pre or data_dir
-   local str = vim.fn.readfile(pre .. path)
-   return table.concat(str)
-end
-
 vim.treesitter.language.add("xml", {
    path = vim.fn.expand "~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/0.0.29-1/parser/xml.so",
 })
