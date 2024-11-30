@@ -38,10 +38,6 @@ jobs:
       - name: Setup LuaRocks
         uses: hishamhm/gh-actions-luarocks@master
 
-      - name: Install busted and nlua
-        run: |
-          luarocks build --local --lua-version=5.1
-        shell: bash
 
       - uses: actions/checkout@v4
       - name: Setup neovim
@@ -49,6 +45,11 @@ jobs:
         with:
           neovim: true
           version: ${{ matrix.neovim_version }}
+
+      - name: Install busted and nlua
+        run: |
+          luarocks build --local --lua-version=5.1
+        shell: bash
 
       - name: Run tests
         run: make test
