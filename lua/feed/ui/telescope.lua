@@ -21,7 +21,7 @@ local function feed_search()
 
          previewer = previewers.new_buffer_previewer {
             define_preview = function(self, entry, _)
-               ui.show_entry { buf = self.state.bufnr, id = entry.value, untag = false, show = false }
+               ui.show_entry { buf = self.state.bufnr, id = entry.value, untag = false }
                vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
                vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
                vim.treesitter.start(self.state.bufnr, "markdown")
@@ -32,7 +32,7 @@ local function feed_search()
                if query == "" or not query then -- TODO: move to query.lua
                   return {}
                end
-               return ui.refresh { query = query }
+               return ui.refresh { query = query, show = false }
             end,
             entry_maker = function(line)
                return {

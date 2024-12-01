@@ -10,7 +10,6 @@ local read_file = ut.read_file
 local save_file = ut.save_file
 local wrap = ut.wrap
 local input = ut.input
-local select = ut.select
 
 local M = {}
 
@@ -84,24 +83,22 @@ M.export_opml = {
 
 M.search = {
    doc = "query the database by time, tags or regex",
-   impl = wrap(function(query)
-      local buf = vim.api.nvim_get_current_buf()
+   impl = function(query)
+      local backend = ut.choose_search_backend()
       if query then
          ui.refresh { query = query }
-      else
-         local telescope = require "feed.ui.telescope"
-         if buf ~= ui.index then
-            local ok = pcall(telescope.feed_search)
-            if not ok then
-               query = input { prompt = "Search: " }
-               ui.refresh { query = query }
+      elseif ut.in_index() or not backend then
+         vim.ui.input({ prompt = "Feed query: " }, function(val)
+            if not val then
+               return
             end
-         else
-            query = input { prompt = "Search: " }
-            ui.refresh { query = query }
-         end
+            ui.refresh { query = val }
+         end)
+      else
+         local engine = require("feed.ui." .. backend)
+         pcall(engine.feed_search)
       end
-   end),
+   end,
    context = { all = true },
 }
 
@@ -270,20 +267,7 @@ M.untag = {
 
 M.open_url = {
    doc = "open url under cursor",
-   impl = wrap(function()
-      vim.cmd.normal "yi["
-      local text = vim.fn.getreg "0"
-      local item = vim.iter(ui.state.urls):find(function(v)
-         return v[1] == text
-      end)
-      if item then
-         if not ut.looks_like_url(item[2]) then
-            ut.notify("urlview", { msg = "reletive link resolotion is to be implemented", level = "ERROR" })
-         else
-            vim.ui.open(item[2])
-         end
-      end
-   end),
+   impl = ui.open_url,
    context = { entry = true },
 }
 
@@ -302,56 +286,34 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(feedlist(), 10)
+      fetch.update_feeds(feedlist(), 10, {})
    end,
    context = { all = true },
 }
 
 M.update_feed = {
    doc = "update a feed to db",
-   impl = wrap(function(url)
-      url = url
-         or select(feedlist(), {
+   impl = function(url)
+      if url then
+         return fetch.update_feeds({ url }, 1, { force = true })
+      else
+         vim.ui.select(feedlist(), {
             prompt = "Feed to update",
             format_item = function(item)
                return feeds[item].title or item
             end,
-         })
-      if not url then
-         return
+         }, function(choice)
+            if not choice then
+               return
+            end
+            return fetch.update_feeds({ choice }, 1, { force = true })
+         end)
       end
-      fetch.update_feed(url, 1)
-   end),
+   end,
 
    complete = function()
       return feedlist()
    end,
-   context = { all = true },
-}
-
--- TODO:
-M.prune_feed = {
-   doc = "remove a feed from feedlist, and all its entries",
-   impl = wrap(function(url)
-      url = url
-         or select(feedlist(), {
-            prompt = "Feed to remove",
-            format_item = function(item)
-               return feeds[item].title or item
-            end,
-         })
-      if not url then
-         return
-      end
-      local title = feeds[url].title
-      feeds[url] = nil
-      db:save_feeds()
-      for id, entry in db:iter() do
-         if entry.feed == title then
-            db:rm(id)
-         end
-      end
-   end),
    context = { all = true },
 }
 

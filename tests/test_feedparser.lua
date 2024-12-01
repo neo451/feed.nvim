@@ -158,43 +158,43 @@ end)
 
 describe("feedparser test suite", function()
    it("atom", function()
-      for f in vim.fs.dir "./spec/data/atom" do
-         local str = readfile(f, "./spec/data/atom/")
+      for f in vim.fs.dir "./data/atom" do
+         local str = readfile(f, "./data/atom/")
          check_feed_minimal(M.parse_src(str, ""))
       end
    end)
    it("rss", function()
-      for f in vim.fs.dir "./spec/data/rss" do
+      for f in vim.fs.dir "./data/rss" do
          if not f:sub(0, 1) == "_" then -- TODO:
-            local str = readfile(f, "./spec/data/rss/")
+            local str = readfile(f, "./data/rss/")
             check_feed_minimal(M.parse_src(str, ""))
          end
       end
    end)
    it("sanitize", function()
-      for f in vim.fs.dir "./spec/data/sanitize" do
+      for f in vim.fs.dir "./data/sanitize" do
          -- if not f:sub(0, 1) == "_" then -- TODO:
-         local str = readfile(f, "./spec/data/sanitize/") -- TODO: further check
+         local str = readfile(f, "./data/sanitize/") -- TODO: further check
          check_feed_minimal(M.parse_src(str, ""))
          -- end
       end
    end)
    it("xml", function()
-      for f in vim.fs.dir "./spec/data/xml" do
-         local str = readfile(f, "./spec/data/xml/") -- TODO: further check
+      for f in vim.fs.dir "./data/xml" do
+         local str = readfile(f, "./data/xml/") -- TODO: further check
          check_feed_minimal(M.parse_src(str, ""))
       end
    end)
 
    -- it("rdf", function()
-   --    for f in vim.fs.dir "./spec/data/rdf" do
-   --       local str = readfile(f, "./spec/data/rdf/") -- TODO: further check
+   --    for f in vim.fs.dir "./data/rdf" do
+   --       local str = readfile(f, "./data/rdf/") -- TODO: further check
    --       check_feed_minimal(m.parse_src(str, ""))
    --    end
    -- end)
 end)
 
 describe("reject encodings that neovim can not handle", function()
-   local d = M.parse_src(readfile("encoding.xml", "./spec/data/"), "")
+   local d = M.parse_src(readfile("encoding.xml", "./data/"), "")
    eq("gb2312", d.encoding)
 end)

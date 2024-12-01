@@ -74,6 +74,7 @@ local default = {
          width = 80,
          color = "@markup.strong",
       },
+      { "hints", right = true, color = "Pmenu" },
       {
          "query",
          right = true,
@@ -83,6 +84,10 @@ local default = {
 
    search = {
       default_query = "@6-months-ago +unread",
+      backends = {
+         "mini.pick",
+         "telescope",
+      },
    },
 
    ---@type feed.feed[]

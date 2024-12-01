@@ -15,7 +15,7 @@ local dependencies = {
 local plugins = {
    { lib = "plenary", optional = false, info = "required for feed.nvim to work" },
    { lib = "pathlib", optional = false, info = "required for handling path" },
-   { lib = "nui", optional = false, info = "required for text rendering" },
+   { lib = "nui", req = "nui.text", optional = false, info = "required for text rendering" },
    --- TODO: optional and good if one is found
    { lib = "nvim-treesitter", optional = true, info = "required for installing TS parsers if you don't use rocks.nvim" },
 }
@@ -31,13 +31,13 @@ local function check_treesitter_parser(name)
    if res then
       ok(name .. " installed")
    else
-      local lib_not_installed = name .. " not found."
+      local lib_not_installed = "tree-sitter-" .. name .. " not found."
       error(lib_not_installed)
    end
 end
 
 local function check_lualib_installed(plugin)
-   local res, _ = pcall(require, plugin.lib)
+   local res, _ = pcall(require, plugin.req or plugin.lib)
    if res then
       ok(plugin.lib .. " installed")
    else
