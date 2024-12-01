@@ -198,9 +198,11 @@ local function refresh(opts)
    end
    on_display = db:filter(opts.query)
    if opts.show then
-      vim.api.nvim_set_option_value("modifiable", true, { buf = index })
-      for i = 1, vim.api.nvim_buf_line_count(0) do
-         vim.api.nvim_buf_set_lines(index, i, i + 1, false, { "" })
+      if index then
+         vim.api.nvim_set_option_value("modifiable", true, { buf = index })
+         for i = 1, vim.api.nvim_buf_line_count(0) do
+            vim.api.nvim_buf_set_lines(index, i, i + 1, false, { "" })
+         end
       end
       show_index()
       ut.trim_last_lines()
