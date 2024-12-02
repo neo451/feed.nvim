@@ -43,7 +43,7 @@ Rocks install feed.nvim
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-return { "neo451/feed.nvim" }
+return { "neo451/feed.nvim", cmd = "Feed" }
 ```
 
 For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `pysan3/pathlib.nvim` and `MunifTanjim/nui.nvim`, plus tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
