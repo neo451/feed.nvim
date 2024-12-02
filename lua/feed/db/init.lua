@@ -161,6 +161,8 @@ function db_mt:add(entry, tags)
    end
 end
 
+---@param id string
+---@param tag string
 function db_mt:tag(id, tag)
    if not self[id].tags then
       self[id].tags = {}
@@ -174,6 +176,8 @@ function db_mt:tag(id, tag)
    save_obj(tags_fp, self.tags)
 end
 
+---@param id string
+---@param tag string
 function db_mt:untag(id, tag)
    if not self[id].tags then
       self[id].tags = {}

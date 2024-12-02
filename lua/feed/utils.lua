@@ -2,20 +2,6 @@ local M = {}
 local URL = require "feed.lib.url"
 local api = vim.api
 
----@param buf integer
-function M.highlight_entry(buf)
-   -- TODO: move to plugin/
-   local feed_ns = api.nvim_create_namespace "feed"
-   local normal_grp = api.nvim_get_hl(0, { name = "Normal" })
-   local light_grp = api.nvim_get_hl(0, { name = "LineNr" })
-   api.nvim_set_hl(feed_ns, "feed.bold", { bold = true, fg = normal_grp.fg, bg = normal_grp.bg })
-   api.nvim_set_hl(feed_ns, "feed.light", { bold = false, fg = light_grp.fg, bg = light_grp.bg })
-   local len = { 6, 5, 7, 5, 5 }
-   for i = 0, 4 do
-      vim.highlight.range(buf, feed_ns, "Title", { i, 0 }, { i, len[i + 1] })
-   end
-end
-
 ---@param base_url string
 ---@param url string
 ---@return string?
@@ -231,7 +217,7 @@ M.trim_last_lines = function()
    local buf = api.nvim_get_current_buf()
    api.nvim_set_option_value("modifiable", true, { buf = buf })
    if last_nonblank < n_lines then
-      api.nvim_buf_set_lines(0, last_nonblank, n_lines, true, {})
+      api.nvim_buf_set_lines(0, last_nonblank, n_lines - 1, true, {})
    end
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end

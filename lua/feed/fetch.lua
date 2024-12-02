@@ -45,11 +45,11 @@ function M.update_feed(url, opts)
          end
       end
       feeds[url] = feeds[url] or {}
-      feeds[url].htmlUrl = feeds[url].htmlUrl or d.link
-      feeds[url].title = feeds[url].title or d.title
-      feeds[url].text = feeds[url].text or d.desc
-      feeds[url].type = feeds[url].type or d.type
-      feeds[url].tags = feeds[url].tags or tags -- TDOO: feed tags -- TODO: compare new tgs
+      feeds[url].htmlUrl = d.link
+      feeds[url].title = decode(d.title) or d.title
+      feeds[url].description = decode(d.desc) or d.desc
+      feeds[url].version = d.version
+      feeds[url].tags = tags -- TDOO: feed tags -- TODO: compare new tgs
       feeds[url].last_modified = d.last_modified
       feeds[url].etag = d.etag
       db:save_feeds()
@@ -62,7 +62,7 @@ local function url2name(url)
    if feeds[url] then
       local feed = feeds[url]
       if feed.title then
-         return decode(feed.title) or url
+         return feed.title or url
       end
    end
    return url

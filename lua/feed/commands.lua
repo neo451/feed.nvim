@@ -5,6 +5,7 @@ local ui = require "feed.ui"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
+local nui = require "feed.ui.nui"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -38,6 +39,7 @@ M.log = {
    context = { all = true },
 }
 
+--- TODO: allow url
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
@@ -122,18 +124,7 @@ M.refresh = {
 
 M.show_in_browser = {
    doc = "open entry link in browser with vim.ui.open",
-   impl = function()
-      local entry = ui.get_entry()
-      if entry then
-         local link = entry.link
-         if link then
-            M.untag.impl "unread"
-            vim.ui.open(link)
-         end
-      else
-         ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
-      end
-   end,
+   impl = ui.show_browser,
    context = { index = true, entry = true },
 }
 
@@ -216,7 +207,7 @@ M.tag = {
    doc = "tag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
-         _, id, _ = ui.get_entry()
+         _, id = ui.get_entry()
       end
       tag = tag or input { prompt = "Tag: " }
       save_hist = vim.F.if_nil(save_hist, true)
@@ -224,8 +215,7 @@ M.tag = {
          return
       end
       db:tag(id, tag)
-      local buf = vim.api.nvim_get_current_buf()
-      if buf == ui.index then
+      if ut.in_index() then
          ui.refresh()
       end
       dot = function()
@@ -251,8 +241,7 @@ M.untag = {
          return
       end
       db:untag(id, tag)
-      local buf = vim.api.nvim_get_current_buf()
-      if buf == ui.index then
+      if ut.in_index() then
          ui.refresh()
       end
       dot = function()
@@ -287,6 +276,7 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       fetch.update_feeds(feedlist(), 10, {})
+      ui.refresh()
    end,
    context = { all = true },
 }
@@ -297,6 +287,7 @@ M.update_feed = {
       if url then
          return fetch.update_feeds({ url }, 1, { force = true })
       else
+         -- TODO: use nui.select
          vim.ui.select(feedlist(), {
             prompt = "Feed to update",
             format_item = function(item)
@@ -350,14 +341,15 @@ end
 
 function M._menu()
    local items = M._list_commands()
-   vim.ui.select(items, {
+   nui.select(items, {
       prompt = "Feed commands",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,
    }, function(choice)
-      if choice then
-         local item = M[choice]
+      if choice.text then
+         local pos = choice.text:find ":"
+         local item = M[choice.text:sub(1, pos - 1)]
          item.impl()
       end
    end)

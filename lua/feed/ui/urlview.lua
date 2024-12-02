@@ -27,6 +27,7 @@ local function get_links(str)
       res[#res + 1] = { text, link }
    end
 
+   -- FIXME: more robust way of getting text, getting weird ] )
    for _, node in inline_query:iter_captures(root, str) do
       local text = get_text(node:child(1), str)
       local link = get_text(node:child(4), str)

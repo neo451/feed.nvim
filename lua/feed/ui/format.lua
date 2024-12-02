@@ -99,4 +99,21 @@ function M.gen_format(entry, comps)
    return res
 end
 
+---return a NuiLine obj for an entry base on user config
+---@param entry feed.entry
+---@param comps table
+---@return NuiLine
+function M.gen_nui_line(entry, comps)
+   local NuiLine = require "nui.line"
+   local line = NuiLine()
+   for _, v in ipairs(comps) do
+      local text = entry[v[1]] or ""
+      if M[v[1]] then
+         text = M[v[1]](entry)
+      end
+      line:append(align(text, v.width + 1, v.right_justify), v.color)
+   end
+   return line
+end
+
 return M
