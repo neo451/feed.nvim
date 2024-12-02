@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.12.0](https://github.com/neo451/feed.nvim/compare/v1.11.0...v1.12.0) (2024-12-02)
+
+
+### Features
+
+* grey out entries just opened ([7a6cccd](https://github.com/neo451/feed.nvim/commit/7a6cccd8860f2b6cba43ce8c0460c2509ce45d9c))
+
+
+### Bug Fixes
+
+* **ui.search:** proper logic of choosing search backend! telescope/pick/vim.ui ([04d8931](https://github.com/neo451/feed.nvim/commit/04d89310e293703894e96a3ed80f7986358a1854))
+* **ui:** no prune_feed, implement sync_feed in the future ([04d8931](https://github.com/neo451/feed.nvim/commit/04d89310e293703894e96a3ed80f7986358a1854))
+* use buf_delete to fix jumplist, better search preview ([5699c51](https://github.com/neo451/feed.nvim/commit/5699c5153a845fc2fdbfba90c9f3dd7be49752db))
+* use NuiLine to render entry ([f68f194](https://github.com/neo451/feed.nvim/commit/f68f194badd69c29c009f1ff6e3dcb9b05fe1650))
+* use nuiLine to render index, better opml support ([f68f194](https://github.com/neo451/feed.nvim/commit/f68f194badd69c29c009f1ff6e3dcb9b05fe1650))
+
 ## [1.11.0](https://github.com/neo451/feed.nvim/compare/v1.10.1...v1.11.0) (2024-11-30)
 
 
