@@ -206,7 +206,7 @@ M.tag = {
    doc = "tag an entry",
    impl = wrap(function(tag, id, save_hist)
       if not id then
-         _, id, _ = ui.get_entry()
+         _, id = ui.get_entry()
       end
       tag = tag or input { prompt = "Tag: " }
       save_hist = vim.F.if_nil(save_hist, true)
@@ -214,8 +214,7 @@ M.tag = {
          return
       end
       db:tag(id, tag)
-      local buf = vim.api.nvim_get_current_buf()
-      if buf == ui.index then
+      if ut.in_index() then
          ui.refresh()
       end
       dot = function()
@@ -241,8 +240,7 @@ M.untag = {
          return
       end
       db:untag(id, tag)
-      local buf = vim.api.nvim_get_current_buf()
-      if buf == ui.index then
+      if ut.in_index() then
          ui.refresh()
       end
       dot = function()
@@ -277,6 +275,7 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       fetch.update_feeds(feedlist(), 10, {})
+      ui.refresh()
    end,
    context = { all = true },
 }

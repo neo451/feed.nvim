@@ -6,33 +6,11 @@ local urlview = require "feed.ui.urlview"
 local config = require "feed.config"
 local NuiText = require "nui.text"
 local NuiLine = require "nui.line"
-local health = require "feed.health"
 local entities = require "feed.lib.entities"
 local decode = entities.decode
+local Markdown = require "feed.ui.markdown"
 
--- TODO: grey out the entries just read, only hide after refresh
-local function html_to_md(id)
-   if not health.check_binary_installed { name = "pandoc", min_ver = 3 } then
-      return "you need pandoc to view feeds https://pandoc.org"
-   end
-   local sourced_file = require("plenary.debug_utils").sourced_filepath()
-   local filter = vim.fn.fnamemodify(sourced_file, ":h") .. "/pandoc_filter.lua"
-   local cmd = {
-      "pandoc",
-      "-f",
-      "html",
-      "-t",
-      filter,
-      "--wrap=none",
-      db.dir .. "/data/" .. id,
-   }
-   local obj = vim.system(cmd, { text = true }):wait()
-   if obj.code ~= 0 then
-      return "pandoc failed: " .. obj.stderr
-   end
-   return ut.unescape(obj.stdout)
-end
-
+--- TODO: render an empty row at bottom so that last line can be cleared?
 local og_colorscheme = vim.g.colors_name
 local on_display, urls, index
 local current_entry, current_index
@@ -83,8 +61,6 @@ local function show_winbar()
    end
 end
 
-local index_lines = {}
-
 local function show_index()
    local buf = index or vim.api.nvim_create_buf(false, true)
    index = buf
@@ -92,10 +68,9 @@ local function show_index()
    on_display = on_display or db:filter(query)
    vim.bo[buf].modifiable = true
    for i, id in ipairs(on_display) do
-      local NLine = format.gen_nui_line(db[id], main_comp)
-      index_lines[id] = NLine
-      NLine:render(buf, -1, i)
+      format.gen_nui_line(db[id], main_comp):render(buf, -1, i)
    end
+   vim.api.nvim_buf_set_lines(index, #on_display, #on_display + 1, false, { "" })
    vim.api.nvim_set_current_buf(buf)
    show_winbar()
    vim.api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
@@ -110,10 +85,17 @@ end
 ---@return feed.entry
 ---@return string
 local function get_entry()
+   if ut.in_index() then
+      local id = on_display[ut.get_cursor_row()]
+      return db[id], id
+   end
    return current_entry, current_entry.id
 end
 
 local function grey_entry(id)
+   if not index then
+      return
+   end
    local grey_comp = vim.deepcopy(main_comp)
    for _, v in ipairs(grey_comp) do
       v.color = "LspInlayHint"
@@ -158,7 +140,7 @@ local function show_entry(opts)
    }
 
    local entry_lines
-   local md = html_to_md(id)
+   local md = Markdown.convert(id, config.full_text_fetch.enable)
    entry_lines, urls = urlview(vim.split(md, "\n"), entry.link)
    vim.list_extend(lines, entry_lines)
 
@@ -173,19 +155,16 @@ local function show_entry(opts)
 
    if not opts.buf then
       vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
    end
-   vim.api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 end
 
 --- TODO: register some state(tag/untag at leaset once) to tell refresh is needed, and then reset them, else do nothing
 local function refresh(opts)
    opts = opts or {}
    opts.show = vim.F.if_nil(opts.show, true)
-   if opts.query then
-      query = opts.query
-   end
-   index_lines = {}
-   on_display = db:filter(opts.query)
+   query = opts.query or query
+   on_display = db:filter(query)
    if opts.show then
       if index then
          vim.api.nvim_set_option_value("modifiable", true, { buf = index })
@@ -207,13 +186,15 @@ end
 
 local function quit()
    if ut.in_index() then
-      vim.cmd "bd!"
+      vim.api.nvim_buf_delete(index, { force = true })
+      index = nil
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
       restore_state()
-   else
-      vim.cmd "bd!"
+   elseif ut.in_entry() then
+      vim.api.nvim_buf_delete(0, { force = true })
       if index then
          vim.api.nvim_set_current_buf(index)
+         vim.api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
       end
       vim.api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    end
@@ -421,7 +402,7 @@ local function show_browser()
    if entry then
       local link = entry.link
       if link then
-         db:tag(id, "read")
+         -- db:tag(id, "read")
          vim.ui.open(link)
       end
    else

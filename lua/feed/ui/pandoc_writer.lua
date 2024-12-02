@@ -1,8 +1,18 @@
 local image_c = 0
 local ut = pandoc.utils
+function remove_attr(x)
+   if x.attr then
+      x.attr = pandoc.Attr()
+      return x
+   end
+end
+
+-- return {{Inline = remove_attr, Block = remove_attr}}
 
 function Writer(doc, opts)
    local filter = {
+      Inline = remove_attr,
+      Block = remove_attr,
       CodeBlock = function(cb)
          -- only modify if code block has no attributes
          if cb.attr == pandoc.Attr() then

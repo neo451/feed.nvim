@@ -2,6 +2,7 @@ local MiniPick = require "mini.pick"
 local db = require "feed.db"
 local render = require "feed.ui"
 local format = require "feed.ui.format"
+local config = require "feed.config"
 
 local function feed_search()
    local lookup = {}
@@ -44,7 +45,12 @@ local function feed_search()
          match = match,
          show = show,
          preview = function(buf_id, id)
-            render.show_entry { buf = buf_id, id = id }
+            render.show_entry { buf = buf_id, id = id, untag = false }
+            local win = vim.api.nvim_get_current_win()
+            for key, value in pairs(config.options.entry) do
+               pcall(vim.api.nvim_set_option_value, key, value, { buf = buf_id })
+               pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+            end
          end,
          choose = function(id)
             vim.cmd "q"

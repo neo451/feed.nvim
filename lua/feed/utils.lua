@@ -217,7 +217,7 @@ M.trim_last_lines = function()
    local buf = api.nvim_get_current_buf()
    api.nvim_set_option_value("modifiable", true, { buf = buf })
    if last_nonblank < n_lines then
-      api.nvim_buf_set_lines(0, last_nonblank, n_lines, true, {})
+      api.nvim_buf_set_lines(0, last_nonblank, n_lines - 1, true, {})
    end
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end

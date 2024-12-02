@@ -25,6 +25,10 @@ local default = {
    enable_default_keybindings = true,
    ---@type string
    rsshub_instance = "https://rsshub.app",
+   full_text_fetch = {
+      enable = false,
+   },
+   ---@type string[]
    curl_params = {},
    options = {
       ---@type table<string, any>
@@ -33,6 +37,7 @@ local default = {
          undolevels = -1,
          undoreload = 0,
          conceallevel = 0,
+         signcolumn = "no",
          wrap = false,
          number = false,
          relativenumber = false,
