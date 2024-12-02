@@ -5,6 +5,7 @@ local ui = require "feed.ui"
 local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
+local nui = require "feed.ui.nui"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -286,6 +287,7 @@ M.update_feed = {
       if url then
          return fetch.update_feeds({ url }, 1, { force = true })
       else
+         -- TODO: use nui.select
          vim.ui.select(feedlist(), {
             prompt = "Feed to update",
             format_item = function(item)
@@ -339,14 +341,15 @@ end
 
 function M._menu()
    local items = M._list_commands()
-   vim.ui.select(items, {
+   nui.select(items, {
       prompt = "Feed commands",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,
    }, function(choice)
-      if choice then
-         local item = M[choice]
+      if choice.text then
+         local pos = choice.text:find ":"
+         local item = M[choice.text:sub(1, pos - 1)]
          item.impl()
       end
    end)
