@@ -1,4 +1,5 @@
 local ut = require "feed.utils"
+---@type feed.db
 local db = ut.require "feed.db"
 local format = require "feed.ui.format"
 local urlview = require "feed.ui.urlview"
@@ -33,7 +34,8 @@ local function html_to_md(id)
 end
 
 local og_colorscheme = vim.g.colors_name
-local on_display, current_index, urls, index
+local on_display, urls, index
+local current_entry, current_index
 local query = config.search.default_query
 
 local main_comp = vim.iter(config.layout)
@@ -81,13 +83,7 @@ local function show_winbar()
    end
 end
 
----@param buf integer
----@param entry feed.entry
----@param row integer
-local function show_entry_info(buf, entry, row)
-   local line = format.gen_nui_line(entry, main_comp) -- Nui
-   line:render(buf, -1, row)
-end
+local index_lines = {}
 
 local function show_index()
    local buf = index or vim.api.nvim_create_buf(false, true)
@@ -96,7 +92,9 @@ local function show_index()
    on_display = on_display or db:filter(query)
    vim.bo[buf].modifiable = true
    for i, id in ipairs(on_display) do
-      show_entry_info(buf, db[id], i)
+      local NLine = format.gen_nui_line(db[id], main_comp)
+      index_lines[id] = NLine
+      NLine:render(buf, -1, i)
    end
    vim.api.nvim_set_current_buf(buf)
    show_winbar()
@@ -109,31 +107,20 @@ end
 ---@field id? string # db_id
 ---@field buf? integer # buffer to populate
 
----@param id string?
----@param row integer?
----@return feed.entry?
----@return string?
----@return integer?
-local function get_entry(id, row)
-   if id then
-      return db[id], id, nil
-   elseif row then
-      id = on_display[row]
-      return db[id], id, row
-   elseif ut.in_index() then
-      row = ut.get_cursor_row()
-      id = on_display[row]
-      return db[id], id, row
-   elseif ut.in_entry() then
-      local buf = vim.api.nvim_get_current_buf()
-      row = vim.b[buf].row
-      id = vim.b[buf].id
-      return db[id], id, row
-   end
+---@return feed.entry
+---@return string
+local function get_entry()
+   return current_entry, current_entry.id
 end
 
-local function kv(k, v)
-   return string.format("%s: %s", k, v)
+local function grey_entry(id)
+   local grey_comp = vim.deepcopy(main_comp)
+   for _, v in ipairs(grey_comp) do
+      v.color = "LspInlayHint"
+   end
+   local NLine = format.gen_nui_line(db[id], grey_comp)
+   vim.bo[index].modifiable = true
+   NLine:render(index, -1, current_index)
 end
 
 ---@param opts? feed.entry_opts
@@ -145,21 +132,28 @@ local function show_entry(opts)
    current_index = opts.row_idx or ut.get_cursor_row()
    local id = opts.id or on_display[current_index]
    local entry = db[id]
+   current_entry = entry
    if not entry then
       return
    end
    if untag then
       db:tag(id, "read")
+      grey_entry(id)
    end
+   local title = decode(format.title(entry))
+   local author = decode(entry.author)
+   local feed = decode(entry.feed)
+   local link = entry.link
+   local date = format.date(entry)
 
    ---@alias entry_line NuiLine | string
    ---@type entry_line[]
    local lines = {
-      NuiLine { NuiText("Title: ", "title"), NuiText(decode(format.title(entry)), "") },
-      NuiLine { NuiText("Author: ", "title"), NuiText(decode(entry.author), "") },
-      NuiLine { NuiText("Feed: ", "title"), NuiText(decode(entry.feed), "") },
-      NuiLine { NuiText("Link: ", "title"), NuiText(entry.link, "") },
-      NuiLine { NuiText("Date: ", "title"), NuiText(format.date(entry), "") },
+      NuiLine { NuiText("Title: ", "title"), NuiText(title) },
+      NuiLine { NuiText("Author: ", "title"), NuiText(author) },
+      NuiLine { NuiText("Feed: ", "title"), NuiText(feed) },
+      NuiLine { NuiText("Link: ", "title"), NuiText(link) },
+      NuiLine { NuiText("Date: ", "title"), NuiText(date) },
       "",
    }
 
@@ -190,6 +184,7 @@ local function refresh(opts)
    if opts.query then
       query = opts.query
    end
+   index_lines = {}
    on_display = db:filter(opts.query)
    if opts.show then
       if index then
@@ -363,9 +358,14 @@ local function show_feeds()
 
    local NuiTree = require "nui.tree"
    local nodes = {}
+
+   local function kv(k, v)
+      return string.format("%s: %s", k, v)
+   end
+
    for _, url in ipairs(feedlist()) do
       local child = {}
-      if feeds[url] then
+      if feeds[url] and type(feeds[url]) == "table" then
          for k, v in pairs(feeds[url]) do
             child[#child + 1] = NuiTree.Node { text = kv(k, vim.inspect(v)) }
          end
@@ -417,12 +417,11 @@ local function open_url()
 end
 
 local function show_browser()
-   local entry = get_entry()
+   local entry, id = get_entry()
    if entry then
       local link = entry.link
       if link then
-         -- M.untag.impl "unread"
-         --- TODO: tag
+         db:tag(id, "read")
          vim.ui.open(link)
       end
    else
