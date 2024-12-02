@@ -38,6 +38,7 @@ M.log = {
    context = { all = true },
 }
 
+--- TODO: allow url
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
@@ -122,18 +123,7 @@ M.refresh = {
 
 M.show_in_browser = {
    doc = "open entry link in browser with vim.ui.open",
-   impl = function()
-      local entry = ui.get_entry()
-      if entry then
-         local link = entry.link
-         if link then
-            M.untag.impl "unread"
-            vim.ui.open(link)
-         end
-      else
-         ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
-      end
-   end,
+   impl = ui.show_browser,
    context = { index = true, entry = true },
 }
 

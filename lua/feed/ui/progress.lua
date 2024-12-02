@@ -14,7 +14,7 @@ end
 local backend = choose_backend()
 
 local _, notify = pcall(require, "notify")
-local _, mini = pcall(require, "mini.notify")
+local _, MiniNotify = pcall(require, "mini.notify")
 local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
 
 local function format_message(idx, total, message)
@@ -40,7 +40,7 @@ function mt.new(total)
          title = "Feed update",
       })
    elseif backend == "mini" then
-      ret.id = mini.add("0", "INFO", "Title")
+      ret.id = MiniNotify.add("0", "INFO", "Title")
    end
    ret.total = total
    ret.count = 0
@@ -60,9 +60,9 @@ local function finish(self)
          replace = self.handle,
       })
    elseif backend == "mini" then
-      mini.remove(self.id)
+      MiniNotify.remove(self.id)
       local opts = { INFO = { duration = 1000 } }
-      mini.make_notify(opts)(msg)
+      MiniNotify.make_notify(opts)(msg)
    elseif backend == "native" then
       print(msg)
    end
@@ -81,7 +81,7 @@ function mt:update(message)
          replace = self.handle,
       })
    elseif backend == "mini" then
-      mini.update(self.id, { msg = msg })
+      MiniNotify.update(self.id, { msg = msg })
    else
       print(msg)
    end

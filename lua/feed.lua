@@ -44,4 +44,10 @@ M.register_command = function(name, doc, context, f, key)
    end
 end
 
+for k, v in pairs(require "feed.commands") do
+   if not k:sub(1, 1) == "_" then
+      M[k] = v.impl
+   end
+end
+
 return M
