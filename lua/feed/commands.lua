@@ -6,24 +6,15 @@ local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
 local nui = require "feed.ui.nui"
+local curl = require "feed.curl"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
 local wrap = ut.wrap
 local input = ut.input
+local feedlist = ut.feedlist
 
 local M = {}
-
-local function feedlist()
-   return vim.iter(feeds)
-      :filter(function(_, v)
-         return type(v) == "table"
-      end)
-      :fold({}, function(acc, k)
-         table.insert(acc, k)
-         return acc
-      end)
-end
 
 M.log = {
    doc = "show log",
@@ -43,12 +34,17 @@ M.log = {
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
-      fp = fp or input { prompt = "path to your opml: ", completion = "file_in_path" }
+      fp = fp or input { prompt = "path or url to your opml: ", completion = "file_in_path" }
       if not fp then
          return
       end
-      fp = vim.fn.expand(fp)
-      local str = read_file(fp)
+      local str
+      if ut.looks_like_url(fp) then
+         str = curl.fetch_co(fp, {}).stdout
+      else
+         fp = vim.fn.expand(fp)
+         str = read_file(fp)
+      end
       if str then
          local outlines = opml.import(str)
          if outlines then
@@ -86,7 +82,7 @@ M.export_opml = {
 M.search = {
    doc = "query the database by time, tags or regex",
    impl = function(query)
-      local backend = ut.choose_search_backend()
+      local backend = ut.choose_backend(config.search.backends)
       if query then
          ui.refresh { query = query }
       elseif ut.in_index() or not backend then
@@ -122,10 +118,16 @@ M.refresh = {
    context = { index = true },
 }
 
-M.show_in_browser = {
+M.show_browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = ui.show_browser,
    context = { index = true, entry = true },
+}
+
+M.show_full = {
+   doc = "fetch the full text",
+   impl = ui.show_full,
+   context = { entry = true },
 }
 
 M.show_in_split = {
@@ -275,8 +277,7 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(feedlist(), 10, {})
-      ui.refresh()
+      fetch.update_feeds(feedlist(feeds), 10, {})
    end,
    context = { all = true },
 }
@@ -288,7 +289,7 @@ M.update_feed = {
          return fetch.update_feeds({ url }, 1, { force = true })
       else
          -- TODO: use nui.select
-         vim.ui.select(feedlist(), {
+         vim.ui.select(feedlist(feeds), {
             prompt = "Feed to update",
             format_item = function(item)
                return feeds[item].title or item
@@ -303,7 +304,7 @@ M.update_feed = {
    end,
 
    complete = function()
-      return feedlist()
+      return feedlist(feeds)
    end,
    context = { all = true },
 }
@@ -347,11 +348,11 @@ function M._menu()
          return item .. ": " .. M[item].doc
       end,
    }, function(choice)
-      if choice.text then
-         local pos = choice.text:find ":"
-         local item = M[choice.text:sub(1, pos - 1)]
-         item.impl()
+      if not choice then
+         return
       end
+      local item = M[choice]
+      item.impl()
    end)
 end
 
@@ -370,9 +371,8 @@ function M._sync_feedlist()
    db:save_feeds()
 end
 
-local augroup = vim.api.nvim_create_augroup("Feed", {})
-
 function M._register_autocmds()
+   local augroup = vim.api.nvim_create_augroup("Feed", {})
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
@@ -387,7 +387,8 @@ function M._register_autocmds()
             local function eset(lhs, rhs)
                vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
             end
-            eset("b", M.show_in_browser)
+            eset("f", M.show_full)
+            eset("b", M.show_browser)
             eset("s", M.search)
             eset("+", M.tag)
             eset("-", M.untag)
@@ -435,7 +436,7 @@ function M._register_autocmds()
             iset("?", M.show_hints)
             iset("<M-CR>", M.show_in_split)
             iset("r", M.refresh)
-            iset("b", M.show_in_browser)
+            iset("b", M.show_browser)
             iset("s", M.search)
             iset("y", M.link_to_clipboard)
             iset("+", M.tag)

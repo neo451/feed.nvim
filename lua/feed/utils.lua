@@ -181,7 +181,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>_])", function(s)
+   return string.gsub(str, "(\\[%[%]`*!|#<>_()])", function(s)
       return s:sub(2)
    end)
 end
@@ -222,15 +222,23 @@ M.trim_last_lines = function()
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
-M.choose_search_backend = function()
-   for _, v in ipairs(require("feed.config").search.backends) do
+M.choose_backend = function(choices)
+   for _, v in ipairs(choices) do
       if pcall(require, v) then
-         if v == "mini.pick" then
-            return "pick"
-         end
          return v
       end
    end
+end
+
+function M.feedlist(feeds)
+   return vim.iter(feeds)
+      :filter(function(_, v)
+         return type(v) == "table"
+      end)
+      :fold({}, function(acc, k)
+         table.insert(acc, k)
+         return acc
+      end)
 end
 
 return M

@@ -246,7 +246,7 @@ function M.parse(src, url) -- TODO: url resolve ?
       if collected[1].encoding then
          collected[2].encoding = collected[1].encoding
       end
-      return collected[2]
+      return #collected == 2 and collected[2] or collected[1]
    end
 end
 

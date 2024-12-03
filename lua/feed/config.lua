@@ -25,9 +25,6 @@ local default = {
    enable_default_keybindings = true,
    ---@type string
    rsshub_instance = "https://rsshub.app",
-   full_text_fetch = {
-      enable = false,
-   },
    ---@type string[]
    curl_params = {},
    options = {
@@ -90,19 +87,23 @@ local default = {
    search = {
       default_query = "@6-months-ago +unread",
       backends = {
-         "mini.pick",
+         "pick",
          "telescope",
+      },
+   },
+
+   progress = {
+      backends = {
+         "snacks",
+         "fidget",
+         "notify",
+         "mini",
+         "native",
       },
    },
 
    ---@type feed.feed[]
    feeds = {},
-   progress = {
-      "fidget",
-      "notify",
-      "mini",
-      "native",
-   },
 }
 
 local M = {}

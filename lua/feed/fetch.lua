@@ -8,6 +8,7 @@ local run = ut.run
 local entities = require "feed.lib.entities"
 local decode = entities.decode
 local config = require "feed.config"
+local ui = require "feed.ui"
 
 local M = {}
 local feeds = db.feeds
@@ -77,6 +78,9 @@ function M.update_feeds(feedlist, size, opts)
       for j = i, i + size do
          local url = feedlist[j]
          if not url then
+            if ut.in_index() then
+               ui.refresh()
+            end
             return
          end
          run(function()

@@ -25,7 +25,7 @@ function M.import(src)
          if v.xmlUrl then
             local url = v.xmlUrl
             if v.text == v.title then
-               v.title = nil -- if same then use fetched info later
+               v.title = nil
             end
             ret[url] = v
          elseif v.outline then
