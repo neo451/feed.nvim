@@ -87,7 +87,7 @@ local default = {
    search = {
       default_query = "@6-months-ago +unread",
       backends = {
-         "pick",
+         "mini.pick",
          "telescope",
       },
    },
@@ -97,7 +97,7 @@ local default = {
          "snacks",
          "fidget",
          "notify",
-         "mini",
+         "mini.notify",
          "native",
       },
    },

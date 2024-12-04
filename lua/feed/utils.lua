@@ -77,6 +77,7 @@ function M.run(co)
    coroutine.resume(coroutine.create(co))
 end
 
+-- FIX: get rid of
 ---@param f function
 ---@return function
 function M.wrap(f)
@@ -85,7 +86,7 @@ function M.wrap(f)
    end
 end
 
-function M.pdofile(fp)
+M.pdofile = function(fp)
    if type(fp) == "table" then
       fp = tostring(fp)
    end
@@ -99,7 +100,7 @@ end
 
 ---@param path string
 ---@param content string
-function M.save_file(path, content)
+M.save_file = function(path, content)
    if type(path) == "table" then
       ---@diagnostic disable-next-line: param-type-mismatch
       path = tostring(path)
@@ -113,7 +114,7 @@ end
 
 ---@param path string
 ---@return string?
-function M.read_file(path)
+M.read_file = function(path)
    local ret
 
    if type(path) == "table" then
@@ -133,7 +134,7 @@ end
 ---@param max_len integer
 ---@param right_justify boolean
 ---@return string
-function M.align(str, max_len, right_justify)
+M.align = function(str, max_len, right_justify)
    local strings = require "plenary.strings"
    str = str or ""
    right_justify = right_justify or false
@@ -161,6 +162,7 @@ function M.looks_like_url(str)
    return allow[URL.parse(str).scheme] ~= nil
 end
 
+--- FIX: ?
 function M.require(mod)
    return setmetatable({}, {
       __index = function(t, key)
@@ -222,15 +224,26 @@ M.trim_last_lines = function()
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
+---@param choices table | string
+---@return string?
 M.choose_backend = function(choices)
+   local alias = {
+      ["mini.pick"] = "pick",
+      ["mini.notify"] = "notify",
+   }
+   if type(choices) == "string" then
+      return alias[choices] or choices
+   end
    for _, v in ipairs(choices) do
       if pcall(require, v) then
-         return v
+         return alias[v] and alias[v] or v
       end
    end
 end
 
-function M.feedlist(feeds)
+---@param feeds feed.opml
+---@return string[]
+M.feedlist = function(feeds)
    return vim.iter(feeds)
       :filter(function(_, v)
          return type(v) == "table"

@@ -3,6 +3,7 @@ local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
 local sensible = p_ut.sensible
+local decode = require("feed.lib.entities").decode
 
 local function handle_version(ast)
    local version
@@ -94,9 +95,9 @@ local function handle_entry(entry, feed_url, feed_name, feed_author)
    res.link = handle_link(entry, feed_url)
    res.id = sha(res.link)
    res.content = handle_content(entry, "empty entry")
-   res.title = handle_entry_title(entry, "no title")
+   res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)
-   res.author = handle_author(entry, feed_author or feed_name)
+   res.author = decode(handle_author(entry, feed_author or feed_name))
    res.feed = feed_name
    return res
 end
@@ -106,10 +107,10 @@ local function handle_rss(ast, feed_url)
    res.version = handle_version(ast)
    local channel = ast.rss and ast.rss.channel or ast["rdf:RDF"].channel
    local root_base = ut.url_rebase(channel, feed_url)
-   local feed_author = handle_author(channel)
    res.link = handle_link(channel, feed_url) -- TODO: url resolver
-   res.title = handle_title(channel, res.link)
-   res.desc = handle_description(channel, res.title)
+   res.title = decode(handle_title(channel, res.link))
+   local feed_author = decode(handle_author(channel, res.title))
+   res.desc = decode(handle_description(channel, res.title))
    res.entries = {}
    res.type = "rss"
    if channel.item then

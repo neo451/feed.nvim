@@ -6,14 +6,12 @@ local Config = require "feed.config"
 local NuiText = require "nui.text"
 local NuiLine = require "nui.line"
 local NuiTree = require "nui.tree"
-local Entities = require "feed.lib.entities"
 local Markdown = require "feed.ui.markdown"
 local Nui = require "feed.ui.nui"
 
 local api = vim.api
 local feeds = DB.feeds
 local feedlist = ut.feedlist
-local decode = Entities.decode
 
 local og_colorscheme = vim.g.colors_name
 local on_display, index
@@ -115,9 +113,9 @@ local function grey_entry(id)
 end
 
 --- Returns all URLs in buffer, if any.
+---@param buf integer
 ---@return string[][]
-local function get_buf_urls()
-   local buf = api.nvim_get_current_buf()
+local function get_buf_urls(buf)
    vim.bo[buf].modifiable = true
    local cur_link = current_entry.link
    local ret = { { cur_link, cur_link } }
@@ -143,6 +141,7 @@ local function get_buf_urls()
                         local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
                         vim.cmd(sub_pattern)
                      elseif node:type() == "image" and node:child(2):type() == "image_description" then
+                        ---@diagnostic disable-next-line: param-type-mismatch
                         local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
                         local row = node:child(1):range() + 1
                         ret[#ret + 1] = { text, link }
@@ -178,11 +177,11 @@ local function show_entry(opts)
       DB:tag(id, "read")
       grey_entry(id)
    end
-   local title = decode(Format.title(entry))
-   local author = decode(entry.author)
-   local feed = decode(entry.feed)
-   local link = entry.link
+   local title = Format.title(entry)
    local date = Format.date(entry)
+   local author = entry.author
+   local feed = entry.feed
+   local link = entry.link
 
    ---@alias entry_line NuiLine | string
    ---@type entry_line[]

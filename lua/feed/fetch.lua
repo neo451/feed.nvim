@@ -1,13 +1,11 @@
-local feedparser = require "feed.parser"
+local Feedparser = require "feed.parser"
 local ut = require "feed.utils"
 ---@type feed.db
 local db = ut.require "feed.db"
-local progress = require "feed.ui.progress"
+local Progress = require "feed.ui.progress"
 local log = require "feed.lib.log"
 local run = ut.run
-local entities = require "feed.lib.entities"
-local decode = entities.decode
-local config = require "feed.config"
+local Config = require "feed.config"
 local ui = require "feed.ui"
 
 local M = {}
@@ -29,7 +27,7 @@ function M.update_feed(url, opts)
       etag = feeds[url].etag
       tags = vim.deepcopy(feeds[url].tags)
    end
-   local ok, d = pcall(feedparser.parse, url, { timeout = 10, etag = etag, last_modified = last_modified, cmds = config.curl_params })
+   local ok, d = pcall(Feedparser.parse, url, { timeout = 10, etag = etag, last_modified = last_modified, cmds = Config.curl_params })
    if ok and d then
       if d.status == 301 then -- permenantly moved
          feeds[url] = d.href -- to keep config consistent
@@ -47,8 +45,8 @@ function M.update_feed(url, opts)
       end
       feeds[url] = feeds[url] or {}
       feeds[url].htmlUrl = d.link
-      feeds[url].title = decode(d.title) or d.title
-      feeds[url].description = decode(d.desc) or d.desc
+      feeds[url].title = d.title
+      feeds[url].description = d.desc
       feeds[url].version = d.version
       feeds[url].tags = tags -- TDOO: feed tags -- TODO: compare new tgs
       feeds[url].last_modified = d.last_modified
@@ -73,7 +71,7 @@ end
 ---@param size integer
 ---@param opts table
 function M.update_feeds(feedlist, size, opts)
-   local prog = progress.new(#feedlist)
+   local prog = Progress.new(#feedlist)
    local function aux(i)
       for j = i, i + size do
          local url = feedlist[j]

@@ -27,24 +27,4 @@ function M.sensible(thing, field, fallback)
    end
 end
 
----TODO:
-
-local function check_rsshub(_)
-   return false -- TODO:
-end
-
-local function header_says_html(hdrs)
-   for _, v in ipairs(hdrs) do
-      local tag = v:lower()
-      if tag:find "html" then -- TODO: maybe wrong, more formal
-         return true
-      end
-   end
-   return false
-end
-
-local function doctype_says_html(body)
-   return body:find "<!DOCTYPE html>"
-end
-
 return M
