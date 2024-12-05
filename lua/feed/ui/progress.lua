@@ -1,5 +1,5 @@
 local ut = require "feed.utils"
-local backend = ut.choose_backend(require("feed.config").progress.backends)
+local backend = ut.choose_backend(require("feed.config").progress.backend)
 
 local _, notify = pcall(require, "notify")
 local _, MiniNotify = pcall(require, "mini.notify")

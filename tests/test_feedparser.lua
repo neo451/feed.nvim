@@ -1,9 +1,9 @@
 local M = require "feed.parser"
 local eq = MiniTest.expect.equality
-local is_url = require("feed.utils").looks_like_url
 
 local h = require "tests.helpers"
 local readfile = h.readfile
+local is_url = h.is_url
 
 local is_string = function(v)
    eq("string", type(v))
@@ -18,20 +18,20 @@ local is_number = function(v)
 end
 
 local check_feed = function(ast)
-   is_string(ast.title, "no title")
-   is_string(ast.desc, "not desc")
+   is_string(ast.title)
+   is_string(ast.desc)
    is_url(ast.link)
    is_table(ast.entries)
    for _, v in ipairs(ast.entries) do
       if not v.link then
          vim.print(ast)
       end
-      is_url(v.link, "no link")
-      is_number(v.time, "no time")
-      is_string(v.id, "no id")
-      is_string(v.title, "no title")
-      is_string(v.author, "no author")
-      is_string(v.feed, "no feed")
+      is_url(v.link)
+      is_number(v.time)
+      is_string(v.id)
+      is_string(v.title)
+      is_string(v.author)
+      is_string(v.feed)
    end
 end
 
@@ -115,6 +115,30 @@ T["json"] = MiniTest.new_set {
    },
 }
 
+T["url resolover"] = MiniTest.new_set {
+   parametrize = {
+      {
+         "url_atom.xml",
+         {
+            link = "http://placehoder.feed/index.html",
+            [1] = {
+               link = "http://example.org/archives/000001.html",
+            },
+         },
+      },
+
+      {
+         "url_atom2.xml",
+         {
+            link = "http://example.org/index.html",
+            [1] = {
+               link = "http://example.org/archives/000001.html",
+            },
+         },
+      },
+   },
+}
+
 local function check(filename, checks)
    local f = M.parse_src(readfile(filename), "http://placehoder.feed")
    assert(f)
@@ -138,93 +162,29 @@ end
 T["rss"]["works"] = check
 T["atom"]["works"] = check
 T["json"]["works"] = check
+T["url resolover"]["works"] = check
 
-T["url resolover"] = MiniTest.new_set()
-
--- describe("url resolve", function()
---    it("resolve in atom, fallback to feed link?", function()
---       local src = [[
--- <?xml version="1.0" encoding="utf-8"?>
--- <feed version="0.3">
--- <title>Sample Feed</title>
--- <tagline>For documentation only</tagline>
--- <link rel="alternate" type="text/html" href="index.html"/>
--- <entry xml:base="http://example.org/archives/">
--- <title>First entry title</title>
--- <link rel="alternate" type="text/html" href="000001.html"/>
--- <author>
--- <name>Mark Pilgrim</name>
--- <url>../about/</url>
--- <email>mark@example.org</email>
--- </author>
--- </entry>
--- </feed>]]
---       local f = M.parse_src(src, "https://placehoder.feed")
---       eq(f.link, "https://placehoder.feed/index.html")
---       eq(f.entries[1].link, "http://example.org/archives/000001.html")
---
---       src = [[ <?xml version="1.0" encoding="utf-8"?>
--- <feed version="0.3" xml:base="https://example.org">
--- <title>Sample Feed</title>
--- <tagline>For documentation only</tagline>
--- <link rel="alternate" type="text/html" href="index.html"/>
--- <entry xml:base="http://example.org/archives/">
--- <title>First entry title</title>
--- <link rel="alternate" type="text/html" href="000001.html"/>
--- <author>
--- <name>Mark Pilgrim</name>
--- <url>../about/</url>
--- <email>mark@example.org</email>
--- </author>
--- </entry>
--- </feed>]]
---       f = M.parse_src(src, "https://placehoder.feed")
---       eq(f.link, "https://example.org/index.html")
---       eq(f.entries[1].link, "http://example.org/archives/000001.html")
---    end)
--- end)
---
---
 --- TODO: parse the condition in the feed parser test suite, into a check table, and wemo check!!
 
--- describe("feedparser test suite", function()
---    it("atom", function()
---       for f in vim.fs.dir "./data/atom" do
---          local str = readfile(f, "./data/atom/")
---          check_feed_minimal(M.parse_src(str, ""))
---       end
---    end)
---    it("rss", function()
---       for f in vim.fs.dir "./data/rss" do
---          if not f:sub(0, 1) == "_" then -- TODO:
---             local str = readfile(f, "./data/rss/")
---             check_feed_minimal(M.parse_src(str, ""))
---          end
---       end
---    end)
---    it("sanitize", function()
---       for f in vim.fs.dir "./data/sanitize" do
---          -- if not f:sub(0, 1) == "_" then -- TODO:
---          local str = readfile(f, "./data/sanitize/") -- TODO: further check
---          check_feed_minimal(M.parse_src(str, ""))
---          -- end
---       end
---    end)
---    it("xml", function()
---       for f in vim.fs.dir "./data/xml" do
---          local str = readfile(f, "./data/xml/") -- TODO: further check
---          check_feed_minimal(M.parse_src(str, ""))
---       end
---    end)
---
---    -- it("rdf", function()
---    --    for f in vim.fs.dir "./data/rdf" do
---    --       local str = readfile(f, "./data/rdf/") -- TODO: further check
---    --       check_feed_minimal(m.parse_src(str, ""))
---    --    end
---    -- end)
--- end)
---
+T["feedparser test suite"] = MiniTest.new_set {
+   parametrize = {
+      { "/data/atom" },
+      { "/data/rss" },
+      { "/data/sanitize" },
+      { "/data/xml" },
+      { "/data/rdf" },
+   },
+}
+
+local function check_suite(dir)
+   for f in vim.fs.dir(dir) do
+      local str = readfile(f, dir)
+      check_feed_minimal(M.parse_src(str, ""))
+   end
+end
+
+T["feedparser test suite"]["works"] = check_suite
+
 -- describe("reject encodings that neovim can not handle", function()
 --    local d = M.parse_src(readfile("encoding.xml", "./data/"), "")
 --    eq("gb2312", d.encoding)

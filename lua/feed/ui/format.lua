@@ -24,6 +24,10 @@ local tag2emoji = {
    -- linux = MiniIcons.get('os', 'linux')
 }
 
+local function cleanup(str)
+   return vim.trim(str:gsub("\n", ""))
+end
+
 ---@param entry feed.entry
 ---@return string
 function M.tags(entry)
@@ -48,13 +52,17 @@ end
 ---@param entry feed.entry
 ---@return string
 M.title = function(entry)
-   return decode(entry.title) or entry.title
+   return cleanup(decode(entry.title))
 end
 
 ---@param entry feed.entry
 ---@return string
 M.feed = function(entry)
-   return decode(entry.feed) or entry.feed
+   return cleanup(decode(entry.feed))
+end
+
+M.author = function(entry)
+   return cleanup(decode(entry.author))
 end
 
 ---@param entry feed.entry

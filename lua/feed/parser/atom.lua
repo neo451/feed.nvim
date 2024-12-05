@@ -18,17 +18,15 @@ local function handle_link(ast, base)
    local T = type(ast.link)
    base = ut.url_rebase(ast, base)
    if T == "table" then
-      if not vim.islist(ast.link) then
-         return ut.url_resolve(base, ast.link.href)
-      end
-      for _, v in ipairs(ast.link) do
+      for _, v in ipairs(ut.listify(ast.link)) do
          if v.rel == "alternate" then
             return ut.url_resolve(base, v.href)
-         elseif v.rel == "self" then
-            return ut.url_resolve(base, v.href)
+            -- elseif v.rel == "self" then
+            --    return ut.url_resolve(base, v.href)
          end
       end
-      return ut.url_resolve(base, ast.link[1].href) -- just in case..?
+      return base
+      -- return ut.url_resolve(base, ast.link[1].href) -- just in case..?
    elseif T == "string" then
       return ast.link
    end

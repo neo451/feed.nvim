@@ -12,6 +12,7 @@ local Nui = require "feed.ui.nui"
 local api = vim.api
 local feeds = DB.feeds
 local feedlist = ut.feedlist
+local get_buf_urls = ut.get_buf_urls
 
 local og_colorscheme = vim.g.colors_name
 local on_display, index
@@ -82,13 +83,6 @@ local function show_index()
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
----@class feed.entry_opts
----@field row_idx? integer # will default to cursor row
----@field untag? boolean # default true
----@field id? string # db_id
----@field buf? integer # buffer to populate
----@field lines? string[]
-
 ---@return feed.entry
 ---@return string
 local function get_entry()
@@ -112,75 +106,54 @@ local function grey_entry(id)
    NLine:render(index, -1, current_index)
 end
 
---- Returns all URLs in buffer, if any.
----@param buf integer
----@return string[][]
-local function get_buf_urls(buf)
-   vim.bo[buf].modifiable = true
-   local cur_link = current_entry.link
-   local ret = { { cur_link, cur_link } }
-
-   local lang = "markdown_inline"
-   local q = vim.treesitter.query.get(lang, "highlights")
-   local tree = vim.treesitter.get_parser(buf, lang, {}):parse()[1]:root()
-   if q then
-      for _, match, metadata in q:iter_matches(tree, buf) do
-         for id, nodes in pairs(match) do
-            for _, node in ipairs(nodes) do
-               local url = metadata[id] and metadata[id].url
-               if url and match[url] then
-                  for _, n in
-                     ipairs(match[url] --[[@as TSNode[] ]])
-                  do
-                     local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
-                     if node:type() == "inline_link" and node:child(1):type() == "link_text" then
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
-                        ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
-                        vim.cmd(sub_pattern)
-                     elseif node:type() == "image" and node:child(2):type() == "image_description" then
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
-                        ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
-                        vim.cmd(sub_pattern)
-                     else
-                        ret[#ret + 1] = { link, link }
-                     end
-                  end
-               end
-            end
-         end
-      end
-      vim.bo[buf].modifiable = false
+local function render_entry(buf, lines, id, is_preview)
+   if not api.nvim_buf_is_valid(buf) then
+      return
    end
-   return ret
+   vim.bo[buf].modifiable = true
+   for i, v in ipairs(lines) do
+      if type(v) == "table" then
+         v:render(buf, -1, i)
+      elseif type(v) == "string" then
+         api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
+      end
+   end
+
+   if not is_preview then
+      api.nvim_buf_set_name(buf, "FeedEntry")
+      api.nvim_set_current_buf(buf)
+      api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
+      DB:tag(id, "read")
+      grey_entry(id)
+      urls = get_buf_urls(buf, current_entry.link)
+   end
 end
+
+---@class feed.entry_opts
+---@field row_idx? integer  default to cursor row
+---@field id? string  db_id
+---@field buf? integer  buffer to populate
+---@field lines? string[]  lines to draw
 
 ---@param opts? feed.entry_opts
 local function show_entry(opts)
    opts = opts or {}
+   if opts.buf and not api.nvim_buf_is_valid(opts.buf) then
+      return
+   end
    local buf = opts.buf or api.nvim_create_buf(false, true)
-   api.nvim_buf_set_name(buf, "FeedEntry")
-   local untag = vim.F.if_nil(opts.untag, true)
    current_index = opts.row_idx or ut.get_cursor_row()
    local id = opts.id or on_display[current_index]
    local entry = DB[id]
-   current_entry = entry
    if not entry then
       return
    end
-   if untag then
-      DB:tag(id, "read")
-      grey_entry(id)
-   end
+   current_entry = entry
+
    local title = Format.title(entry)
    local date = Format.date(entry)
-   local author = entry.author
-   local feed = entry.feed
+   local author = Format.author(entry)
+   local feed = Format.feed(entry)
    local link = entry.link
 
    ---@alias entry_line NuiLine | string
@@ -194,35 +167,25 @@ local function show_entry(opts)
       "",
    }
 
-   local entry_lines = opts.lines or Markdown.convert(DB.dir .. "/data/" .. id)
-   vim.list_extend(lines, entry_lines)
-
-   vim.bo[buf].modifiable = true
-   for i, v in ipairs(lines) do
-      if type(v) == "table" then
-         v:render(buf, -1, i)
-      elseif type(v) == "string" then
-         api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
-      end
-   end
-
-   if not opts.buf then
-      api.nvim_set_current_buf(buf)
-      api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
-   end
-   urls = get_buf_urls(buf)
+   -- local entry_lines = opts.lines
+   Markdown.convert(
+      opts.fp or DB.dir .. "/data/" .. id,
+      vim.schedule_wrap(function(entry_lines)
+         vim.list_extend(lines, entry_lines)
+         render_entry(buf, lines, id, opts.buf ~= nil)
+      end)
+   )
 end
 
 local function show_full()
-   local entry, id = get_entry()
+   local entry = get_entry()
    local buf = api.nvim_get_current_buf()
    if entry.link then
       vim.system({ "curl", entry.link }, { text = true }, function(res)
          vim.schedule(function()
             local temp = vim.fn.tempname()
             ut.save_file(temp, res.stdout)
-            local lines = Markdown.convert(temp)
-            show_entry { id = id, lines = lines, buf = buf }
+            show_entry { fp = temp, buf = buf }
          end)
       end)
    else
@@ -285,7 +248,7 @@ local function show_next()
    show_entry { row_idx = current_index + 1, buf = api.nvim_get_current_buf() }
 end
 
-local function resolve_and_open(url, base)
+local function resolve_and_open(url)
    if not ut.looks_like_url(url) then
       local link = ut.url_resolve(current_entry.link, url)
       if link then

@@ -24,6 +24,7 @@ function M.import(src)
          end
          if v.xmlUrl then
             local url = v.xmlUrl
+            v.xmlUrl = nil
             if v.text == v.title then
                v.title = nil
             end

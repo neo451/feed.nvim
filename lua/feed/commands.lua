@@ -82,7 +82,7 @@ M.export_opml = {
 M.search = {
    doc = "query the database by time, tags or regex",
    impl = function(query)
-      local backend = ut.choose_backend(config.search.backends)
+      local backend = ut.choose_backend(config.search.backend)
       if query then
          ui.refresh { query = query }
       elseif ut.in_index() or not backend then

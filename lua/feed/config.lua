@@ -86,14 +86,14 @@ local default = {
 
    search = {
       default_query = "@6-months-ago +unread",
-      backends = {
+      backend = {
          "mini.pick",
          "telescope",
       },
    },
 
    progress = {
-      backends = {
+      backend = {
          "snacks",
          "fidget",
          "notify",

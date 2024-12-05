@@ -233,21 +233,24 @@ end
 ---@param url string
 ---@return table?
 function M.parse(src, url) -- TODO: url resolve ?
-   src = M.sanitize(src)
+   -- src = M.sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      log.warn(url, "treesitter err")
-   else
-      local iterator = vim.iter(root:iter_children())
-      local collected = iterator:fold({}, function(acc, node)
-         acc[#acc + 1] = M[node:type()](node, src)
-         return acc
-      end)
-      if collected[1].encoding then
-         collected[2].encoding = collected[1].encoding
+      root = get_root(M.sanitize(src))
+      if root:has_error() then
+         log.warn(url, "treesitter err")
+         return
       end
-      return #collected == 2 and collected[2] or collected[1]
    end
+   local iterator = vim.iter(root:iter_children())
+   local collected = iterator:fold({}, function(acc, node)
+      acc[#acc + 1] = M[node:type()](node, src)
+      return acc
+   end)
+   if collected[1].encoding then
+      collected[2].encoding = collected[1].encoding
+   end
+   return #collected == 2 and collected[2] or collected[1]
 end
 
 return M

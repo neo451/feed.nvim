@@ -254,4 +254,51 @@ M.feedlist = function(feeds)
       end)
 end
 
+--- Returns all URLs in markdown buffer, if any.
+---@param buf integer
+---@return string[][]
+M.get_buf_urls = function(buf, cur_link)
+   vim.bo[buf].modifiable = true
+   local ret = { { cur_link, cur_link } }
+
+   local lang = "markdown_inline"
+   local q = vim.treesitter.query.get(lang, "highlights")
+   local tree = vim.treesitter.get_parser(buf, lang, {}):parse()[1]:root()
+   if q then
+      for _, match, metadata in q:iter_matches(tree, buf) do
+         for id, nodes in pairs(match) do
+            for _, node in ipairs(nodes) do
+               local url = metadata[id] and metadata[id].url
+               if url and match[url] then
+                  for _, n in
+                     ipairs(match[url] --[[@as TSNode[] ]])
+                  do
+                     local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
+                     if node:type() == "inline_link" and node:child(1):type() == "link_text" then
+                        ---@diagnostic disable-next-line: param-type-mismatch
+                        local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
+                        local row = node:child(1):range() + 1
+                        ret[#ret + 1] = { text, link }
+                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
+                        vim.cmd(sub_pattern)
+                     elseif node:type() == "image" and node:child(2):type() == "image_description" then
+                        ---@diagnostic disable-next-line: param-type-mismatch
+                        local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
+                        local row = node:child(1):range() + 1
+                        ret[#ret + 1] = { text, link }
+                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
+                        vim.cmd(sub_pattern)
+                     else
+                        ret[#ret + 1] = { link, link }
+                     end
+                  end
+               end
+            end
+         end
+      end
+      vim.bo[buf].modifiable = false
+   end
+   return ret
+end
+
 return M
