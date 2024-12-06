@@ -30,7 +30,7 @@ T["import"]["nested opml"] = function()
    local str = readfile "opml_web.xml"
    local feeds = M.import(str)
    assert(feeds)
-   eq({ "frontend", "test_nested" }, feeds["http://gruntjs.com/rss"].tag)
+   eq({ "test_nested", "frontend" }, feeds["http://gruntjs.com/rss"].tags)
 end
 
 T["export"]["export imported opml"] = function()
@@ -43,7 +43,6 @@ T["export"]["export imported opml"] = function()
    assert(feeds)
    local str2 = M.export(feeds)
    local feeds2 = M.import(str2)
-   --    eq(str, str2)
    eq(feeds, feeds2)
 end
 

@@ -308,8 +308,8 @@ end
 ---@param url string
 ---@param base string
 M.resolve_and_open = function(url, base)
-   if not ut.looks_like_url(url) then
-      local link = ut.url_resolve(base, url)
+   if not M.looks_like_url(url) then
+      local link = M.url_resolve(base, url)
       if link then
          vim.ui.open(link)
       end

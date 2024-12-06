@@ -233,14 +233,14 @@ end
 ---@param url string
 ---@return table?
 function M.parse(src, url) -- TODO: url resolve ?
-   -- src = M.sanitize(src)
+   src = M.sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      root = get_root(M.sanitize(src))
-      if root:has_error() then
-         log.warn(url, "treesitter err")
-         return
-      end
+      -- root = get_root(M.sanitize(src))
+      -- if root:has_error() then
+      log.warn(url, "treesitter err")
+      --    return
+      -- end
    end
    local iterator = vim.iter(root:iter_children())
    local collected = iterator:fold({}, function(acc, node)

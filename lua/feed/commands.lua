@@ -286,7 +286,7 @@ M.update = {
          end,
          -- TODO: handle err better
          stderr = function(err, data)
-            vim.notify(err)
+            vim.notify(err, data)
          end,
       })
    end,
