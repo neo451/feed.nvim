@@ -13,6 +13,7 @@ local api = vim.api
 local feeds = DB.feeds
 local feedlist = ut.feedlist
 local get_buf_urls = ut.get_buf_urls
+local resolve_and_open = ut.resolve_and_open
 
 local og_colorscheme = vim.g.colors_name
 local on_display, index
@@ -85,12 +86,36 @@ end
 
 ---@return feed.entry
 ---@return string
-local function get_entry()
-   if ut.in_index() then
-      local id = on_display[ut.get_cursor_row()]
-      return DB[id], id
+local function get_entry(opts)
+   opts = opts or {}
+   if opts.buf and not api.nvim_buf_is_valid(opts.buf) then
+      return
    end
-   return current_entry, current_entry.id
+   local entry, id
+   if opts.id then
+      id = opts.id
+      if ut.in_index() then
+         current_index = ut.get_cursor_row()
+      else
+         for i, v in ipairs(on_display) do
+            if v == id then
+               current_index = i
+            end
+         end
+      end
+   elseif opts.row then
+      current_index = opts.row
+      id = on_display[current_index]
+   elseif ut.in_index() then
+      current_index = ut.get_cursor_row()
+      id = on_display[current_index]
+   elseif ut.in_entry() then
+      id = on_display[current_index]
+   else
+      error "no context to show entry"
+   end
+   entry = DB[id]
+   return entry, id
 end
 
 local function grey_entry(id)
@@ -130,10 +155,34 @@ local function render_entry(buf, lines, id, is_preview)
 end
 
 ---@class feed.entry_opts
----@field row_idx? integer  default to cursor row
+---@field row? integer  default to cursor row
 ---@field id? string  db_id
 ---@field buf? integer  buffer to populate
----@field lines? string[]  lines to draw
+---@field fp? string  path to raw html
+
+---@param lines string[]
+---@return string[]
+local function entry_filter(lines)
+   local idx
+   local res = {}
+   for i, v in ipairs(lines) do
+      if v:find "^# " then
+         idx = i
+      end
+   end
+   if idx then
+      for i = idx, #lines do
+         res[#res + 1] = lines[i]
+      end
+   else
+      return lines
+   end
+   return res
+end
+
+local function capticalize(str)
+   return str:sub(1, 1):upper() .. str:sub(2)
+end
 
 ---@param opts? feed.entry_opts
 local function show_entry(opts)
@@ -142,36 +191,25 @@ local function show_entry(opts)
       return
    end
    local buf = opts.buf or api.nvim_create_buf(false, true)
-   current_index = opts.row_idx or ut.get_cursor_row()
-   local id = opts.id or on_display[current_index]
-   local entry = DB[id]
+   local entry, id = get_entry(opts)
    if not entry then
       return
    end
    current_entry = entry
 
-   local title = Format.title(entry)
-   local date = Format.date(entry)
-   local author = Format.author(entry)
-   local feed = Format.feed(entry)
-   local link = entry.link
-
    ---@alias entry_line NuiLine | string
    ---@type entry_line[]
-   local lines = {
-      NuiLine { NuiText("Title: ", "title"), NuiText(title) },
-      NuiLine { NuiText("Author: ", "title"), NuiText(author) },
-      NuiLine { NuiText("Feed: ", "title"), NuiText(feed) },
-      NuiLine { NuiText("Link: ", "title"), NuiText(link) },
-      NuiLine { NuiText("Date: ", "title"), NuiText(date) },
-      "",
-   }
+   local lines = {}
 
-   -- local entry_lines = opts.lines
+   for i, v in ipairs { "title", "date", "author", "feed", "link" } do
+      lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "title"), NuiText(Format[v](entry)) }
+   end
+   table.insert(lines, "")
+
    Markdown.convert(
       opts.fp or DB.dir .. "/data/" .. id,
-      vim.schedule_wrap(function(entry_lines)
-         vim.list_extend(lines, entry_lines)
+      vim.schedule_wrap(function(markdown_lines)
+         vim.list_extend(lines, entry_filter(markdown_lines))
          render_entry(buf, lines, id, opts.buf ~= nil)
       end)
    )
@@ -184,7 +222,15 @@ local function show_full()
       vim.system({ "curl", entry.link }, { text = true }, function(res)
          vim.schedule(function()
             local temp = vim.fn.tempname()
-            ut.save_file(temp, res.stdout)
+            local pos = res.stdout:find "\n# "
+            local body
+            if pos then
+               body = res.stdout:sub(pos + 1, #res.stdout)
+            else
+               body = res.stdout
+            end
+            ---@diagnostic disable-next-line: param-type-mismatch
+            ut.save_file(temp, body)
             show_entry { fp = temp, buf = buf }
          end)
       end)
@@ -194,6 +240,7 @@ local function show_full()
 end
 
 --- TODO: register some state(tag/untag at leaset once) to tell refresh is needed, and then reset them, else do nothing
+--- TODO: if not new query then just remove the greyed out lines
 local function refresh(opts)
    opts = opts or {}
    opts.show = vim.F.if_nil(opts.show, true)
@@ -238,25 +285,14 @@ local function show_prev()
    if current_index == 1 then
       return
    end
-   show_entry { row_idx = current_index - 1, buf = api.nvim_get_current_buf() }
+   show_entry { row = current_index - 1, buf = api.nvim_get_current_buf() }
 end
 
 local function show_next()
    if current_index == #on_display then
       return
    end
-   show_entry { row_idx = current_index + 1, buf = api.nvim_get_current_buf() }
-end
-
-local function resolve_and_open(url)
-   if not ut.looks_like_url(url) then
-      local link = ut.url_resolve(current_entry.link, url)
-      if link then
-         vim.ui.open(link)
-      end
-   else
-      vim.ui.open(url)
-   end
+   show_entry { row = current_index + 1, buf = api.nvim_get_current_buf() }
 end
 
 local function show_urls()
@@ -423,13 +459,10 @@ local function show_feeds()
 end
 
 local function show_browser()
-   local entry, id = get_entry()
-   if entry then
-      local link = entry.link
-      if link then
-         -- db:tag(id, "read")
-         vim.ui.open(link)
-      end
+   local entry, _ = get_entry()
+   if entry and entry.link then
+      -- db:tag(id, "read")
+      vim.ui.open(entry.link)
    else
       ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
    end

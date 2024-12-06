@@ -63,7 +63,7 @@ function M.cb_to_co(f)
       f(function(ret)
          local ok = coroutine.resume(co, ret)
          if not ok then
-            print("coroutine failed", unpack(args))
+            vim.print("coroutine failed", unpack(args))
             -- error "The coroutine failed"
          end
       end, ...)
@@ -101,6 +101,10 @@ end
 ---@param path string
 ---@param content string
 M.save_file = function(path, content)
+   if not path then
+      return
+   end
+   content = content or ""
    if type(path) == "table" then
       ---@diagnostic disable-next-line: param-type-mismatch
       path = tostring(path)
@@ -299,6 +303,19 @@ M.get_buf_urls = function(buf, cur_link)
       vim.bo[buf].modifiable = false
    end
    return ret
+end
+
+---@param url string
+---@param base string
+M.resolve_and_open = function(url, base)
+   if not ut.looks_like_url(url) then
+      local link = ut.url_resolve(base, url)
+      if link then
+         vim.ui.open(link)
+      end
+   else
+      vim.ui.open(url)
+   end
 end
 
 return M

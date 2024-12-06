@@ -2,8 +2,6 @@ local M = {}
 local config = require "feed.config"
 local ut = require "feed.utils"
 local _, MiniIcons = pcall(require, "mini.icons")
-local entities = require "feed.lib.entities"
-local decode = entities.decode
 
 local align = ut.align
 
@@ -52,17 +50,21 @@ end
 ---@param entry feed.entry
 ---@return string
 M.title = function(entry)
-   return cleanup(decode(entry.title))
+   return cleanup(entry.title)
 end
 
 ---@param entry feed.entry
 ---@return string
 M.feed = function(entry)
-   return cleanup(decode(entry.feed))
+   return cleanup(entry.feed)
 end
 
 M.author = function(entry)
-   return cleanup(decode(entry.author))
+   return cleanup(entry.author)
+end
+
+M.link = function(entry)
+   return entry.link
 end
 
 ---@param entry feed.entry
@@ -114,6 +116,9 @@ end
 function M.gen_nui_line(entry, comps)
    local NuiLine = require "nui.line"
    local line = NuiLine()
+   if not entry then
+      return NuiLine()
+   end
    for _, v in ipairs(comps) do
       local text = entry[v[1]] or ""
       if M[v[1]] then

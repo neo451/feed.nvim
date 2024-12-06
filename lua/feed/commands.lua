@@ -2,7 +2,6 @@ local config = require "feed.config"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
 local ui = require "feed.ui"
-local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
 local nui = require "feed.ui.nui"
@@ -277,7 +276,19 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(feedlist(feeds), 10, {})
+      local Progress = require "feed.ui.progress"
+
+      local prog = Progress.new(#ut.feedlist(feeds))
+      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
+         text = true,
+         stdout = function(err, data)
+            prog:update(vim.trim(data))
+         end,
+         -- TODO: handle err better
+         stderr = function(err, data)
+            vim.notify(err)
+         end,
+      })
    end,
    context = { all = true },
 }
@@ -285,22 +296,22 @@ M.update = {
 M.update_feed = {
    doc = "update a feed to db",
    impl = function(url)
-      if url then
-         return fetch.update_feeds({ url }, 1, { force = true })
-      else
-         -- TODO: use nui.select
-         vim.ui.select(feedlist(feeds), {
-            prompt = "Feed to update",
-            format_item = function(item)
-               return feeds[item].title or item
-            end,
-         }, function(choice)
-            if not choice then
-               return
-            end
-            return fetch.update_feeds({ choice }, 1, { force = true })
-         end)
-      end
+      -- if url then
+      --    return fetch.update_feed({ url }, 1, { force = true })
+      -- else
+      --    -- TODO: use nui.select
+      --    vim.ui.select(feedlist(feeds), {
+      --       prompt = "Feed to update",
+      --       format_item = function(item)
+      --          return feeds[item].title or item
+      --       end,
+      --    }, function(choice)
+      --       if not choice then
+      --          return
+      --       end
+      --       return fetch.update_feeds({ choice }, 1, { force = true })
+      --    end)
+      -- end
    end,
 
    complete = function()

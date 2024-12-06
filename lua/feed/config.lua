@@ -4,14 +4,15 @@
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
 ---@field colorscheme? string
----@field split_cmd? string
 ---@field db_dir? string
 ---@field date_format? string
+---@field curl_params? string[]
+---@field rsshub_instance? string move all options here as a enum??
 ---@field enable_default_keymaps? boolean
 ---@field layout? table
----@field search? table
+---@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
+---@field search? { backend: "telescope" | "mini.pick", default_query: string }
 ---@field options? table
----@field on_attach? fun(bufs: table<string, integer>)
 
 ---@class feed._config
 local default = {
@@ -53,7 +54,7 @@ local default = {
          filetype = "markdown",
       },
    },
-   ---@type table<string, any>
+   ---@type table[]
    layout = {
       -- TODO: validate
       {
@@ -76,12 +77,12 @@ local default = {
          width = 80,
          color = "@markup.strong",
       },
-      { "hints", right = true, color = "Pmenu" },
-      {
-         "query",
-         right = true,
-         color = "Pmenu",
-      },
+      -- { "hints", right = true, color = "Pmenu" },
+      -- {
+      --    "query",
+      --    right = true,
+      --    color = "Pmenu",
+      -- },
    },
 
    search = {

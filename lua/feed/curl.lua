@@ -29,7 +29,7 @@ local function parse_header(fp)
       local sects = vim.split(data, "\r\n\r\n")
       local headers = {}
       for _, sect in ipairs(sects) do
-         headers = vim.tbl_extend("force", headers, parse(sect))
+         headers = vim.tbl_extend("keep", headers, parse(sect))
       end
       return headers
    else
@@ -52,20 +52,8 @@ local function build_header(t)
    return res
 end
 
-local function fetch(cb, url, opts)
-   assert(type(url) == "string", "url must be a string")
-   assert(type(cb) == "function", "callback is required")
-   opts = opts or {}
-   local additional = build_header {
-      is_none_match = opts.etag,
-      if_modified_since = opts.last_modified,
-   }
-   url = url:gsub("rsshub:/", config.rsshub_instance)
-   local dump_fp = vim.fn.tempname()
-   local cmds = { "curl", "-sSL", "-D", dump_fp, "--connect-timeout", opts.timeout or 10, url }
-   cmds = vim.list_extend(cmds, additional)
-   cmds = vim.list_extend(cmds, opts.cmds or {})
-   vim.system(cmds, { text = true }, function(obj)
+local function spawn(cmds, url, dump_fp, cb)
+   vim.system(cmds, { text = true, detach = true }, function(obj)
       if obj.code == 0 then
          local headers = parse_header(dump_fp)
          obj.href = headers.location or url
@@ -84,6 +72,32 @@ local function fetch(cb, url, opts)
       end
    end)
 end
+
+local function fetch(cb, url, opts)
+   assert(type(url) == "string", "url must be a string")
+   assert(type(cb) == "function", "callback is required")
+   opts = opts or {}
+   local additional = build_header {
+      is_none_match = opts.etag,
+      if_modified_since = opts.last_modified,
+   }
+   url = url:gsub("rsshub:/", config.rsshub_instance)
+   local dump_fp = vim.fn.tempname()
+   local cmds = {
+      "curl",
+      "-sSL",
+      "-D",
+      dump_fp,
+      "--connect-timeout",
+      opts.timeout or 10,
+      url,
+   }
+   cmds = vim.list_extend(cmds, additional)
+   cmds = vim.list_extend(cmds, opts.cmds or {})
+   pcall(spawn, cmds, url, dump_fp, cb)
+end
+
+M.get = fetch
 
 M.fetch_co = ut.cb_to_co(fetch)
 

@@ -1,8 +1,8 @@
 local date = require "feed.parser.date"
-local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
 local sensible = p_ut.sensible
+local sha = p_ut.sha
 local decode = require("feed.lib.entities").decode
 
 local function handle_version(ast)
