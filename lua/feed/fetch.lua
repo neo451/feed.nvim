@@ -67,20 +67,11 @@ function M.update_all()
    local feeds = require("feed.db").feeds
    local list = require("feed.utils").feedlist(feeds)
 
-   local function url2name(url)
-      if feeds[url] then
-         local feed = feeds[url]
-         if feed.title then
-            return feed.title or url
-         end
-      end
-      return url
-   end
    local c = 0
 
    Promise.map(function(url)
       fetch.update_feed(url, {}, function(ok)
-         local name = url2name(url)
+         local name = ut.url2name(url, feeds)
          io.write(table.concat({ name, (ok and " success" or " failed"), "\n" }, " "))
 
          c = c + 1

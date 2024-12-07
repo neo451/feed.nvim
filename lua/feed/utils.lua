@@ -227,4 +227,17 @@ M.feedlist = function(feeds)
       end)
 end
 
+---@param url string
+---@param feeds feed.opml
+---@return string
+M.url2name = function(url, feeds)
+   if feeds[url] then
+      local feed = feeds[url]
+      if feed.title then
+         return feed.title or url
+      end
+   end
+   return url
+end
+
 return M

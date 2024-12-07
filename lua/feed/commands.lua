@@ -6,6 +6,7 @@ local opml = require "feed.parser.opml"
 local feeds = db.feeds
 local nui = require "feed.ui.nui"
 local curl = require "feed.curl"
+local fetch = require "feed.fetch"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -14,20 +15,6 @@ local input = ut.input
 local feedlist = ut.feedlist
 
 local M = {}
-
-M.log = {
-   doc = "show log",
-   impl = function()
-      local str = read_file(vim.fn.stdpath "data" .. "/feed.nvim.log")
-      if str then
-         local buf = vim.api.nvim_create_buf(false, true)
-         vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(str, "\n"))
-         vim.api.nvim_set_current_buf(buf)
-         vim.keymap.set("n", "q", "<cmd>bd<cr>", { buffer = buf })
-      end
-   end,
-   context = { all = true },
-}
 
 M.load_opml = {
    doc = "takes filepath of your opml",
@@ -116,49 +103,55 @@ M.refresh = {
    context = { index = true },
 }
 
-M.show_browser = {
+M.log = {
+   doc = "show log",
+   impl = ui.show_log,
+   context = { all = true },
+}
+
+M.browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = ui.show_browser,
    context = { index = true, entry = true },
 }
 
-M.show_full = {
+M.full = {
    doc = "fetch the full text",
    impl = ui.show_full,
    context = { entry = true },
 }
 
-M.show_split = {
+M.split = {
    doc = "show entry in split",
    impl = ui.show_split,
    context = { index = true },
 }
 
-M.show_entry = {
+M.entry = {
    doc = "show entry in new buffer",
    impl = ui.show_entry,
    context = { index = true },
 }
 
-M.show_index = {
+M.index = {
    doc = "show query results in new buffer",
    impl = ui.show_index,
    context = { all = true },
 }
 
-M.show_next = {
+M.next = {
    doc = "show next query result",
    impl = ui.show_next,
    context = { entry = true },
 }
 
-M.show_prev = {
+M.prev = {
    doc = "show previous query result",
    impl = ui.show_prev,
    context = { entry = true },
 }
 
-M.show_hints = {
+M.hints = {
    doc = "show keymap hints",
    impl = ui.show_hints,
    context = { entry = true, index = true },
@@ -170,7 +163,13 @@ M.quit = {
    context = { entry = true, index = true },
 }
 
-M.link_to_clipboard = {
+M.open_url = {
+   doc = "open url under cursor",
+   impl = ui.open_url,
+   context = { entry = true },
+}
+
+M.yank_url = {
    doc = "yank link to system clipboard",
    impl = function()
       vim.fn.setreg("+", ui.get_entry().link)
@@ -254,12 +253,6 @@ M.untag = {
    context = { index = true, entry = true },
 }
 
-M.open_url = {
-   doc = "open url under cursor",
-   impl = ui.open_url,
-   context = { entry = true },
-}
-
 M.urlview = {
    doc = "list all links in entry and open selected",
    impl = ui.show_urls,
@@ -298,28 +291,47 @@ M.update = {
 M.update_feed = {
    doc = "update a feed to db",
    impl = function(url)
-      -- if url then
-      --    return fetch.update_feed({ url }, 1, { force = true })
-      -- else
-      --    -- TODO: use nui.select
-      --    vim.ui.select(feedlist(feeds), {
-      --       prompt = "Feed to update",
-      --       format_item = function(item)
-      --          return feeds[item].title or item
-      --       end,
-      --    }, function(choice)
-      --       if not choice then
-      --          return
-      --       end
-      --       return fetch.update_feeds({ choice }, 1, { force = true })
-      --    end)
-      -- end
+      if url then
+         fetch.update_feed(url, { force = true }, function(ok)
+            ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or "failed"), level = "INFO" })
+         end)
+      else
+         nui.select(feedlist(feeds), {
+            prompt = "Feed to update",
+            format_item = function(item)
+               return feeds[item].title or item
+            end,
+         }, function(choice)
+            if not choice then
+               return
+            end
+            fetch.update_feed(choice, { force = true }, function(ok)
+               ut.notify("fetch", { msg = ut.url2name(choice, feeds) .. (ok and " success" or "failed"), level = "INFO" })
+            end)
+         end)
+      end
    end,
 
    complete = function()
       return feedlist(feeds)
    end,
    context = { all = true },
+}
+
+M.term = {
+   doc = "",
+   impl = function()
+      local res = db:filter "#5"
+      local Format = require "feed.ui.format"
+      for _, id in ipairs(res) do
+         print(Format.entry(db[id], {
+            { "feed", width = 10 },
+            { "title" },
+         }))
+      end
+      os.exit()
+   end,
+   context = {},
 }
 
 function M._list_commands()
@@ -391,17 +403,17 @@ function M._register_autocmds()
       group = augroup,
       callback = function()
          local buf = vim.api.nvim_get_current_buf()
+         local win = vim.api.nvim_get_current_win()
          vim.cmd "set cmdheight=0"
-         if Config.colorscheme then
-            vim.cmd.colorscheme(Config.colorscheme)
-         end
-
          for rhs, lhs in pairs(Config.keys.entry) do
             vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
          end
          for key, value in pairs(Config.options.entry) do
             pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
-            pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+         end
+         if Config.colorscheme then
+            vim.cmd.colorscheme(Config.colorscheme)
          end
       end,
    })

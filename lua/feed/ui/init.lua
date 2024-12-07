@@ -15,6 +15,7 @@ local feeds = DB.feeds
 local feedlist = ut.feedlist
 local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
+local Split = Nui.split
 
 local og_colorscheme = vim.g.colors_name
 local on_display, index_buf, entry_buf
@@ -39,12 +40,12 @@ local providers = {}
 setmetatable(providers, {
    __index = function(_, k)
       return function()
+         -- TODO: capticalize func
          return string.upper(k:sub(0, 1)) .. k:sub(2, -1)
       end
    end,
 })
 
---- TODO: put these into statusline
 providers.query = function()
    return " query: " .. query
 end
@@ -307,25 +308,21 @@ local function open_url()
    end
 end
 
-local function show_split()
-   local Split = require "nui.split"
-   local event = require("nui.utils.autocmd").event
-   local _, id = get_entry()
+local function show_browser()
+   local entry, id = get_entry()
+   if entry and entry.link then
+      DB:tag(id, "read")
+      vim.ui.open(entry.link)
+   else
+      ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
+   end
+end
 
-   local split = Split {
-      relative = "editor",
-      position = "bottom",
-      size = "50%",
-   }
-
-   split:mount()
-   split:map("n", "q", function()
-      split:unmount()
-   end, { noremap = true })
-   show_entry { buf = split.bufnr, id = id }
-   split:on(event.BufLeave, function()
-      split:unmount()
-   end)
+local function show_log()
+   local str = ut.read_file(vim.fn.stdpath "data" .. "/feed.nvim.log")
+   if str then
+      Split("50%", vim.split(str, "\n"))
+   end
 end
 
 local function show_hints()
@@ -335,47 +332,23 @@ local function show_hints()
    elseif ut.in_index() then
       maps = Config.keys.index
    end
-   local Split = require "nui.split"
-   local event = require("nui.utils.autocmd").event
 
-   local split = Split {
-      relative = "editor",
-      position = "bottom",
-      size = "30%",
-   }
    local lines = {}
    for k, v in pairs(maps) do
       lines[#lines + 1] = v .. " -> " .. k
    end
-   api.nvim_buf_set_lines(split.bufnr, 0, -1, false, lines)
-   api.nvim_set_option_value("number", false, { buf = split.winid })
-   api.nvim_set_option_value("relativenumber", false, { buf = split.winid })
-   api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
 
-   split:mount()
-   split:map("n", "q", function()
-      split:unmount()
-   end, { noremap = true })
-   split:on(event.BufLeave, function()
-      split:unmount()
-   end)
+   Split("30%", lines)
+end
+
+local function show_split()
+   local _, id = get_entry()
+   local split = Split "50%"
+   show_entry { buf = split.bufnr, id = id }
 end
 
 local function show_feeds()
-   local Split = require "nui.split"
-   local event = require("nui.utils.autocmd").event
-
-   local split = Split {
-      relative = "editor",
-      position = "bottom",
-      size = "40%",
-   }
-   local lines = {}
-
-   api.nvim_buf_set_lines(split.bufnr, 0, -1, false, lines)
-   api.nvim_set_option_value("number", false, { buf = split.winid })
-   api.nvim_set_option_value("relativenumber", false, { buf = split.winid })
-   api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
+   local split = Split "50%"
 
    local nodes = {}
 
@@ -398,12 +371,6 @@ local function show_feeds()
       nodes = nodes,
    }
 
-   tree:render()
-
-   split:mount()
-   split:map("n", "q", function()
-      split:unmount()
-   end, { noremap = true })
    split:map("n", "<Tab>", function()
       local node, _ = tree:get_node()
       if node and node:has_children() then
@@ -416,26 +383,12 @@ local function show_feeds()
          end
       end
    end, { noremap = true })
-   split:on(event.BufLeave, function()
-      split:unmount()
-   end)
-end
 
-local function show_browser()
-   local entry, _ = get_entry()
-   if entry and entry.link then
-      -- db:tag(id, "read")
-      vim.ui.open(entry.link)
-   else
-      ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
-   end
+   tree:render()
 end
-
--- TODO: full text fetch if entry is empty
 
 return {
    show_index = show_index,
-   get_entry = get_entry,
    show_entry = show_entry,
    show_urls = show_urls,
    show_next = show_next,
@@ -445,6 +398,8 @@ return {
    show_feeds = show_feeds,
    show_browser = show_browser,
    show_full = show_full,
+   show_log = show_log,
+   get_entry = get_entry,
    open_url = open_url,
    quit = quit,
    refresh = refresh,

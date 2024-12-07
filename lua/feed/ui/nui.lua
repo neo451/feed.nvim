@@ -1,4 +1,7 @@
 local M = {}
+local Split = require "nui.split"
+local event = require("nui.utils.autocmd").event
+local api = vim.api
 
 local has_dressing = pcall(require, "dressing")
 
@@ -78,5 +81,32 @@ local nui_select = function(items, opts, on_choice, config)
 end
 
 M.select = has_dressing and vim.ui.select or nui_select
+
+---@param percentage string
+---@param lines? string[]
+---@return NuiSplit
+function M.split(percentage, lines)
+   lines = lines or {}
+   local split = Split {
+      relative = "editor",
+      position = "bottom",
+      size = percentage,
+   }
+   split:mount()
+
+   split:map("n", "q", function()
+      split:unmount()
+   end, { noremap = true })
+
+   split:on(event.BufLeave, function()
+      split:unmount()
+   end)
+
+   api.nvim_buf_set_lines(split.bufnr, 0, -1, false, lines)
+   api.nvim_set_option_value("number", false, { win = split.winid })
+   api.nvim_set_option_value("relativenumber", false, { win = split.winid })
+   api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
+   return split
+end
 
 return M
