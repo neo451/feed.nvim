@@ -1,6 +1,6 @@
 local Config = require "feed.config"
 local ut = require "feed.utils"
-local db = ut.require "feed.db"
+local db = require "feed.db"
 local ui = require "feed.ui"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
@@ -29,7 +29,6 @@ M.log = {
    context = { all = true },
 }
 
---- TODO: allow url
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
@@ -286,10 +285,9 @@ M.update = {
                prog:update(vim.trim(data))
             end
          end,
-         -- TODO: handle err better
          stderr = function(err, data)
             if data then
-               vim.notify(err, data)
+               ut.notify("fetch", { msg = data, level = "ERROR" })
             end
          end,
       })
@@ -405,23 +403,13 @@ function M._register_autocmds()
             pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
-
-         local conform_ok, conform = pcall(require, "conform")
-
-         if conform_ok then
-            vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
-            pcall(conform.format, { formatter = { "injected" }, filetype = "markdown", bufnr = buf })
-            vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
-         else
-            vim.lsp.buf.format { bufnr = buf }
-         end
       end,
    })
 
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowIndexPost",
       group = augroup,
-      callback = function(_)
+      callback = function()
          vim.cmd "set cmdheight=0"
          local buf = vim.api.nvim_get_current_buf()
          local win = vim.api.nvim_get_current_win()
