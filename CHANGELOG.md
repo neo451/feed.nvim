@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.13.1](https://github.com/neo451/feed.nvim/compare/v1.13.0...v1.13.1) (2024-12-07)
+
+
+### Bug Fixes
+
+* **ui:** fix winbar alignment ([cd79bfb](https://github.com/neo451/feed.nvim/commit/cd79bfbb6def42e4a9eb38da415cfd3d217296c2))
+* **ui:** handle text alignment without plenary ([cd79bfb](https://github.com/neo451/feed.nvim/commit/cd79bfbb6def42e4a9eb38da415cfd3d217296c2))
+* **ui:** remove integration for formatters, autocmd and pandoc power! ([3ccd7af](https://github.com/neo451/feed.nvim/commit/3ccd7af8056d8be5612707a6e6513d8746e86922))
+* **ui:** show_full using the -r of pandoc ([cd79bfb](https://github.com/neo451/feed.nvim/commit/cd79bfbb6def42e4a9eb38da415cfd3d217296c2))
+
 ## [1.13.0](https://github.com/neo451/feed.nvim/compare/v1.12.0...v1.13.0) (2024-12-07)
 
 
