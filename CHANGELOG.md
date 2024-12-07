@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.2](https://github.com/neo451/feed.nvim/compare/v1.13.1...v1.13.2) (2024-12-07)
+
+
+### Bug Fixes
+
+* rename bunch of commands shorter for clarity ([aac4240](https://github.com/neo451/feed.nvim/commit/aac4240103ccfa7809149474a80925dde3c99963))
+* update_feed fixed ([aac4240](https://github.com/neo451/feed.nvim/commit/aac4240103ccfa7809149474a80925dde3c99963))
+
 ## [1.13.1](https://github.com/neo451/feed.nvim/compare/v1.13.0...v1.13.1) (2024-12-07)
 
 
