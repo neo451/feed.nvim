@@ -1,7 +1,7 @@
 local Feedparser = require "feed.parser"
 local ut = require "feed.utils"
 ---@type feed.db
-local db = ut.require "feed.db"
+local db = require "feed.db"
 local Config = require "feed.config"
 
 local M = {}
@@ -18,8 +18,6 @@ local valid_response = {
    [307] = true,
    [308] = true, -- TODO:
 }
-
--- TODO: force_update option, ignore etag and last_modified
 
 ---@param url string
 ---@param opts { force: boolean }

@@ -22,7 +22,7 @@ local function parse(data)
    return res
 end
 
-local function parse_header(fp)
+local function parse_header(fp, url)
    local data = read_file(fp)
    vim.uv.fs_unlink(fp)
    if data then
@@ -33,7 +33,7 @@ local function parse_header(fp)
       end
       return headers
    else
-      log.warn "invalid header!!!" -- TODO:
+      log.warn(url, "has invalid header")
    end
 end
 
@@ -55,7 +55,7 @@ end
 local function spawn(cmds, url, dump_fp, cb)
    vim.system(cmds, { text = true, detach = true }, function(obj)
       if obj.code == 0 then
-         local headers = parse_header(dump_fp)
+         local headers = parse_header(dump_fp, url)
          obj.href = headers.location or url
          obj.etag = headers.etag
          obj.last_modified = headers.last_modified

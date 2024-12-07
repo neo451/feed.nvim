@@ -1,29 +1,10 @@
 local M = {}
-local URL = require "feed.lib.url"
-local api = vim.api
+local vim = vim
+local api, fn = vim.api, vim.fn
+local ipairs, tostring = ipairs, tostring
 
----@param base_url string
----@param url string
----@return string?
-function M.url_resolve(base_url, url)
-   if not base_url then
-      return url
-   end
-   if not url then
-      return base_url
-   end
-   return tostring(URL.resolve(base_url, url))
-end
-
----@param el table
----@param base_uri string
----@return string
-function M.url_rebase(el, base_uri)
-   local xml_base = el["xml:base"]
-   if not xml_base then
-      return base_uri
-   end
-   return tostring(M.url_resolve(base_uri, xml_base))
+for k, v in pairs(require "feed.utils.url") do
+   M[k] = v
 end
 
 ---make sure a table is a list insted of a map
@@ -73,11 +54,6 @@ function M.cb_to_co(f)
    return f_co
 end
 
-function M.run(co)
-   coroutine.resume(coroutine.create(co))
-end
-
--- FIX: get rid of
 ---@param f function
 ---@return function
 function M.wrap(f)
@@ -133,49 +109,42 @@ M.read_file = function(path)
    return ret
 end
 
----porperly align, justify and trucate the title
 ---@param str string
----@param max_len integer
----@param right_justify boolean
+---@param len integer
 ---@return string
-M.align = function(str, max_len, right_justify)
-   local strings = require "plenary.strings"
-   str = str or ""
-   right_justify = right_justify or false
-   local len = strings.strdisplaywidth(str)
-   if len < max_len then
-      return strings.align_str(str, max_len, right_justify)
-   else
-      return strings.align_str(strings.truncate(str, max_len), max_len, right_justify)
+local truncate = function(str, len)
+   if fn.strdisplaywidth(str) <= len then
+      return str
    end
+   local dots = "…"
+   local start = 0
+   local current = 0
+   local result = ""
+   local len_of_dots = fn.strdisplaywidth(dots)
+   local concat = function(a, b, dir)
+      if dir > 0 then
+         return a .. b
+      else
+         return b .. a
+      end
+   end
+   while true do
+      local part = fn.strcharpart(str, start, 1)
+      current = current + fn.strdisplaywidth(part)
+      if (current + len_of_dots) > len then
+         result = concat(result, dots, 1)
+         break
+      end
+      result = concat(result, part, 1)
+      start = start + 1
+   end
+   return result
 end
 
-function M.append(str)
-   vim.wo.winbar = vim.wo.winbar .. str
-end
-
-function M.comp(name, str, width, grp)
-   width = width or #str
-   vim.g["feed_" .. name] = str
-   M.append("%#" .. grp .. "#")
-   M.append("%-" .. width + 1 .. "." .. width + 1 .. "{g:feed_" .. name .. "}")
-end
-
-function M.looks_like_url(str)
-   local allow = { https = true, http = true }
-   return allow[URL.parse(str).scheme] ~= nil
-end
-
---- FIX: ?
-function M.require(mod)
-   return setmetatable({}, {
-      __index = function(t, key)
-         if vim.tbl_isempty(t) then
-            t = require(mod)
-         end
-         return t[key]
-      end,
-   })
+M.align = function(str, width, right_justify)
+   local str_len = fn.strdisplaywidth(str)
+   str = truncate(str, width)
+   return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
 end
 
 M.input = M.cb_to_co(function(cb, opts)
@@ -196,11 +165,11 @@ function M.get_selection()
    local mode = api.nvim_get_mode().mode
 
    if mode == "n" then
-      return { vim.fn.expand "<cexpr>" }
+      return { fn.expand "<cexpr>" }
    end
 
    local ok, selection = pcall(function()
-      return vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".", { type = mode })
+      return fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".", { type = mode })
    end)
 
    if ok then
@@ -219,7 +188,7 @@ end
 --- Trim last blank lines
 M.trim_last_lines = function()
    local n_lines = api.nvim_buf_line_count(0)
-   local last_nonblank = vim.fn.prevnonblank(n_lines)
+   local last_nonblank = fn.prevnonblank(n_lines)
    local buf = api.nvim_get_current_buf()
    api.nvim_set_option_value("modifiable", true, { buf = buf })
    if last_nonblank < n_lines then
@@ -256,66 +225,6 @@ M.feedlist = function(feeds)
          table.insert(acc, k)
          return acc
       end)
-end
-
---- Returns all URLs in markdown buffer, if any.
----@param buf integer
----@return string[][]
-M.get_buf_urls = function(buf, cur_link)
-   vim.bo[buf].modifiable = true
-   local ret = { { cur_link, cur_link } }
-
-   local lang = "markdown_inline"
-   local q = vim.treesitter.query.get(lang, "highlights")
-   local tree = vim.treesitter.get_parser(buf, lang, {}):parse()[1]:root()
-   if q then
-      for _, match, metadata in q:iter_matches(tree, buf) do
-         for id, nodes in pairs(match) do
-            for _, node in ipairs(nodes) do
-               local url = metadata[id] and metadata[id].url
-               if url and match[url] then
-                  for _, n in
-                     ipairs(match[url] --[[@as TSNode[] ]])
-                  do
-                     local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
-                     if node:type() == "inline_link" and node:child(1):type() == "link_text" then
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
-                        ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
-                        vim.cmd(sub_pattern)
-                     elseif node:type() == "image" and node:child(2):type() == "image_description" then
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
-                        ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
-                        vim.cmd(sub_pattern)
-                     else
-                        ret[#ret + 1] = { link, link }
-                     end
-                  end
-               end
-            end
-         end
-      end
-      vim.bo[buf].modifiable = false
-   end
-   return ret
-end
-
----@param url string
----@param base string
-M.resolve_and_open = function(url, base)
-   if not M.looks_like_url(url) then
-      local link = M.url_resolve(base, url)
-      if link then
-         vim.ui.open(link)
-      end
-   else
-      vim.ui.open(url)
-   end
 end
 
 return M

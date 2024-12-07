@@ -66,7 +66,7 @@ local default = {
       },
       {
          "tags",
-         width = 25,
+         width = 15,
          color = "WhiteSpace",
       },
       {
@@ -74,12 +74,11 @@ local default = {
          width = 80,
          color = "@markup.strong",
       },
-      -- { "hints", right = true, color = "Pmenu" },
-      -- {
-      --    "query",
-      --    right = true,
-      --    color = "Pmenu",
-      -- },
+      {
+         "query",
+         right = true,
+         color = "Pmenu",
+      },
    },
 
    search = {
@@ -117,6 +116,7 @@ local default = {
 
    keys = {
       index = {
+         show_hints = "?",
          _dot = ".",
          _undo = "u",
          show_entry = "<CR>",
@@ -130,9 +130,11 @@ local default = {
          quit = "q",
       },
       entry = {
+         show_hints = "?",
          show_browser = "b",
          show_next = "}",
          show_prev = "{",
+         show_full = "f",
          search = "s",
          untag = "-",
          tag = "+",

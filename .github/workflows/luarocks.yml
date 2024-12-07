@@ -28,7 +28,6 @@ jobs:
         with:
           dependencies: |
             nui.nvim
-            plenary.nvim
             pathlib.nvim
             tree-sitter-xml
             tree-sitter-markdown
