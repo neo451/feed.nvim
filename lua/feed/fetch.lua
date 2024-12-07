@@ -49,8 +49,8 @@ function M.update_feed(url, opts, cb)
          -- TODO: tags and htmlUrl can change? --
          feeds[url].htmlUrl = feeds[url].htmlUrl or d.link
          feeds[url].title = feeds[url].title or d.title
-         feeds[url].description = feeds[url].title or d.desc
-         feeds[url].version = feeds[url].title or d.version
+         feeds[url].description = feeds[url].desc or d.desc
+         feeds[url].version = feeds[url].version or d.version
          feeds[url].tags = feeds[url].tags or tags -- TDOO: feed tags -- TODO: compare new tgs
          feeds[url].last_modified = d.last_modified
          feeds[url].etag = d.etag
@@ -78,15 +78,19 @@ function M.update_all()
       end
       return url
    end
+   local c = 0
 
    Promise.map(function(url)
-      Promise.new(function(resolve, reject)
-         fetch.update_feed(url, {}, function(ok)
-            local name = url2name(url)
-            io.write(table.concat({ name, (ok and " success" or " failed"), "\n" }, " "))
-         end)
+      fetch.update_feed(url, {}, function(ok)
+         local name = url2name(url)
+         io.write(table.concat({ name, (ok and " success" or " failed"), "\n" }, " "))
+
+         c = c + 1
+         if c == #list then
+            os.exit()
+         end
       end)
-   end, list, 500)
+   end, list, 100)
 end
 
 return M

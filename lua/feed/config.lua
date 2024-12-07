@@ -8,7 +8,6 @@
 ---@field date_format? string
 ---@field curl_params? string[]
 ---@field rsshub_instance? string move all options here as a enum??
----@field enable_default_keymaps? boolean
 ---@field layout? table
 ---@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick", default_query: string }
@@ -22,8 +21,6 @@ local default = {
    colorscheme = vim.g.colorname,
    ---@type string
    date_format = "%Y-%m-%d",
-   ---@type boolean
-   enable_default_keybindings = true,
    ---@type string
    rsshub_instance = "https://rsshub.app",
    ---@type string[]
@@ -105,6 +102,46 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
+
+   tag2icon = {
+      pod = "📻",
+      unread = "👀",
+      read = "✅",
+      star = "🌟",
+      news = "📰",
+      tech = "🦾",
+      app = "📱",
+      blog = "📝",
+      email = "📧",
+   },
+
+   keys = {
+      index = {
+         _dot = ".",
+         _undo = "u",
+         show_entry = "<CR>",
+         show_split = "<M-CR>",
+         show_browser = "b",
+         refresh = "r",
+         search = "s",
+         link_to_clipboard = "y",
+         untag = "-",
+         tag = "+",
+         quit = "q",
+      },
+      entry = {
+         show_browser = "b",
+         show_next = "}",
+         show_prev = "{",
+         search = "s",
+         untag = "-",
+         tag = "+",
+         quit = "q",
+         link_to_clipboard = "y",
+         urlview = "r",
+         open_url = "gx",
+      },
+   },
 }
 
 local M = {}

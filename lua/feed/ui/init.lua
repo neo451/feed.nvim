@@ -16,7 +16,7 @@ local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
 
 local og_colorscheme = vim.g.colors_name
-local on_display, index
+local on_display, index_buf, entry_buf
 local urls = {}
 local current_entry, current_index
 local query = Config.search.default_query
@@ -70,28 +70,25 @@ end
 -- TODO: just hijack the statusline when in show entry/index
 
 local function show_index()
-   local buf = index or api.nvim_create_buf(false, true)
-   index = buf
+   local buf = index_buf or api.nvim_create_buf(false, true)
+   index_buf = buf
    pcall(api.nvim_buf_set_name, buf, "FeedIndex")
    on_display = on_display or DB:filter(query)
    vim.bo[buf].modifiable = true
    for i, id in ipairs(on_display) do
       Format.gen_nui_line(DB[id], main_comp):render(buf, -1, i)
    end
-   api.nvim_buf_set_lines(index, #on_display, #on_display + 1, false, { "" })
+   api.nvim_buf_set_lines(index_buf, #on_display, #on_display + 1, false, { "" })
    api.nvim_set_current_buf(buf)
    show_winbar()
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
----@return feed.entry
----@return string
+---@return feed.entry?
+---@return string?
 local function get_entry(opts)
    opts = opts or {}
-   if opts.buf and not api.nvim_buf_is_valid(opts.buf) then
-      return
-   end
-   local entry, id
+   local id
    if opts.id then
       id = opts.id
       if ut.in_index() then
@@ -114,12 +111,11 @@ local function get_entry(opts)
    else
       error "no context to show entry"
    end
-   entry = DB[id]
-   return entry, id
+   return DB[id], id
 end
 
 local function grey_entry(id)
-   if not index then
+   if not index_buf then
       return
    end
    local grey_comp = vim.deepcopy(main_comp)
@@ -127,8 +123,8 @@ local function grey_entry(id)
       v.color = "LspInlayHint"
    end
    local NLine = Format.gen_nui_line(DB[id], grey_comp)
-   vim.bo[index].modifiable = true
-   NLine:render(index, -1, current_index)
+   vim.bo[index_buf].modifiable = true
+   NLine:render(index_buf, -1, current_index)
 end
 
 local function render_entry(buf, lines, id, is_preview)
@@ -145,12 +141,12 @@ local function render_entry(buf, lines, id, is_preview)
    end
 
    if not is_preview then
-      api.nvim_buf_set_name(buf, "FeedEntry")
       api.nvim_set_current_buf(buf)
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
       DB:tag(id, "read")
       grey_entry(id)
       urls = get_buf_urls(buf, current_entry.link)
+      pcall(api.nvim_buf_set_name, buf, "FeedEntry")
    end
 end
 
@@ -190,7 +186,8 @@ local function show_entry(opts)
    if opts.buf and not api.nvim_buf_is_valid(opts.buf) then
       return
    end
-   local buf = opts.buf or api.nvim_create_buf(false, true)
+   local buf = opts.buf or entry_buf or api.nvim_create_buf(false, true)
+   entry_buf = buf
    local entry, id = get_entry(opts)
    if not entry then
       return
@@ -205,6 +202,7 @@ local function show_entry(opts)
       lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "title"), NuiText(Format[v](entry)) }
    end
    table.insert(lines, "")
+   vim.wo.winbar = nil
 
    Markdown.convert(
       opts.fp or DB.dir .. "/data/" .. id,
@@ -218,7 +216,7 @@ end
 local function show_full()
    local entry = get_entry()
    local buf = api.nvim_get_current_buf()
-   if entry.link then
+   if entry and entry.link then
       vim.system({ "curl", entry.link }, { text = true }, function(res)
          vim.schedule(function()
             local temp = vim.fn.tempname()
@@ -235,7 +233,7 @@ local function show_full()
          end)
       end)
    else
-      print "no link to fetch"
+      vim.notify "no link to fetch"
    end
 end
 
@@ -247,10 +245,10 @@ local function refresh(opts)
    query = opts.query or query
    on_display = DB:filter(query)
    if opts.show then
-      if index then
-         api.nvim_set_option_value("modifiable", true, { buf = index })
+      if index_buf then
+         api.nvim_set_option_value("modifiable", true, { buf = index_buf })
          for i = 1, api.nvim_buf_line_count(0) do
-            api.nvim_buf_set_lines(index, i, i + 1, false, { "" })
+            api.nvim_buf_set_lines(index_buf, i, i + 1, false, { "" })
          end
       end
       show_index()
@@ -266,16 +264,18 @@ local function restore_state()
 end
 
 local function quit()
+   restore_state()
    if ut.in_index() then
-      api.nvim_buf_delete(index, { force = true })
-      index = nil
+      api.nvim_buf_delete(index_buf, { force = true })
+      index_buf = nil
       api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
-      restore_state()
    elseif ut.in_entry() then
       api.nvim_buf_delete(0, { force = true })
-      if index then
-         api.nvim_set_current_buf(index)
+      entry_buf = nil
+      if index_buf then
+         api.nvim_set_current_buf(index_buf)
          api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
+         show_winbar()
       end
       api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    end
@@ -342,35 +342,11 @@ local function show_split()
 end
 
 local function show_hints()
-   local index = {
-      { ".", "dot" },
-      { "u", "undo" },
-      { "<CR>", "show_entry" },
-      { "<M-CR>", "show_in_split" },
-      { "r", "refresh" },
-      { "b", "show_browser" },
-      { "s", "search" },
-      { "y", "link_to_clipboard" },
-      { "+", "tag" },
-      { "-", "untag" },
-      { "q", "quit" },
-   }
-   local entry = {
-      { "b", "show_browser" },
-      { "s", "search" },
-      { "+", "tag" },
-      { "-", "untag" },
-      { "q", "quit" },
-      { "r", "urlview" },
-      { "}", "show_next" },
-      { "{", "show_prev" },
-      { "gx", "open_url" },
-   }
    local maps
    if ut.in_entry() then
-      maps = entry
+      maps = Config.keys.entry
    elseif ut.in_index() then
-      maps = index
+      maps = Config.keys.index
    end
    local Split = require "nui.split"
    local event = require("nui.utils.autocmd").event
@@ -381,8 +357,8 @@ local function show_hints()
       size = "30%",
    }
    local lines = {}
-   for _, v in ipairs(maps) do
-      lines[#lines + 1] = v[1] .. " -> " .. v[2]
+   for k, v in pairs(maps) do
+      lines[#lines + 1] = v .. " -> " .. k
    end
    api.nvim_buf_set_lines(split.bufnr, 0, -1, false, lines)
    api.nvim_set_option_value("number", false, { buf = split.winid })
