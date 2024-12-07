@@ -1,5 +1,5 @@
 local xml = require "feed.parser.xml"
-local fetch = require "feed.parser.fetch"
+local curl = require "feed.curl"
 local log = require "feed.lib.log"
 
 ---@alias feed.type "rss" | "atom" | "json"
@@ -84,22 +84,30 @@ function M.parse_src(src, url)
    end
 end
 
+local valid_response = {
+   [200] = true,
+   [301] = true,
+   [307] = true,
+   [308] = true, -- TODO:
+}
+
 ---parse feed fetch from source
 ---@param url string
 ---@param opts? feed.parser_opts
 ---@return table?
-function M.parse(url, opts)
+function M.parse(url, opts, cb)
    opts = opts or {}
-   local response = fetch.fetch_co(url, opts)
-   if response then
-      if response.body and response.body ~= "" then
-         local ok, d = pcall(M.parse_src, response.body, url)
-         if ok and d then
-            return vim.tbl_extend("keep", response, d)
+   curl.get(function(response)
+      if response then
+         if response.body and response.body ~= "" and valid_response[response.status] then
+            local ok, d = pcall(M.parse_src, response.body, url)
+            if ok and d then
+               return cb(vim.tbl_extend("keep", response, d))
+            end
          end
+         return cb(response)
       end
-      return response
-   end
+   end, url, opts)
 end
 
 return M

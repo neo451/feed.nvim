@@ -63,7 +63,7 @@ function M.cb_to_co(f)
       f(function(ret)
          local ok = coroutine.resume(co, ret)
          if not ok then
-            print("coroutine failed", unpack(args))
+            vim.print("coroutine failed", unpack(args))
             -- error "The coroutine failed"
          end
       end, ...)
@@ -77,6 +77,7 @@ function M.run(co)
    coroutine.resume(coroutine.create(co))
 end
 
+-- FIX: get rid of
 ---@param f function
 ---@return function
 function M.wrap(f)
@@ -85,7 +86,7 @@ function M.wrap(f)
    end
 end
 
-function M.pdofile(fp)
+M.pdofile = function(fp)
    if type(fp) == "table" then
       fp = tostring(fp)
    end
@@ -99,7 +100,11 @@ end
 
 ---@param path string
 ---@param content string
-function M.save_file(path, content)
+M.save_file = function(path, content)
+   if not path then
+      return
+   end
+   content = content or ""
    if type(path) == "table" then
       ---@diagnostic disable-next-line: param-type-mismatch
       path = tostring(path)
@@ -113,7 +118,7 @@ end
 
 ---@param path string
 ---@return string?
-function M.read_file(path)
+M.read_file = function(path)
    local ret
 
    if type(path) == "table" then
@@ -133,7 +138,7 @@ end
 ---@param max_len integer
 ---@param right_justify boolean
 ---@return string
-function M.align(str, max_len, right_justify)
+M.align = function(str, max_len, right_justify)
    local strings = require "plenary.strings"
    str = str or ""
    right_justify = right_justify or false
@@ -161,6 +166,7 @@ function M.looks_like_url(str)
    return allow[URL.parse(str).scheme] ~= nil
 end
 
+--- FIX: ?
 function M.require(mod)
    return setmetatable({}, {
       __index = function(t, key)
@@ -181,7 +187,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>_])", function(s)
+   return string.gsub(str, "(\\[%[%]`*!|#<>_()])", function(s)
       return s:sub(2)
    end)
 end
@@ -222,14 +228,93 @@ M.trim_last_lines = function()
    api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
-M.choose_search_backend = function()
-   for _, v in ipairs(require("feed.config").search.backends) do
+---@param choices table | string
+---@return string?
+M.choose_backend = function(choices)
+   local alias = {
+      ["mini.pick"] = "pick",
+      ["mini.notify"] = "notify",
+   }
+   if type(choices) == "string" then
+      return alias[choices] or choices
+   end
+   for _, v in ipairs(choices) do
       if pcall(require, v) then
-         if v == "mini.pick" then
-            return "pick"
-         end
-         return v
+         return alias[v] and alias[v] or v
       end
+   end
+end
+
+---@param feeds feed.opml
+---@return string[]
+M.feedlist = function(feeds)
+   return vim.iter(feeds)
+      :filter(function(_, v)
+         return type(v) == "table"
+      end)
+      :fold({}, function(acc, k)
+         table.insert(acc, k)
+         return acc
+      end)
+end
+
+--- Returns all URLs in markdown buffer, if any.
+---@param buf integer
+---@return string[][]
+M.get_buf_urls = function(buf, cur_link)
+   vim.bo[buf].modifiable = true
+   local ret = { { cur_link, cur_link } }
+
+   local lang = "markdown_inline"
+   local q = vim.treesitter.query.get(lang, "highlights")
+   local tree = vim.treesitter.get_parser(buf, lang, {}):parse()[1]:root()
+   if q then
+      for _, match, metadata in q:iter_matches(tree, buf) do
+         for id, nodes in pairs(match) do
+            for _, node in ipairs(nodes) do
+               local url = metadata[id] and metadata[id].url
+               if url and match[url] then
+                  for _, n in
+                     ipairs(match[url] --[[@as TSNode[] ]])
+                  do
+                     local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
+                     if node:type() == "inline_link" and node:child(1):type() == "link_text" then
+                        ---@diagnostic disable-next-line: param-type-mismatch
+                        local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
+                        local row = node:child(1):range() + 1
+                        ret[#ret + 1] = { text, link }
+                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
+                        vim.cmd(sub_pattern)
+                     elseif node:type() == "image" and node:child(2):type() == "image_description" then
+                        ---@diagnostic disable-next-line: param-type-mismatch
+                        local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
+                        local row = node:child(1):range() + 1
+                        ret[#ret + 1] = { text, link }
+                        local sub_pattern = row .. "s/(" .. vim.fn.escape(link, "/") .. ")//g" -- TODO: add e flag in final
+                        vim.cmd(sub_pattern)
+                     else
+                        ret[#ret + 1] = { link, link }
+                     end
+                  end
+               end
+            end
+         end
+      end
+      vim.bo[buf].modifiable = false
+   end
+   return ret
+end
+
+---@param url string
+---@param base string
+M.resolve_and_open = function(url, base)
+   if not M.looks_like_url(url) then
+      local link = M.url_resolve(base, url)
+      if link then
+         vim.ui.open(link)
+      end
+   else
+      vim.ui.open(url)
    end
 end
 

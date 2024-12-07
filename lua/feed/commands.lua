@@ -1,29 +1,19 @@
-local config = require "feed.config"
+local Config = require "feed.config"
 local ut = require "feed.utils"
 local db = ut.require "feed.db"
 local ui = require "feed.ui"
-local fetch = require "feed.fetch"
 local opml = require "feed.parser.opml"
 local feeds = db.feeds
 local nui = require "feed.ui.nui"
+local curl = require "feed.curl"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
 local wrap = ut.wrap
 local input = ut.input
+local feedlist = ut.feedlist
 
 local M = {}
-
-local function feedlist()
-   return vim.iter(feeds)
-      :filter(function(_, v)
-         return type(v) == "table"
-      end)
-      :fold({}, function(acc, k)
-         table.insert(acc, k)
-         return acc
-      end)
-end
 
 M.log = {
    doc = "show log",
@@ -43,12 +33,17 @@ M.log = {
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
-      fp = fp or input { prompt = "path to your opml: ", completion = "file_in_path" }
+      fp = fp or input { prompt = "path or url to your opml: ", completion = "file_in_path" }
       if not fp then
          return
       end
-      fp = vim.fn.expand(fp)
-      local str = read_file(fp)
+      local str
+      if ut.looks_like_url(fp) then
+         str = curl.fetch_co(fp, {}).stdout
+      else
+         fp = vim.fn.expand(fp)
+         str = read_file(fp)
+      end
       if str then
          local outlines = opml.import(str)
          if outlines then
@@ -86,7 +81,7 @@ M.export_opml = {
 M.search = {
    doc = "query the database by time, tags or regex",
    impl = function(query)
-      local backend = ut.choose_search_backend()
+      local backend = ut.choose_backend(Config.search.backend)
       if query then
          ui.refresh { query = query }
       elseif ut.in_index() or not backend then
@@ -122,13 +117,19 @@ M.refresh = {
    context = { index = true },
 }
 
-M.show_in_browser = {
+M.show_browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = ui.show_browser,
    context = { index = true, entry = true },
 }
 
-M.show_in_split = {
+M.show_full = {
+   doc = "fetch the full text",
+   impl = ui.show_full,
+   context = { entry = true },
+}
+
+M.show_split = {
    doc = "show entry in split",
    impl = ui.show_split,
    context = { index = true },
@@ -275,8 +276,23 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      fetch.update_feeds(feedlist(), 10, {})
-      ui.refresh()
+      local Progress = require "feed.ui.progress"
+
+      local prog = Progress.new(#ut.feedlist(feeds))
+      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
+         text = true,
+         stdout = function(err, data)
+            if data then
+               prog:update(vim.trim(data))
+            end
+         end,
+         -- TODO: handle err better
+         stderr = function(err, data)
+            if data then
+               vim.notify(err, data)
+            end
+         end,
+      })
    end,
    context = { all = true },
 }
@@ -284,26 +300,26 @@ M.update = {
 M.update_feed = {
    doc = "update a feed to db",
    impl = function(url)
-      if url then
-         return fetch.update_feeds({ url }, 1, { force = true })
-      else
-         -- TODO: use nui.select
-         vim.ui.select(feedlist(), {
-            prompt = "Feed to update",
-            format_item = function(item)
-               return feeds[item].title or item
-            end,
-         }, function(choice)
-            if not choice then
-               return
-            end
-            return fetch.update_feeds({ choice }, 1, { force = true })
-         end)
-      end
+      -- if url then
+      --    return fetch.update_feed({ url }, 1, { force = true })
+      -- else
+      --    -- TODO: use nui.select
+      --    vim.ui.select(feedlist(feeds), {
+      --       prompt = "Feed to update",
+      --       format_item = function(item)
+      --          return feeds[item].title or item
+      --       end,
+      --    }, function(choice)
+      --       if not choice then
+      --          return
+      --       end
+      --       return fetch.update_feeds({ choice }, 1, { force = true })
+      --    end)
+      -- end
    end,
 
    complete = function()
-      return feedlist()
+      return feedlist(feeds)
    end,
    context = { all = true },
 }
@@ -347,16 +363,16 @@ function M._menu()
          return item .. ": " .. M[item].doc
       end,
    }, function(choice)
-      if choice.text then
-         local pos = choice.text:find ":"
-         local item = M[choice.text:sub(1, pos - 1)]
-         item.impl()
+      if not choice then
+         return
       end
+      local item = M[choice]
+      item.impl()
    end)
 end
 
 function M._sync_feedlist()
-   for _, v in ipairs(config.feeds) do
+   for _, v in ipairs(Config.feeds) do
       local url = type(v) == "table" and v[1] or v
       local name = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
@@ -370,35 +386,22 @@ function M._sync_feedlist()
    db:save_feeds()
 end
 
-local augroup = vim.api.nvim_create_augroup("Feed", {})
-
 function M._register_autocmds()
+   local augroup = vim.api.nvim_create_augroup("Feed", {})
    vim.api.nvim_create_autocmd("User", {
       pattern = "ShowEntryPost",
       group = augroup,
       callback = function()
          local buf = vim.api.nvim_get_current_buf()
          vim.cmd "set cmdheight=0"
-         if config.colorscheme then
-            vim.cmd.colorscheme(config.colorscheme)
+         if Config.colorscheme then
+            vim.cmd.colorscheme(Config.colorscheme)
          end
 
-         if config.enable_default_keybindings then
-            local function eset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
-            end
-            eset("b", M.show_in_browser)
-            eset("s", M.search)
-            eset("+", M.tag)
-            eset("-", M.untag)
-            eset("q", M.quit)
-            eset("r", M.urlview)
-            eset("}", M.show_next)
-            eset("{", M.show_prev)
-            eset("gx", M.open_url)
-            eset("?", M.show_hints)
+         for rhs, lhs in pairs(Config.keys.entry) do
+            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
          end
-         for key, value in pairs(config.options.entry) do
+         for key, value in pairs(Config.options.entry) do
             pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
             pcall(vim.api.nvim_set_option_value, key, value, { win = vim.api.nvim_get_current_win() })
          end
@@ -420,31 +423,18 @@ function M._register_autocmds()
       group = augroup,
       callback = function(_)
          vim.cmd "set cmdheight=0"
-         if config.colorscheme then
-            vim.cmd.colorscheme(config.colorscheme)
-         end
          local buf = vim.api.nvim_get_current_buf()
          local win = vim.api.nvim_get_current_win()
-         if config.enable_default_keybindings then
-            local function iset(lhs, rhs)
-               vim.keymap.set("n", lhs, rhs.impl, { buffer = buf, noremap = true })
-            end
-            iset(".", M._dot)
-            iset("u", M._undo)
-            iset("<CR>", M.show_entry)
-            iset("?", M.show_hints)
-            iset("<M-CR>", M.show_in_split)
-            iset("r", M.refresh)
-            iset("b", M.show_in_browser)
-            iset("s", M.search)
-            iset("y", M.link_to_clipboard)
-            iset("+", M.tag)
-            iset("-", M.untag)
-            iset("q", M.quit)
+
+         for rhs, lhs in pairs(Config.keys.index) do
+            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
          end
-         for key, value in pairs(config.options.index) do
+         for key, value in pairs(Config.options.index) do
             pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
             pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+         end
+         if Config.colorscheme then
+            vim.cmd.colorscheme(Config.colorscheme)
          end
       end,
    })

@@ -4,14 +4,14 @@
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
 ---@field colorscheme? string
----@field split_cmd? string
 ---@field db_dir? string
 ---@field date_format? string
----@field enable_default_keymaps? boolean
+---@field curl_params? string[]
+---@field rsshub_instance? string move all options here as a enum??
 ---@field layout? table
----@field search? table
+---@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
+---@field search? { backend: "telescope" | "mini.pick", default_query: string }
 ---@field options? table
----@field on_attach? fun(bufs: table<string, integer>)
 
 ---@class feed._config
 local default = {
@@ -21,13 +21,8 @@ local default = {
    colorscheme = vim.g.colorname,
    ---@type string
    date_format = "%Y-%m-%d",
-   ---@type boolean
-   enable_default_keybindings = true,
    ---@type string
    rsshub_instance = "https://rsshub.app",
-   full_text_fetch = {
-      enable = false,
-   },
    ---@type string[]
    curl_params = {},
    options = {
@@ -56,7 +51,7 @@ local default = {
          filetype = "markdown",
       },
    },
-   ---@type table<string, any>
+   ---@type table[]
    layout = {
       -- TODO: validate
       {
@@ -79,29 +74,73 @@ local default = {
          width = 80,
          color = "@markup.strong",
       },
-      { "hints", right = true, color = "Pmenu" },
-      {
-         "query",
-         right = true,
-         color = "Pmenu",
-      },
+      -- { "hints", right = true, color = "Pmenu" },
+      -- {
+      --    "query",
+      --    right = true,
+      --    color = "Pmenu",
+      -- },
    },
 
    search = {
       default_query = "@6-months-ago +unread",
-      backends = {
+      backend = {
          "mini.pick",
          "telescope",
       },
    },
 
+   progress = {
+      backend = {
+         "snacks",
+         "fidget",
+         "notify",
+         "mini.notify",
+         "native",
+      },
+   },
+
    ---@type feed.feed[]
    feeds = {},
-   progress = {
-      "fidget",
-      "notify",
-      "mini",
-      "native",
+
+   tag2icon = {
+      pod = "📻",
+      unread = "👀",
+      read = "✅",
+      star = "🌟",
+      news = "📰",
+      tech = "🦾",
+      app = "📱",
+      blog = "📝",
+      email = "📧",
+   },
+
+   keys = {
+      index = {
+         _dot = ".",
+         _undo = "u",
+         show_entry = "<CR>",
+         show_split = "<M-CR>",
+         show_browser = "b",
+         refresh = "r",
+         search = "s",
+         link_to_clipboard = "y",
+         untag = "-",
+         tag = "+",
+         quit = "q",
+      },
+      entry = {
+         show_browser = "b",
+         show_next = "}",
+         show_prev = "{",
+         search = "s",
+         untag = "-",
+         tag = "+",
+         quit = "q",
+         link_to_clipboard = "y",
+         urlview = "r",
+         open_url = "gx",
+      },
    },
 }
 

@@ -21,9 +21,7 @@ local plugins = {
 }
 
 local parsers = {
-   "markdown",
    "xml",
-   "html",
 }
 
 local function check_treesitter_parser(name)

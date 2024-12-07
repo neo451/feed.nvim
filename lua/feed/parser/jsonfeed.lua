@@ -1,6 +1,9 @@
 local date = require "feed.parser.date"
-local sha = vim.fn.sha256
 local ut = require "feed.utils"
+local p_ut = require "feed.parser.utils"
+local sha = p_ut.sha
+local sensible = p_ut.sensible
+local decode = require("feed.lib.entities").decode
 
 local function handle_title(entry)
    if not entry.title then
@@ -13,39 +16,12 @@ local function handle_entry(entry, author, feed_name)
    local res = {}
    res.link = entry.url
    res.id = sha(entry.url)
-   res.title = handle_title(entry)
-   res.time = date.parse(entry.date_published, "json")
-   res.author = author
    res.content = entry.content_html or ""
+   res.time = date.parse(entry.date_published, "json")
+   res.title = decode(handle_title(entry))
+   res.author = decode(author)
    res.feed = feed_name
    return res
-end
-
----@param thing table | string
----@param field string | integer
----@return string
-local function sensible(thing, field, fallback)
-   if not thing then
-      return fallback
-   end
-   if type(thing) == "table" then
-      --- TODO: handle if list
-      if vim.tbl_isempty(thing) then
-         return fallback
-      elseif type(thing[field]) == "string" then
-         return thing[field]
-      else
-         return fallback
-      end
-   elseif type(thing) == "string" then
-      if thing == "" then
-         return fallback
-      else
-         return thing
-      end
-   else
-      return fallback
-   end
 end
 
 local function handle_author(ast, feed_name)
@@ -55,10 +31,10 @@ end
 return function(ast, _) -- no link resolve for now only do html link resolve later
    local res = {}
    res.version = "json1"
-   res.title = ast.title
    res.link = ast.home_page_url or ast.feed_url
-   res.desc = ast.description or res.title
-   res.author = handle_author(ast, res.title)
+   res.title = decode(ast.title)
+   res.desc = decode(ast.description or res.title)
+   res.author = decode(handle_author(ast, res.title))
    res.entries = {}
    res.type = "json"
    if ast.items then

@@ -15,21 +15,27 @@ function M.import(src)
       local outline = ut.listify(node.outline)
       for _, v in ipairs(outline) do
          if tags then
-            if not v.tag then
-               v.tag = {}
+            if not v.tags then
+               v.tags = {}
             end
             for _, t in ipairs(tags) do
-               table.insert(v.tag, t)
+               table.insert(v.tags, t)
             end
          end
          if v.xmlUrl then
-            local url = v.xmlUrl
-            if v.text == v.title then
-               v.title = nil -- if same then use fetched info later
-            end
-            ret[url] = v
+            ret[v.xmlUrl] = {
+               htmlUrl = v.htmlUrl,
+               text = v.text or v.title,
+               title = (v.text ~= v.title) and v.title or nil,
+               tags = tags,
+            }
          elseif v.outline then
-            handle(v, { v.text, unpack(v.tag or {}) })
+            -- vim.print(vim.tbl_keys(v))
+            if not v.tags then
+               v.tags = {}
+            end
+            table.insert(v.tags, v.text)
+            handle(v, v.tags)
          end
       end
    end
@@ -59,9 +65,13 @@ local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
 function M.export(feeds)
    local buf = {}
    for xmlUrl, v in spairs(feeds) do
-      v.xmlUrl = xmlUrl
-      v.type = "rss"
-      buf[#buf + 1] = format_outline(v)
+      buf[#buf + 1] = format_outline {
+         text = v.text,
+         title = v.title,
+         htmlUrl = v.htmlUrl,
+         xmlUrl = xmlUrl,
+         type = "rss",
+      }
    end
    return format(root_format, "feed.nvim export", concat(buf, "\n"))
 end

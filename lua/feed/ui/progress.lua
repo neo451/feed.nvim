@@ -1,17 +1,5 @@
-local function choose_backend()
-   local config = require "feed.config"
-   if type(config.progress) == "string" then
-      return config.progress
-   end
-   for _, v in ipairs(config.progress) do
-      local ok = pcall(require, v)
-      if ok then
-         return v
-      end
-   end
-end
-
-local backend = choose_backend()
+local ut = require "feed.utils"
+local backend = ut.choose_backend(require("feed.config").progress.backend)
 
 local _, notify = pcall(require, "notify")
 local _, MiniNotify = pcall(require, "mini.notify")
@@ -41,6 +29,8 @@ function mt.new(total)
       })
    elseif backend == "mini" then
       ret.id = MiniNotify.add("0", "INFO", "Title")
+   elseif backend == "snacks" then
+      Snacks.notifier.notify("fetching feeds...", "info", { id = "feed" })
    end
    ret.total = total
    ret.count = 0
@@ -63,6 +53,8 @@ local function finish(self)
       MiniNotify.remove(self.id)
       local opts = { INFO = { duration = 1000 } }
       MiniNotify.make_notify(opts)(msg)
+   elseif backend == "snacks" then
+      Snacks.notifier.notify(msg, "info", { id = "feed" })
    elseif backend == "native" then
       print(msg)
    end
@@ -82,6 +74,8 @@ function mt:update(message)
       })
    elseif backend == "mini" then
       MiniNotify.update(self.id, { msg = msg })
+   elseif backend == "snacks" then
+      Snacks.notifier.notify(msg, "info", { id = "feed" })
    else
       print(msg)
    end

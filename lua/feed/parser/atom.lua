@@ -1,8 +1,9 @@
 local date = require "feed.parser.date"
-local sha = vim.fn.sha256
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
+local sha = p_ut.sha
 local sensible = p_ut.sensible
+local decode = require("feed.lib.entities").decode
 
 local function handle_version(ast)
    if ast.feed.version == "1.0" or not ast.feed.version then
@@ -17,17 +18,15 @@ local function handle_link(ast, base)
    local T = type(ast.link)
    base = ut.url_rebase(ast, base)
    if T == "table" then
-      if not vim.islist(ast.link) then
-         return ut.url_resolve(base, ast.link.href)
-      end
-      for _, v in ipairs(ast.link) do
+      for _, v in ipairs(ut.listify(ast.link)) do
          if v.rel == "alternate" then
             return ut.url_resolve(base, v.href)
-         elseif v.rel == "self" then
-            return ut.url_resolve(base, v.href)
+            -- elseif v.rel == "self" then
+            --    return ut.url_resolve(base, v.href)
          end
       end
-      return ut.url_resolve(base, ast.link[1].href) -- just in case..?
+      return base
+      -- return ut.url_resolve(base, ast.link[1].href) -- just in case..?
    elseif T == "string" then
       return ast.link
    end
@@ -88,9 +87,9 @@ local function handle_entry(entry, base, feed_name)
    local entry_base = ut.url_rebase(entry, base)
    res.link = handle_link(entry, entry_base)
    res.id = sha(res.link)
-   res.title = handle_title(entry, "no title")
    res.time = handle_date(entry)
-   res.author = handle_author(entry, feed_name)
+   res.title = decode(handle_title(entry, "no title"))
+   res.author = decode(handle_author(entry, feed_name))
    res.content = handle_content(entry, "empty entry")
    res.feed = feed_name
    return res
@@ -101,9 +100,9 @@ local function handle_atom(ast, feed_url)
    local feed = ast.feed
    res.version = handle_version(ast)
    local root_base = ut.url_rebase(feed, feed_url)
-   res.desc = handle_description(feed)
    res.link = handle_link(feed, root_base)
-   res.title = handle_feed_title(feed, res.link)
+   res.desc = decode(handle_description(feed))
+   res.title = decode(handle_feed_title(feed, res.link))
    res.entries = {}
    res.type = "atom"
    if feed.entry then
