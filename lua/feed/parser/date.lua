@@ -105,8 +105,6 @@ local function asctime(str)
    return os.time { year = year, month = month, day = day, hour = hour, min = min, sec = sec }
 end
 
---- TODO: [RSS spec] : All date-times in RSS conform to the Date and Time Specification of RFC 2822, with the exception that the year may be expressed with two characters or four characters (four preferred).
-
 ---@param str string
 ---@return integer?
 local function rfc2822(str)

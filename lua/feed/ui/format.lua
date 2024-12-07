@@ -107,6 +107,7 @@ end
 function M.gen_nui_line(entry, comps)
    local NuiLine = require "nui.line"
    local line = NuiLine()
+   local acc_width = 0
    if not entry then
       return NuiLine()
    end
@@ -115,7 +116,9 @@ function M.gen_nui_line(entry, comps)
       if M[v[1]] then
          text = M[v[1]](entry)
       end
-      line:append(align(text, v.width + 1, v.right_justify), v.color)
+      width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+      line:append(align(text, width + 1, v.right_justify), v.color)
+      acc_width = acc_width + v.width + 1
    end
    return line
 end

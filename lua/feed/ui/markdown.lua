@@ -7,12 +7,12 @@ local function convert(fp, cb)
    if not health.check_binary_installed { name = "pandoc", min_ver = 3 } then
       cb { "you need pandoc to view feeds https://pandoc.org" }
    end
-   local sourced_file = require("plenary.debug_utils").sourced_filepath()
+   local sourced_file = debug.getinfo(2, "S").source:sub(2)
    local filter = vim.fn.fnamemodify(sourced_file, ":h") .. "/pandoc_writer.lua"
 
    local cmd = {
       "pandoc",
-      "-f",
+      ut.looks_like_url(fp) and "-r" or "-f",
       "html",
       "-t",
       filter,
@@ -28,6 +28,4 @@ local function convert(fp, cb)
    end)
 end
 
-return {
-   convert = convert,
-}
+return { convert = convert }

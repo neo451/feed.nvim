@@ -1,6 +1,6 @@
 local ut = require "feed.utils"
 ---@type feed.db
-local DB = ut.require "feed.db"
+local DB = require "feed.db"
 local Format = require "feed.ui.format"
 local Config = require "feed.config"
 local NuiText = require "nui.text"
@@ -8,6 +8,7 @@ local NuiLine = require "nui.line"
 local NuiTree = require "nui.tree"
 local Markdown = require "feed.ui.markdown"
 local Nui = require "feed.ui.nui"
+local Bar = require "feed.ui.bar"
 
 local api = vim.api
 local feeds = DB.feeds
@@ -27,11 +28,11 @@ local main_comp = vim.iter(Config.layout)
    end)
    :totable()
 
--- local extra_comp = vim.iter(config.layout)
---    :filter(function(v)
---       return v.right
---    end)
---    :totable()
+local extra_comp = vim.iter(Config.layout)
+   :filter(function(v)
+      return v.right
+   end)
+   :totable()
 
 local providers = {}
 
@@ -45,29 +46,26 @@ setmetatable(providers, {
 
 --- TODO: put these into statusline
 providers.query = function()
-   return query
+   return " query: " .. query
 end
 
-providers.hints = function()
-   return "<?> to show hints"
-end
-
-providers.lastUpdated = function() end
+-- TODO: needs to be auto updated
+-- providers.progress = function()
+--    current_index = current_index or 1
+--    return ("[%d/%d]"):format(current_index, #on_display)
+-- end
 
 local function show_winbar()
-   local comp = ut.comp
-   -- local append = ut.append
    vim.wo.winbar = ""
-   for _, v in ipairs(main_comp) do
-      comp(v[1], providers[v[1]](v), v.width, v.color)
+   for i, v in ipairs(main_comp) do
+      Bar.new_comp(v[1], providers[v[1]](v), (i == #main_comp) and 0 or v.width, v.color)
    end
-   -- append "%="
-   -- for _, v in ipairs(extra_comp) do
-   --    comp(v[1], providers[v[1]](v), v.width, v.color)
-   -- end
+   Bar.append "%="
+   for _, v in ipairs(extra_comp) do
+      local text = providers[v[1]](v)
+      Bar.new_comp(v[1], text, v.width, v.color)
+   end
 end
-
--- TODO: just hijack the statusline when in show entry/index
 
 local function show_index()
    local buf = index_buf or api.nvim_create_buf(false, true)
@@ -156,14 +154,16 @@ end
 ---@field buf? integer  buffer to populate
 ---@field fp? string  path to raw html
 
+---temparay solution for getting rid of junks and get clean markdown
 ---@param lines string[]
 ---@return string[]
 local function entry_filter(lines)
    local idx
    local res = {}
    for i, v in ipairs(lines) do
-      if v:find "^# " then
+      if v:find "^# " or v:find "^## " then
          idx = i
+         break
       end
    end
    if idx then
@@ -198,7 +198,7 @@ local function show_entry(opts)
    ---@type entry_line[]
    local lines = {}
 
-   for i, v in ipairs { "title", "date", "author", "feed", "link" } do
+   for i, v in ipairs { "title", "author", "feed", "link", "date" } do
       lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "title"), NuiText(Format[v](entry)) }
    end
    table.insert(lines, "")
@@ -215,22 +215,9 @@ end
 
 local function show_full()
    local entry = get_entry()
-   local buf = api.nvim_get_current_buf()
    if entry and entry.link then
-      vim.system({ "curl", entry.link }, { text = true }, function(res)
-         vim.schedule(function()
-            local temp = vim.fn.tempname()
-            local pos = res.stdout:find "\n# "
-            local body
-            if pos then
-               body = res.stdout:sub(pos + 1, #res.stdout)
-            else
-               body = res.stdout
-            end
-            ---@diagnostic disable-next-line: param-type-mismatch
-            ut.save_file(temp, body)
-            show_entry { fp = temp, buf = buf }
-         end)
+      vim.schedule(function()
+         show_entry { fp = entry.link }
       end)
    else
       vim.notify "no link to fetch"
