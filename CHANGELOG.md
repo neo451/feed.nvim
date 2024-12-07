@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.13.0](https://github.com/neo451/feed.nvim/compare/v1.12.0...v1.13.0) (2024-12-07)
+
+
+### Features
+
+* **fetch:** use child process + promise to update feeds ([f34b662](https://github.com/neo451/feed.nvim/commit/f34b6621d7e89dc7477af66c99810f513fb882bd))
+* grey out entries just opened ([7a6cccd](https://github.com/neo451/feed.nvim/commit/7a6cccd8860f2b6cba43ce8c0460c2509ce45d9c))
+* **ui:** ability to fetch full text html ([1efe1fa](https://github.com/neo451/feed.nvim/commit/1efe1fa6e03ff15ee4fb727fb3b0b08be4ab8067))
+
+
+### Bug Fixes
+
+* **config:** allow config keys and tag2icon ([9510da2](https://github.com/neo451/feed.nvim/commit/9510da291635e590cecaccd18bfc0a9058c4639b))
+* decode html entities at feedparser stage ([c499650](https://github.com/neo451/feed.nvim/commit/c499650d1c3f799b8d51caee34d05754eece2037))
+* **health:** only check xml parser ([9510da2](https://github.com/neo451/feed.nvim/commit/9510da291635e590cecaccd18bfc0a9058c4639b))
+* **opml:** import logic ([7daddeb](https://github.com/neo451/feed.nvim/commit/7daddeb1f084f0078fe9fe1db52390e488e55773))
+* **parser:** handle if xml header missing ([1efe1fa](https://github.com/neo451/feed.nvim/commit/1efe1fa6e03ff15ee4fb727fb3b0b08be4ab8067))
+* ui and url handling ([1efe1fa](https://github.com/neo451/feed.nvim/commit/1efe1fa6e03ff15ee4fb727fb3b0b08be4ab8067))
+* **ui:** async render of feeds, better for preview and fetch full ([47f4891](https://github.com/neo451/feed.nvim/commit/47f489174cad34900800156e78c252aa4830b845))
+* **ui:** better full-text fetch, consitant logic of getting entry ([f34b662](https://github.com/neo451/feed.nvim/commit/f34b6621d7e89dc7477af66c99810f513fb882bd))
+* **ui:** manage entry_buf better to handle complex actions ([9510da2](https://github.com/neo451/feed.nvim/commit/9510da291635e590cecaccd18bfc0a9058c4639b))
+* **ui:** more robust url viewing ([1efe1fa](https://github.com/neo451/feed.nvim/commit/1efe1fa6e03ff15ee4fb727fb3b0b08be4ab8067))
+* **ui:** only try sanitize if feed has ts error ([47f4891](https://github.com/neo451/feed.nvim/commit/47f489174cad34900800156e78c252aa4830b845))
+* use buf_delete to fix jumplist, better search preview ([5699c51](https://github.com/neo451/feed.nvim/commit/5699c5153a845fc2fdbfba90c9f3dd7be49752db))
+* use NuiLine to render entry ([f68f194](https://github.com/neo451/feed.nvim/commit/f68f194badd69c29c009f1ff6e3dcb9b05fe1650))
+* use nuiLine to render index, better opml support ([f68f194](https://github.com/neo451/feed.nvim/commit/f68f194badd69c29c009f1ff6e3dcb9b05fe1650))
+
 ## [1.12.0](https://github.com/neo451/feed.nvim/compare/v1.11.0...v1.12.0) (2024-12-02)
 
 
