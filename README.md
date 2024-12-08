@@ -46,7 +46,7 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 return { "neo451/feed.nvim", cmd = "Feed" }
 ```
 
-For other package managers, you need to manually install `nvim-lua/plenary.nvim`, `pysan3/pathlib.nvim` and `MunifTanjim/nui.nvim`, plus tree-sitter parsers for `xml`, `html`, and optionally `markdown`.
+For other package managers, you need to manually install `pysan3/pathlib.nvim`, `MunifTanjim/nui.nvim`, and tree-sitter parser for xml.
 
 ### Health Check
 
