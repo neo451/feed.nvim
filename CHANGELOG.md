@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.3](https://github.com/neo451/feed.nvim/compare/v1.13.2...v1.13.3) (2024-12-09)
+
+
+### Bug Fixes
+
+* hl for metadata ([f1614d1](https://github.com/neo451/feed.nvim/commit/f1614d15d9121776a2f7bf62b5013db3cd45fb90))
+* set ft early to trigger image.nvim/render-markdown.nvim... ([f1614d1](https://github.com/neo451/feed.nvim/commit/f1614d15d9121776a2f7bf62b5013db3cd45fb90))
+
 ## [1.13.2](https://github.com/neo451/feed.nvim/compare/v1.13.1...v1.13.2) (2024-12-07)
 
 
