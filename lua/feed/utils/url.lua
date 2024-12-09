@@ -60,8 +60,6 @@ M.get_buf_urls = function(buf, cur_link)
                         local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
                         local row = node:child(1):range() + 1
                         ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. fn.escape(link, "/~") .. ")//g" -- TODO: add e flag in final
-                        vim.cmd(sub_pattern)
                      else
                         ret[#ret + 1] = { link, link }
                      end

@@ -48,7 +48,6 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
-         filetype = "markdown",
       },
    },
    ---@type table[]

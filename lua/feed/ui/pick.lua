@@ -1,6 +1,6 @@
 local MiniPick = require "mini.pick"
-local db = require "feed.db"
 local ui = require "feed.ui"
+local db = require "feed.db"
 local format = require "feed.ui.format"
 local config = require "feed.config"
 
@@ -46,11 +46,12 @@ local function feed_search()
          match = match,
          show = show,
          preview = function(buf_id, id)
-            ui.show_entry { buf = buf_id, id = id, untag = false }
+            ui.show_entry { buf = buf_id, id = id }
             local win = vim.api.nvim_get_current_win()
             for key, value in pairs(config.options.entry) do
                pcall(vim.api.nvim_set_option_value, key, value, { buf = buf_id })
                pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+               vim.treesitter.start(buf_id, "markdown")
             end
          end,
          choose = function(id)

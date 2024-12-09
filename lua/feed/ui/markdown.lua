@@ -1,6 +1,8 @@
 local health = require "feed.health"
 local ut = require "feed.utils"
 
+--- FIX: wrap with current window width, and config.opt wrap false
+
 ---@param fp string
 ---@param cb fun(lines: string[])
 local function convert(fp, cb)
@@ -17,6 +19,7 @@ local function convert(fp, cb)
       "-t",
       filter,
       "--wrap=none",
+      -- "--columns=" .. vim.api.nvim_win_get_width(0),
       fp,
    }
    vim.system(cmd, { text = true }, function(obj)

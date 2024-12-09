@@ -8,8 +8,6 @@ local tag2icon = Config.tag2icon
 
 -- TODO: this whole module should be user definable
 
--- TODO: move to config
-
 local function cleanup(str)
    return vim.trim(str:gsub("\n", ""))
 end
@@ -37,29 +35,38 @@ end
 
 ---@param entry feed.entry
 ---@return string
+---@return string
 M.title = function(entry)
-   return cleanup(entry.title)
+   return cleanup(entry.title), "@markup.heading"
 end
 
 ---@param entry feed.entry
 ---@return string
+---@return string
 M.feed = function(entry)
-   return cleanup(entry.feed)
-end
-
-M.author = function(entry)
-   return cleanup(entry.author)
-end
-
-M.link = function(entry)
-   return entry.link
+   return cleanup(entry.feed), "@markup.heading"
 end
 
 ---@param entry feed.entry
+---@return string
+---@return string
+M.author = function(entry)
+   return cleanup(entry.author), "@markup.heading"
+end
+
+---@param entry feed.entry
+---@return string
+---@return string
+M.link = function(entry)
+   return entry.link, "@markup.link.url"
+end
+
+---@param entry feed.entry
+---@return string
 ---@return string
 function M.date(entry)
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format, entry.time)
+   return os.date(Config.date_format, entry.time), "@markup.heading"
 end
 
 ---@param entry feed.entry
