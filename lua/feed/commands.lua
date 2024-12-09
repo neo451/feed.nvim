@@ -66,22 +66,7 @@ M.export_opml = {
 
 M.search = {
    doc = "query the database by time, tags or regex",
-   impl = function(query)
-      local backend = ut.choose_backend(Config.search.backend)
-      if query then
-         ui.refresh { query = query }
-      elseif ut.in_index() or not backend then
-         vim.ui.input({ prompt = "Feed query: " }, function(val)
-            if not val then
-               return
-            end
-            ui.refresh { query = val }
-         end)
-      else
-         local engine = require("feed.ui." .. backend)
-         pcall(engine.feed_search)
-      end
-   end,
+   impl = ui.search,
    context = { all = true },
 }
 
@@ -384,14 +369,13 @@ end
 function M._sync_feedlist()
    for _, v in ipairs(Config.feeds) do
       local url = type(v) == "table" and v[1] or v
-      local name = type(v) == "table" and v.name or nil
+      local title = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
       if not feeds[url] then
-         feeds[url] = {
-            title = name,
-            tags = tags,
-         }
+         feeds[url] = {}
       end
+      feeds[url].title = title or feeds[url].title
+      feeds[url].tags = tags or feeds[url].tags
    end
    db:save_feeds()
 end

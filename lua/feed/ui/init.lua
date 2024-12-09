@@ -92,7 +92,7 @@ local function get_entry(opts)
       id = opts.id
       if ut.in_index() then
          current_index = ut.get_cursor_row()
-      else
+      elseif on_display then
          for i, v in ipairs(on_display) do
             if v == id then
                current_index = i
@@ -130,11 +130,15 @@ local function render_entry(buf, lines, id, is_preview)
    if not api.nvim_buf_is_valid(buf) then
       return
    end
+
+   vim.wo.winbar = nil
+   vim.bo[buf].filetype = "markdown"
    vim.bo[buf].modifiable = true
    for i, v in ipairs(lines) do
       if type(v) == "table" then
          v:render(buf, -1, i)
       elseif type(v) == "string" then
+         v = v:gsub("\n", "")
          api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
       end
    end
@@ -153,7 +157,7 @@ end
 ---@field row? integer  default to cursor row
 ---@field id? string  db_id
 ---@field buf? integer  buffer to populate
----@field fp? string  path to raw html
+---@field link? string  url to raw html
 
 ---temparay solution for getting rid of junks and get clean markdown
 ---@param lines string[]
@@ -200,13 +204,12 @@ local function show_entry(opts)
    local lines = {}
 
    for i, v in ipairs { "title", "author", "feed", "link", "date" } do
-      lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "title"), NuiText(Format[v](entry)) }
+      lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "@markup.bold"), NuiText(Format[v](entry)) }
    end
    table.insert(lines, "")
-   vim.wo.winbar = nil
 
    Markdown.convert(
-      opts.fp or DB.dir .. "/data/" .. id,
+      opts.link or DB.dir .. "/data/" .. id,
       vim.schedule_wrap(function(markdown_lines)
          vim.list_extend(lines, entry_filter(markdown_lines))
          render_entry(buf, lines, id, opts.buf ~= nil)
@@ -218,7 +221,7 @@ local function show_full()
    local entry = get_entry()
    if entry and entry.link then
       vim.schedule(function()
-         show_entry { fp = entry.link }
+         show_entry { link = entry.link }
       end)
    else
       vim.notify "no link to fetch"
@@ -247,7 +250,6 @@ end
 
 local function restore_state()
    vim.cmd "set cmdheight=1"
-   vim.wo.winbar = "" -- TODO: restore the user's old winbar is there is
    pcall(vim.cmd.colorscheme, og_colorscheme)
 end
 
@@ -387,6 +389,26 @@ local function show_feeds()
    tree:render()
 end
 
+---In Index: prompt for input and refresh
+---Everywhere else: openk search backend
+---@param q string
+local function search(q)
+   local backend = ut.choose_backend(Config.search.backend)
+   if q then
+      refresh { query = q }
+   elseif ut.in_index() or not backend then
+      vim.ui.input({ prompt = "Feed query: ", default = query .. " " }, function(val)
+         if not val then
+            return
+         end
+         refresh { query = val }
+      end)
+   else
+      local engine = require("feed.ui." .. backend)
+      pcall(engine.feed_search)
+   end
+end
+
 return {
    show_index = show_index,
    show_entry = show_entry,
@@ -402,5 +424,6 @@ return {
    get_entry = get_entry,
    open_url = open_url,
    quit = quit,
+   search = search,
    refresh = refresh,
 }
