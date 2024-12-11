@@ -7,6 +7,7 @@ local feeds = db.feeds
 local nui = require "feed.ui.nui"
 local curl = require "feed.curl"
 local fetch = require "feed.fetch"
+local log = require "feed.lib.log"
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -265,7 +266,7 @@ M.update = {
          end,
          stderr = function(err, data)
             if data then
-               ut.notify("fetch", { msg = data, level = "ERROR" })
+               log.warn(data)
             end
          end,
       })
@@ -388,7 +389,7 @@ function M._register_autocmds()
       callback = function()
          local buf = vim.api.nvim_get_current_buf()
          local win = vim.api.nvim_get_current_win()
-         vim.cmd "set cmdheight=0"
+         vim.o.cmdheight = 0
          for rhs, lhs in pairs(Config.keys.entry) do
             vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
          end
@@ -406,9 +407,9 @@ function M._register_autocmds()
       pattern = "ShowIndexPost",
       group = augroup,
       callback = function()
-         vim.cmd "set cmdheight=0"
          local buf = vim.api.nvim_get_current_buf()
          local win = vim.api.nvim_get_current_win()
+         vim.o.cmdheight = 0
 
          for rhs, lhs in pairs(Config.keys.index) do
             vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })

@@ -18,36 +18,36 @@ local resolve_and_open = ut.resolve_and_open
 local Split = Nui.split
 
 local og_colorscheme = vim.g.colors_name
+local og_cmdheight = vim.o.cmdheight
 local on_display, index_buf, entry_buf
 local urls = {}
 local current_entry, current_index
 local query = Config.search.default_query
 
 local main_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return not v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return not v.right
+    end)
+    :totable()
 
 local extra_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return v.right
+    end)
+    :totable()
 
 local providers = {}
 
 setmetatable(providers, {
    __index = function(_, k)
       return function()
-         -- TODO: capticalize func
-         return string.upper(k:sub(0, 1)) .. k:sub(2, -1)
+         return ut.capticalize(k)
       end
    end,
 })
 
 providers.query = function()
-   return " query: " .. query
+   return "query: " .. query
 end
 
 -- TODO: needs to be auto updated
@@ -57,7 +57,7 @@ end
 -- end
 
 local function show_winbar()
-   vim.wo.winbar = ""
+   vim.wo.winbar = " "
    for i, v in ipairs(main_comp) do
       Bar.new_comp(v[1], providers[v[1]](v), (i == #main_comp) and 0 or v.width, v.color)
    end
@@ -69,6 +69,8 @@ local function show_winbar()
 end
 
 local function show_index()
+   og_colorscheme = vim.g.colors_name
+   og_cmdheight = vim.o.cmdheight
    local buf = index_buf or api.nvim_create_buf(false, true)
    index_buf = buf
    pcall(api.nvim_buf_set_name, buf, "FeedIndex")
@@ -83,8 +85,8 @@ local function show_index()
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
----@return feed.entry?
----@return string?
+---@return feed.entry
+---@return string
 local function get_entry(opts)
    opts = opts or {}
    local id
@@ -113,17 +115,19 @@ local function get_entry(opts)
    return DB[id], id
 end
 
-local function grey_entry(id)
+local function mark_read(id)
    if not index_buf then
       return
    end
+   DB:tag(id, "read")
    local grey_comp = vim.deepcopy(main_comp)
    for _, v in ipairs(grey_comp) do
-      v.color = "LspInlayHint"
+      v.color = "FeedRead"
    end
    local NLine = Format.gen_nui_line(DB[id], grey_comp)
    vim.bo[index_buf].modifiable = true
    NLine:render(index_buf, -1, current_index)
+   vim.bo[index_buf].modifiable = false
 end
 
 local function render_entry(buf, lines, id, is_preview)
@@ -146,18 +150,11 @@ local function render_entry(buf, lines, id, is_preview)
    if not is_preview then
       api.nvim_set_current_buf(buf)
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
-      DB:tag(id, "read")
-      grey_entry(id)
+      mark_read(id)
       urls = get_buf_urls(buf, current_entry.link)
       pcall(api.nvim_buf_set_name, buf, "FeedEntry")
    end
 end
-
----@class feed.entry_opts
----@field row? integer  default to cursor row
----@field id? string  db_id
----@field buf? integer  buffer to populate
----@field link? string  url to raw html
 
 ---temparay solution for getting rid of junks and get clean markdown
 ---@param lines string[]
@@ -181,19 +178,15 @@ local function entry_filter(lines)
    return res
 end
 
-local function capticalize(str)
-   return str:sub(1, 1):upper() .. str:sub(2)
-end
-
----@param opts? feed.entry_opts
-local function show_entry(opts)
-   opts = opts or {}
-   if opts.buf and not api.nvim_buf_is_valid(opts.buf) then
+---@param ctx? { row: integer, id: string, buf: integer, link: string }
+local function show_entry(ctx)
+   ctx = ctx or {}
+   if ctx.buf and not api.nvim_buf_is_valid(ctx.buf) then
       return
    end
-   local buf = opts.buf or entry_buf or api.nvim_create_buf(false, true)
+   local buf = ctx.buf or entry_buf or api.nvim_create_buf(false, true)
    entry_buf = buf
-   local entry, id = get_entry(opts)
+   local entry, id = get_entry(ctx)
    if not entry then
       return
    end
@@ -204,15 +197,15 @@ local function show_entry(opts)
    local lines = {}
 
    for i, v in ipairs { "title", "author", "feed", "link", "date" } do
-      lines[i] = NuiLine { NuiText(capticalize(v) .. ": ", "@markup.bold"), NuiText(Format[v](entry)) }
+      lines[i] = NuiLine { NuiText(ut.capticalize(v) .. ": ", "FeedBold"), NuiText(Format[v](entry)) }
    end
    table.insert(lines, "")
 
    Markdown.convert(
-      opts.link or DB.dir .. "/data/" .. id,
+      ctx.link or DB.dir .. "/data/" .. id,
       vim.schedule_wrap(function(markdown_lines)
          vim.list_extend(lines, entry_filter(markdown_lines))
-         render_entry(buf, lines, id, opts.buf ~= nil)
+         render_entry(buf, lines, id, ctx.buf ~= nil)
       end)
    )
 end
@@ -248,13 +241,9 @@ local function refresh(opts)
    return on_display
 end
 
-local function restore_state()
-   vim.cmd "set cmdheight=1"
-   pcall(vim.cmd.colorscheme, og_colorscheme)
-end
-
 local function quit()
-   restore_state()
+   vim.o.cmdheight = og_cmdheight
+   pcall(vim.cmd.colorscheme, og_colorscheme)
    if ut.in_index() then
       api.nvim_buf_delete(index_buf, { force = true })
       index_buf = nil
@@ -275,14 +264,14 @@ local function show_prev()
    if current_index == 1 then
       return
    end
-   show_entry { row = current_index - 1, buf = api.nvim_get_current_buf() }
+   show_entry { row = current_index - 1 }
 end
 
 local function show_next()
-   if current_index == #on_display then
+   if current_index >= #on_display then
       return
    end
-   show_entry { row = current_index + 1, buf = api.nvim_get_current_buf() }
+   show_entry { row = current_index + 1 }
 end
 
 local function show_urls()
@@ -343,14 +332,18 @@ local function show_hints()
    Split("30%", lines)
 end
 
-local function show_split()
+---Open split to show entry
+---@param percentage any
+local function show_split(percentage)
    local _, id = get_entry()
-   local split = Split "50%"
+   local split = Split(percentage or "50%")
    show_entry { buf = split.bufnr, id = id }
 end
 
-local function show_feeds()
-   local split = Split "50%"
+---Open split to show feeds
+---@param percentage string
+local function show_feeds(percentage)
+   local split = Split(percentage or "50%")
 
    local nodes = {}
 
@@ -405,7 +398,8 @@ local function search(q)
       end)
    else
       local engine = require("feed.ui." .. backend)
-      pcall(engine.feed_search)
+      engine.feed_search()
+      -- pcall(engine.feed_search)
    end
 end
 

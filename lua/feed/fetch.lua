@@ -2,6 +2,7 @@ local Feedparser = require "feed.parser"
 ---@type feed.db
 local db = require "feed.db"
 local Config = require "feed.config"
+local curl = require "feed.curl"
 
 local M = {}
 local feeds = db.feeds
@@ -18,6 +19,31 @@ local valid_response = {
    [308] = true, -- TODO:
 }
 
+---parse feed fetch from source
+---@param url string
+---@param opts? feed.parser_opts
+---@return table?
+function M.parse(url, opts, cb)
+   local parse = {
+      [200] = true,
+      [301] = true,
+      [307] = true,
+      [308] = true, -- TODO:
+   }
+   opts = opts or {}
+   curl.get(url, opts, function(response)
+      if response then
+         if response.stdout ~= "" and parse[response.status] then
+            local d = Feedparser.parse_src(response.stdout, url)
+            if d then
+               return cb(vim.tbl_extend("keep", response, d))
+            end
+         end
+         return cb(response)
+      end
+   end)
+end
+
 ---@param url string
 ---@param opts { force: boolean }
 function M.update_feed(url, opts, cb)
@@ -28,12 +54,12 @@ function M.update_feed(url, opts, cb)
       tags = vim.deepcopy(feeds[url].tags)
       name = feeds[url].title
    end
-   Feedparser.parse(url, { timeout = 10, etag = etag, last_modified = last_modified, cmds = Config.curl_params },
+   M.parse(url, { timeout = 10, etag = etag, last_modified = last_modified, cmds = Config.curl_params },
       function(d)
          local ok = true
          if d then
             if d.status == 301 then -- permenantly moved
-               feeds[url] = d.href -- to keep config consistent
+               feeds[url] = d.href  -- to keep config consistent
                url = d.href
             elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
                feeds[url] = nil -- TODO: set to false
@@ -41,11 +67,7 @@ function M.update_feed(url, opts, cb)
             end
             if d.entries and not vim.tbl_isempty(d.entries) then
                for _, entry in ipairs(d.entries) do
-                  -- TODO:
-                  -- if d.title ~= name then
-                  --    entry.feed = name
-                  -- end
-                  db:add(entry, tags)
+                  db:add(entry, tags) -- TODO: name
                end
             end
             feeds[url] = feeds[url] or {}

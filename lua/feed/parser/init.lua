@@ -1,5 +1,4 @@
 local xml = require "feed.parser.xml"
-local curl = require "feed.curl"
 local log = require "feed.lib.log"
 
 ---@alias feed.type "rss" | "atom" | "json"
@@ -16,11 +15,11 @@ local log = require "feed.lib.log"
 ---@field entries? feed.entry[]
 
 ---@class feed.entry
----@field time integer # falls back to the current os.time
----@field feed string # name of feed
+---@field time integer falls back to the current os.time
+---@field feed string name of feed
 ---@field title string
----@field link? string # link to the entry
----@field author? string # falls back to the feed
+---@field link? string link to the entry
+---@field author? string falls back to the feed
 ---@field content? string
 ---@field tags? table<string, boolean>
 
@@ -82,32 +81,6 @@ function M.parse_src(src, url)
          return ret
       end
    end
-end
-
-local valid_response = {
-   [200] = true,
-   [301] = true,
-   [307] = true,
-   [308] = true, -- TODO:
-}
-
----parse feed fetch from source
----@param url string
----@param opts? feed.parser_opts
----@return table?
-function M.parse(url, opts, cb)
-   opts = opts or {}
-   curl.get(function(response)
-      if response then
-         if response.body and response.body ~= "" and valid_response[response.status] then
-            local ok, d = pcall(M.parse_src, response.body, url)
-            if ok and d then
-               return cb(vim.tbl_extend("keep", response, d))
-            end
-         end
-         return cb(response)
-      end
-   end, url, opts)
 end
 
 return M

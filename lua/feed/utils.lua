@@ -218,13 +218,13 @@ end
 ---@return string[]
 M.feedlist = function(feeds)
    return vim.iter(feeds)
-      :filter(function(_, v)
-         return type(v) == "table"
-      end)
-      :fold({}, function(acc, k)
-         table.insert(acc, k)
-         return acc
-      end)
+       :filter(function(_, v)
+          return type(v) == "table"
+       end)
+       :fold({}, function(acc, k)
+          table.insert(acc, k)
+          return acc
+       end)
 end
 
 ---@param url string
@@ -238,6 +238,39 @@ M.url2name = function(url, feeds)
       end
    end
    return url
+end
+
+---split with max length
+M.split = function(str, sep, width)
+   local ret = {}
+
+   for v in vim.gsplit(str, sep) do
+      if vim.fn.strdisplaywidth(v) <= width then
+         ret[#ret + 1] = v
+      else
+         local acc = 0
+         local buf = {}
+         local len = vim.fn.strdisplaywidth(v)
+         for i = 1, len do
+            local part = vim.fn.strcharpart(v, i - 1, 1)
+            acc = acc + vim.fn.strdisplaywidth(part)
+            buf[#buf + 1] = part
+            if acc >= width or i == len then
+               ret[#ret + 1] = table.concat(buf, "")
+               buf = {}
+               acc = 0
+            end
+         end
+      end
+   end
+   return vim.iter(ret):filter(function(v)
+      return v ~= ""
+   end):totable()
+end
+
+
+function M.capticalize(str)
+   return str:sub(1, 1):upper() .. str:sub(2)
 end
 
 return M

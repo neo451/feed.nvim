@@ -48,6 +48,7 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
+         listchars = '',
       },
    },
    ---@type table[]
@@ -100,6 +101,10 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
+
+   integrations = {
+      telescope = {}
+   },
 
    tag2icon = {
       pod = "📻",

@@ -57,16 +57,15 @@ end
 
 -- * ((1 - P(tag)) ^ 1) ^ -1
 local function gen_tag_rule(tag)
-   local st = P "<" * P(tag) * P ">" -- TODO: xhtml
+   local st = P "<" * P(tag) * P ">"
    local et = P("</" .. tag .. ">")
    local rule = C(st) * ((1 - et) ^ 0 / encode) * C(et)
    return rule
 end
 
--- TODO: xhtml encode html inside <content type="xhtml" ... >X</content>
-
 local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / encode) * lpeg.P "]]>"
-local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) * C(P "</content>")
+local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) *
+    C(P "</content>")
 
 local function gen_extract_pat(rule)
    return Ct((C((1 - rule) ^ 0) * rule ^ 1 * C((1 - rule) ^ 0)) ^ 1)
@@ -213,7 +212,7 @@ M.element = function(node, src)
       if type(element) == "table" then
          for k, v in pairs(element) do
             if V[k] then
-               if not vim.islist(V[k]) then --TODO:
+               if not vim.islist(V[k]) then
                   V[k] = { V[k] }
                end
                table.insert(V[k], v)
@@ -228,19 +227,25 @@ M.element = function(node, src)
    return { [K] = V }
 end
 
+local function check_treesitter_parser(name)
+   local res, _ = pcall(vim.treesitter.language.inspect, name)
+   if not res then
+      local lib_not_installed = "tree-sitter-" .. name .. " not found."
+      error(lib_not_installed)
+   end
+end
+
+
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
 ---@param url string
 ---@return table?
-function M.parse(src, url) -- TODO: url resolve ?
+function M.parse(src, url)
+   check_treesitter_parser('xml')
    src = M.sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      -- root = get_root(M.sanitize(src))
-      -- if root:has_error() then
       log.warn(url, "treesitter err")
-      --    return
-      -- end
    end
    local iterator = vim.iter(root:iter_children())
    local collected = iterator:fold({}, function(acc, node)

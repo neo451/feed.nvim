@@ -23,13 +23,13 @@ function M.tags(entry)
       tags["unread"] = true
    end
    local taglist = vim.iter(vim.spairs(tags))
-      :map(function(k)
-         if tag2icon[k] then
-            return tag2icon[k]
-         end
-         return k
-      end)
-      :totable()
+       :map(function(k)
+          if tag2icon[k] then
+             return tag2icon[k]
+          end
+          return k
+       end)
+       :totable()
    return "[" .. table.concat(taglist, ", ") .. "]"
 end
 
@@ -37,28 +37,28 @@ end
 ---@return string
 ---@return string
 M.title = function(entry)
-   return cleanup(entry.title), "@markup.heading"
+   return cleanup(entry.title), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.feed = function(entry)
-   return cleanup(entry.feed), "@markup.heading"
+   return cleanup(entry.feed), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.author = function(entry)
-   return cleanup(entry.author), "@markup.heading"
+   return cleanup(entry.author), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.link = function(entry)
-   return entry.link, "@markup.link.url"
+   return entry.link, "FeedLink"
 end
 
 ---@param entry feed.entry
@@ -66,7 +66,7 @@ end
 ---@return string
 function M.date(entry)
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format, entry.time), "@markup.heading"
+   return os.date(Config.date_format, entry.time), "FeedTitle"
 end
 
 ---@param entry feed.entry
@@ -75,8 +75,8 @@ end
 function M.entry(entry, comps)
    local buf = {}
    comps = comps or {
-      { "feed", width = 15 },
-      { "tags", width = 5 },
+      { "feed",  width = 15 },
+      { "tags",  width = 5 },
       { "title", width = 80 },
    }
 
