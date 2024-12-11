@@ -7,9 +7,9 @@ local M = {}
 ---@field before? integer #@
 ---@field must_have? string[] #+
 ---@field must_not_have? string[] #-
----@field feed? string #=
+---@field feed? vim.regex #=
 ---@field limit? number ##
----@field re? string[]
+---@field re? vim.regex[]
 
 -- TODO: memoize
 local function build_regex(str)

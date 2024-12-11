@@ -13,7 +13,7 @@ T["import"]["simple opml"] = function()
 <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
 </body></opml>]]
    assert(opml)
-   eq(opml.http.text, "hello")
+   eq(opml.http.title, "hello")
 end
 
 T["import"]["real big opml"] = function()

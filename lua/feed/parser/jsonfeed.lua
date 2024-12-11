@@ -1,7 +1,6 @@
 local date = require "feed.parser.date"
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
-local sha = p_ut.sha
 local sensible = p_ut.sensible
 local decode = require("feed.lib.entities").decode
 
@@ -15,7 +14,6 @@ end
 local function handle_entry(entry, author, feed_name)
    local res = {}
    res.link = entry.url
-   res.id = sha(entry.url)
    res.content = entry.content_html or ""
    res.time = date.parse(entry.date_published, "json")
    res.title = decode(handle_title(entry))

@@ -1,7 +1,6 @@
 local date = require "feed.parser.date"
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
-local sha = p_ut.sha
 local sensible = p_ut.sensible
 local decode = require("feed.lib.entities").decode
 
@@ -56,7 +55,6 @@ local function handle_content(entry, fallback)
    if not content then
       return fallback
    end
-   -- TODO: use urlview to get relative links and resolve
    return content[1]
 end
 
@@ -86,7 +84,6 @@ local function handle_entry(entry, base, feed_name)
    local res = {}
    local entry_base = ut.url_rebase(entry, base)
    res.link = handle_link(entry, entry_base)
-   res.id = sha(res.link)
    res.time = handle_date(entry)
    res.title = decode(handle_title(entry, "no title"))
    res.author = decode(handle_author(entry, feed_name))

@@ -1,7 +1,6 @@
 local M = {}
 local Config = require "feed.config"
 local ut = require "feed.utils"
-local _, MiniIcons = pcall(require, "mini.icons") -- TODO:
 
 local align = ut.align
 local tag2icon = Config.tag2icon
@@ -123,7 +122,7 @@ function M.gen_nui_line(entry, comps)
       if M[v[1]] then
          text = M[v[1]](entry)
       end
-      width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+      local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
       line:append(align(text, width + 1, v.right_justify), v.color)
       acc_width = acc_width + v.width + 1
    end

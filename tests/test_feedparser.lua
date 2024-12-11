@@ -28,7 +28,6 @@ local check_feed = function(ast)
       end
       is_url(v.link)
       is_number(v.time)
-      is_string(v.id)
       is_string(v.title)
       is_string(v.author)
       is_string(v.feed)
@@ -102,8 +101,8 @@ T["json"] = MiniTest.new_set {
 
 T["atom"] = MiniTest.new_set {
    parametrize = {
-      { "atom03.xml", { version = "atom03" } },
-      { "atom10.xml", { version = "atom10" } },
+      { "atom03.xml",            { version = "atom03" } },
+      { "atom10.xml",            { version = "atom10" } },
       { "atom_html_content.xml", { version = "atom10" } },
    },
 }
@@ -140,7 +139,7 @@ T["url resolover"] = MiniTest.new_set {
 }
 
 local function check(filename, checks)
-   local f = M.parse_src(readfile(filename), "http://placehoder.feed")
+   local f = M.parse(readfile(filename), "http://placehoder.feed")
    assert(f)
    for k, v in pairs(checks) do
       if type(v) == "table" then
@@ -179,14 +178,14 @@ T["feedparser test suite"] = MiniTest.new_set {
 local function check_suite(dir)
    for f in vim.fs.dir(dir) do
       local str = readfile(f, dir)
-      check_feed_minimal(M.parse_src(str, ""))
+      check_feed_minimal(M.parse(str, ""))
    end
 end
 
 T["feedparser test suite"]["works"] = check_suite
 
 -- describe("reject encodings that neovim can not handle", function()
---    local d = M.parse_src(readfile("encoding.xml", "./data/"), "")
+--    local d = M.parse(readfile("encoding.xml", "./data/"), "")
 --    eq("gb2312", d.encoding)
 -- end)
 --

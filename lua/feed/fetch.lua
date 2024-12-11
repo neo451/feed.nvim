@@ -14,6 +14,8 @@ local encoding_blacklist = {
 local valid_response = {
    [200] = true,
    [301] = true,
+   [302] = true,
+   [303] = true,
    [304] = true,
    [307] = true,
    [308] = true, -- TODO:
@@ -21,20 +23,22 @@ local valid_response = {
 
 ---parse feed fetch from source
 ---@param url string
----@param opts? feed.parser_opts
+---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
 ---@return table?
 function M.parse(url, opts, cb)
    local parse = {
       [200] = true,
       [301] = true,
+      [302] = true,
+      [303] = true,
       [307] = true,
-      [308] = true, -- TODO:
+      [308] = true,
    }
    opts = opts or {}
    curl.get(url, opts, function(response)
       if response then
          if response.stdout ~= "" and parse[response.status] then
-            local d = Feedparser.parse_src(response.stdout, url)
+            local d = Feedparser.parse(response.stdout, url)
             if d then
                return cb(vim.tbl_extend("keep", response, d))
             end
@@ -74,7 +78,7 @@ function M.update_feed(url, opts, cb)
             -- TODO: tags and htmlUrl can change? --
             feeds[url].htmlUrl = feeds[url].htmlUrl or d.link
             feeds[url].title = feeds[url].title or d.title
-            feeds[url].description = feeds[url].desc or d.desc
+            feeds[url].description = feeds[url].description or d.desc
             feeds[url].version = feeds[url].version or d.version
             feeds[url].tags = feeds[url].tags or tags -- TDOO: feed tags -- FIX: compare new tgs
             feeds[url].last_modified = d.last_modified

@@ -1,5 +1,6 @@
 local M = {}
 local Split = require "nui.split"
+local Menu = require "nui.menu"
 local event = require("nui.utils.autocmd").event
 local api = vim.api
 
@@ -7,8 +8,6 @@ local has_dressing = pcall(require, "dressing")
 
 local nui_select = function(items, opts, on_choice, config)
    config = config or {}
-   local Menu = require "nui.menu"
-   local event = require("nui.utils.autocmd").event
    local lines = {}
    local line_width = opts.prompt and vim.api.nvim_strwidth(opts.prompt) or 1
    for i, item in ipairs(items) do
@@ -38,12 +37,10 @@ local nui_select = function(items, opts, on_choice, config)
 
    local menu = Menu({
       position = "50%",
-      -- size = config.size or 45,
       size = {
-         width = 45,
+         width = 70,
          height = 10,
       },
-      -- relative = config.relative,
 
       border = {
          style = "single",
@@ -52,9 +49,6 @@ local nui_select = function(items, opts, on_choice, config)
             top_align = "center",
          },
       },
-      -- buf_options = config.buf_options,
-      -- win_options = config.win_options,
-      -- enter = true,
    }, {
       lines = lines,
       max_width = config.max_width or 80,

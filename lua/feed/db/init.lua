@@ -19,7 +19,8 @@ local ut = require "feed.utils"
 ---@field untag fun(db: feed.db, id: string, tag: string)
 ---@field blowup fun(db: feed.db)
 
-local db_mt = { __class = "feed.db" }
+local db_mt = {}
+db_mt.__index = db_mt
 
 local db_dir = Path.new(config.db_dir)
 
@@ -85,6 +86,7 @@ local function parse_index()
 end
 
 local mem = {}
+
 ---@return feed.db
 function db_mt.new()
    ensure_path(db_dir, "dir")
@@ -95,8 +97,7 @@ function db_mt.new()
    ensure_path(index_fp, "file")
 
    return setmetatable({
-      dir = db_dir,
-      mem = mem,
+      dir = tostring(db_dir),
    }, db_mt)
 end
 
@@ -143,13 +144,12 @@ end
 ---@param entry feed.entry
 ---@param tags string[]?
 function db_mt:add(entry, tags)
-   if if_path(entry.id) then
+   local id = vim.fn.sha256(entry.link)
+   if not id or if_path(id) then
       return
    end
    local content = entry.content
    entry.content = nil
-   local id = entry.id
-   entry.id = nil
    table.insert(self.index, { id, entry.time })
    append_time_id(entry.time, id)
    save_file(data_dir / id, content)
@@ -203,10 +203,13 @@ function db_mt:rm(id)
          table.remove(self.index, i)
       end
    end
-   mem[id] = nil
-   -- TODO: remove in tags
+   for tag in pairs(self[id].tags) do
+      self:untag(id, tag)
+   end
    remove_file(data_dir / id)
    remove_file(object_dir / id)
+   self[id] = nil
+   mem[id] = nil
 end
 
 ---@param sort any
@@ -227,15 +230,16 @@ end
 ---@param str string
 ---@return string[]
 function db_mt:filter(str)
+   if str == "" then
+      return {}
+   end
    local q = query.parse_query(str)
    local iter
 
    if q.must_have then
       local must_have = q.must_have[1]
-      -- local reg = search.build_regex(must_have)
       local ids = {}
       for k, t in pairs(self.tags) do
-         -- if reg:match_str(k) then
          if must_have == k then
             vim.list_extend(ids, vim.tbl_keys(t))
          end
@@ -291,7 +295,6 @@ function db_mt:filter(str)
             return false
          end
          for _, reg in ipairs(q.re) do
-            -- local r, rev = build_regex(reg)
             if not reg:match_str(entry.title) then
                return false
             end
