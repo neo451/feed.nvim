@@ -50,7 +50,13 @@ end
 ---@return string
 ---@return string
 M.author = function(entry)
-   return cleanup(entry.author), "FeedTitle"
+   local text
+   if entry.author == "" then
+      text = entry.feed
+   else
+      text = entry.author
+   end
+   return cleanup(text), "FeedTitle"
 end
 
 ---@param entry feed.entry

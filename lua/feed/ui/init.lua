@@ -1,8 +1,8 @@
+local Config = require "feed.config"
 local ut = require "feed.utils"
 ---@type feed.db
 local DB = require "feed.db"
 local Format = require "feed.ui.format"
-local Config = require "feed.config"
 local NuiText = require "nui.text"
 local NuiLine = require "nui.line"
 local NuiTree = require "nui.tree"
@@ -23,6 +23,8 @@ local on_display, index_buf, entry_buf
 local urls = {}
 local current_entry, current_index
 local query = Config.search.default_query
+
+local M = {}
 
 local main_comp = vim.iter(Config.layout)
     :filter(function(v)
@@ -68,6 +70,23 @@ local function show_winbar()
    end
 end
 
+local function set_opts(opts, keys)
+   local buf = vim.api.nvim_get_current_buf()
+   local win = vim.api.nvim_get_current_win()
+   vim.o.cmdheight = 0
+
+   for rhs, lhs in pairs(keys) do
+      vim.keymap.set("n", lhs, ("<cmd>Feed %s<cr>"):format(rhs), { buffer = buf, noremap = true })
+   end
+   for key, value in pairs(opts) do
+      pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
+      pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+   end
+   if Config.colorscheme then
+      vim.cmd.colorscheme(Config.colorscheme)
+   end
+end
+
 local function show_index()
    og_colorscheme = vim.g.colors_name
    og_cmdheight = vim.o.cmdheight
@@ -82,6 +101,7 @@ local function show_index()
    api.nvim_buf_set_lines(index_buf, #on_display, #on_display + 1, false, { "" })
    api.nvim_set_current_buf(buf)
    show_winbar()
+   set_opts(Config.options.index, Config.keys.index)
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
@@ -149,10 +169,12 @@ local function render_entry(buf, lines, id, is_preview)
 
    if not is_preview then
       api.nvim_set_current_buf(buf)
-      api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
+      set_opts(Config.options.entry, Config.keys.entry)
       mark_read(id)
       urls = get_buf_urls(buf, current_entry.link)
       pcall(api.nvim_buf_set_name, buf, "FeedEntry")
+      vim.api.nvim_win_set_cursor(0, { 1, 0 })
+      api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
    end
 end
 
@@ -185,7 +207,7 @@ local function show_entry(ctx)
       return
    end
    local buf = ctx.buf or entry_buf or api.nvim_create_buf(false, true)
-   entry_buf = buf
+   M.entry_buf = buf
    local entry, id = get_entry(ctx)
    if not entry then
       return
@@ -201,13 +223,29 @@ local function show_entry(ctx)
    end
    table.insert(lines, "")
 
-   Markdown.convert(
-      ctx.link or DB.dir .. "/data/" .. id,
-      vim.schedule_wrap(function(markdown_lines)
-         vim.list_extend(lines, entry_filter(markdown_lines))
-         render_entry(buf, lines, id, ctx.buf ~= nil)
-      end)
-   )
+   if ctx.link then
+      Markdown.convert(
+         ctx.link,
+         vim.schedule_wrap(function(markdown_lines)
+            vim.list_extend(lines, entry_filter(markdown_lines))
+            render_entry(buf, lines, id, ctx.buf ~= nil)
+         end)
+      )
+      -- TODO: rethink
+   elseif entry.content then
+      Markdown.convert(
+         entry.content(),
+         vim.schedule_wrap(function(markdown_lines)
+            vim.list_extend(lines, entry_filter(markdown_lines))
+            render_entry(buf, lines, id, ctx.buf ~= nil)
+         end),
+         true
+      )
+   else
+      local markdown_lines = vim.split(ut.read_file(DB.dir .. "/data/" .. id), "\n")
+      vim.list_extend(lines, entry_filter(markdown_lines))
+      render_entry(buf, lines, id, ctx.buf ~= nil)
+   end
 end
 
 local function show_full()
@@ -403,21 +441,21 @@ local function search(q)
    end
 end
 
-return {
-   show_index = show_index,
-   show_entry = show_entry,
-   show_urls = show_urls,
-   show_next = show_next,
-   show_prev = show_prev,
-   show_split = show_split,
-   show_hints = show_hints,
-   show_feeds = show_feeds,
-   show_browser = show_browser,
-   show_full = show_full,
-   show_log = show_log,
-   get_entry = get_entry,
-   open_url = open_url,
-   quit = quit,
-   search = search,
-   refresh = refresh,
-}
+M.show_index = show_index
+M.show_entry = show_entry
+M.show_urls = show_urls
+M.show_next = show_next
+M.show_prev = show_prev
+M.show_split = show_split
+M.show_hints = show_hints
+M.show_feeds = show_feeds
+M.show_browser = show_browser
+M.show_full = show_full
+M.show_log = show_log
+M.get_entry = get_entry
+M.open_url = open_url
+M.quit = quit
+M.search = search
+M.refresh = refresh
+
+return M
