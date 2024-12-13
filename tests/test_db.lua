@@ -47,11 +47,10 @@ T["new"]["adds entries to db and in memory, with id as key/filename, and content
    local entry = {
       link = "https://example.com",
       title = "zig",
-      content = "zig is a programming language",
       time = 1,
    }
    local key = sha(entry.link)
-   db:add(entry)
+   db:add(entry, "zig is a programming language")
    eq(entry.time, db[key].time)
    eq(entry.link, db[key].link)
    eq(entry.title, db[key].title)
@@ -62,11 +61,10 @@ T["new"]["rm all refs in the db"] = function()
    local entry = {
       link = "https://example.com",
       title = "zig",
-      content = "zig is a programming language",
       time = 1,
    }
    local key = sha(entry.link)
-   db:add(entry, { "star", "read" })
+   db:add(entry, "zig is a programming language", { "star", "read" })
    db:rm(key)
    eq(nil, db[key])
    eq(nil, db.tags['star'][key])
@@ -118,7 +116,7 @@ local function simulate_db(entries)
       v.content = ""
       v.link = tostring(i)
       v.time = v.time or i
-      db:add(v, v.tags)
+      db:add(v, "", v.tags)
    end
 end
 

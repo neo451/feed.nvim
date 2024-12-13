@@ -2,7 +2,8 @@ local Feedparser = require "feed.parser"
 ---@type feed.db
 local db = require "feed.db"
 local Config = require "feed.config"
-local curl = require "feed.curl"
+local Markdown = require "feed.ui.markdown"
+local Curl = require "feed.curl"
 
 local M = {}
 local feeds = db.feeds
@@ -35,7 +36,7 @@ function M.parse(url, opts, cb)
       [308] = true,
    }
    opts = opts or {}
-   curl.get(url, opts, function(response)
+   Curl.get(url, opts, function(response)
       if response then
          if response.stdout ~= "" and parse[response.status] then
             local d = Feedparser.parse(response.stdout, url)
@@ -71,7 +72,11 @@ function M.update_feed(url, opts, cb)
             end
             if d.entries and not vim.tbl_isempty(d.entries) then
                for _, entry in ipairs(d.entries) do
-                  db:add(entry, tags) -- TODO: name
+                  local content = entry.content
+                  entry.content = nil
+                  Markdown.convert(content, vim.schedule_wrap(function(lines)
+                     db:add(entry, table.concat(lines, "\n"), tags) -- TODO: name
+                  end), true)
                end
             end
             feeds[url] = feeds[url] or {}

@@ -142,25 +142,17 @@ function M:__index(k)
 end
 
 ---@param entry feed.entry
+---@param content string
 ---@param tags string[]?
-function M:add(entry, tags)
+function M:add(entry, content, tags)
    local id = vim.fn.sha256(entry.link)
    if not id or if_path(id) then
       return
    end
-   local content = entry.content
-   entry.content = nil
    table.insert(self.index, { id, entry.time })
    append_time_id(entry.time, id)
    local fp = tostring(data_dir / id)
    save_file(fp, content)
-
-   Markdown.convert(
-      fp,
-      function(markdown_lines)
-         save_file(fp, table.concat(markdown_lines, "\n"))
-      end
-   )
    save_obj(object_dir / id, entry)
    if tags then
       for _, tag in ipairs(tags) do
