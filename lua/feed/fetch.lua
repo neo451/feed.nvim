@@ -105,7 +105,9 @@ function M.update_all()
 
          c = c + 1
          if c == #list then
-            os.exit()
+            vim.schedule(function()
+               os.exit()
+            end)
          end
       end)
    end, list, 100)

@@ -52,6 +52,10 @@ local function build_header(t)
    return res
 end
 
+---@param url string
+---@param opts table -- TODO:
+---@param cb? any
+---@return vim.SystemCompleted?
 local function fetch(url, opts, cb)
    assert(type(url) == "string", "url must be a string")
    opts = opts or {}
@@ -75,6 +79,10 @@ local function fetch(url, opts, cb)
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
+   if opts.data then
+      table.insert(cmds, "-d")
+      table.insert(cmds, vim.json.encode(opts.data))
+   end
    local function process(obj)
       if obj.code == 0 then
          local headers = parse_header(dump_fp, url)

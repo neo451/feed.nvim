@@ -1,6 +1,3 @@
---- Default configuration.
---- Provides fallback values not specified in the user config.
-
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
 ---@field colorscheme? string
@@ -10,7 +7,8 @@
 ---@field rsshub_instance? string move all options here as a enum??
 ---@field layout? table
 ---@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
----@field search? { backend: "telescope" | "mini.pick", default_query: string }
+---@field search? { backend: "telescope" | "mini.pick" | "fzf", default_query: string }
+---@field data? { backend: "local" | "ttrss" }
 ---@field options? table
 
 ---@class feed._config
@@ -99,11 +97,15 @@ local default = {
       },
    },
 
+   data = {
+      backend = "local",
+   },
+
    ---@type feed.feed[]
    feeds = {},
 
    integrations = {
-      telescope = {}
+      telescope = {},
    },
 
    tag2icon = {
@@ -162,10 +164,25 @@ setmetatable(M, {
    end,
 })
 
+
+-- local function pval(name, val, validator, message)
+--    return pcall(vim.validate, name, val, validator, message)
+-- end
+--
+--
+-- ---@param cfg feed.config
+-- local function validate(cfg)
+--    local ok, err = pval('options', cfg.options, 'table')
+--    if not ok then
+--       vim.notify(err)
+--    end
+-- end
+
 --- Merge the user configuration with the default values.
 ---@param config feed.config
 function M.resolve(config)
    config = config or {}
+   -- validate(config)
    M.config = vim.tbl_deep_extend("keep", config, default)
 end
 
