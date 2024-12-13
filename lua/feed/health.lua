@@ -8,17 +8,16 @@ local error = health.error or health.report_error
 local is_win = vim.api.nvim_call_function("has", { "win32" }) == 1
 
 local dependencies = {
-   { name = "curl",   optional = false, min_ver = 8 },
+   { name = "curl", optional = false, min_ver = 8 },
    { name = "pandoc", optional = false, min_ver = 3 },
-   { name = "rg",     optional = true,  min_ver = 11 },
 }
 
 local plugins = {
-   { lib = "plenary",         optional = false, info = "required for feed.nvim to work" },
-   { lib = "pathlib",         optional = false, info = "required for handling path" },
-   { lib = "nui",             req = "nui.text", optional = false,                                                       info = "required for text rendering" },
+   { lib = "plenary", optional = false, info = "required for feed.nvim to work" },
+   { lib = "pathlib", optional = false, info = "required for handling path" },
+   { lib = "nui", req = "nui.text", optional = false, info = "required for text rendering" },
    --- TODO: optional and good if one is found
-   { lib = "nvim-treesitter", optional = true,  info = "required for installing TS parsers if you don't use rocks.nvim" },
+   { lib = "nvim-treesitter", optional = true, info = "required for installing TS parsers if you don't use rocks.nvim" },
 }
 
 local parsers = {
@@ -68,8 +67,6 @@ local check_binary_installed = function(package)
             return true
          end
       end
-   else
-      warn(binary .. " not found", "Please install " .. binary .. " " .. package.min_ver .. ".xx")
    end
 end
 

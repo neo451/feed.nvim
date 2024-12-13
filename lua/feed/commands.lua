@@ -381,4 +381,48 @@ function M._sync_feedlist()
    db:save_feeds()
 end
 
+function M._register_autocmds()
+   local augroup = vim.api.nvim_create_augroup("Feed", {})
+   vim.api.nvim_create_autocmd("User", {
+      pattern = "ShowEntryPost",
+      group = augroup,
+      callback = function()
+         local buf = vim.api.nvim_get_current_buf()
+         local win = vim.api.nvim_get_current_win()
+         vim.o.cmdheight = 0
+         for rhs, lhs in pairs(Config.keys.entry) do
+            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
+         end
+         for key, value in pairs(Config.options.entry) do
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+         end
+         if Config.colorscheme then
+            vim.cmd.colorscheme(Config.colorscheme)
+         end
+      end,
+   })
+
+   vim.api.nvim_create_autocmd("User", {
+      pattern = "ShowIndexPost",
+      group = augroup,
+      callback = function()
+         local buf = vim.api.nvim_get_current_buf()
+         local win = vim.api.nvim_get_current_win()
+         vim.o.cmdheight = 0
+
+         for rhs, lhs in pairs(Config.keys.index) do
+            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
+         end
+         for key, value in pairs(Config.options.index) do
+            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
+            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+         end
+         if Config.colorscheme then
+            vim.cmd.colorscheme(Config.colorscheme)
+         end
+      end,
+   })
+end
+
 return M
