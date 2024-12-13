@@ -26,7 +26,7 @@ function M.import(src)
             ret[v.xmlUrl] = {
                htmlUrl = v.htmlUrl,
                title = v.text or v.title,
-               tags = tags,
+               tags = vim.deepcopy(tags),
             }
          elseif v.outline then
             if not v.tags then
