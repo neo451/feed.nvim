@@ -21,7 +21,6 @@ local function feed_search()
          return {}
       end
       query = table.concat(query)
-      -- render.on_display = db:filter(query)
       local on_display = ui.refresh { query = query, show = false }
       local ret = {}
       for _, v in ipairs(on_display) do

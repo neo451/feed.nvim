@@ -156,7 +156,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>_()])", function(s)
+   return string.gsub(str, "(\\[%[%]`*!|#<>_()$.])", function(s)
       return s:sub(2)
    end)
 end

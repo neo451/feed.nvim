@@ -21,7 +21,6 @@ end
 
 vim.api.nvim_create_user_command("Feed", function(opts)
    local cmds = require "feed.commands"
-   cmds._register_autocmds()
 
    if #opts.fargs == 0 then
       cmds._menu()

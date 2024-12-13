@@ -5,6 +5,7 @@ local event = require("nui.utils.autocmd").event
 local api = vim.api
 
 local has_dressing = pcall(require, "dressing")
+local has_telescope = pcall(require, "telescope")
 
 local nui_select = function(items, opts, on_choice, config)
    config = config or {}
@@ -74,7 +75,44 @@ local nui_select = function(items, opts, on_choice, config)
    menu:on(event.BufLeave, menu.menu_props.on_close, { once = true })
 end
 
-M.select = has_dressing and vim.ui.select or nui_select
+local function telescope_select(items, opts, on_choice)
+   local pickers = require "telescope.pickers"
+   local finders = require "telescope.finders"
+   local actions = require "telescope.actions"
+   local action_state = require "telescope.actions.state"
+   local sorters = require "telescope.sorters"
+
+   pickers.new(require "telescope.themes".get_dropdown(), {
+      prompt_title = opts.prompt,
+      finder = finders.new_table({
+         results = items,
+         entry_maker = function(entry)
+            return {
+               value = entry,
+               display = opts.format_item(entry),
+               ordinal = opts.format_item(entry),
+            }
+         end
+      }),
+      attach_mappings = function(prompt_bufnr)
+         actions.select_default:replace(function()
+            actions.close(prompt_bufnr)
+            local selection = action_state.get_selected_entry()
+            on_choice(selection.value)
+         end)
+         return true
+      end,
+      sorter = sorters.get_generic_fuzzy_sorter(opts)
+   }):find()
+end
+
+if has_telescope then
+   M.select = telescope_select
+elseif has_dressing then
+   M.select = vim.ui.select
+else
+   M.select = nui_select
+end
 
 ---@param percentage string
 ---@param lines? string[]
