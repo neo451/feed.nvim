@@ -1,14 +1,14 @@
-local Config = require "feed.config"
-local ut = require "feed.utils"
+local Config = require("feed.config")
+local ut = require("feed.utils")
 ---@type feed.db
-local DB = require "feed.db"
-local Format = require "feed.ui.format"
-local NuiText = require "nui.text"
-local NuiLine = require "nui.line"
-local NuiTree = require "nui.tree"
-local Markdown = require "feed.ui.markdown"
-local Nui = require "feed.ui.nui"
-local Bar = require "feed.ui.bar"
+local DB = require("feed.db")
+local Format = require("feed.ui.format")
+local NuiText = require("nui.text")
+local NuiLine = require("nui.line")
+local NuiTree = require("nui.tree")
+local Markdown = require("feed.ui.markdown")
+local Nui = require("feed.ui.nui")
+local Bar = require("feed.ui.bar")
 
 local api = vim.api
 local feeds = DB.feeds
@@ -19,7 +19,7 @@ local Split = Nui.split
 
 local og_colorscheme = vim.g.colors_name
 local og_cmdheight = vim.o.cmdheight
-local on_display, index_buf, entry_buf
+local on_display, index_buf
 local urls = {}
 local current_entry, current_index
 local query = Config.search.default_query
@@ -27,16 +27,16 @@ local query = Config.search.default_query
 local M = {}
 
 local main_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return not v.right
-    end)
-    :totable()
+   :filter(function(v)
+      return not v.right
+   end)
+   :totable()
 
 local extra_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return v.right
-    end)
-    :totable()
+   :filter(function(v)
+      return v.right
+   end)
+   :totable()
 
 local providers = {}
 
@@ -63,7 +63,7 @@ local function show_winbar()
    for i, v in ipairs(main_comp) do
       Bar.new_comp(v[1], providers[v[1]](v), (i == #main_comp) and 0 or v.width, v.color)
    end
-   Bar.append "%="
+   Bar.append("%=")
    for _, v in ipairs(extra_comp) do
       local text = providers[v[1]](v)
       Bar.new_comp(v[1], text, v.width, v.color)
@@ -130,7 +130,7 @@ local function get_entry(opts)
    elseif ut.in_entry() then
       id = on_display[current_index]
    else
-      error "no context to show entry"
+      error("no context to show entry")
    end
    return DB[id], id
 end
@@ -172,7 +172,9 @@ local function render_entry(buf, lines, id, is_preview)
       set_opts(Config.options.entry, Config.keys.entry)
       mark_read(id)
       urls = get_buf_urls(buf, current_entry.link)
-      pcall(api.nvim_buf_set_name, buf, "FeedEntry")
+      if api.nvim_buf_get_name(buf) == "" then
+         api.nvim_buf_set_name(buf, "FeedEntry")
+      end
       vim.api.nvim_win_set_cursor(0, { 1, 0 })
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
    end
@@ -185,7 +187,7 @@ local function entry_filter(lines)
    local idx
    local res = {}
    for i, v in ipairs(lines) do
-      if v:find "^# " or v:find "^## " then
+      if v:find("^# ") or v:find("^## ") then
          idx = i
          break
       end
@@ -206,7 +208,7 @@ local function show_entry(ctx)
    if ctx.buf and not api.nvim_buf_is_valid(ctx.buf) then
       return
    end
-   local buf = ctx.buf or entry_buf or api.nvim_create_buf(false, true)
+   local buf = ctx.buf or M.entry_buf or api.nvim_create_buf(false, true)
    M.entry_buf = buf
    local entry, id = get_entry(ctx)
    if not entry then
@@ -218,8 +220,8 @@ local function show_entry(ctx)
    ---@type entry_line[]
    local lines = {}
 
-   for i, v in ipairs { "title", "author", "feed", "link", "date" } do
-      lines[i] = NuiLine { NuiText(ut.capticalize(v) .. ": ", "FeedBold"), NuiText(Format[v](entry)) }
+   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
+      lines[i] = NuiLine({ NuiText(ut.capticalize(v) .. ": ", "FeedBold"), NuiText(Format[v](entry)) })
    end
    table.insert(lines, "")
 
@@ -228,7 +230,7 @@ local function show_entry(ctx)
          ctx.link,
          vim.schedule_wrap(function(markdown_lines)
             vim.list_extend(lines, entry_filter(markdown_lines))
-            render_entry(buf, lines, id, ctx.buf ~= nil)
+            render_entry(buf, lines, id, false)
          end)
       )
       -- TODO: rethink
@@ -251,11 +253,9 @@ end
 local function show_full()
    local entry = get_entry()
    if entry and entry.link then
-      vim.schedule(function()
-         show_entry { link = entry.link }
-      end)
+      show_entry({ link = entry.link })
    else
-      vim.notify "no link to fetch"
+      vim.notify("no link to fetch")
    end
 end
 
@@ -288,7 +288,7 @@ local function quit()
       api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
    elseif ut.in_entry() then
       api.nvim_buf_delete(0, { force = true })
-      entry_buf = nil
+      M.entry_buf = nil
       if index_buf then
          api.nvim_set_current_buf(index_buf)
          api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
@@ -302,14 +302,14 @@ local function show_prev()
    if current_index == 1 then
       return
    end
-   show_entry { row = current_index - 1 }
+   show_entry({ row = current_index - 1 })
 end
 
 local function show_next()
    if current_index >= #on_display then
       return
    end
-   show_entry { row = current_index + 1 }
+   show_entry({ row = current_index + 1 })
 end
 
 local function show_urls()
@@ -326,8 +326,8 @@ local function show_urls()
 end
 
 local function open_url()
-   vim.cmd.normal "yi[" -- TODO: not ideal?
-   local text = vim.fn.getreg "0"
+   vim.cmd.normal("yi[") -- TODO: not ideal?
+   local text = vim.fn.getreg("0")
    local item = vim.iter(urls):find(function(v)
       return v[1] == text
    end)
@@ -340,7 +340,7 @@ end
 local function show_browser()
    local entry, id = get_entry()
    if entry and entry.link then
-      DB:tag(id, "read")
+      mark_read(id)
       vim.ui.open(entry.link)
    else
       ut.notify("show_in_browser", { msg = "no link for entry you try to open", level = "INFO" })
@@ -348,7 +348,7 @@ local function show_browser()
 end
 
 local function show_log()
-   local str = ut.read_file(vim.fn.stdpath "data" .. "/feed.nvim.log")
+   local str = ut.read_file(vim.fn.stdpath("data") .. "/feed.nvim.log")
    if str then
       Split("50%", vim.split(str, "\n"))
    end
@@ -375,7 +375,7 @@ end
 local function show_split(percentage)
    local _, id = get_entry()
    local split = Split(percentage or "50%")
-   show_entry { buf = split.bufnr, id = id }
+   show_entry({ buf = split.bufnr, id = id })
 end
 
 ---Open split to show feeds
@@ -393,16 +393,16 @@ local function show_feeds(percentage)
       local child = {}
       if feeds[url] and type(feeds[url]) == "table" then
          for k, v in pairs(feeds[url]) do
-            child[#child + 1] = NuiTree.Node { text = kv(k, vim.inspect(v)) }
+            child[#child + 1] = NuiTree.Node({ text = kv(k, vim.inspect(v)) })
          end
       end
       nodes[#nodes + 1] = NuiTree.Node({ text = feeds[url].title or url }, child or nil)
    end
 
-   local tree = NuiTree {
+   local tree = NuiTree({
       bufnr = split.bufnr,
       nodes = nodes,
-   }
+   })
 
    split:map("n", "<Tab>", function()
       local node, _ = tree:get_node()
@@ -426,13 +426,13 @@ end
 local function search(q)
    local backend = ut.choose_backend(Config.search.backend)
    if q then
-      refresh { query = q }
+      refresh({ query = q })
    elseif ut.in_index() or not backend then
       vim.ui.input({ prompt = "Feed query: ", default = query .. " " }, function(val)
          if not val then
             return
          end
-         refresh { query = val }
+         refresh({ query = val })
       end)
    else
       local engine = require("feed.ui." .. backend)

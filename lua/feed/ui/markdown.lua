@@ -1,5 +1,5 @@
-local health = require "feed.health"
-local ut = require "feed.utils"
+local health = require("feed.health")
+local ut = require("feed.utils")
 
 --- FIX: wrap with current window width, and config.opt wrap false
 
@@ -7,15 +7,14 @@ local ut = require "feed.utils"
 ---@param cb fun(lines: string[])
 ---@param is_src? boolean
 local function convert(resource, cb, is_src)
-   if not health.check_binary_installed { name = "pandoc", min_ver = 3 } then
-      cb { "you need pandoc to view feeds https://pandoc.org" }
+   if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
+      cb({ "you need pandoc to view feeds https://pandoc.org" })
    end
-   local sourced_file = debug.getinfo(2, "S").source:sub(2)
-   local filter = vim.fn.fnamemodify(sourced_file, ":h:h") .. "/feed/ui/pandoc_writer.lua"
+   local filter = vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1]
 
    local function process(obj)
       if obj.code ~= 0 then
-         return cb { "pandoc failed: " .. obj.stderr }
+         return cb({ "pandoc failed: " .. obj.stderr })
       end
       local str = ut.unescape(obj.stdout)
       vim.schedule(function()

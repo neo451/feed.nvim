@@ -1,11 +1,8 @@
 local M = {}
-local Split = require "nui.split"
-local Menu = require "nui.menu"
+local Split = require("nui.split")
+local Menu = require("nui.menu")
 local event = require("nui.utils.autocmd").event
 local api = vim.api
-
-local has_dressing = pcall(require, "dressing")
-local has_telescope = pcall(require, "telescope")
 
 local nui_select = function(items, opts, on_choice, config)
    config = config or {}
@@ -28,7 +25,7 @@ local nui_select = function(items, opts, on_choice, config)
 
    local callback
    callback = function(...)
-      if vim.tbl_isempty { ... } then
+      if vim.tbl_isempty({ ... }) then
          return
       end
       on_choice(...)
@@ -76,39 +73,43 @@ local nui_select = function(items, opts, on_choice, config)
 end
 
 local function telescope_select(items, opts, on_choice)
-   local pickers = require "telescope.pickers"
-   local finders = require "telescope.finders"
-   local actions = require "telescope.actions"
-   local action_state = require "telescope.actions.state"
-   local sorters = require "telescope.sorters"
+   local pickers = require("telescope.pickers")
+   local finders = require("telescope.finders")
+   local actions = require("telescope.actions")
+   local action_state = require("telescope.actions.state")
+   local sorters = require("telescope.sorters")
 
-   pickers.new(require "telescope.themes".get_dropdown(), {
-      prompt_title = opts.prompt,
-      finder = finders.new_table({
-         results = items,
-         entry_maker = function(entry)
-            return {
-               value = entry,
-               display = opts.format_item(entry),
-               ordinal = opts.format_item(entry),
-            }
-         end
-      }),
-      attach_mappings = function(prompt_bufnr)
-         actions.select_default:replace(function()
-            actions.close(prompt_bufnr)
-            local selection = action_state.get_selected_entry()
-            on_choice(selection.value)
-         end)
-         return true
-      end,
-      sorter = sorters.get_generic_fuzzy_sorter(opts)
-   }):find()
+   pickers
+      .new(require("telescope.themes").get_dropdown(), {
+         prompt_title = opts.prompt,
+         finder = finders.new_table({
+            results = items,
+            entry_maker = function(entry)
+               return {
+                  value = entry,
+                  display = opts.format_item(entry),
+                  ordinal = opts.format_item(entry),
+               }
+            end,
+         }),
+         attach_mappings = function(prompt_bufnr)
+            actions.select_default:replace(function()
+               actions.close(prompt_bufnr)
+               local selection = action_state.get_selected_entry()
+               on_choice(selection.value)
+            end)
+            return true
+         end,
+         sorter = sorters.get_generic_fuzzy_sorter(opts),
+      })
+      :find()
 end
 
-if has_telescope then
+if pcall(require, "telescope") then
    M.select = telescope_select
-elseif has_dressing then
+elseif pcall(require, "fzf-lua") then
+   M.select = require("fzf-lua.providers.ui_select").ui_select
+elseif pcall(require, "dressing") then
    M.select = vim.ui.select
 else
    M.select = nui_select
@@ -119,11 +120,11 @@ end
 ---@return NuiSplit
 function M.split(percentage, lines)
    lines = lines or {}
-   local split = Split {
+   local split = Split({
       relative = "editor",
       position = "bottom",
       size = percentage,
-   }
+   })
    split:mount()
 
    split:map("n", "q", function()
