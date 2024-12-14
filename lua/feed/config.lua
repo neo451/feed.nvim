@@ -7,14 +7,14 @@
 ---@field rsshub_instance? string move all options here as a enum??
 ---@field layout? table
 ---@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
----@field search? { backend: "telescope" | "mini.pick" | "fzf", default_query: string }
+---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
 ---@field data? { backend: "local" | "ttrss" }
 ---@field options? table
 
 ---@class feed._config
 local default = {
    ---@type string
-   db_dir = vim.fn.stdpath "data" .. "/feed",
+   db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type string
    colorscheme = vim.g.colorname,
    ---@type string
@@ -46,7 +46,7 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
-         listchars = '',
+         listchars = "",
       },
    },
    ---@type table[]
@@ -84,6 +84,7 @@ local default = {
       backend = {
          "mini.pick",
          "telescope",
+         "fzf-lua",
       },
    },
 
@@ -163,7 +164,6 @@ setmetatable(M, {
       return default[key]
    end,
 })
-
 
 -- local function pval(name, val, validator, message)
 --    return pcall(vim.validate, name, val, validator, message)

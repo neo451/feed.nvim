@@ -95,6 +95,7 @@ local function show_index()
    pcall(api.nvim_buf_set_name, buf, "FeedIndex")
    on_display = on_display or DB:filter(query)
    vim.bo[buf].modifiable = true
+   api.nvim_buf_set_lines(index_buf, 0, -1, false, {}) -- clear lines
    for i, id in ipairs(on_display) do
       Format.gen_nui_line(DB[id], main_comp):render(buf, -1, i)
    end
@@ -151,13 +152,11 @@ local function mark_read(id)
 end
 
 local function render_entry(buf, lines, id, is_preview)
-   if not api.nvim_buf_is_valid(buf) then
-      return
-   end
-
    vim.wo.winbar = nil
    vim.bo[buf].filetype = "markdown"
    vim.bo[buf].modifiable = true
+   vim.api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
+
    for i, v in ipairs(lines) do
       if type(v) == "table" then
          v:render(buf, -1, i)
@@ -170,13 +169,13 @@ local function render_entry(buf, lines, id, is_preview)
    if not is_preview then
       api.nvim_set_current_buf(buf)
       set_opts(Config.options.entry, Config.keys.entry)
-      mark_read(id)
       urls = get_buf_urls(buf, current_entry.link)
       if api.nvim_buf_get_name(buf) == "" then
          api.nvim_buf_set_name(buf, "FeedEntry")
       end
       vim.api.nvim_win_set_cursor(0, { 1, 0 })
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
+      mark_read(id)
    end
 end
 
@@ -267,14 +266,7 @@ local function refresh(opts)
    query = opts.query or query
    on_display = DB:filter(query)
    if opts.show then
-      if index_buf then
-         api.nvim_set_option_value("modifiable", true, { buf = index_buf })
-         for i = 1, api.nvim_buf_line_count(0) do
-            api.nvim_buf_set_lines(index_buf, i, i + 1, false, { "" })
-         end
-      end
       show_index()
-      ut.trim_last_lines()
    end
    return on_display
 end

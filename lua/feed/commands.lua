@@ -283,7 +283,7 @@ M.update_feed = {
          end)
       else
          nui.select(feedlist(feeds), {
-            prompt = "Feed to update",
+            prompt = "Feed>",
             format_item = function(item)
                return feeds[item].title or item
             end,
@@ -357,7 +357,7 @@ end
 function M._menu()
    local items = M._list_commands()
    nui.select(items, {
-      prompt = "Feed commands: ",
+      prompt = "Feed> ",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,

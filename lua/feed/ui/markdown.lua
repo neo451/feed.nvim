@@ -2,6 +2,7 @@ local health = require("feed.health")
 local ut = require("feed.utils")
 
 --- FIX: wrap with current window width, and config.opt wrap false
+--- FIX: strip html comments
 
 ---@param resource string
 ---@param cb fun(lines: string[])
@@ -10,7 +11,6 @@ local function convert(resource, cb, is_src)
    if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
       cb({ "you need pandoc to view feeds https://pandoc.org" })
    end
-   local filter = vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1]
 
    local function process(obj)
       if obj.code ~= 0 then
@@ -27,7 +27,7 @@ local function convert(resource, cb, is_src)
       ut.looks_like_url(resource) and "-r" or "-f",
       "html",
       "-t",
-      filter,
+      vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1],
       "--wrap=none",
       (not is_src) and resource,
    }
