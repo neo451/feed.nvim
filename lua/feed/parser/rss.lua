@@ -2,7 +2,6 @@ local date = require "feed.parser.date"
 local ut = require "feed.utils"
 local p_ut = require "feed.parser.utils"
 local sensible = p_ut.sensible
-local sha = p_ut.sha
 local decode = require("feed.lib.entities").decode
 
 local function handle_version(ast)
@@ -88,12 +87,10 @@ local function handle_description(channel, fallback)
    return sensible(channel.description or channel["dc:description"] or channel["itunes:subtitle"], 1, fallback)
 end
 
--- TODO: Unlike Atom, RSS feeds themselves also don’t have identifiers. Due to RSS guids never actually being GUIDs, in order to uniquely identify feed entries in Elfeed I have to use a tuple of the feed URL and whatever identifier I can gather from the entry itself. It’s a lot messier than it should be.
 
 local function handle_entry(entry, feed_url, feed_name, feed_author)
    local res = {}
    res.link = handle_link(entry, feed_url)
-   res.id = sha(res.link)
    res.content = handle_content(entry, "empty entry")
    res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)

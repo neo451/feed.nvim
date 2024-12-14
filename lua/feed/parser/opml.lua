@@ -25,12 +25,10 @@ function M.import(src)
          if v.xmlUrl then
             ret[v.xmlUrl] = {
                htmlUrl = v.htmlUrl,
-               text = v.text or v.title,
-               title = (v.text ~= v.title) and v.title or nil,
-               tags = tags,
+               title = v.text or v.title,
+               tags = vim.deepcopy(tags),
             }
          elseif v.outline then
-            -- vim.print(vim.tbl_keys(v))
             if not v.tags then
                v.tags = {}
             end
@@ -66,7 +64,7 @@ function M.export(feeds)
    local buf = {}
    for xmlUrl, v in spairs(feeds) do
       buf[#buf + 1] = format_outline {
-         text = v.text,
+         text = v.description or v.title,
          title = v.title,
          htmlUrl = v.htmlUrl,
          xmlUrl = xmlUrl,

@@ -27,8 +27,4 @@ function M.sensible(thing, field, fallback)
    end
 end
 
-function M.sha(v)
-   return vim.fn.sha256(v)
-end
-
 return M

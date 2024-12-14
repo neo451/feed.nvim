@@ -3,7 +3,7 @@ local vim = vim
 local api, fn = vim.api, vim.fn
 local ipairs, tostring = ipairs, tostring
 
-for k, v in pairs(require "feed.utils.url") do
+for k, v in pairs(require("feed.utils.url")) do
    M[k] = v
 end
 
@@ -103,7 +103,7 @@ M.read_file = function(path)
    end
    local f = io.open(path, "r")
    if f then
-      ret = f:read "*a"
+      ret = f:read("*a")
       f:close()
    end
    return ret
@@ -156,7 +156,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>_()])", function(s)
+   return string.gsub(str, "(\\[%[%]`*!|#<>_()$.])", function(s)
       return s:sub(2)
    end)
 end
@@ -165,11 +165,11 @@ function M.get_selection()
    local mode = api.nvim_get_mode().mode
 
    if mode == "n" then
-      return { fn.expand "<cexpr>" }
+      return { fn.expand("<cexpr>") }
    end
 
    local ok, selection = pcall(function()
-      return fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".", { type = mode })
+      return fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = mode })
    end)
 
    if ok then
@@ -178,23 +178,11 @@ function M.get_selection()
 end
 
 function M.in_index()
-   return api.nvim_buf_get_name(0):find "FeedIndex" ~= nil
+   return api.nvim_buf_get_name(0):find("FeedIndex") ~= nil
 end
 
 function M.in_entry()
-   return api.nvim_buf_get_name(0):find "FeedEntry" ~= nil
-end
-
---- Trim last blank lines
-M.trim_last_lines = function()
-   local n_lines = api.nvim_buf_line_count(0)
-   local last_nonblank = fn.prevnonblank(n_lines)
-   local buf = api.nvim_get_current_buf()
-   api.nvim_set_option_value("modifiable", true, { buf = buf })
-   if last_nonblank < n_lines then
-      api.nvim_buf_set_lines(0, last_nonblank, n_lines - 1, true, {})
-   end
-   api.nvim_set_option_value("modifiable", false, { buf = buf })
+   return api.nvim_buf_get_name(0):find("FeedEntry") ~= nil
 end
 
 ---@param choices table | string
@@ -238,6 +226,40 @@ M.url2name = function(url, feeds)
       end
    end
    return url
+end
+
+---split with max length
+M.split = function(str, sep, width)
+   local ret = {}
+
+   for v in vim.gsplit(str, sep) do
+      if vim.fn.strdisplaywidth(v) <= width then
+         ret[#ret + 1] = v
+      else
+         local acc = 0
+         local buf = {}
+         local len = vim.fn.strdisplaywidth(v)
+         for i = 1, len do
+            local part = vim.fn.strcharpart(v, i - 1, 1)
+            acc = acc + vim.fn.strdisplaywidth(part)
+            buf[#buf + 1] = part
+            if acc >= width or i == len then
+               ret[#ret + 1] = table.concat(buf, "")
+               buf = {}
+               acc = 0
+            end
+         end
+      end
+   end
+   return vim.iter(ret)
+      :filter(function(v)
+         return v ~= ""
+      end)
+      :totable()
+end
+
+function M.capticalize(str)
+   return str:sub(1, 1):upper() .. str:sub(2)
 end
 
 return M

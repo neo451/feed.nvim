@@ -2,14 +2,20 @@ local M = {}
 
 ---@param usr_config feed.config
 M.setup = function(usr_config)
-   local config = require "feed.config"
-   config.resolve(usr_config)
+   local Config = require "feed.config"
+   Config.resolve(usr_config)
    local cmds = require "feed.commands"
    cmds._sync_feedlist()
+   for k, v in pairs(require "feed.commands") do
+      if not k:sub(1, 1) == "_" then
+         M[k] = v.impl
+      end
+   end
+
+   local ui = require "feed.ui"
+   M.get_entry = ui.get_entry
 end
 
-local ui = require "feed.ui"
-M.get_entry = ui.get_entry
 
 M.register_command = function(name, doc, context, f, key)
    local cmds = require "feed.commands"
@@ -41,12 +47,6 @@ M.register_command = function(name, doc, context, f, key)
             callback = map,
          })
       end
-   end
-end
-
-for k, v in pairs(require "feed.commands") do
-   if not k:sub(1, 1) == "_" then
-      M[k] = v.impl
    end
 end
 

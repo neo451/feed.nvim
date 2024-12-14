@@ -1,12 +1,13 @@
-local Config = require "feed.config"
-local ut = require "feed.utils"
-local db = require "feed.db"
-local ui = require "feed.ui"
-local opml = require "feed.parser.opml"
+local Config = require("feed.config")
+local ut = require("feed.utils")
+local db = require("feed.db")
+local ui = require("feed.ui")
+local opml = require("feed.parser.opml")
 local feeds = db.feeds
-local nui = require "feed.ui.nui"
-local curl = require "feed.curl"
-local fetch = require "feed.fetch"
+local nui = require("feed.ui.nui")
+local curl = require("feed.curl")
+local fetch = require("feed.fetch")
+local log = require("feed.lib.log")
 
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -19,7 +20,7 @@ local M = {}
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = wrap(function(fp)
-      fp = fp or input { prompt = "path or url to your opml: ", completion = "file_in_path" }
+      fp = fp or input({ prompt = "path or url to your opml: ", completion = "file_in_path" })
       if not fp then
          return
       end
@@ -50,7 +51,7 @@ M.load_opml = {
 M.export_opml = {
    doc = "exports opml to a filepath",
    impl = wrap(function(fp)
-      fp = fp or input { prompt = "export your opml to: ", completion = "file_in_path" }
+      fp = fp or input({ prompt = "export your opml to: ", completion = "file_in_path" })
       fp = vim.fn.expand(fp)
       if not fp then
          return
@@ -193,7 +194,7 @@ M.tag = {
       if not id then
          _, id = ui.get_entry()
       end
-      tag = tag or input { prompt = "Tag: " }
+      tag = tag or input({ prompt = "Tag: " })
       save_hist = vim.F.if_nil(save_hist, true)
       if not tag or not id then
          return
@@ -220,7 +221,7 @@ M.untag = {
          _, id, _ = ui.get_entry()
       end
       save_hist = vim.F.if_nil(save_hist, true)
-      tag = tag or input { prompt = "Untag: " }
+      tag = tag or input({ prompt = "Untag: " })
       if not tag or not id then
          return
       end
@@ -253,7 +254,7 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      local Progress = require "feed.ui.progress"
+      local Progress = require("feed.ui.progress")
 
       local prog = Progress.new(#ut.feedlist(feeds))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
@@ -265,7 +266,7 @@ M.update = {
          end,
          stderr = function(err, data)
             if data then
-               ut.notify("fetch", { msg = data, level = "ERROR" })
+               log.warn(data)
             end
          end,
       })
@@ -282,7 +283,7 @@ M.update_feed = {
          end)
       else
          nui.select(feedlist(feeds), {
-            prompt = "Feed to update",
+            prompt = "Feed>",
             format_item = function(item)
                return feeds[item].title or item
             end,
@@ -291,7 +292,10 @@ M.update_feed = {
                return
             end
             fetch.update_feed(choice, { force = true }, function(ok)
-               ut.notify("fetch", { msg = ut.url2name(choice, feeds) .. (ok and " success" or "failed"), level = "INFO" })
+               ut.notify(
+                  "fetch",
+                  { msg = ut.url2name(choice, feeds) .. (ok and " success" or "failed"), level = "INFO" }
+               )
             end)
          end)
       end
@@ -306,8 +310,8 @@ M.update_feed = {
 M.term = {
    doc = "",
    impl = function()
-      local res = db:filter "#5"
-      local Format = require "feed.ui.format"
+      local res = db:filter("#5")
+      local Format = require("feed.ui.format")
       for _, id in ipairs(res) do
          print(Format.entry(db[id], {
             { "feed", width = 10 },
@@ -346,14 +350,14 @@ function M._load_command(args)
       local item = M[cmd]
       item.impl(unpack(args))
    else
-      ui.refresh { query = table.concat(args, " ") }
+      ui.refresh({ query = table.concat(args, " ") })
    end
 end
 
 function M._menu()
    local items = M._list_commands()
    nui.select(items, {
-      prompt = "Feed commands",
+      prompt = "Feed> ",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,
@@ -378,50 +382,6 @@ function M._sync_feedlist()
       feeds[url].tags = tags or feeds[url].tags
    end
    db:save_feeds()
-end
-
-function M._register_autocmds()
-   local augroup = vim.api.nvim_create_augroup("Feed", {})
-   vim.api.nvim_create_autocmd("User", {
-      pattern = "ShowEntryPost",
-      group = augroup,
-      callback = function()
-         local buf = vim.api.nvim_get_current_buf()
-         local win = vim.api.nvim_get_current_win()
-         vim.cmd "set cmdheight=0"
-         for rhs, lhs in pairs(Config.keys.entry) do
-            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
-         end
-         for key, value in pairs(Config.options.entry) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
-            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
-         end
-         if Config.colorscheme then
-            vim.cmd.colorscheme(Config.colorscheme)
-         end
-      end,
-   })
-
-   vim.api.nvim_create_autocmd("User", {
-      pattern = "ShowIndexPost",
-      group = augroup,
-      callback = function()
-         vim.cmd "set cmdheight=0"
-         local buf = vim.api.nvim_get_current_buf()
-         local win = vim.api.nvim_get_current_win()
-
-         for rhs, lhs in pairs(Config.keys.index) do
-            vim.keymap.set("n", lhs, M[rhs].impl, { buffer = buf, noremap = true })
-         end
-         for key, value in pairs(Config.options.index) do
-            pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
-            pcall(vim.api.nvim_set_option_value, key, value, { win = win })
-         end
-         if Config.colorscheme then
-            vim.cmd.colorscheme(Config.colorscheme)
-         end
-      end,
-   })
 end
 
 return M

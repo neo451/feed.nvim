@@ -52,36 +52,21 @@ local function build_header(t)
    return res
 end
 
-local function spawn(cmds, url, dump_fp, cb)
-   vim.system(cmds, { text = true, detach = true }, function(obj)
-      if obj.code == 0 then
-         local headers = parse_header(dump_fp, url)
-         obj.href = headers.location or url
-         obj.etag = headers.etag
-         obj.last_modified = headers.last_modified
-         obj.status = headers.status
-         obj.body = obj.stdout
-         obj.headers = headers
-         if obj.body:find "<!DOCTYPE html>" then
-            cb { status = 404 }
-            return
-         end
-         vim.schedule_wrap(cb)(obj)
-      else
-         log.warn("[feed.nvim]:", url, obj.stderr)
-      end
-   end)
-end
-
-local function fetch(cb, url, opts)
+---@param url string
+---@param opts table -- TODO:
+---@param cb? any
+---@return vim.SystemCompleted?
+local function fetch(url, opts, cb)
    assert(type(url) == "string", "url must be a string")
-   assert(type(cb) == "function", "callback is required")
    opts = opts or {}
    local additional = build_header {
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
    }
-   url = url:gsub("rsshub:/", config.rsshub_instance)
+   if url:find "rsshub:/" then
+      url = url:gsub("rsshub:/", config.rsshub_instance)
+      url = url .. "?format=json"
+   end
    local dump_fp = vim.fn.tempname()
    local cmds = {
       "curl",
@@ -94,7 +79,36 @@ local function fetch(cb, url, opts)
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
-   pcall(spawn, cmds, url, dump_fp, cb)
+   if opts.data then
+      table.insert(cmds, "-d")
+      table.insert(cmds, vim.json.encode(opts.data))
+   end
+   local function process(obj)
+      if obj.code == 0 then
+         local headers = parse_header(dump_fp, url)
+         obj.href = headers.location or url
+         obj.etag = headers.etag
+         obj.last_modified = headers.last_modified
+         obj.status = headers.status
+         obj.headers = headers
+         if obj.stdout:find "<!DOCTYPE html>" then
+            cb { status = 404 }
+            return
+         end
+         if cb then
+            vim.schedule_wrap(cb)(obj)
+         else
+            return obj
+         end
+      else
+         log.warn("[feed.nvim]:", url, obj.stderr)
+      end
+   end
+   if cb then
+      vim.system(cmds, { text = true }, process)
+   else
+      return process(vim.system(cmds, { text = true }):wait())
+   end
 end
 
 M.get = fetch

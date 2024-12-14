@@ -8,9 +8,19 @@ if vim.g.loaded_feed == 1 then
 end
 vim.g.loaded_feed = 1
 
+local highlights = {
+   FeedTitle = { default = true, link = "@markup.heading" },
+   FeedLink = { default = true, link = "@markup.link.url" },
+   FeedRead = { default = true, link = "NonText" },
+   FeedBold = { default = true, link = "Bold" },
+}
+
+for k, v in pairs(highlights) do
+   vim.api.nvim_set_hl(0, k, v)
+end
+
 vim.api.nvim_create_user_command("Feed", function(opts)
    local cmds = require "feed.commands"
-   cmds._register_autocmds()
 
    if #opts.fargs == 0 then
       cmds._menu()
@@ -25,18 +35,18 @@ end, {
       if subcmd_key and subcmd_arg_lead and cmds[subcmd_key] and type(cmds[subcmd_key]) == "table" and cmds[subcmd_key].complete then
          local sub_items = cmds[subcmd_key].complete()
          return vim.iter(sub_items)
-            :filter(function(arg)
-               return arg:find(subcmd_arg_lead) ~= nil
-            end)
-            :totable()
+             :filter(function(arg)
+                return arg:find(subcmd_arg_lead) ~= nil
+             end)
+             :totable()
       end
       if line:match "^['<,'>]*Feed*%s+%w*$" then
          local subcommand_keys = cmds._list_commands()
          return vim.iter(subcommand_keys)
-            :filter(function(key)
-               return key:find(arg_lead) ~= nil
-            end)
-            :totable()
+             :filter(function(key)
+                return key:find(arg_lead) ~= nil
+             end)
+             :totable()
       end
    end,
 })

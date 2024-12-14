@@ -1,34 +1,37 @@
-local health = require "feed.health"
-local ut = require "feed.utils"
+local health = require("feed.health")
+local ut = require("feed.utils")
 
 --- FIX: wrap with current window width, and config.opt wrap false
+--- FIX: strip html comments
 
----@param fp string
+---@param resource string
 ---@param cb fun(lines: string[])
-local function convert(fp, cb)
-   if not health.check_binary_installed { name = "pandoc", min_ver = 3 } then
-      cb { "you need pandoc to view feeds https://pandoc.org" }
+---@param is_src? boolean
+local function convert(resource, cb, is_src)
+   if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
+      cb({ "you need pandoc to view feeds https://pandoc.org" })
    end
-   local sourced_file = debug.getinfo(2, "S").source:sub(2)
-   local filter = vim.fn.fnamemodify(sourced_file, ":h") .. "/pandoc_writer.lua"
+
+   local function process(obj)
+      if obj.code ~= 0 then
+         return cb({ "pandoc failed: " .. obj.stderr })
+      end
+      local str = ut.unescape(obj.stdout)
+      vim.schedule(function()
+         return cb(vim.split(str, "\n"))
+      end)
+   end
 
    local cmd = {
       "pandoc",
-      ut.looks_like_url(fp) and "-r" or "-f",
+      ut.looks_like_url(resource) and "-r" or "-f",
       "html",
       "-t",
-      filter,
+      vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1],
       "--wrap=none",
-      -- "--columns=" .. vim.api.nvim_win_get_width(0),
-      fp,
+      (not is_src) and resource,
    }
-   vim.system(cmd, { text = true }, function(obj)
-      if obj.code ~= 0 then
-         return cb { "pandoc failed: " .. obj.stderr }
-      end
-      local str = ut.unescape(obj.stdout)
-      return cb(vim.split(str, "\n"))
-   end)
+   vim.system(cmd, { text = true, stdin = resource }, process)
 end
 
 return { convert = convert }

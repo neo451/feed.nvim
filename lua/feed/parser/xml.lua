@@ -1,34 +1,11 @@
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
 local log = require "feed.lib.log"
+local ts_ut = require "feed.utils.treesitter"
 
-local M = {}
-
-local get_text = function(node, src)
-   if not node then
-      return "empty node"
-   end
-   return vim.treesitter.get_node_text(node, src)
-end
-
----@param str string
----@return TSNode
-local get_root = function(str, language)
-   local ok, parser = pcall(vim.treesitter.get_string_parser, str, language)
-   if not ok then
-      error "xml TS parser not found"
-   end
-   return parser:parse()[1]:root()
-end
-
-local tree_contains = function(node, T)
-   for child in node:iter_children() do
-      if child:type() == T then
-         return true
-      end
-   end
-   return false
-end
+local get_text = ts_ut.get_text
+local get_root = ts_ut.get_root
+local tree_contains = ts_ut.tree_contains
 
 local ENTITIES = {
    ["&lt;"] = "<",
@@ -55,18 +32,16 @@ local function encode(str)
    return str
 end
 
--- * ((1 - P(tag)) ^ 1) ^ -1
 local function gen_tag_rule(tag)
-   local st = P "<" * P(tag) * P ">" -- TODO: xhtml
+   local st = P "<" * P(tag) * P ">"
    local et = P("</" .. tag .. ">")
    local rule = C(st) * ((1 - et) ^ 0 / encode) * C(et)
    return rule
 end
 
--- TODO: xhtml encode html inside <content type="xhtml" ... >X</content>
-
 local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / encode) * lpeg.P "]]>"
-local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) * C(P "</content>")
+local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) *
+    C(P "</content>")
 
 local function gen_extract_pat(rule)
    return Ct((C((1 - rule) ^ 0) * rule ^ 1 * C((1 - rule) ^ 0)) ^ 1)
@@ -96,22 +71,21 @@ local san_xhtml = function(str)
    return str
 end
 
-function M.sanitize(str)
+local function sanitize(str)
    return san_xhtml(rm_text(rm_cdata(str)))
 end
 
-setmetatable(M, {
+local H = {}
+
+setmetatable(H, {
    __index = function(t, k)
       if not rawget(t, k) then
-         if vim.g.treedoc_debug then
-            print(k, " is not handle by the feed.xml parser!!")
-         end
          return function() end
       end
    end,
 })
 
-M.XMLDecl = function(node, src)
+H.XMLDecl = function(node, src)
    local res = {}
    for child in node:iter_children() do
       if child:type() == "EncName" then
@@ -121,11 +95,11 @@ M.XMLDecl = function(node, src)
    return res
 end
 
-M.prolog = function(node, src)
+H.prolog = function(node, src)
    local res = {}
    for child in node:iter_children() do
       if child:type() == "XMLDecl" then
-         res = M.XMLDecl(child, src)
+         res = H.XMLDecl(child, src)
       end
    end
    return res
@@ -135,7 +109,7 @@ end
 ---@param src string
 ---@return string
 ---@return table
-M.STag = function(node, src)
+H.STag = function(node, src)
    local name = get_text(node:child(1), src)
    local n = node:child_count()
    if n == 3 then
@@ -152,14 +126,14 @@ M.STag = function(node, src)
    return name, res
 end
 
-M.CharData = function(node, src)
+H.CharData = function(node, src)
    local text = get_text(node, src)
    if text:find "%S" then
       return text
    end
 end
 
-M.CharRef = function(node, src)
+H.CharRef = function(node, src)
    local text = get_text(node, src)
    local num = tonumber(text:sub(3, -2))
    if num then
@@ -167,21 +141,18 @@ M.CharRef = function(node, src)
    end
 end
 
-M.CDSect = function(node, src)
+H.CDSect = function(node, src)
    return get_text(node:child(1), src)
 end
 
 ---@param node TSNode
 ---@param src string
 ---@return table
-M.content = function(node, src)
+H.content = function(node, src)
    local ret = {}
    for child in node:iter_children() do
       local T = child:type()
-      if not M[T] then
-         print(get_text(node, src), node:type(), node:child_count())
-      end
-      ret[#ret + 1] = M[T](child, src)
+      ret[#ret + 1] = H[T](child, src)
    end
    if not tree_contains(node, "element") then
       return { table.concat(ret) }
@@ -189,31 +160,31 @@ M.content = function(node, src)
    return ret
 end
 
-M.EntityRef = function(node, src)
+H.EntityRef = function(node, src)
    local entity = get_text(node, src)
    return ENTITIES[entity]
 end
 
-M.EmptyElemTag = M.STag
+H.EmptyElemTag = H.STag
 
-M.element = function(node, src)
+H.element = function(node, src)
    if node:child(0):type() == "EmptyElemTag" then
-      local name, res = M.EmptyElemTag(node:child(0), src)
+      local name, res = H.EmptyElemTag(node:child(0), src)
       return { [name] = res }
    end
-   local K, V = M.STag(node:child(0), src)
+   local K, V = H.STag(node:child(0), src)
    if node:child(1):type() == "ETag" then -- Empty element
       if vim.tbl_isempty(V) then
          return { [K] = "" }
       end
       return { [K] = V }
    end
-   local content = M.content(node:child(1), src)
+   local content = H.content(node:child(1), src)
    for _, element in ipairs(content) do
       if type(element) == "table" then
          for k, v in pairs(element) do
             if V[k] then
-               if not vim.islist(V[k]) then --TODO:
+               if not vim.islist(V[k]) then
                   V[k] = { V[k] }
                end
                table.insert(V[k], v)
@@ -228,23 +199,21 @@ M.element = function(node, src)
    return { [K] = V }
 end
 
+
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
 ---@param url string
 ---@return table?
-function M.parse(src, url) -- TODO: url resolve ?
-   src = M.sanitize(src)
+local function parse(src, url)
+   ts_ut.assert_parser('xml')
+   src = sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
-      -- root = get_root(M.sanitize(src))
-      -- if root:has_error() then
       log.warn(url, "treesitter err")
-      --    return
-      -- end
    end
    local iterator = vim.iter(root:iter_children())
    local collected = iterator:fold({}, function(acc, node)
-      acc[#acc + 1] = M[node:type()](node, src)
+      acc[#acc + 1] = H[node:type()](node, src)
       return acc
    end)
    if collected[1].encoding then
@@ -253,4 +222,7 @@ function M.parse(src, url) -- TODO: url resolve ?
    return #collected == 2 and collected[2] or collected[1]
 end
 
-return M
+return {
+   parse = parse,
+   sanitize = sanitize
+}

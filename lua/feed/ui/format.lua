@@ -1,7 +1,6 @@
 local M = {}
 local Config = require "feed.config"
 local ut = require "feed.utils"
-local _, MiniIcons = pcall(require, "mini.icons") -- TODO:
 
 local align = ut.align
 local tag2icon = Config.tag2icon
@@ -23,13 +22,13 @@ function M.tags(entry)
       tags["unread"] = true
    end
    local taglist = vim.iter(vim.spairs(tags))
-      :map(function(k)
-         if tag2icon[k] then
-            return tag2icon[k]
-         end
-         return k
-      end)
-      :totable()
+       :map(function(k)
+          if tag2icon[k] then
+             return tag2icon[k]
+          end
+          return k
+       end)
+       :totable()
    return "[" .. table.concat(taglist, ", ") .. "]"
 end
 
@@ -37,28 +36,34 @@ end
 ---@return string
 ---@return string
 M.title = function(entry)
-   return cleanup(entry.title), "@markup.heading"
+   return cleanup(entry.title), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.feed = function(entry)
-   return cleanup(entry.feed), "@markup.heading"
+   return cleanup(entry.feed), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.author = function(entry)
-   return cleanup(entry.author), "@markup.heading"
+   local text
+   if entry.author == "" then
+      text = entry.feed
+   else
+      text = entry.author
+   end
+   return cleanup(text), "FeedTitle"
 end
 
 ---@param entry feed.entry
 ---@return string
 ---@return string
 M.link = function(entry)
-   return entry.link, "@markup.link.url"
+   return entry.link, "FeedLink"
 end
 
 ---@param entry feed.entry
@@ -66,7 +71,7 @@ end
 ---@return string
 function M.date(entry)
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format, entry.time), "@markup.heading"
+   return os.date(Config.date_format, entry.time), "FeedTitle"
 end
 
 ---@param entry feed.entry
@@ -75,8 +80,8 @@ end
 function M.entry(entry, comps)
    local buf = {}
    comps = comps or {
-      { "feed", width = 15 },
-      { "tags", width = 5 },
+      { "feed",  width = 15 },
+      { "tags",  width = 5 },
       { "title", width = 80 },
    }
 
@@ -123,7 +128,7 @@ function M.gen_nui_line(entry, comps)
       if M[v[1]] then
          text = M[v[1]](entry)
       end
-      width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+      local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
       line:append(align(text, width + 1, v.right_justify), v.color)
       acc_width = acc_width + v.width + 1
    end

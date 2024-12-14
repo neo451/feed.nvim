@@ -45,7 +45,7 @@ M.get_buf_urls = function(buf, cur_link)
                local url = metadata[id] and metadata[id].url
                if url and match[url] then
                   for _, n in
-                     ipairs(match[url] --[[@as TSNode[] ]])
+                  ipairs(match[url] --[[@as TSNode[] ]])
                   do
                      local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
                      if node:type() == "inline_link" and node:child(1):type() == "link_text" then
@@ -53,7 +53,7 @@ M.get_buf_urls = function(buf, cur_link)
                         local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
                         local row = node:child(1):range() + 1
                         ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. fn.escape(link, "/~") .. ")//g" -- TODO: add e flag in final
+                        local sub_pattern = row .. "s/(" .. fn.escape(link, "/~") .. ")//ge"
                         vim.cmd(sub_pattern)
                      elseif node:type() == "image" and node:child(2):type() == "image_description" then
                         ---@diagnostic disable-next-line: param-type-mismatch
