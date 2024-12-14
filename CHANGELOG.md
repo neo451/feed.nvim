@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.14.0](https://github.com/neo451/feed.nvim/compare/v1.13.3...v1.14.0) (2024-12-14)
+
+
+### Features
+
+* **ui:** serve as a client to ttrss, sees ttrss as db ([c03fb33](https://github.com/neo451/feed.nvim/commit/c03fb333513c8946440b02f1661d5fd68262e1a8))
+
+
+### Bug Fixes
+
+* **api:** export functions after setup ([a5a3e42](https://github.com/neo451/feed.nvim/commit/a5a3e429eec140025c46a65960bd3d9d1591ea1d))
+* **db:** convert to markdown at fetch, not in db ([b2befbc](https://github.com/neo451/feed.nvim/commit/b2befbce0fc7a6ab018211f1b03b4e676ec18e9c))
+* **db:** proper tests, rm method ([b66e8ed](https://github.com/neo451/feed.nvim/commit/b66e8edbf9630e472acd3c84993b90b3c605ae5a))
+* **fetch:** use json whenever it is rsshub source ([5ff1e75](https://github.com/neo451/feed.nvim/commit/5ff1e759a8977140742f4b0cab85b9e43684f4f5))
+* **fzf-lua:** fzf-lua as menu backend ([fc534dc](https://github.com/neo451/feed.nvim/commit/fc534dc73abe2c3e6fa5c22f604259cb4eca8c72))
+* **markdown:** gets the pandoc filter with api.nvim_get_runtime_files ([8375a57](https://github.com/neo451/feed.nvim/commit/8375a574780a75a5ab430317d4727b65d0008099))
+* **parser.opml:** use description + title instead of text in feeds.lua ([b66e8ed](https://github.com/neo451/feed.nvim/commit/b66e8edbf9630e472acd3c84993b90b3c605ae5a))
+* **parser:** calc sha in db instead of parser ([b66e8ed](https://github.com/neo451/feed.nvim/commit/b66e8edbf9630e472acd3c84993b90b3c605ae5a))
+* **parser:** opml tags from parent outline should be deepcopied ([0f129d1](https://github.com/neo451/feed.nvim/commit/0f129d185819501641bfc744d1a2ec70594e12f5))
+* **telescope:** feed grep redone ([2c62692](https://github.com/neo451/feed.nvim/commit/2c62692211201f8d6453ee3728e5a723f4628583))
+* **telescope:** native picker for telescope ([2c62692](https://github.com/neo451/feed.nvim/commit/2c62692211201f8d6453ee3728e5a723f4628583))
+* **ui:** ability to render entry from content function ([7e67fb9](https://github.com/neo451/feed.nvim/commit/7e67fb95ec765ed0878e8ed27cee3627e31655b8))
+* **ui:** align header and index, no listchars in entry ([5ff1e75](https://github.com/neo451/feed.nvim/commit/5ff1e759a8977140742f4b0cab85b9e43684f4f5))
+* **ui:** custom higlight groups ([5ff1e75](https://github.com/neo451/feed.nvim/commit/5ff1e759a8977140742f4b0cab85b9e43684f4f5))
+* **ui:** fix entry buffer not named ([8375a57](https://github.com/neo451/feed.nvim/commit/8375a574780a75a5ab430317d4727b65d0008099))
+* **ui:** markdown converter accepts src html ([7e67fb9](https://github.com/neo451/feed.nvim/commit/7e67fb95ec765ed0878e8ed27cee3627e31655b8))
+* **ui:** properly clears lines when rerendering ([fc534dc](https://github.com/neo451/feed.nvim/commit/fc534dc73abe2c3e6fa5c22f604259cb4eca8c72))
+* **ui:** put cursor back to top on every render ([7e67fb9](https://github.com/neo451/feed.nvim/commit/7e67fb95ec765ed0878e8ed27cee3627e31655b8))
+
 ## [1.13.3](https://github.com/neo451/feed.nvim/compare/v1.13.2...v1.13.3) (2024-12-09)
 
 
