@@ -1,6 +1,6 @@
-local date = require "feed.parser.date"
-local ut = require "feed.utils"
-local p_ut = require "feed.parser.utils"
+local date = require("feed.parser.date")
+local ut = require("feed.utils")
+local p_ut = require("feed.parser.utils")
 local sensible = p_ut.sensible
 local decode = require("feed.lib.entities").decode
 
@@ -32,32 +32,29 @@ local function handle_title(node, fallback)
 end
 
 ---@param node table
----@param feed_url string
+---@param base string
 ---@return string?
-local function handle_link(node, feed_url) -- TODO: base and rebase modified for rss?
+local function handle_link(node, base) -- TODO: base and rebase modified for rss?
    if not node or not node.link then
-      return feed_url
+      return base
    end
    if node.enclosure then
-      return node.enclosure.url
+      return node.enclosure.url -- TODO:
    end
    if not vim.islist(node.link) then
-      return node.link.href
-      -- return ut.url_resolve(base, entry.link.href)
+      return ut.url_resolve(base, node.link.href)
    end
    if type(node.link[1]) == "string" then
-      return node.link[1]
+      return ut.url_resolve(base, node.link[1])
    end
    for _, v in ipairs(node.link) do
       if v.rel == "alternate" then
-         return v.href
-         -- return ut.url_resolve(base, v.href)
+         return ut.url_resolve(base, v.href)
       elseif v.rel == "self" then
-         return v.href
-         -- return ut.url_resolve(base, v.href)
+         return ut.url_resolve(base, v.href)
       end
    end
-   return feed_url
+   return base
 end
 
 local function handle_author(node, fallback)
@@ -87,24 +84,22 @@ local function handle_description(channel, fallback)
    return sensible(channel.description or channel["dc:description"] or channel["itunes:subtitle"], 1, fallback)
 end
 
-
-local function handle_entry(entry, feed_url, feed_name, feed_author)
+local function handle_entry(entry, feed_url, feed_name, feed_author, url_id)
    local res = {}
    res.link = handle_link(entry, feed_url)
    res.content = handle_content(entry, "empty entry")
    res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)
    res.author = decode(handle_author(entry, feed_author or feed_name))
-   res.feed = feed_name
+   res.feed = url_id
    return res
 end
 
-local function handle_rss(ast, feed_url)
+local function handle_rss(ast, url_id)
    local res = {}
    res.version = handle_version(ast)
    local channel = ast.rss and ast.rss.channel or ast["rdf:RDF"].channel
-   local root_base = ut.url_rebase(channel, feed_url)
-   res.link = handle_link(channel, feed_url) -- TODO: url resolver
+   res.link = handle_link(channel, url_id)
    res.title = decode(handle_title(channel, res.link))
    local feed_author = decode(handle_author(channel, res.title))
    res.desc = decode(handle_description(channel, res.title))
@@ -112,7 +107,7 @@ local function handle_rss(ast, feed_url)
    res.type = "rss"
    if channel.item then
       for _, v in ipairs(ut.listify(channel.item)) do
-         res.entries[#res.entries + 1] = handle_entry(v, root_base, res.title, feed_author) -- TODO: feed_url should be the entry's feed attr, but resolove should not prioritize feed_url
+         res.entries[#res.entries + 1] = handle_entry(v, res.link, res.title, feed_author, url_id)
       end
    end
    return res

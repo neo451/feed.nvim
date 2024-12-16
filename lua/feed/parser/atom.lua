@@ -80,7 +80,7 @@ local function handle_description(feed)
    end
 end
 
-local function handle_entry(entry, base, feed_name)
+local function handle_entry(entry, base, feed_name, url_id)
    local res = {}
    local entry_base = ut.url_rebase(entry, base)
    res.link = handle_link(entry, entry_base)
@@ -88,15 +88,15 @@ local function handle_entry(entry, base, feed_name)
    res.title = decode(handle_title(entry, "no title"))
    res.author = decode(handle_author(entry, feed_name))
    res.content = handle_content(entry, "empty entry")
-   res.feed = feed_name
+   res.feed = url_id
    return res
 end
 
-local function handle_atom(ast, feed_url)
+local function handle_atom(ast, url)
    local res = {}
    local feed = ast.feed
    res.version = handle_version(ast)
-   local root_base = ut.url_rebase(feed, feed_url)
+   local root_base = ut.url_rebase(feed, url)
    res.link = handle_link(feed, root_base)
    res.desc = decode(handle_description(feed))
    res.title = decode(handle_feed_title(feed, res.link))
@@ -104,7 +104,7 @@ local function handle_atom(ast, feed_url)
    res.type = "atom"
    if feed.entry then
       for _, v in ipairs(ut.listify(feed.entry)) do
-         res.entries[#res.entries + 1] = handle_entry(v, root_base, res.title)
+         res.entries[#res.entries + 1] = handle_entry(v, root_base, res.title, url)
       end
    end
    return res

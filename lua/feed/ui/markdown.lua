@@ -16,9 +16,8 @@ local function convert(resource, cb, is_src)
       if obj.code ~= 0 then
          return cb({ "pandoc failed: " .. obj.stderr })
       end
-      local str = ut.unescape(obj.stdout)
       vim.schedule(function()
-         return cb(vim.split(str, "\n"))
+         return cb(vim.split(obj.stdout, "\n"))
       end)
    end
 

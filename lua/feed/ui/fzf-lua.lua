@@ -34,6 +34,8 @@ end
 -- TODO: overide the default .. s
 -- TODO: grep
 
+-- FIX: open entry not working
+
 local function feed_search()
    fzf.fzf_live(function(str)
       local on_display = ui.refresh({ query = str, show = false })

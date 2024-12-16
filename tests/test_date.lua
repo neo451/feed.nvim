@@ -1,4 +1,4 @@
-local M = require "feed.parser.date"
+local M = require("feed.parser.date")
 local eq = MiniTest.expect.equality
 
 local date2string = function(n)
@@ -38,16 +38,15 @@ T["parse"]["W3CDTF"] = function()
    date_eq("2024-01-01", "2024")
 end
 
-local day = 24 * 60 * 60
-
 T["relative time"]["days ago"] = function()
-   local days_ago_5 = M.days_ago(5)
+   local day = 24 * 60 * 60
+   local days_ago_5 = M.literal("5-days-ago")
    local expected_time = os.time() - (5 * day)
    date_eq(expected_time, days_ago_5)
 end
 
 T["relative time"]["months ago"] = function()
-   local months_ago_2 = M.months_ago(2)
+   local months_ago_2 = M.literal("2-months-ago")
    local expected_time = os.time()
    local expected_date = os.date("*t", expected_time)
    expected_date.month = expected_date.month - 2
@@ -59,7 +58,7 @@ T["relative time"]["months ago"] = function()
 end
 
 T["relative time"]["year ago"] = function()
-   local years_ago_3 = M.years_ago(3)
+   local years_ago_3 = M.literal("3-years-ago")
    local expected_time = os.time()
    local expected_date = os.date("*t", expected_time)
    expected_date.year = expected_date.year - 3

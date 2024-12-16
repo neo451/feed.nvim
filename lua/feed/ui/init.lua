@@ -27,16 +27,16 @@ local query = Config.search.default_query
 local M = {}
 
 local main_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return not v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return not v.right
+    end)
+    :totable()
 
 local extra_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return v.right
+    end)
+    :totable()
 
 local providers = {}
 
@@ -49,7 +49,11 @@ setmetatable(providers, {
 })
 
 providers.query = function()
-   return "query: " .. query
+   return query .. " "
+end
+
+providers.last_updated = function()
+   return DB:lastUpdated() .. " "
 end
 
 -- TODO: needs to be auto updated
@@ -161,7 +165,7 @@ local function render_entry(buf, lines, id, is_preview)
       if type(v) == "table" then
          v:render(buf, -1, i)
       elseif type(v) == "string" then
-         v = v:gsub("\n", "")
+         v = vim.trim(ut.unescape(v:gsub("\n", "")))
          api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
       end
    end
@@ -208,6 +212,7 @@ local function show_entry(ctx)
       return
    end
    local buf = ctx.buf or M.entry_buf or api.nvim_create_buf(false, true)
+   og_colorscheme = vim.g.colors_name
    M.entry_buf = buf
    local entry, id = get_entry(ctx)
    if not entry then

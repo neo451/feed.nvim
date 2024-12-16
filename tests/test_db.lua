@@ -1,10 +1,10 @@
 vim.fn.delete("~/.feed.nvim.test/", "rf")
-local config = require "feed.config"
+local config = require("feed.config")
 config.db_dir = "~/.feed.nvim.test/"
-local db = require "feed.db"
-local date = require "feed.parser.date"
+local db = require("feed.db")
+local date = require("feed.parser.date")
 local eq = MiniTest.expect.equality
-local h = require "tests.helpers"
+local h = require("tests.helpers")
 local readfile = h.readfile
 local sha = vim.fn.sha256
 
@@ -17,19 +17,19 @@ end
 
 T["new"] = MiniTest.new_set({
    hooks = {
-      post_case = new_db
-   }
+      post_case = new_db,
+   },
 })
 T["iter"] = MiniTest.new_set({
    hooks = {
-      post_case = new_db
-   }
+      post_case = new_db,
+   },
 })
 
 T["filter"] = MiniTest.new_set({
    hooks = {
-      post_case = new_db
-   }
+      post_case = new_db,
+   },
 })
 
 T["new"]["prepares all db files"] = function()
@@ -67,8 +67,8 @@ T["new"]["rm all refs in the db"] = function()
    db:add(entry, "zig is a programming language", { "star", "read" })
    db:rm(key)
    eq(nil, db[key])
-   eq(nil, db.tags['star'][key])
-   eq(nil, db.tags['read'][key])
+   eq(nil, db.tags["star"][key])
+   eq(nil, db.tags["read"][key])
    eq(0, vim.fn.filereadable(db.dir .. "/data/" .. key))
 end
 
@@ -121,30 +121,30 @@ local function simulate_db(entries)
 end
 
 T["filter"]["return empty if filter empty"] = function()
-   local res = db:filter ""
+   local res = db:filter("")
    eq({}, res)
 end
 
 T["filter"]["by tag"] = function()
-   simulate_db {
+   simulate_db({
       { tags = { "read", "star" } },
       { tags = { "read" } },
       { tags = { "star" } },
       {},
-      { tags = { "read" } }
-   }
-   local res = db:filter "+read -star"
-   eq({ sha "5", sha "2" }, res)
+      { tags = { "read" } },
+   })
+   local res = db:filter("+read -star")
+   eq({ sha("5"), sha("2") }, res)
 end
 
 T["filter"]["filter by date"] = function()
-   simulate_db {
-      [1] = { time = date.days_ago(6) },
-      [2] = { time = date.days_ago(7) },
-      [3] = { time = date.days_ago(1) },
+   simulate_db({
+      [1] = { time = date.literal("6-days-ago") },
+      [2] = { time = date.literal("7-days-ago") },
+      [3] = { time = date.literal("1-day-ago") },
       [4] = { time = os.time() },
-   }
-   eq({ sha "4", sha "3" }, db:filter "@5-days-ago")
+   })
+   eq({ sha("4"), sha("3") }, db:filter("@5-days-ago"))
 end
 
 T["filter"]["filter by limit number"] = function()
@@ -153,31 +153,31 @@ T["filter"]["filter by limit number"] = function()
       entries[i] = { title = i, time = i, id = i }
    end
    simulate_db(entries)
-   local res = db:filter "#10"
+   local res = db:filter("#10")
    eq(10, #res)
 end
 
 T["filter"]["filter by regex"] = function()
-   simulate_db {
+   simulate_db({
       { title = "Neovim is awesome" },
       { title = "neovim is lowercase" },
       { title = "Vim is awesome" },
       { title = "vim is lowercase" },
       { title = "bim is not a thing" },
-   }
-   local res = db:filter "Neo vim"
-   eq({ sha "2", sha "1", }, res)
+   })
+   local res = db:filter("Neo vim")
+   eq({ sha("2"), sha("1") }, res)
    -- local res2 = db:filter "!Neo !vim"
    -- eq({ "5" }, res2)
 end
 
 T["filter"]["filter by feed"] = function()
-   simulate_db {
+   simulate_db({
       { feed = "neovim.io" },
       { feed = "ovim.io" },
       { feed = "vm.io" },
-   }
-   local res = db:filter "=vim"
+   })
+   local res = db:filter("=vim")
    eq(2, #res)
    -- db:blowup()
 end

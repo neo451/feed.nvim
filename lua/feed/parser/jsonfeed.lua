@@ -11,14 +11,14 @@ local function handle_title(entry)
    return entry.title
 end
 
-local function handle_entry(entry, author, feed_name)
+local function handle_entry(entry, author, feed_name, feed_url, url_id)
    local res = {}
    res.link = entry.url
    res.content = entry.content_html or ""
    res.time = date.parse(entry.date_published, "json")
    res.title = decode(handle_title(entry))
    res.author = decode(author)
-   res.feed = feed_name
+   res.feed = url_id
    return res
 end
 
@@ -26,7 +26,7 @@ local function handle_author(ast, feed_name)
    return sensible(ast.author, "name", feed_name)
 end
 
-return function(ast, _) -- no link resolve for now only do html link resolve later
+return function(ast, url) -- no link resolve for now only do html link resolve later
    local res = {}
    res.version = "json1"
    res.link = ast.home_page_url or ast.feed_url
@@ -37,7 +37,7 @@ return function(ast, _) -- no link resolve for now only do html link resolve lat
    res.type = "json"
    if ast.items then
       for _, v in ipairs(ut.listify(ast.items)) do
-         res.entries[#res.entries + 1] = handle_entry(v, res.author, res.title)
+         res.entries[#res.entries + 1] = handle_entry(v, res.author, res.title, res.link, url)
       end
    end
    return res
