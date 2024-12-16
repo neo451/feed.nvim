@@ -1,7 +1,7 @@
 ---@diagnostic disable: inject-field
-local ut = require "feed.utils"
-local log = require "feed.lib.log"
-local config = require "feed.config"
+local ut = require("feed.utils")
+local log = require("feed.lib.log")
+local Config = require("feed.config")
 
 local M = {}
 local read_file = ut.read_file
@@ -56,17 +56,13 @@ end
 ---@param opts table -- TODO:
 ---@param cb? any
 ---@return vim.SystemCompleted?
-local function fetch(url, opts, cb)
+function M.get(url, opts, cb)
    assert(type(url) == "string", "url must be a string")
    opts = opts or {}
-   local additional = build_header {
+   local additional = build_header({
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
-   }
-   if url:find "rsshub:/" then
-      url = url:gsub("rsshub:/", config.rsshub_instance)
-      url = url .. "?format=json"
-   end
+   })
    local dump_fp = vim.fn.tempname()
    local cmds = {
       "curl",
@@ -75,7 +71,7 @@ local function fetch(url, opts, cb)
       dump_fp,
       "--connect-timeout",
       opts.timeout or 10,
-      url,
+      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub_instance) .. "?format=json" or url,
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
@@ -91,8 +87,8 @@ local function fetch(url, opts, cb)
          obj.last_modified = headers.last_modified
          obj.status = headers.status
          obj.headers = headers
-         if obj.stdout:find "<!DOCTYPE html>" then
-            cb { status = 404 }
+         if obj.stdout:find("<!DOCTYPE html>") then
+            cb({ status = 404 })
             return
          end
          if cb then
@@ -111,8 +107,6 @@ local function fetch(url, opts, cb)
    end
 end
 
-M.get = fetch
-
-M.fetch_co = ut.cb_to_co(fetch)
+M.get_co = ut.cb_to_co(M.get)
 
 return M

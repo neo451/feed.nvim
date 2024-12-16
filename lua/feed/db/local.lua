@@ -1,8 +1,7 @@
 local Path = require "pathlib"
-local config = require "feed.config"
+local Config = require "feed.config"
 local query = require "feed.db.query"
 local ut = require "feed.utils"
-local Markdown = require "feed.ui.markdown"
 
 ---@class feed.db
 ---@field dir string
@@ -22,7 +21,7 @@ local Markdown = require "feed.ui.markdown"
 local M = {}
 M.__index = M
 
-local db_dir = Path.new(config.db_dir)
+local db_dir = Path.new(Config.db_dir)
 
 local data_dir = db_dir / "data"
 
@@ -97,7 +96,7 @@ function M.new()
    ensure_path(index_fp, "file")
 
    return setmetatable({
-      dir = tostring(db_dir),
+      dir = db_dir
    }, M)
 end
 
@@ -139,6 +138,10 @@ function M:__index(k)
       end
       return r
    end
+end
+
+function M:lastUpdated()
+   return os.date("%c", vim.fn.getftime(tostring(feeds_fp)))
 end
 
 ---@param entry feed.entry
@@ -306,10 +309,12 @@ function M:filter(str)
    if q.feed then
       iter = iter:filter(function(id)
          mem[id] = pdofile(object_dir / id)
-         if not q.feed:match_str(self[id].feed) then
-            return false
+         local url = self[id].feed
+         local feed_name = self.feeds[url] and self.feeds[url].title
+         if q.feed:match_str(url) or q.feed:match_str(feed_name) then
+            return true
          end
-         return true
+         return false
       end)
    end
 

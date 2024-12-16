@@ -102,20 +102,23 @@ function M.update_all()
    local list = require("feed.utils").feedlist(feeds)
 
    local c = 0
+   local jobs = 0
 
    Promise.map(function(url)
+      jobs = jobs + 1
       require("feed.fetch").update_feed(url, {}, function(ok)
          local name = ut.url2name(url, feeds)
-         io.write(table.concat({ name, (ok and " success" or " failed"), "\n" }, " "))
-
          c = c + 1
+         io.write(table.concat({ name, (ok and "success" or "failed"), "\n" }, " "))
+         jobs = jobs - 1
+
          if c == #list then
             vim.schedule(function()
                os.exit()
             end)
          end
       end)
-   end, list, 100)
+   end, list, 20)
 end
 
 return M

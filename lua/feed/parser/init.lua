@@ -37,7 +37,11 @@ local M = {}
 function M.parse(src, url)
    local ret
    if vim.trim(src):sub(1, 1) == "{" then
-      ret = handle_json(vim.json.decode(src), url)
+      ret = handle_json(vim.json.decode(src, {
+         luanil = {
+            object = true
+         }
+      }), url)
       ret.encoding = ret.encoding or "utf-8"
       return ret
    else

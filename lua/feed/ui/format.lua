@@ -1,5 +1,6 @@
 local M = {}
 local Config = require "feed.config"
+local DB = require "feed.db"
 local ut = require "feed.utils"
 
 local align = ut.align
@@ -43,7 +44,8 @@ end
 ---@return string
 ---@return string
 M.feed = function(entry)
-   return cleanup(entry.feed), "FeedTitle"
+   local feed = DB.feeds[entry.feed] and DB.feeds[entry.feed].title or entry.feed
+   return cleanup(feed), "FeedTitle" -- FIX: for ttrss
 end
 
 ---@param entry feed.entry
@@ -69,7 +71,7 @@ end
 ---@param entry feed.entry
 ---@return string
 ---@return string
-function M.date(entry)
+M.date = function(entry)
    ---@diagnostic disable-next-line: return-type-mismatch
    return os.date(Config.date_format, entry.time), "FeedTitle"
 end
@@ -77,7 +79,7 @@ end
 ---@param entry feed.entry
 ---@param comps table?
 ---@return string
-function M.entry(entry, comps)
+M.entry = function(entry, comps)
    local buf = {}
    comps = comps or {
       { "feed",  width = 15 },

@@ -135,6 +135,16 @@ T["url resolover"] = MiniTest.new_set {
             },
          },
       },
+
+      {
+         "url_rss.xml",
+         {
+            link = "http://example.org",
+            [1] = {
+               link = "http://example.org/archives/000001.html",
+            },
+         },
+      }
    },
 }
 
@@ -162,7 +172,7 @@ T["rss"]["works"] = check
 T["atom"]["works"] = check
 T["json"]["works"] = check
 T["url resolover"]["works"] = check
-
+--
 --- TODO: parse the condition in the feed parser test suite, into a check table, and wemo check!!
 
 T["feedparser test suite"] = MiniTest.new_set {

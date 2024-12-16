@@ -47,6 +47,7 @@ local default = {
          relativenumber = false,
          modifiable = false,
          listchars = "",
+         spell = false,
       },
    },
    ---@type table[]
@@ -55,27 +56,32 @@ local default = {
       {
          "date",
          width = 10,
-         color = "Directory",
+         color = "FeedDate",
       },
       {
          "feed",
          width = 25,
-         color = "Title",
+         color = "FeedTitle",
       },
       {
          "tags",
          width = 15,
-         color = "WhiteSpace",
+         color = "FeedTags",
       },
       {
          "title",
          width = 80,
-         color = "@markup.strong",
+         color = "FeedTitle",
+      },
+      {
+         "last_updated",
+         right = true,
+         color = "FeedDate",
       },
       {
          "query",
          right = true,
-         color = "Pmenu",
+         color = "FeedLabel",
       },
    },
 

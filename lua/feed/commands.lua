@@ -26,7 +26,7 @@ M.load_opml = {
       end
       local str
       if ut.looks_like_url(fp) then
-         str = curl.fetch_co(fp, {}).stdout
+         str = curl.get_co(fp, {}).stdout
       else
          fp = vim.fn.expand(fp)
          str = read_file(fp)
@@ -66,7 +66,7 @@ M.export_opml = {
 }
 
 M.search = {
-   doc = "query the database by time, tags or regex",
+   doc = "search the database by time, tags or regex",
    impl = ui.search,
    context = { all = true },
 }
@@ -120,19 +120,19 @@ M.entry = {
 }
 
 M.index = {
-   doc = "show query results in new buffer",
+   doc = "show search results in new buffer",
    impl = ui.show_index,
    context = { all = true },
 }
 
 M.next = {
-   doc = "show next query result",
+   doc = "show next search result",
    impl = ui.show_next,
    context = { entry = true },
 }
 
 M.prev = {
-   doc = "show previous query result",
+   doc = "show previous search result",
    impl = ui.show_prev,
    context = { entry = true },
 }
@@ -255,7 +255,6 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       local Progress = require("feed.ui.progress")
-
       local prog = Progress.new(#ut.feedlist(feeds))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
@@ -305,22 +304,6 @@ M.update_feed = {
       return feedlist(feeds)
    end,
    context = { all = true },
-}
-
-M.term = {
-   doc = "",
-   impl = function()
-      local res = db:filter("#5")
-      local Format = require("feed.ui.format")
-      for _, id in ipairs(res) do
-         print(Format.entry(db[id], {
-            { "feed", width = 10 },
-            { "title" },
-         }))
-      end
-      os.exit()
-   end,
-   context = {},
 }
 
 function M._list_commands()
@@ -381,7 +364,6 @@ function M._sync_feedlist()
       feeds[url].title = title or feeds[url].title
       feeds[url].tags = tags or feeds[url].tags
    end
-   db:save_feeds()
 end
 
 return M

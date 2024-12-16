@@ -70,7 +70,7 @@ M.pdofile = function(fp)
    if ok and res then
       return res
    else
-      print("failed to load db file ", fp, res)
+      return {}
    end
 end
 
@@ -156,7 +156,7 @@ M.select = M.cb_to_co(function(cb, items, opts)
 end)
 
 M.unescape = function(str)
-   return string.gsub(str, "(\\[%[%]`*!|#<>_()$.])", function(s)
+   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`!|#<>_()$.])", function(s)
       return s:sub(2)
    end)
 end
@@ -206,13 +206,13 @@ end
 ---@return string[]
 M.feedlist = function(feeds)
    return vim.iter(feeds)
-      :filter(function(_, v)
-         return type(v) == "table"
-      end)
-      :fold({}, function(acc, k)
-         table.insert(acc, k)
-         return acc
-      end)
+       :filter(function(_, v)
+          return type(v) == "table"
+       end)
+       :fold({}, function(acc, k)
+          table.insert(acc, k)
+          return acc
+       end)
 end
 
 ---@param url string
@@ -252,10 +252,10 @@ M.split = function(str, sep, width)
       end
    end
    return vim.iter(ret)
-      :filter(function(v)
-         return v ~= ""
-      end)
-      :totable()
+       :filter(function(v)
+          return v ~= ""
+       end)
+       :totable()
 end
 
 function M.capticalize(str)

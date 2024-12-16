@@ -211,11 +211,10 @@ local function parse(src, url)
    if root:has_error() then
       log.warn(url, "treesitter err")
    end
-   local iterator = vim.iter(root:iter_children())
-   local collected = iterator:fold({}, function(acc, node)
-      acc[#acc + 1] = H[node:type()](node, src)
-      return acc
-   end)
+   local collected = {}
+   for node in root:iter_children() do
+      collected[#collected + 1] = H[node:type()](node, src)
+   end
    if collected[1].encoding then
       collected[2].encoding = collected[1].encoding
    end

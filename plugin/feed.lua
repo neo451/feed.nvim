@@ -9,10 +9,13 @@ end
 vim.g.loaded_feed = 1
 
 local highlights = {
-   FeedTitle = { default = true, link = "@markup.heading" },
+   FeedTitle = { default = true, link = "Title" },
    FeedLink = { default = true, link = "@markup.link.url" },
-   FeedRead = { default = true, link = "NonText" },
+   FeedRead = { default = true, link = "@comment" },
+   FeedTags = { default = true, link = "@comment" },
+   FeedDate = { default = true, link = "function" },
    FeedBold = { default = true, link = "Bold" },
+   FeedLabel = { default = true, link = "Label" },
 }
 
 for k, v in pairs(highlights) do
