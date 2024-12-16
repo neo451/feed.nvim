@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.14.1](https://github.com/neo451/feed.nvim/compare/v1.14.0...v1.14.1) (2024-12-16)
+
+
+### Bug Fixes
+
+* **db:** lastUpdated method with getftime ([6bc1520](https://github.com/neo451/feed.nvim/commit/6bc1520c0cc8d5d2e1aa3f8f68631973357011ec))
+* **feedparser:** entries has url as feed field for syncing ([6bc1520](https://github.com/neo451/feed.nvim/commit/6bc1520c0cc8d5d2e1aa3f8f68631973357011ec))
+* **feedparser:** rss entries' link is resolved properly ([6bc1520](https://github.com/neo451/feed.nvim/commit/6bc1520c0cc8d5d2e1aa3f8f68631973357011ec))
+* **ui:** entry buffer set spell to false ([6bc1520](https://github.com/neo451/feed.nvim/commit/6bc1520c0cc8d5d2e1aa3f8f68631973357011ec))
+* **ui:** use custom highlight groups in index/winbar ([6bc1520](https://github.com/neo451/feed.nvim/commit/6bc1520c0cc8d5d2e1aa3f8f68631973357011ec))
+
 ## [1.14.0](https://github.com/neo451/feed.nvim/compare/v1.13.3...v1.14.0) (2024-12-14)
 
 
