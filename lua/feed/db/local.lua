@@ -311,7 +311,7 @@ function M:filter(str)
          mem[id] = pdofile(object_dir / id)
          local url = self[id].feed
          local feed_name = self.feeds[url] and self.feeds[url].title
-         if q.feed:match_str(url) or q.feed:match_str(feed_name) then
+         if q.feed:match_str(url) or (feed_name and q.feed:match_str(feed_name)) then
             return true
          end
          return false

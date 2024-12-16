@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Sample Feed</title>
+    <link>http://example.org</link>
+    <item>
+      <title>First entry title</title>
+      <link>archives/000001.html</link>
+    </item>
+  </channel>
+</rss>
