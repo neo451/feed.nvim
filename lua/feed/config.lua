@@ -35,7 +35,7 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
-         listchars = "tab:> ,nbsp:+",
+         list = false,
       },
 
       ---@type table<string, any>
@@ -46,7 +46,7 @@ local default = {
          number = false,
          relativenumber = false,
          modifiable = false,
-         listchars = "",
+         list = false,
          spell = false,
       },
    },
@@ -116,6 +116,7 @@ local default = {
    },
 
    tag2icon = {
+      enabled = false,
       pod = "📻",
       unread = "👀",
       read = "✅",

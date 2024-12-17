@@ -20,8 +20,10 @@ local function feed_search()
              define_preview = function(self, entry, _)
                 vim.schedule(function()
                    ui.show_entry { buf = self.state.bufnr, id = entry.value }
-                   vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
-                   vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
+                   local winid = self.state.winid
+                   vim.wo[winid].spell = false
+                   vim.wo[winid].conceallevel = 3
+                   vim.wo[winid].wrap = true
                    vim.treesitter.start(self.state.bufnr, "markdown")
                 end)
              end,
@@ -36,10 +38,10 @@ local function feed_search()
              entry_maker = function(line)
                 return {
                    value = line,
-                   text = format.entry(db[line]),
+                   text = format.entry(line),
                    filename = db.dir .. "/data/" .. line,
                    display = function(entry)
-                      return format.entry(db[entry.value])
+                      return format.entry(entry.value)
                    end,
                    ordinal = line,
                 }
@@ -121,8 +123,11 @@ local feed_grep = function(opts)
          define_preview = function(self, entry, _)
             ui.show_entry { buf = self.state.bufnr, id = entry.filename }
             jump_to_line(self, self.state.bufnr, entry)
-            vim.api.nvim_set_option_value("wrap", true, { win = self.state.winid })
-            vim.api.nvim_set_option_value("conceallevel", 3, { win = self.state.winid })
+            local winid = self.state.winid
+            vim.wo[winid].spell = false
+            vim.wo[winid].conceallevel = 3
+            vim.wo[winid].wrap = true
+            vim.treesitter.start(self.state.bufnr, "markdown")
             vim.treesitter.start(self.state.bufnr, "markdown")
          end,
       },

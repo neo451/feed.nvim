@@ -7,7 +7,8 @@ local ut = require("feed.utils")
 ---@param resource string
 ---@param cb fun(lines: string[])
 ---@param is_src? boolean
-local function convert(resource, cb, is_src)
+---@param fp? string
+local function convert(resource, cb, is_src, fp)
    if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
       cb({ "you need pandoc to view feeds https://pandoc.org" })
    end
@@ -21,7 +22,7 @@ local function convert(resource, cb, is_src)
       end)
    end
 
-   local cmd = {
+   local cmd = vim.tbl_flatten {
       "pandoc",
       ut.looks_like_url(resource) and "-r" or "-f",
       "html",
@@ -29,7 +30,9 @@ local function convert(resource, cb, is_src)
       vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1],
       "--wrap=none",
       (not is_src) and resource,
+      fp and { '-o', fp } or nil,
    }
+
    vim.system(cmd, { text = true, stdin = resource }, process)
 end
 

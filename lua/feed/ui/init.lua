@@ -27,16 +27,16 @@ local query = Config.search.default_query
 local M = {}
 
 local main_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return not v.right
-    end)
-    :totable()
+   :filter(function(v)
+      return not v.right
+   end)
+   :totable()
 
 local extra_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return v.right
-    end)
-    :totable()
+   :filter(function(v)
+      return v.right
+   end)
+   :totable()
 
 local providers = {}
 
@@ -92,7 +92,6 @@ local function set_opts(opts, keys)
 end
 
 local function show_index()
-   og_colorscheme = vim.g.colors_name
    og_cmdheight = vim.o.cmdheight
    local buf = index_buf or api.nvim_create_buf(false, true)
    index_buf = buf
@@ -101,7 +100,7 @@ local function show_index()
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(index_buf, 0, -1, false, {}) -- clear lines
    for i, id in ipairs(on_display) do
-      Format.gen_nui_line(DB[id], main_comp):render(buf, -1, i)
+      Format.gen_nui_line(id, main_comp):render(buf, -1, i)
    end
    api.nvim_buf_set_lines(index_buf, #on_display, #on_display + 1, false, { "" })
    api.nvim_set_current_buf(buf)
@@ -149,7 +148,7 @@ local function mark_read(id)
    for _, v in ipairs(grey_comp) do
       v.color = "FeedRead"
    end
-   local NLine = Format.gen_nui_line(DB[id], grey_comp)
+   local NLine = Format.gen_nui_line(id, grey_comp)
    vim.bo[index_buf].modifiable = true
    NLine:render(index_buf, -1, current_index)
    vim.bo[index_buf].modifiable = false
@@ -208,11 +207,14 @@ end
 ---@param ctx? { row: integer, id: string, buf: integer, link: string }
 local function show_entry(ctx)
    ctx = ctx or {}
-   if ctx.buf and not api.nvim_buf_is_valid(ctx.buf) then
-      return
+   local buf
+   if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
+      buf = ctx.buf
+   elseif M.entry_buf and api.nvim_buf_is_valid(M.entry_buf) then
+      buf = M.entry_buf
+   else
+      buf = api.nvim_create_buf(false, true)
    end
-   local buf = ctx.buf or M.entry_buf or api.nvim_create_buf(false, true)
-   og_colorscheme = vim.g.colors_name
    M.entry_buf = buf
    local entry, id = get_entry(ctx)
    if not entry then
@@ -225,7 +227,7 @@ local function show_entry(ctx)
    local lines = {}
 
    for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      lines[i] = NuiLine({ NuiText(ut.capticalize(v) .. ": ", "FeedBold"), NuiText(Format[v](entry)) })
+      lines[i] = NuiLine({ NuiText(ut.capticalize(v) .. ": ", "FeedBold"), NuiText(Format[v](id)) })
    end
    table.insert(lines, "")
 
@@ -265,6 +267,7 @@ end
 
 --- TODO: register some state(tag/untag at leaset once) to tell refresh is needed, and then reset them, else do nothing
 --- TODO: if not new query then just remove the greyed out lines
+
 local function refresh(opts)
    opts = opts or {}
    opts.show = vim.F.if_nil(opts.show, true)
@@ -278,11 +281,11 @@ end
 
 local function quit()
    vim.o.cmdheight = og_cmdheight
-   pcall(vim.cmd.colorscheme, og_colorscheme)
    if ut.in_index() then
       api.nvim_buf_delete(index_buf, { force = true })
       index_buf = nil
       api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
+      pcall(vim.cmd.colorscheme, og_colorscheme)
    elseif ut.in_entry() then
       api.nvim_buf_delete(0, { force = true })
       M.entry_buf = nil
@@ -290,6 +293,8 @@ local function quit()
          api.nvim_set_current_buf(index_buf)
          api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
          show_winbar()
+      else
+         pcall(vim.cmd.colorscheme, og_colorscheme)
       end
       api.nvim_exec_autocmds("User", { pattern = "QuitEntryPost" })
    end
