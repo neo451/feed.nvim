@@ -5,7 +5,6 @@ local db = require("feed.db")
 local date = require("feed.parser.date")
 local eq = MiniTest.expect.equality
 local h = require("tests.helpers")
-local readfile = h.readfile
 local sha = vim.fn.sha256
 
 local T = MiniTest.new_set()
@@ -21,6 +20,12 @@ T["new"] = MiniTest.new_set({
    },
 })
 T["iter"] = MiniTest.new_set({
+   hooks = {
+      post_case = new_db,
+   },
+})
+
+T["tag"] = MiniTest.new_set({
    hooks = {
       post_case = new_db,
    },
@@ -50,11 +55,10 @@ T["new"]["adds entries to db and in memory, with id as key/filename, and content
       time = 1,
    }
    local key = sha(entry.link)
-   db:add(entry, "zig is a programming language")
+   db[key] = entry
    eq(entry.time, db[key].time)
    eq(entry.link, db[key].link)
    eq(entry.title, db[key].title)
-   eq("zig is a programming language", readfile("/data/" .. key, db.dir))
 end
 
 T["new"]["rm all refs in the db"] = function()
@@ -63,13 +67,14 @@ T["new"]["rm all refs in the db"] = function()
       title = "zig",
       time = 1,
    }
-   local key = sha(entry.link)
-   db:add(entry, "zig is a programming language", { "star", "read" })
-   db:rm(key)
-   eq(nil, db[key])
-   eq(nil, db.tags["star"][key])
-   eq(nil, db.tags["read"][key])
-   eq(0, vim.fn.filereadable(db.dir .. "/data/" .. key))
+   local id = sha(entry.link)
+   db[id] = entry
+   db:tag(id, { "star", "read" })
+   db:rm(id)
+   eq(nil, db[id])
+   eq(nil, db.tags["star"][id])
+   eq(nil, db.tags["read"][id])
+   eq(0, vim.fn.filereadable(db.dir .. "/data/" .. id))
 end
 
 T["iter"]["iterates by time"] = function()
@@ -84,8 +89,8 @@ T["iter"]["iterates by time"] = function()
       link = "link2",
       time = 30,
    }
-   db:add(entry)
-   db:add(entry2)
+   db[sha 'link1'] = entry
+   db[sha 'link2'] = entry2
    local res = {}
    for _, v in db:iter(true) do
       table.insert(res, v.time)
@@ -93,7 +98,7 @@ T["iter"]["iterates by time"] = function()
    assert(res[1] > res[2])
 end
 
-T["new"]["tags/untags entry"] = function()
+T["tag"]["tag/untag"] = function()
    local entry = {
       link = "https://example.com",
       time = 1,
@@ -102,21 +107,39 @@ T["new"]["tags/untags entry"] = function()
    }
    local id = sha(entry.link)
 
-   db:add(entry)
+   db[id] = entry
    db:tag(id, "star")
    eq(db.tags.star[id], true)
-   eq(db[id].tags.star, true)
    db:untag(id, "star")
    eq(nil, db.tags.star[id])
-   eq(nil, db[id].tags.star)
 end
 
+
+T["tag"]["tag comma seperated string or a list of tags"] = function()
+   local entry = { time = 1, title = "zig" }
+   local id = sha(entry.link)
+   db[id] = entry
+   db:tag(id, "star, read")
+   eq(db.tags.star[id], true)
+   eq(db.tags.read[id], true)
+   db:untag(id, "star, read")
+   eq(nil, db.tags.star[id])
+   eq(nil, db.tags.read[id])
+   db:tag(id, { "star", "read" })
+   eq(db.tags.star[id], true)
+   eq(db.tags.read[id], true)
+   db:untag(id, { "star", "read" })
+   eq(nil, db.tags.star[id])
+   eq(nil, db.tags.read[id])
+end
 local function simulate_db(entries)
    for i, v in ipairs(entries) do
       v.content = ""
       v.link = tostring(i)
       v.time = v.time or i
-      db:add(v, "", v.tags)
+      local id = sha(v.link)
+      db[id] = v
+      db:tag(id, v.tags)
    end
 end
 

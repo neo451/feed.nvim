@@ -74,9 +74,12 @@ function M.update_feed(url, opts, cb)
                for _, entry in ipairs(d.entries) do
                   local content = entry.content
                   entry.content = nil
-                  Markdown.convert(content, vim.schedule_wrap(function(lines)
-                     db:add(entry, table.concat(lines, "\n"), tags) -- TODO: name
-                  end), true)
+                  local id = vim.fn.sha256(entry.link)
+                  Markdown.convert(content, function() end, true, tostring(db.dir / "data" / id))
+                  db[id] = entry
+                  if tags then
+                     db:tag(id, tags)
+                  end
                end
             end
             feeds[url] = feeds[url] or {}

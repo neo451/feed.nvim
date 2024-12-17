@@ -32,10 +32,10 @@ local function feed_search()
    end
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
-         :map(function(id)
-            return format.entry(db[id])
-         end)
-         :totable()
+          :map(function(id)
+             return format.entry(id)
+          end)
+          :totable()
       vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
    end
 

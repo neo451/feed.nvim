@@ -27,6 +27,7 @@ function MyPreviewer:gen_winopts()
       wrap = true,
       number = false,
       conceallevel = 3,
+      spell = false,
    }
    return vim.tbl_extend("force", self.winopts, new_winopts)
 end
@@ -41,7 +42,7 @@ local function feed_search()
       local on_display = ui.refresh({ query = str, show = false })
       local ret = {}
       for i, id in ipairs(on_display) do
-         ret[i] = format.entry(db[id]) .. (" "):rep(100) .. id
+         ret[i] = format.entry(id) .. (" "):rep(100) .. id
       end
       return ret
    end, {
@@ -50,7 +51,7 @@ local function feed_search()
       exec_empty_query = true,
       previewer = MyPreviewer,
       actions = {
-         ["ctrl-y"] = function(selected)
+         ["enter"] = function(selected)
             local id = selected[1]:sub(-64, -1)
             ui.show_entry({ id = id })
          end,

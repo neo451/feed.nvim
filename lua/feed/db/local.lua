@@ -14,8 +14,8 @@ local ut = require "feed.utils"
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field save_entry fun(db: feed.db, id: string): boolean
 ---@field save_feeds fun(db: feed.db): boolean
----@field tag fun(db: feed.db, id: string, tag: string)
----@field untag fun(db: feed.db, id: string, tag: string)
+---@field tag fun(db: feed.db, id: string, tag: string | string[])
+---@field untag fun(db: feed.db, id: string, tag: string | string[])
 ---@field blowup fun(db: feed.db)
 
 local M = {}
@@ -144,54 +144,74 @@ function M:lastUpdated()
    return os.date("%c", vim.fn.getftime(tostring(feeds_fp)))
 end
 
+---@param id string
 ---@param entry feed.entry
----@param content string
----@param tags string[]?
-function M:add(entry, content, tags)
-   local id = vim.fn.sha256(entry.link)
+function M:__newindex(id, entry)
    if not id or if_path(id) then
       return
    end
    table.insert(self.index, { id, entry.time })
    append_time_id(entry.time, id)
-   local fp = tostring(data_dir / id)
-   save_file(fp, content)
    save_obj(object_dir / id, entry)
-   if tags then
-      for _, tag in ipairs(tags) do
-         self:tag(id, tag)
+end
+
+local function split_comma(str)
+   return vim.iter(vim.split(str, ",")):fold({}, function(acc, v)
+      if vim.trim(v) ~= "" then
+         acc[#acc + 1] = vim.trim(v)
+      end
+      return acc
+   end)
+end
+
+---@param id string | string[]
+---@param tag string
+function M:tag(id, tag)
+   local function tag_one(t)
+      if not self.tags[t] then
+         self.tags[t] = {}
+      end
+      self.tags[t][id] = true
+      save_obj(tags_fp, self.tags)
+   end
+   if type(tag) == "string" then
+      if tag:find(",") then
+         for _, v in ipairs(split_comma(tag)) do
+            tag_one(v)
+         end
+      else
+         tag_one(tag)
+      end
+   elseif type(tag) == "table" then
+      for _, v in ipairs(tag) do
+         tag_one(v)
       end
    end
 end
 
----@param id string
----@param tag string
-function M:tag(id, tag)
-   if not self[id].tags then
-      self[id].tags = {}
-   end
-   if not self.tags[tag] then
-      self.tags[tag] = {}
-   end
-   self[id].tags[tag] = true
-   self.tags[tag][id] = true
-   save_entry(id, self[id])
-   save_obj(tags_fp, self.tags)
-end
-
----@param id string
+---@param id string | string[]
 ---@param tag string
 function M:untag(id, tag)
-   if not self[id].tags then
-      self[id].tags = {}
+   local function tag_one(t)
+      if not self.tags[t] then
+         self.tags[t] = {}
+      end
+      self.tags[t][id] = nil
+      save_obj(tags_fp, self.tags)
    end
-   if not self.tags[tag] then
-      self.tags[tag] = {}
+   if type(tag) == "string" then
+      if tag:find(",") then
+         for _, v in ipairs(split_comma(tag)) do
+            tag_one(v)
+         end
+      else
+         tag_one(tag)
+      end
+   elseif type(tag) == "table" then
+      for _, v in ipairs(tag) do
+         tag_one(v)
+      end
    end
-   self[id].tags[tag] = nil
-   self.tags[tag][id] = nil
-   save_entry(id, self[id])
-   save_obj(tags_fp, self.tags)
 end
 
 function M:sort()
@@ -206,13 +226,15 @@ function M:rm(id)
          table.remove(self.index, i)
       end
    end
-   for tag in pairs(self[id].tags) do
-      self:untag(id, tag)
+   for tag, t in pairs(self.tags) do
+      if t[id] then
+         self:untag(id, tag)
+      end
    end
-   remove_file(data_dir / id)
-   remove_file(object_dir / id)
-   self[id] = nil
-   mem[id] = nil
+   pcall(remove_file, data_dir / id)
+   pcall(remove_file, object_dir / id)
+   rawset(self, id, nil)
+   rawset(mem, id, nil)
 end
 
 ---@param sort any
