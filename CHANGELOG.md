@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.2](https://github.com/neo451/feed.nvim/compare/v1.14.1...v1.14.2) (2024-12-17)
+
+
+### Bug Fixes
+
+* **config:** option to enable tag2icon ([106acd2](https://github.com/neo451/feed.nvim/commit/106acd2f3f8357841aae55598c41e287a3459a15))
+* **feedparser:** output fulltext when rsshub ([8112665](https://github.com/neo451/feed.nvim/commit/81126652cc6f9b1b929fb061c923258961e78def))
+* **fetch:** save entry content with pandoc for stability ([7857bfb](https://github.com/neo451/feed.nvim/commit/7857bfbec7bd4a0d64d26fee82fef2fa958e10a8))
+* **ui.format:** use id to get format ([106acd2](https://github.com/neo451/feed.nvim/commit/106acd2f3f8357841aae55598c41e287a3459a15))
+* **ui:** correct buffer and colorscheme management ([106acd2](https://github.com/neo451/feed.nvim/commit/106acd2f3f8357841aae55598c41e287a3459a15))
+* **ui:** disable spell and list in entry ([106acd2](https://github.com/neo451/feed.nvim/commit/106acd2f3f8357841aae55598c41e287a3459a15))
+
 ## [1.14.1](https://github.com/neo451/feed.nvim/compare/v1.14.0...v1.14.1) (2024-12-16)
 
 
