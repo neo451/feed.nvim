@@ -71,7 +71,7 @@ function M.get(url, opts, cb)
       dump_fp,
       "--connect-timeout",
       opts.timeout or 10,
-      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub_instance) .. "?format=json" or url,
+      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub_instance) .. "?format=json?mode=fulltext" or url,
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
