@@ -75,6 +75,12 @@ M.pdofile = function(fp)
    end
 end
 
+---@param fp string
+---@param object table
+M.save_obj = function(fp, object)
+   M.save_file(fp, "return " .. vim.inspect(object))
+end
+
 ---@param path string
 ---@param content string
 M.save_file = function(path, content)
@@ -208,11 +214,16 @@ M.choose_backend = function(choices)
 end
 
 ---@param feeds feed.opml
+---@param all boolean
 ---@return string[]
-M.feedlist = function(feeds)
+M.feedlist = function(feeds, all)
    return vim.iter(feeds)
        :filter(function(_, v)
-          return type(v) == "table"
+          if all then
+             return true
+          else
+             return type(v) == "table"
+          end
        end)
        :fold({}, function(acc, k)
           table.insert(acc, k)

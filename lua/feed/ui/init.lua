@@ -9,6 +9,12 @@ local NuiTree = require("nui.tree")
 local Markdown = require("feed.ui.markdown")
 local Nui = require("feed.ui.nui")
 local Bar = require("feed.ui.bar")
+local Curl = require("feed.curl")
+local Opml = require("feed.parser.opml")
+local fetch = require "feed.fetch"
+local read_file = ut.read_file
+local save_file = ut.save_file
+
 
 local api = vim.api
 local feeds = DB.feeds
@@ -274,7 +280,9 @@ local function refresh(opts)
    query = opts.query or query
    on_display = DB:filter(query)
    if opts.show then
+      local pos = ut.in_index() and api.nvim_win_get_cursor(0) or { 1, 0 }
       show_index()
+      api.nvim_win_set_cursor(0, pos)
    end
    return on_display
 end
@@ -474,5 +482,121 @@ M.quit = quit
 M.search = search
 M.grep = grep
 M.refresh = refresh
+
+M.load_opml = function(path)
+   if not path then
+      return
+   end
+   local str
+   if ut.looks_like_url(path) then
+      str = Curl.get(path, {}).stdout
+   else
+      path = vim.fn.expand(path)
+      str = read_file(path)
+   end
+   if str then
+      local outlines = Opml.import(str)
+      if outlines then
+         for k, v in pairs(outlines) do
+            feeds[k] = v
+         end
+      else
+         ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
+      end
+      DB:save_feeds()
+   else
+      ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
+   end
+end
+
+M.export_opml = function(fp)
+   if not fp then
+      return
+   end
+   fp = vim.fn.expand(fp)
+   if not fp then
+      return
+   end
+   local str = Opml.export(feeds)
+   local ok = save_file(fp, str)
+   if not ok then
+      ut.notify("commands", { msg = "failed to open your expert path", level = "INFO" })
+   end
+end
+
+M.dot = function() end
+local tag_hist = {}
+
+
+M.undo = function()
+   local act = table.remove(tag_hist, #tag_hist)
+   if not act then
+      return
+   end
+   if act.type == "tag" then
+      M.untag(act.tag, act.id, false)
+   elseif act.type == "untag" then
+      M.tagl(act.tag, act.id, false)
+   end
+end
+
+M.tag = function(t, id)
+   id = id or select(2, get_entry())
+   -- save_hist = vim.F.if_nil(save_hist, true)
+   if not t or not id then
+      return
+   end
+   DB:tag(id, t)
+   if ut.in_index() then
+      M.refresh()
+   end
+   M.dot = function()
+      M.tag(t)
+   end
+   -- if save_hist then
+   table.insert(tag_hist, { type = "tag", tag = t, id = id })
+   -- end
+end
+
+M.untag = function(t, id, save_hist)
+   id = id or select(2, get_entry())
+   save_hist = vim.F.if_nil(save_hist, true)
+   if not t or not id then
+      return
+   end
+   DB:untag(id, t)
+   if ut.in_index() then
+      M.refresh()
+   end
+   M.dot = function()
+      M.untag(t)
+   end
+   -- if save_hist then
+   table.insert(tag_hist, { type = "untag", tag = t, id = id })
+   -- end
+end
+
+M.update_feed = function(url)
+   if not url or not ut.looks_like_url(url) then
+      return
+   end
+   fetch.update_feed(url, { force = true }, function(ok)
+      ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or "failed"), level = "INFO" })
+   end)
+end
+
+
+M.prune_feed = function(url)
+   if not url or not ut.looks_like_url(url) then
+      return
+   end
+   for id, entry in DB:iter() do
+      if entry.feed == url then
+         DB:rm(id)
+      end
+   end
+   DB.feeds[url] = false
+   DB:save_feeds()
+end
 
 return M

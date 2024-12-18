@@ -28,13 +28,12 @@ local data_dir = db_dir / "data"
 local object_dir = db_dir / "object"
 local feeds_fp = db_dir / "feeds.lua"
 local tags_fp = db_dir / "tags.lua"
+local list_fp = db_dir / "list.lua"
 local index_fp = db_dir / "index"
 
 local pdofile = ut.pdofile
 local save_file = ut.save_file
-local save_obj = function(fp, object)
-   save_file(fp, "return " .. vim.inspect(object, { process = false }))
-end
+local save_obj = ut.save_obj
 local remove_file = function(fp)
    if vim.fs.rm then
       vim.fs.rm(tostring(fp), { recursive = true })
@@ -95,6 +94,7 @@ function M.new()
    ensure_path(object_dir, "dir")
    ensure_path(feeds_fp, "obj")
    ensure_path(tags_fp, "obj")
+   ensure_path(list_fp, "obj")
    ensure_path(index_fp, "file")
 
    return setmetatable({

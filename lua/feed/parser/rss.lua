@@ -35,14 +35,14 @@ end
 ---@param base string
 ---@return string?
 local function handle_link(node, base) -- TODO: base and rebase modified for rss?
-   if not node or not node.link then
+   if not (node or node.link or node.enclosure) then
       return base
    end
    if node.enclosure then
-      return node.enclosure.url -- TODO:
+      return node.enclosure.url
    end
    if not vim.islist(node.link) then
-      return ut.url_resolve(base, node.link.href)
+      return ut.url_resolve(base, sensible(node.link, "href"))
    end
    if type(node.link[1]) == "string" then
       return ut.url_resolve(base, node.link[1])
