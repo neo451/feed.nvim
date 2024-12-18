@@ -28,25 +28,18 @@ local data_dir = db_dir / "data"
 local object_dir = db_dir / "object"
 local feeds_fp = db_dir / "feeds.lua"
 local tags_fp = db_dir / "tags.lua"
+local list_fp = db_dir / "list.lua"
 local index_fp = db_dir / "index"
 
 local pdofile = ut.pdofile
 local save_file = ut.save_file
-local save_obj = function(fp, object)
-   save_file(fp, "return " .. vim.inspect(object, { process = false }))
-end
+local save_obj = ut.save_obj
 local remove_file = function(fp)
    if vim.fs.rm then
       vim.fs.rm(tostring(fp), { recursive = true })
    else
       vim.fn.delete(tostring(fp), "rf")
    end
-end
-
----@param id string
----@param obj? table
-local save_entry = function(id, obj)
-   save_obj(object_dir / id, obj)
 end
 
 local permisson = Path.permission "rwxr-xr-x"
@@ -84,6 +77,14 @@ local function parse_index()
    return res
 end
 
+function M:save_index()
+   local buf = {}
+   for i, v in ipairs(self.index) do
+      buf[i] = tostring(v[2]) .. " " .. v[1]
+   end
+   save_file(index_fp, table.concat(buf, "\n"))
+end
+
 local mem = {}
 
 ---@return feed.db
@@ -93,6 +94,7 @@ function M.new()
    ensure_path(object_dir, "dir")
    ensure_path(feeds_fp, "obj")
    ensure_path(tags_fp, "obj")
+   ensure_path(list_fp, "obj")
    ensure_path(index_fp, "file")
 
    return setmetatable({
@@ -231,6 +233,8 @@ function M:rm(id)
          self:untag(id, tag)
       end
    end
+   save_obj(tags_fp, self.tags) -- TODO: method save_tags
+   self:save_index()
    pcall(remove_file, data_dir / id)
    pcall(remove_file, object_dir / id)
    rawset(self, id, nil)

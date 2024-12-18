@@ -80,49 +80,56 @@ local function telescope_select(items, opts, on_choice)
    local sorters = require("telescope.sorters")
 
    pickers
-      .new(require("telescope.themes").get_dropdown(), {
-         prompt_title = opts.prompt,
-         finder = finders.new_table({
-            results = items,
-            entry_maker = function(entry)
-               return {
-                  value = entry,
-                  display = opts.format_item(entry),
-                  ordinal = opts.format_item(entry),
-               }
-            end,
-         }),
-         attach_mappings = function(prompt_bufnr)
-            actions.select_default:replace(function()
-               actions.close(prompt_bufnr)
-               local selection = action_state.get_selected_entry()
-               on_choice(selection.value)
-            end)
-            return true
-         end,
-         sorter = sorters.get_generic_fuzzy_sorter(opts),
-      })
-      :find()
+       .new(require("telescope.themes").get_dropdown(), {
+          prompt_title = opts.prompt,
+          finder = finders.new_table({
+             results = items,
+             entry_maker = function(entry)
+                return {
+                   value = entry,
+                   display = opts.format_item(entry),
+                   ordinal = opts.format_item(entry),
+                }
+             end,
+          }),
+          attach_mappings = function(prompt_bufnr)
+             actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local selection = action_state.get_selected_entry()
+                on_choice(selection.value)
+             end)
+             return true
+          end,
+          sorter = sorters.get_generic_fuzzy_sorter(opts),
+       })
+       :find()
 end
 
-if pcall(require, "fzf-lua") then
-   require("fzf-lua").register_ui_select(function(_, items)
-      local min_h, max_h = 0.15, 0.70
-      local h = (#items + 4) / vim.o.lines
-      if h < min_h then
-         h = min_h
-      elseif h > max_h then
-         h = max_h
+M.select = function(items, opts, on_choice)
+   if pcall(require, "fzf-lua") then
+      require("fzf-lua").register_ui_select(function(_, items)
+         local min_h, max_h = 0.15, 0.70
+         local h = (#items + 4) / vim.o.lines
+         if h < min_h then
+            h = min_h
+         elseif h > max_h then
+            h = max_h
+         end
+         return { winopts = { height = h, width = 0.60, row = 0.40 } }
+      end)
+      require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
+   else
+      opts.prompt = vim.trim(opts.prompt:gsub(">", ""))
+      if MiniPick then
+         MiniPick.ui_select(items, opts, on_choice)
+      elseif pcall(require, "telescope") then
+         telescope_select(items, opts, on_choice)
+      elseif pcall(require, "dressing") then
+         vim.ui.select(items, opts, on_choice)
+      else
+         nui_select(items, opts, on_choice)
       end
-      return { winopts = { height = h, width = 0.60, row = 0.40 } }
-   end)
-   M.select = require("fzf-lua.providers.ui_select").ui_select
-elseif pcall(require, "telescope") then
-   M.select = telescope_select
-elseif pcall(require, "dressing") then
-   M.select = vim.ui.select
-else
-   M.select = nui_select
+   end
 end
 
 ---@param percentage string
@@ -151,5 +158,7 @@ function M.split(percentage, lines)
    api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
    return split
 end
+
+---TODO: search and grep
 
 return M

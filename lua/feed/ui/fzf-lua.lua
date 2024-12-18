@@ -1,6 +1,5 @@
 local fzf = require("fzf-lua")
 local ui = require("feed.ui")
-local db = require("feed.db")
 local format = require("feed.ui.format")
 local builtin = require("fzf-lua.previewer.builtin")
 
@@ -34,8 +33,6 @@ end
 
 -- TODO: overide the default .. s
 -- TODO: grep
-
--- FIX: open entry not working
 
 local function feed_search()
    fzf.fzf_live(function(str)

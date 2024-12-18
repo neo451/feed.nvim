@@ -70,8 +70,15 @@ M.pdofile = function(fp)
    if ok and res then
       return res
    else
+      vim.notify(fp .. " not loaded", "ERROR")
       return {}
    end
+end
+
+---@param fp string
+---@param object table
+M.save_obj = function(fp, object)
+   M.save_file(fp, "return " .. vim.inspect(object))
 end
 
 ---@param path string
@@ -89,6 +96,9 @@ M.save_file = function(path, content)
    if f then
       f:write(content)
       f:close()
+      return true
+   else
+      return false
    end
 end
 
@@ -190,7 +200,8 @@ end
 M.choose_backend = function(choices)
    local alias = {
       ["mini.pick"] = "pick",
-      ["mini.notify"] = "notify",
+      ["mini.notify"] = "mini",
+      ["nvim-notify"] = "notify",
    }
    if type(choices) == "string" then
       return alias[choices] or choices
@@ -203,11 +214,16 @@ M.choose_backend = function(choices)
 end
 
 ---@param feeds feed.opml
+---@param all boolean
 ---@return string[]
-M.feedlist = function(feeds)
+M.feedlist = function(feeds, all)
    return vim.iter(feeds)
        :filter(function(_, v)
-          return type(v) == "table"
+          if all then
+             return true
+          else
+             return type(v) == "table"
+          end
        end)
        :fold({}, function(acc, k)
           table.insert(acc, k)

@@ -12,6 +12,9 @@ local tag2icon = Config.tag2icon
 ---@param str string
 ---@return string
 local function cleanup(str)
+   if not str then
+      return ""
+   end
    return vim.trim(str:gsub("\n", ""))
 end
 

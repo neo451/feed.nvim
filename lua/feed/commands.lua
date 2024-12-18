@@ -2,66 +2,35 @@ local Config = require("feed.config")
 local ut = require("feed.utils")
 local db = require("feed.db")
 local ui = require("feed.ui")
-local opml = require("feed.parser.opml")
 local feeds = db.feeds
 local nui = require("feed.ui.nui")
-local curl = require("feed.curl")
-local fetch = require("feed.fetch")
 local log = require("feed.lib.log")
 
-local read_file = ut.read_file
-local save_file = ut.save_file
-local wrap = ut.wrap
-local input = ut.input
 local feedlist = ut.feedlist
 
 local M = {}
 
 M.load_opml = {
    doc = "takes filepath of your opml",
-   impl = wrap(function(fp)
-      fp = fp or input({ prompt = "path or url to your opml: ", completion = "file_in_path" })
-      if not fp then
-         return
-      end
-      local str
-      if ut.looks_like_url(fp) then
-         str = curl.get_co(fp, {}).stdout
+   impl = function(path)
+      if path then
+         ui.load_opml(path)
       else
-         fp = vim.fn.expand(fp)
-         str = read_file(fp)
+         vim.ui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
       end
-      if str then
-         local outlines = opml.import(str)
-         if outlines then
-            for k, v in pairs(outlines) do
-               feeds[k] = v
-            end
-         else
-            ut.notify("opml", { msg = "failed to parse your opml file", level = "ERROR" })
-         end
-         db:save_feeds()
-      else
-         ut.notify("opml", { msg = "failed to open your opml file", level = "ERROR" })
-      end
-   end),
+   end,
    context = { all = true },
 }
 
 M.export_opml = {
    doc = "exports opml to a filepath",
-   impl = wrap(function(fp)
-      fp = fp or input({ prompt = "export your opml to: ", completion = "file_in_path" })
-      fp = vim.fn.expand(fp)
-      if not fp then
-         return
+   impl = function(fp)
+      if fp then
+         ui.export_opml(fp)
+      else
+         vim.ui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
       end
-      local str = opml.export(feeds)
-      local ok = save_file(fp, str)
-      if not ok then
-         ut.notify("commands", { msg = "failed to open your expert path", level = "INFO" })
-      end
-   end),
+   end,
    context = { all = true },
 }
 
@@ -71,15 +40,10 @@ M.search = {
    context = { all = true },
 }
 
--- TODO: Native one with nui
+
 M.grep = {
-   doc = "full-text search through the entry contents (experimental)",
-   impl = function()
-      local ok = pcall(require("feed.ui.telescope").feed_grep)
-      if not ok then
-         ut.notify("commands", { msg = "need telescope.nvim and rg to grep feeds", level = "INFO" })
-      end
-   end,
+   doc = "full-text search through the entry contents",
+   impl = ui.grep,
    context = { all = true },
 }
 
@@ -163,79 +127,42 @@ M.yank_url = {
    context = { index = true, entry = true },
 }
 
-local dot = function() end
-local tag_hist = {}
-
 M._undo = {
-   impl = function()
-      local act = table.remove(tag_hist, #tag_hist)
-      if not act then
-         return
-      end
-      if act.type == "tag" then
-         M.untag.impl(act.tag, act.id, false)
-      elseif act.type == "untag" then
-         M.tag.impl(act.tag, act.id, false)
-      end
-   end,
+   impl = ui.undo,
    context = { index = true },
 }
 
 M._dot = {
    impl = function()
-      dot()
+      ui.dot()
    end,
    context = { index = true },
 }
 
+
 M.tag = {
    doc = "tag an entry",
-   impl = wrap(function(tag, id, save_hist)
-      if not id then
-         _, id = ui.get_entry()
+   impl = function(t)
+      if t then
+         ui.tag(t)
+      else
+         vim.ui.input({ prompt = "Tag: " }, ui.tag)
       end
-      tag = tag or input({ prompt = "Tag: " })
-      save_hist = vim.F.if_nil(save_hist, true)
-      if not tag or not id then
-         return
-      end
-      db:tag(id, tag)
-      if ut.in_index() then
-         ui.refresh()
-      end
-      dot = function()
-         M.tag.impl(tag)
-      end
-      if save_hist then
-         table.insert(tag_hist, { type = "tag", tag = tag, id = id })
-      end
-   end),
+   end,
    context = { index = true, entry = true },
 }
+
 
 --- TODO: make tag untag visual line mode
 M.untag = {
    doc = "untag an entry",
-   impl = wrap(function(tag, id, save_hist)
-      if not id then
-         _, id, _ = ui.get_entry()
+   impl = function(t)
+      if t then
+         ui.untag(t)
+      else
+         vim.ui.input({ prompt = "Untag: " }, ui.untag)
       end
-      save_hist = vim.F.if_nil(save_hist, true)
-      tag = tag or input({ prompt = "Untag: " })
-      if not tag or not id then
-         return
-      end
-      db:untag(id, tag)
-      if ut.in_index() then
-         ui.refresh()
-      end
-      dot = function()
-         M.untag.impl(tag)
-      end
-      if save_hist then
-         table.insert(tag_hist, { type = "untag", tag = tag, id = id })
-      end
-   end),
+   end,
    context = { index = true, entry = true },
 }
 
@@ -255,7 +182,7 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       local Progress = require("feed.ui.progress")
-      local prog = Progress.new(#ut.feedlist(feeds))
+      local prog = Progress.new(#ut.feedlist(feeds, false))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
          stdout = function(err, data)
@@ -277,33 +204,44 @@ M.update_feed = {
    doc = "update a feed to db",
    impl = function(url)
       if url then
-         fetch.update_feed(url, { force = true }, function(ok)
-            ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or "failed"), level = "INFO" })
-         end)
+         ui.update_feed(url)
       else
-         nui.select(feedlist(feeds), {
-            prompt = "Feed>",
+         nui.select(feedlist(feeds, true), {
+            prompt = "Feed to update>",
             format_item = function(item)
-               return feeds[item].title or item
+               local feed = feeds[item]
+               return type(feed) == "table" and feeds[item].title or item
             end,
-         }, function(choice)
-            if not choice then
-               return
-            end
-            fetch.update_feed(choice, { force = true }, function(ok)
-               ut.notify(
-                  "fetch",
-                  { msg = ut.url2name(choice, feeds) .. (ok and " success" or "failed"), level = "INFO" }
-               )
-            end)
-         end)
+         }, ui.update_feed)
       end
    end,
 
    complete = function()
-      return feedlist(feeds)
+      return feedlist(feeds, true)
    end,
    context = { all = true },
+}
+
+M.prune_feed = {
+   doc = "remove a feed and its entries",
+   -- TODO: remove db links/refs
+   impl = function(url)
+      if url then
+         ui.prune_feed(url)
+      else
+         nui.select(feedlist(feeds, true), {
+            prompt = "Feed to prune>",
+            format_item = function(item)
+               local feed = feeds[item]
+               return type(feed) == "table" and feeds[item].title or item
+            end,
+         }, ui.prune_feed)
+      end
+   end,
+   complete = function()
+      return feedlist(feeds, true)
+   end,
+   context = { all = true }
 }
 
 function M._list_commands()
@@ -340,7 +278,7 @@ end
 function M._menu()
    local items = M._list_commands()
    nui.select(items, {
-      prompt = "Feed> ",
+      prompt = "Feed commands> ",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,
@@ -358,11 +296,12 @@ function M._sync_feedlist()
       local url = type(v) == "table" and v[1] or v
       local title = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
-      if not feeds[url] then
+      if feeds[url] == nil then
          feeds[url] = {}
+      elseif type(feeds[url]) == "table" then
+         feeds[url].title = title or feeds[url].title
+         feeds[url].tags = tags or feeds[url].tags
       end
-      feeds[url].title = title or feeds[url].title
-      feeds[url].tags = tags or feeds[url].tags
    end
 end
 
