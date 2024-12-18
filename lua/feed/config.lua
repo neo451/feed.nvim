@@ -6,7 +6,7 @@
 ---@field curl_params? string[]
 ---@field rsshub_instance? string move all options here as a enum??
 ---@field layout? table
----@field progress? { backend: "mini.notify" | "snacks" | "notify" | "fidget" | "native" }
+---@field progress? { backend: "mini.notify" | "snacks" | "nvim-notify" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
 ---@field data? { backend: "local" | "ttrss" }
 ---@field options? table
@@ -36,6 +36,7 @@ local default = {
          relativenumber = false,
          modifiable = false,
          list = false,
+         statuscolumn = " ",
       },
 
       ---@type table<string, any>
@@ -48,6 +49,7 @@ local default = {
          modifiable = false,
          list = false,
          spell = false,
+         statuscolumn = " ",
       },
    },
    ---@type table[]
@@ -76,11 +78,13 @@ local default = {
       {
          "last_updated",
          right = true,
+         width = 0,
          color = "FeedDate",
       },
       {
          "query",
          right = true,
+         width = 0,
          color = "FeedLabel",
       },
    },
@@ -96,10 +100,10 @@ local default = {
 
    progress = {
       backend = {
-         "snacks",
          "fidget",
-         "notify",
+         "nvim-notify",
          "mini.notify",
+         "snacks",
          "native",
       },
    },

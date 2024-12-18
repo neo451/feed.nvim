@@ -63,13 +63,15 @@ local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
 function M.export(feeds)
    local buf = {}
    for xmlUrl, v in spairs(feeds) do
-      buf[#buf + 1] = format_outline {
-         text = v.description or v.title,
-         title = v.title,
-         htmlUrl = v.htmlUrl,
-         xmlUrl = xmlUrl,
-         type = "rss",
-      }
+      if type(v) == "table" then
+         buf[#buf + 1] = format_outline {
+            text = v.description or v.title,
+            title = v.title,
+            htmlUrl = v.htmlUrl,
+            xmlUrl = xmlUrl,
+            type = "rss",
+         }
+      end
    end
    return format(root_format, "feed.nvim export", concat(buf, "\n"))
 end

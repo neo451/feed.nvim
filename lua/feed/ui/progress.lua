@@ -5,6 +5,9 @@ local _, notify = pcall(require, "notify")
 local _, MiniNotify = pcall(require, "mini.notify")
 local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
 
+-- FIX: nvim-notify subsitude
+--
+
 local function format_message(idx, total, message)
    return ("[%d/%d] %s"):format(idx, total, message)
 end
@@ -14,23 +17,24 @@ mt.__index = mt
 
 function mt.new(total)
    local ret = {}
+   local starting_message = "Start fetching.."
    if backend == "fidget" then
       local _, progress = pcall(require, "fidget.progress")
       ret.handle = progress.handle.create {
          title = "Feed update",
-         message = "fetching feeds...",
+         message = starting_message,
          percentage = 0,
       }
    elseif backend == "notify" then
-      ret.handle = notify("Fetching feeds", nil, {
+      ret.id = notify(starting_message, nil, {
          hide_from_history = true,
          icon = spinner_frames[1],
          title = "Feed update",
-      })
+      }).id
    elseif backend == "mini" then
-      ret.id = MiniNotify.add("0", "INFO", "Title")
+      ret.id = MiniNotify.add(starting_message, "INFO", "Title")
    elseif backend == "snacks" then
-      Snacks.notifier.notify("fetching feeds...", "info", { id = "feed" })
+      Snacks.notifier.notify(starting_message, "info", { id = "feed" })
    end
    ret.total = total
    ret.count = 0
@@ -44,11 +48,11 @@ local function finish(self)
       self.handle.message = msg
       self.handle:finish()
    elseif backend == "notify" then
-      self.handle = notify(msg, nil, {
+      self.id = notify(msg, nil, {
          hide_from_history = true,
          icon = "",
-         replace = self.handle,
-      })
+         replace = self.id,
+      }).id
    elseif backend == "mini" then
       MiniNotify.remove(self.id)
       local opts = { INFO = { duration = 1000 } }
@@ -68,9 +72,9 @@ function mt:update(message)
       self.handle.message = msg
    elseif backend == "notify" then
       self.handle = notify(msg, nil, {
-         hide_from_history = false,
-         icon = spinner_frames[(self.count + 1) % #spinner_frames],
-         replace = self.handle,
+         hide_from_history = true,
+         -- icon = spinner_frames[(self.count + 1) % #spinner_frames],
+         replace = self.handle
       })
    elseif backend == "mini" then
       MiniNotify.update(self.id, { msg = msg })

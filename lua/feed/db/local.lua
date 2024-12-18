@@ -43,12 +43,6 @@ local remove_file = function(fp)
    end
 end
 
----@param id string
----@param obj? table
-local save_entry = function(id, obj)
-   save_obj(object_dir / id, obj)
-end
-
 local permisson = Path.permission "rwxr-xr-x"
 
 ---@param fp PathlibPath
@@ -82,6 +76,14 @@ local function parse_index()
       res[#res + 1] = { id, tonumber(time) }
    end
    return res
+end
+
+function M:save_index()
+   local buf = {}
+   for i, v in ipairs(self.index) do
+      buf[i] = tostring(v[2]) .. " " .. v[1]
+   end
+   save_file(index_fp, table.concat(buf, "\n"))
 end
 
 local mem = {}
@@ -231,6 +233,8 @@ function M:rm(id)
          self:untag(id, tag)
       end
    end
+   save_obj(tags_fp, self.tags) -- TODO: method save_tags
+   self:save_index()
    pcall(remove_file, data_dir / id)
    pcall(remove_file, object_dir / id)
    rawset(self, id, nil)

@@ -71,15 +71,10 @@ M.search = {
    context = { all = true },
 }
 
--- TODO: Native one with nui
+
 M.grep = {
-   doc = "full-text search through the entry contents (experimental)",
-   impl = function()
-      local ok = pcall(require("feed.ui.telescope").feed_grep)
-      if not ok then
-         ut.notify("commands", { msg = "need telescope.nvim and rg to grep feeds", level = "INFO" })
-      end
-   end,
+   doc = "full-text search through the entry contents",
+   impl = ui.grep,
    context = { all = true },
 }
 
@@ -282,7 +277,7 @@ M.update_feed = {
          end)
       else
          nui.select(feedlist(feeds), {
-            prompt = "Feed>",
+            prompt = "Feed to update>",
             format_item = function(item)
                return feeds[item].title or item
             end,
@@ -304,6 +299,34 @@ M.update_feed = {
       return feedlist(feeds)
    end,
    context = { all = true },
+}
+
+local select = ut.cb_to_co(function(cb, items, opts)
+   nui.select(items, opts, cb)
+end)
+
+M.prune_feed = {
+   doc = "remove a feed and its entries",
+   -- TODO: remove db links/refs
+   impl = wrap(function(url)
+      url = url or select(feedlist(feeds), {
+         prompt = "Feed to prune>",
+         format_item = function(item)
+            return feeds[item].title or item
+         end,
+      })
+      for id, entry in db:iter() do
+         if entry.feed == url then
+            db:rm(id)
+         end
+      end
+      db.feeds[url] = false
+      db:save_feeds()
+   end),
+   complete = function()
+      return feedlist(feeds)
+   end,
+   context = { all = true }
 }
 
 function M._list_commands()
@@ -340,7 +363,7 @@ end
 function M._menu()
    local items = M._list_commands()
    nui.select(items, {
-      prompt = "Feed> ",
+      prompt = "Feed commands> ",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,
@@ -358,11 +381,12 @@ function M._sync_feedlist()
       local url = type(v) == "table" and v[1] or v
       local title = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
-      if not feeds[url] then
+      if feeds[url] == nil then
          feeds[url] = {}
+      elseif type(feeds[url]) == "table" then
+         feeds[url].title = title or feeds[url].title
+         feeds[url].tags = tags or feeds[url].tags
       end
-      feeds[url].title = title or feeds[url].title
-      feeds[url].tags = tags or feeds[url].tags
    end
 end
 

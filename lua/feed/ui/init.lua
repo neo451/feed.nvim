@@ -27,16 +27,16 @@ local query = Config.search.default_query
 local M = {}
 
 local main_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return not v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return not v.right
+    end)
+    :totable()
 
 local extra_comp = vim.iter(Config.layout)
-   :filter(function(v)
-      return v.right
-   end)
-   :totable()
+    :filter(function(v)
+       return v.right
+    end)
+    :totable()
 
 local providers = {}
 
@@ -443,6 +443,20 @@ local function search(q)
    end
 end
 
+---In Index: prompt for input and refresh
+---Everywhere else: openk search backend
+---@param q string
+local function grep(q)
+   local backend = ut.choose_backend(Config.search.backend)
+   -- if q then
+   --    refresh({ query = q })
+   -- else
+   local engine = require("feed.ui." .. backend)
+   engine.feed_grep()
+   -- pcall(engine.feed_search)
+   -- end
+end
+
 M.show_index = show_index
 M.show_entry = show_entry
 M.show_urls = show_urls
@@ -458,6 +472,7 @@ M.get_entry = get_entry
 M.open_url = open_url
 M.quit = quit
 M.search = search
+M.grep = grep
 M.refresh = refresh
 
 return M
