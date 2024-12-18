@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.3](https://github.com/neo451/feed.nvim/compare/v1.14.2...v1.14.3) (2024-12-18)
+
+
+### Bug Fixes
+
+* **commands:** redo prune feed command ([37c727c](https://github.com/neo451/feed.nvim/commit/37c727cb8bf3b1e415e08c764ec534049a46f5a6))
+* **opml:** only export if type is table, avoid pruned and redirects ([37c727c](https://github.com/neo451/feed.nvim/commit/37c727cb8bf3b1e415e08c764ec534049a46f5a6))
+* **parser:** fix encolsure parsing for podcasts ([3ffceab](https://github.com/neo451/feed.nvim/commit/3ffceabc930c8f2cea3e1ba6a3cf05ea7914d8c8))
+* **pick:** initial grep impl, as menu interface ([37c727c](https://github.com/neo451/feed.nvim/commit/37c727cb8bf3b1e415e08c764ec534049a46f5a6))
+* **progress:** more consitency ([37c727c](https://github.com/neo451/feed.nvim/commit/37c727cb8bf3b1e415e08c764ec534049a46f5a6))
+* **ui:** consistent index cursor position on refresh ([3ffceab](https://github.com/neo451/feed.nvim/commit/3ffceabc930c8f2cea3e1ba6a3cf05ea7914d8c8))
+* **ui:** move commands impl to ui for testing and away from vim.ui stuff ([3ffceab](https://github.com/neo451/feed.nvim/commit/3ffceabc930c8f2cea3e1ba6a3cf05ea7914d8c8))
+
 ## [1.14.2](https://github.com/neo451/feed.nvim/compare/v1.14.1...v1.14.2) (2024-12-17)
 
 
