@@ -114,9 +114,6 @@ local url = Config.integrations.ttrss.url
 
 ---@param obj vim.SystemCompleted?
 local function decode_check(obj, method) --- TODO: assert decode gets the method
-   if vim.g.FEED_DEBUG then
-      vim.print(method, obj)
-   end
    assert(obj, "no response")
    assert(obj.code == 0, "curl err")
    assert(obj.status == 200, "server did not return 200")
@@ -202,19 +199,25 @@ function M.new()
    local ttrss = api.new()
    local feeds, tags = {}, {}
    for _, feed in ipairs(ttrss:getFeeds({})) do
-      feeds[feed.title] = {
+      feeds[feed.id] = {
          id = feed.id,
-         url = feed.feed_url
+         url = feed.feed_url,
+         title = feed.title
       }
    end
-   for _, v in ipairs(ttrss:getLabels()) do
-      tags[v.caption] = v.id
-   end
+   -- for _, v in ipairs(ttrss:getLabels()) do
+   --    tags[v.caption] = v.id
+   -- end
    return setmetatable({
       api = ttrss,
       feeds = feeds,
       tags = tags,
+      last = os.time()
    }, M)
+end
+
+function M:lastUpdated()
+   return os.date("%c", self.last)
 end
 
 ---@param str string
@@ -230,8 +233,8 @@ function M:filter(str)
    local buf = {}
 
    if q.feed then
-      for title, feed in pairs(self.feeds) do
-         if q.feed:match_str(title) then
+      for _, feed in ipairs(self.feeds) do
+         if q.feed:match_str(feed.title) then
             tt_query.feed_id = feed.id
             tt_query.search_mode = "this_feed"
          end
@@ -305,13 +308,6 @@ function M:untag(id, tag)
 end
 
 --- TODO:
-function M:save_feeds()
-
-end
-
---
--- tt = api:new()
---
--- dt(tt:subscribeToFeed { feed_url = "https://ziglang.org/news/index.xml" })
+function M:save_feeds() end
 
 return M.new()
