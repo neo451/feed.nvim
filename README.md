@@ -72,6 +72,10 @@ Rocks install feed.nvim
 
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
+```lua
+{ "neo451/feed.nvim", cmd = "Feed" }
+```
+
 
 ### Health Check
 
