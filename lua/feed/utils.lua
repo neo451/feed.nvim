@@ -7,7 +7,13 @@ for k, v in pairs(require("feed.utils.url")) do
    M[k] = v
 end
 
+for k, v in pairs(require("feed.utils.treesitter")) do
+   M[k] = v
+end
+
 ---make sure a table is a list insted of a map
+---@param t table
+---@return table
 function M.listify(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end

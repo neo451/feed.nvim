@@ -161,34 +161,34 @@ for k, v in pairs(methods) do
    end
 end
 
----@param param { feed_url: string, category_id: integer }
----@async
-function api:subscribeToFeed(param)
-   param = param or {}
-   param.sid = self.sid
-   param.op = "subscribeToFeed"
-   return decode_check(Curl.get(url, param), param.op)
-   -- Curl.get(url, {
-   --    data = param
-   -- }, function(obj)
-   --    dt(obj)
-   --    -- dt(decode_check(obj))
-   --    -- vim.notify("subscribed!") -- TODO: name?
-   -- end)
-end
-
----@param param { feed_id: integer }
----@async
-function api:unsubscribeFeed(param)
-   param = param or {}
-   param.sid = self.sid
-   param.op = "unsubscribeFeed"
-   Curl.get(url, {
-      data = param
-   }, function(obj)
-      vim.notify("unsubscribed!")
-   end)
-end
+-- TODO:
+-- ---@param param { feed_url: string, category_id: integer }
+-- ---@async
+-- function api:subscribeToFeed(param)
+--    param = param or {}
+--    param.sid = self.sid
+--    param.op = "subscribeToFeed"
+--    return decode_check(Curl.get(url, param), param.op)
+--    -- Curl.get(url, {
+--    --    data = param
+--    -- }, function(obj)
+--    --    dt(obj)
+--    --    -- dt(decode_check(obj))
+--    --    -- vim.notify("subscribed!") -- TODO: name?
+--    -- end)
+-- end
+--
+-- ---@param param { feed_id: integer }
+-- ---@async
+-- function api:unsubscribeFeed(param)
+--    param = param or {}
+--    param.sid = self.sid
+--    param.op = "unsubscribeFeed"
+--    Curl.get_co(url, {
+--       data = param
+--    })
+--    vim.notify("unsubscribed!")
+-- end
 
 local M = {}
 M.__index = M
@@ -197,7 +197,7 @@ local query = require "feed.db.query"
 
 function M.new()
    local ttrss = api.new()
-   local feeds, tags = {}, {}
+   local feeds = {}
    for _, feed in ipairs(ttrss:getFeeds({})) do
       feeds[feed.id] = {
          id = feed.id,
@@ -211,7 +211,7 @@ function M.new()
    return setmetatable({
       api = ttrss,
       feeds = feeds,
-      tags = tags,
+      tags = vim.defaulttable(),
       last = os.time()
    }, M)
 end
@@ -219,6 +219,8 @@ end
 function M:lastUpdated()
    return os.date("%c", self.last)
 end
+
+-- FIXME: multi tags +read +star
 
 ---@param str string
 ---@return integer[]
@@ -282,7 +284,7 @@ function M:filter(str)
 end
 
 function M:tag(id, tag)
-   self[id].tags[tag] = true
+   self.tags[id][tag] = true
    if tag == "read" then
       self.api:updateArticle({ article_ids = id, field = 2, mode = 0 })
    elseif tag == "unread" then
@@ -295,7 +297,7 @@ function M:tag(id, tag)
 end
 
 function M:untag(id, tag)
-   self[id].tags[tag] = nil
+   self.tags[id][tag] = nil
    if tag == "star" then
       self.api:updateArticle({ article_ids = id, field = 0, mode = 0 })
    elseif tag == "unread" then
@@ -309,5 +311,7 @@ end
 
 --- TODO:
 function M:save_feeds() end
+
+function M:update() end
 
 return M.new()
