@@ -157,9 +157,20 @@ local truncate = function(str, len)
    return result
 end
 
+-- TODO: edge case
+-- [观点&amp;评…]
+-- [Articles, 新…]
+-- [Social Media…]
+-- [Articles, 新…]
+-- [Articles, 新…]
+
+M.truncate = truncate
+
+local strings = require "plenary.strings"
+
 M.align = function(str, width, right_justify)
-   local str_len = fn.strdisplaywidth(str)
-   str = truncate(str, width)
+   local str_len = strings.strdisplaywidth(str)
+   str = strings.truncate(str, width)
    return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
 end
 

@@ -12,7 +12,7 @@ local highlights = {
    FeedTitle = { default = true, link = "Title" },
    FeedLink = { default = true, link = "@markup.link.url" },
    FeedRead = { default = true, link = "@comment" },
-   FeedTags = { default = true, link = "@comment" },
+   FeedTags = { default = true, link = "@punctuation.bracket" },
    FeedDate = { default = true, link = "function" },
    FeedBold = { default = true, link = "Bold" },
    FeedLabel = { default = true, link = "Label" },

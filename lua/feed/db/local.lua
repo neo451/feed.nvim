@@ -17,6 +17,7 @@ local ut = require "feed.utils"
 ---@field tag fun(db: feed.db, id: string, tag: string | string[])
 ---@field untag fun(db: feed.db, id: string, tag: string | string[])
 ---@field blowup fun(db: feed.db)
+---@field update fun(db: feed.db)
 
 local M = {}
 M.__index = M
@@ -112,22 +113,22 @@ function M:__index(k)
    if rawget(M, k) then
       return M[k]
    elseif k == "feeds" then
-      if not rawget(self, k) then
-         local feeds = pdofile(feeds_fp)
-         rawset(self, "feeds", feeds)
-      end
+      local feeds = pdofile(feeds_fp)
+      rawset(self, "feeds", feeds)
       return rawget(self, "feeds")
    elseif k == "index" then
-      if not rawget(self, k) then
-         local index = parse_index()
-         rawset(self, "index", index)
-      end
+      local index = parse_index()
+      rawset(self, "index", index)
       return rawget(self, "index")
    elseif k == "tags" then
-      if not rawget(self, k) then
-         local tags = pdofile(tags_fp)
-         rawset(self, "tags", tags)
-      end
+      local tags = pdofile(tags_fp)
+      setmetatable(tags, {
+         __index = function(t, tag)
+            rawset(t, tag, {})
+            return rawget(t, tag)
+         end
+      })
+      rawset(self, "tags", tags)
       return rawget(self, "tags")
    else
       local r = mem[k]
@@ -142,13 +143,18 @@ function M:__index(k)
    end
 end
 
----@return function | feed.entry | string
 function M:update()
    local feeds = pdofile(feeds_fp)
    rawset(self, "feeds", feeds)
    local index = parse_index()
    rawset(self, "index", index)
    local tags = pdofile(tags_fp)
+   setmetatable(tags, {
+      __index = function(t, tag)
+         rawset(t, tag, {})
+         return rawget(t, tag)
+      end
+   })
    rawset(self, "tags", tags)
 end
 
@@ -180,11 +186,8 @@ end
 ---@param tag string
 function M:tag(id, tag)
    local function tag_one(t)
-      if not self.tags[t] then
-         self.tags[t] = {}
-      end
       self.tags[t][id] = true
-      save_obj(tags_fp, self.tags)
+      self:save_feeds()
    end
    if type(tag) == "string" then
       if tag:find(",") then
@@ -205,11 +208,8 @@ end
 ---@param tag string
 function M:untag(id, tag)
    local function tag_one(t)
-      if not self.tags[t] then
-         self.tags[t] = {}
-      end
       self.tags[t][id] = nil
-      save_obj(tags_fp, self.tags)
+      self:save_feeds()
    end
    if type(tag) == "string" then
       if tag:find(",") then
@@ -243,7 +243,7 @@ function M:rm(id)
          self:untag(id, tag)
       end
    end
-   save_obj(tags_fp, self.tags) -- TODO: method save_tags
+   self:save_feeds()
    self:save_index()
    pcall(remove_file, data_dir / id)
    pcall(remove_file, object_dir / id)
@@ -374,6 +374,12 @@ end
 ---@return boolean
 function M:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds, { process = false }))
+end
+
+function M:save_feeds()
+   local tags = vim.deepcopy(self.tags)
+   setmetatable(tags, {})
+   return save_file(tags_fp, "return " .. vim.inspect(tags, { process = false }))
 end
 
 function M:blowup()
