@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.14.4](https://github.com/neo451/feed.nvim/compare/v1.14.3...v1.14.4) (2024-12-21)
+
+
+### Bug Fixes
+
+* **db:** method to update in memory contents ([adea32b](https://github.com/neo451/feed.nvim/commit/adea32babc39aec0e8c6d34873d0f7cc57a37be3))
+* **fetch:** rewrite fetch with coop.nvim ([895576e](https://github.com/neo451/feed.nvim/commit/895576e5ae2d33b96dd5463545d52baa271137d4))
+* **fzf:** proper fzf ui select ([895576e](https://github.com/neo451/feed.nvim/commit/895576e5ae2d33b96dd5463545d52baa271137d4))
+* **ttrss:** lastupdated method ([955e210](https://github.com/neo451/feed.nvim/commit/955e210dc5d6d1b4d342ddaf00e5e41519d2b1d7))
+* **ttrss:** use vim.defaultable for tags ([895576e](https://github.com/neo451/feed.nvim/commit/895576e5ae2d33b96dd5463545d52baa271137d4))
+* **ui.bar:** move bar rendering to bar.lua ([1602fe7](https://github.com/neo451/feed.nvim/commit/1602fe7e88e5f87e65880b5643327c121ea35fca))
+* **ui:** restore window options ([1602fe7](https://github.com/neo451/feed.nvim/commit/1602fe7e88e5f87e65880b5643327c121ea35fca))
+* **utils:** vim.startwith for looks_like_url ([895576e](https://github.com/neo451/feed.nvim/commit/895576e5ae2d33b96dd5463545d52baa271137d4))
+
 ## [1.14.3](https://github.com/neo451/feed.nvim/compare/v1.14.2...v1.14.3) (2024-12-18)
 
 
