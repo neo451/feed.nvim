@@ -8,7 +8,6 @@ local NuiLine = require("nui.line")
 local NuiTree = require("nui.tree")
 local Markdown = require("feed.ui.markdown")
 local Nui = require("feed.ui.nui")
-local Bar = require("feed.ui.bar")
 local Curl = require("feed.curl")
 local Opml = require("feed.parser.opml")
 local fetch = require "feed.fetch"
@@ -28,69 +27,31 @@ local og_cmdheight = vim.o.cmdheight
 local on_display, index_buf
 local urls = {}
 local current_entry, current_index
-local query = Config.search.default_query
 
 local M = {}
 
-local main_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return not v.right
-    end)
-    :totable()
+vim.g.feed_current_query = Config.search.default_query
 
-local extra_comp = vim.iter(Config.layout)
-    :filter(function(v)
-       return v.right
-    end)
-    :totable()
+local og_options = {}
 
-local providers = {}
-
-setmetatable(providers, {
-   __index = function(_, k)
-      return function()
-         return ut.capticalize(k)
-      end
-   end,
-})
-
-providers.query = function()
-   return query .. " "
-end
-
-providers.last_updated = function()
-   return DB:lastUpdated() .. " "
-end
-
--- TODO: needs to be auto updated
--- providers.progress = function()
---    current_index = current_index or 1
---    return ("[%d/%d]"):format(current_index, #on_display)
--- end
-
-local function show_winbar()
-   vim.wo.winbar = " "
-   for i, v in ipairs(main_comp) do
-      Bar.new_comp(v[1], providers[v[1]](v), (i == #main_comp) and 0 or v.width, v.color)
-   end
-   Bar.append("%=")
-   for _, v in ipairs(extra_comp) do
-      local text = providers[v[1]](v)
-      Bar.new_comp(v[1], text, v.width, v.color)
-   end
-end
-
-local function set_opts(opts, keys)
-   local buf = vim.api.nvim_get_current_buf()
-   local win = vim.api.nvim_get_current_win()
+---@param opts table
+---@param keys table
+---@param restore boolean
+local function set_opts(opts, keys, restore)
+   local buf = api.nvim_get_current_buf()
+   local win = api.nvim_get_current_win()
    vim.o.cmdheight = 0
 
    for rhs, lhs in pairs(keys) do
       vim.keymap.set("n", lhs, ("<cmd>Feed %s<cr>"):format(rhs), { buffer = buf, noremap = true })
    end
    for key, value in pairs(opts) do
-      pcall(vim.api.nvim_set_option_value, key, value, { buf = buf })
-      pcall(vim.api.nvim_set_option_value, key, value, { win = win })
+      if restore then
+         local _, v = pcall(api.nvim_get_option_value, key, { win = win })
+         og_options[key] = v
+      end
+      pcall(api.nvim_set_option_value, key, value, { buf = buf })
+      pcall(api.nvim_set_option_value, key, value, { win = win })
    end
    if Config.colorscheme then
       vim.cmd.colorscheme(Config.colorscheme)
@@ -102,16 +63,16 @@ local function show_index()
    local buf = index_buf or api.nvim_create_buf(false, true)
    index_buf = buf
    pcall(api.nvim_buf_set_name, buf, "FeedIndex")
-   on_display = on_display or DB:filter(query)
+   on_display = on_display or DB:filter(vim.g.feed_current_query)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(index_buf, 0, -1, false, {}) -- clear lines
    for i, id in ipairs(on_display) do
-      Format.gen_nui_line(id, main_comp):render(buf, -1, i)
+      Format.gen_nui_line(id, false):render(buf, -1, i)
    end
    api.nvim_buf_set_lines(index_buf, #on_display, #on_display + 1, false, { "" })
    api.nvim_set_current_buf(buf)
-   show_winbar()
-   set_opts(Config.options.index, Config.keys.index)
+   M.show_winbar()
+   set_opts(Config.options.index, Config.keys.index, true)
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
@@ -150,11 +111,7 @@ local function mark_read(id)
       return
    end
    DB:tag(id, "read")
-   local grey_comp = vim.deepcopy(main_comp)
-   for _, v in ipairs(grey_comp) do
-      v.color = "FeedRead"
-   end
-   local NLine = Format.gen_nui_line(id, grey_comp)
+   local NLine = Format.gen_nui_line(id, true)
    vim.bo[index_buf].modifiable = true
    NLine:render(index_buf, -1, current_index)
    vim.bo[index_buf].modifiable = false
@@ -164,7 +121,7 @@ local function render_entry(buf, lines, id, is_preview)
    vim.wo.winbar = nil
    vim.bo[buf].filetype = "markdown"
    vim.bo[buf].modifiable = true
-   vim.api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
+   api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
 
    for i, v in ipairs(lines) do
       if type(v) == "table" then
@@ -182,7 +139,7 @@ local function render_entry(buf, lines, id, is_preview)
       if api.nvim_buf_get_name(buf) == "" then
          api.nvim_buf_set_name(buf, "FeedEntry")
       end
-      vim.api.nvim_win_set_cursor(0, { 1, 0 })
+      api.nvim_win_set_cursor(0, { 1, 0 })
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
       mark_read(id)
    end
@@ -272,13 +229,13 @@ local function show_full()
 end
 
 --- TODO: register some state(tag/untag at leaset once) to tell refresh is needed, and then reset them, else do nothing
---- TODO: if not new query then just remove the greyed out lines
 
 local function refresh(opts)
    opts = opts or {}
    opts.show = vim.F.if_nil(opts.show, true)
-   query = opts.query or query
-   on_display = DB:filter(query)
+   vim.g.feed_current_query = opts.query or vim.g.feed_current_query
+   DB:update()
+   on_display = DB:filter(vim.g.feed_current_query)
    if opts.show then
       local pos = ut.in_index() and api.nvim_win_get_cursor(0) or { 1, 0 }
       show_index()
@@ -294,13 +251,17 @@ local function quit()
       index_buf = nil
       api.nvim_exec_autocmds("User", { pattern = "QuitIndexPost" })
       pcall(vim.cmd.colorscheme, og_colorscheme)
+
+      for key, value in pairs(og_options) do
+         pcall(api.nvim_set_option_value, key, value, { win = 0 })
+      end
    elseif ut.in_entry() then
       api.nvim_buf_delete(0, { force = true })
       M.entry_buf = nil
       if index_buf then
          api.nvim_set_current_buf(index_buf)
          api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
-         show_winbar()
+         M.show_winbar()
       else
          pcall(vim.cmd.colorscheme, og_colorscheme)
       end
@@ -438,7 +399,7 @@ local function search(q)
    if q then
       refresh({ query = q })
    elseif ut.in_index() or not backend then
-      vim.ui.input({ prompt = "Feed query: ", default = query .. " " }, function(val)
+      vim.ui.input({ prompt = "Feed query: ", default = vim.g.feed_current_query .. " " }, function(val)
          if not val then
             return
          end
@@ -542,7 +503,6 @@ end
 
 M.tag = function(t, id)
    id = id or select(2, get_entry())
-   -- save_hist = vim.F.if_nil(save_hist, true)
    if not t or not id then
       return
    end
@@ -553,14 +513,11 @@ M.tag = function(t, id)
    M.dot = function()
       M.tag(t)
    end
-   -- if save_hist then
    table.insert(tag_hist, { type = "tag", tag = t, id = id })
-   -- end
 end
 
-M.untag = function(t, id, save_hist)
+M.untag = function(t, id)
    id = id or select(2, get_entry())
-   save_hist = vim.F.if_nil(save_hist, true)
    if not t or not id then
       return
    end
@@ -571,17 +528,17 @@ M.untag = function(t, id, save_hist)
    M.dot = function()
       M.untag(t)
    end
-   -- if save_hist then
    table.insert(tag_hist, { type = "untag", tag = t, id = id })
-   -- end
 end
 
 M.update_feed = function(url)
+   local coop = require "coop"
    if not url or not ut.looks_like_url(url) then
       return
    end
-   fetch.update_feed(url, { force = true }, function(ok)
-      ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or "failed"), level = "INFO" })
+   coop.spawn(function()
+      local ok = fetch.update_feed_co(url, { force = true })
+      ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or " failed"), level = "INFO" })
    end)
 end
 
@@ -598,5 +555,7 @@ M.prune_feed = function(url)
    DB.feeds[url] = false
    DB:save_feeds()
 end
+
+M.show_winbar = require "feed.ui.bar"
 
 return M

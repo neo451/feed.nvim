@@ -23,7 +23,7 @@ end
 function M.tags(id)
    local taglist = vim.iter(DB.tags)
        :fold({}, function(acc, tag, v)
-          if v[id] then
+          if type(v) == "table" and v[id] then
              if tag2icon.enabled then
                 acc[#acc + 1] = tag2icon[tag] or tag
              else
@@ -129,9 +129,9 @@ end
 
 ---return a NuiLine obj for an entry base on user config
 ---@param id string
----@param comps table
+---@param read boolean
 ---@return NuiLine
-function M.gen_nui_line(id, comps)
+function M.gen_nui_line(id, read)
    local NuiLine = require "nui.line"
    local line = NuiLine()
    local acc_width = 0
@@ -139,14 +139,16 @@ function M.gen_nui_line(id, comps)
    if not entry then
       return NuiLine()
    end
-   for _, v in ipairs(comps) do
-      local text = entry[v[1]] or ""
-      if M[v[1]] then
-         text = M[v[1]](id)
+   for _, v in ipairs(Config.layout) do
+      if not v.right then
+         local text = entry[v[1]] or ""
+         if M[v[1]] then
+            text = M[v[1]](id)
+         end
+         local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+         line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
+         acc_width = acc_width + v.width + 1
       end
-      local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
-      line:append(align(text, width + 1, v.right_justify), v.color)
-      acc_width = acc_width + v.width + 1
    end
    return line
 end
