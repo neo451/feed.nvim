@@ -17,7 +17,7 @@ add {
 }
 
 add {
-   source = "nvim-lua/plenary.nvim",
+   source = "gregorias/coop.nvim",
 }
 
 add {

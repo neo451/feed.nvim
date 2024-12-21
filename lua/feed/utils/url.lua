@@ -58,7 +58,6 @@ M.get_buf_urls = function(buf, cur_link)
                      elseif node:type() == "image" and node:child(2):type() == "image_description" then
                         ---@diagnostic disable-next-line: param-type-mismatch
                         local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
                         ret[#ret + 1] = { text, link }
                      else
                         ret[#ret + 1] = { link, link }
@@ -87,8 +86,7 @@ M.resolve_and_open = function(url, base)
 end
 
 M.looks_like_url = function(str)
-   local allow = { https = true, http = true }
-   return allow[URL.parse(str).scheme] ~= nil
+   return vim.startswith(str, "http")
 end
 
 return M

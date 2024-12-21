@@ -1,8 +1,10 @@
 local M = {}
+local Config = require "feed.config"
 local Split = require("nui.split")
 local Menu = require("nui.menu")
 local event = require("nui.utils.autocmd").event
 local api = vim.api
+local ut = require "feed.utils"
 
 local nui_select = function(items, opts, on_choice, config)
    config = config or {}
@@ -105,24 +107,31 @@ local function telescope_select(items, opts, on_choice)
        :find()
 end
 
+local registered_once = false
+
 M.select = function(items, opts, on_choice)
-   if pcall(require, "fzf-lua") then
-      require("fzf-lua").register_ui_select(function(_, items)
-         local min_h, max_h = 0.15, 0.70
-         local h = (#items + 4) / vim.o.lines
-         if h < min_h then
-            h = min_h
-         elseif h > max_h then
-            h = max_h
-         end
-         return { winopts = { height = h, width = 0.60, row = 0.40 } }
-      end)
+   local backend = ut.choose_backend(Config.search.backend)
+   if backend == 'fzf-lua' then
+      local prompt = ' ' .. opts.prompt .. ' '
+      opts.prompt = "> "
+      if not registered_once then
+         require("fzf-lua").register_ui_select(function(_, items)
+            local min_h, max_h = 0.15, 0.70
+            local h = (#items + 4) / vim.o.lines
+            if h < min_h then
+               h = min_h
+            elseif h > max_h then
+               h = max_h
+            end
+            return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
+         end)
+         registered_once = true
+      end
       require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
    else
-      opts.prompt = vim.trim(opts.prompt:gsub(">", ""))
-      if MiniPick then
+      if backend == 'pick' then
          MiniPick.ui_select(items, opts, on_choice)
-      elseif pcall(require, "telescope") then
+      elseif backend == 'telescope' then
          telescope_select(items, opts, on_choice)
       elseif pcall(require, "dressing") then
          vim.ui.select(items, opts, on_choice)

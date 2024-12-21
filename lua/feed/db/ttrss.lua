@@ -114,9 +114,6 @@ local url = Config.integrations.ttrss.url
 
 ---@param obj vim.SystemCompleted?
 local function decode_check(obj, method) --- TODO: assert decode gets the method
-   if vim.g.FEED_DEBUG then
-      vim.print(method, obj)
-   end
    assert(obj, "no response")
    assert(obj.code == 0, "curl err")
    assert(obj.status == 200, "server did not return 200")
@@ -164,34 +161,34 @@ for k, v in pairs(methods) do
    end
 end
 
----@param param { feed_url: string, category_id: integer }
----@async
-function api:subscribeToFeed(param)
-   param = param or {}
-   param.sid = self.sid
-   param.op = "subscribeToFeed"
-   return decode_check(Curl.get(url, param), param.op)
-   -- Curl.get(url, {
-   --    data = param
-   -- }, function(obj)
-   --    dt(obj)
-   --    -- dt(decode_check(obj))
-   --    -- vim.notify("subscribed!") -- TODO: name?
-   -- end)
-end
-
----@param param { feed_id: integer }
----@async
-function api:unsubscribeFeed(param)
-   param = param or {}
-   param.sid = self.sid
-   param.op = "unsubscribeFeed"
-   Curl.get(url, {
-      data = param
-   }, function(obj)
-      vim.notify("unsubscribed!")
-   end)
-end
+-- TODO:
+-- ---@param param { feed_url: string, category_id: integer }
+-- ---@async
+-- function api:subscribeToFeed(param)
+--    param = param or {}
+--    param.sid = self.sid
+--    param.op = "subscribeToFeed"
+--    return decode_check(Curl.get(url, param), param.op)
+--    -- Curl.get(url, {
+--    --    data = param
+--    -- }, function(obj)
+--    --    dt(obj)
+--    --    -- dt(decode_check(obj))
+--    --    -- vim.notify("subscribed!") -- TODO: name?
+--    -- end)
+-- end
+--
+-- ---@param param { feed_id: integer }
+-- ---@async
+-- function api:unsubscribeFeed(param)
+--    param = param or {}
+--    param.sid = self.sid
+--    param.op = "unsubscribeFeed"
+--    Curl.get_co(url, {
+--       data = param
+--    })
+--    vim.notify("unsubscribed!")
+-- end
 
 local M = {}
 M.__index = M
@@ -200,22 +197,30 @@ local query = require "feed.db.query"
 
 function M.new()
    local ttrss = api.new()
-   local feeds, tags = {}, {}
+   local feeds = {}
    for _, feed in ipairs(ttrss:getFeeds({})) do
-      feeds[feed.title] = {
+      feeds[feed.id] = {
          id = feed.id,
-         url = feed.feed_url
+         url = feed.feed_url,
+         title = feed.title
       }
    end
-   for _, v in ipairs(ttrss:getLabels()) do
-      tags[v.caption] = v.id
-   end
+   -- for _, v in ipairs(ttrss:getLabels()) do
+   --    tags[v.caption] = v.id
+   -- end
    return setmetatable({
       api = ttrss,
       feeds = feeds,
-      tags = tags,
+      tags = vim.defaulttable(),
+      last = os.time()
    }, M)
 end
+
+function M:lastUpdated()
+   return os.date("%c", self.last)
+end
+
+-- FIXME: multi tags +read +star
 
 ---@param str string
 ---@return integer[]
@@ -230,8 +235,8 @@ function M:filter(str)
    local buf = {}
 
    if q.feed then
-      for title, feed in pairs(self.feeds) do
-         if q.feed:match_str(title) then
+      for _, feed in ipairs(self.feeds) do
+         if q.feed:match_str(feed.title) then
             tt_query.feed_id = feed.id
             tt_query.search_mode = "this_feed"
          end
@@ -279,7 +284,7 @@ function M:filter(str)
 end
 
 function M:tag(id, tag)
-   self[id].tags[tag] = true
+   self.tags[id][tag] = true
    if tag == "read" then
       self.api:updateArticle({ article_ids = id, field = 2, mode = 0 })
    elseif tag == "unread" then
@@ -292,7 +297,7 @@ function M:tag(id, tag)
 end
 
 function M:untag(id, tag)
-   self[id].tags[tag] = nil
+   self.tags[id][tag] = nil
    if tag == "star" then
       self.api:updateArticle({ article_ids = id, field = 0, mode = 0 })
    elseif tag == "unread" then
@@ -305,13 +310,8 @@ function M:untag(id, tag)
 end
 
 --- TODO:
-function M:save_feeds()
+function M:save_feeds() end
 
-end
-
---
--- tt = api:new()
---
--- dt(tt:subscribeToFeed { feed_url = "https://ziglang.org/news/index.xml" })
+function M:update() end
 
 return M.new()

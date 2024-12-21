@@ -29,6 +29,7 @@ jobs:
           dependencies: |
             nui.nvim
             pathlib.nvim
+            coop.nvim
             tree-sitter-xml
             tree-sitter-markdown
             tree-sitter-html

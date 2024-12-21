@@ -72,7 +72,7 @@ local default = {
       },
       {
          "title",
-         width = 80,
+         width = 0,
          color = "FeedTitle",
       },
       {
