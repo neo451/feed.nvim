@@ -142,6 +142,16 @@ function M:__index(k)
    end
 end
 
+---@return function | feed.entry | string
+function M:update()
+   local feeds = pdofile(feeds_fp)
+   rawset(self, "feeds", feeds)
+   local index = parse_index()
+   rawset(self, "index", index)
+   local tags = pdofile(tags_fp)
+   rawset(self, "tags", tags)
+end
+
 function M:lastUpdated()
    return os.date("%c", vim.fn.getftime(tostring(feeds_fp)))
 end

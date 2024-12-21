@@ -183,7 +183,7 @@ M.update = {
    impl = function()
       local Progress = require("feed.ui.progress")
       local prog = Progress.new(#ut.feedlist(feeds, false))
-      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
+      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all_co()' }, {
          text = true,
          stdout = function(err, data)
             if data then
@@ -207,7 +207,7 @@ M.update_feed = {
          ui.update_feed(url)
       else
          nui.select(feedlist(feeds, true), {
-            prompt = "Feed to update>",
+            prompt = "Feed to update",
             format_item = function(item)
                local feed = feeds[item]
                return type(feed) == "table" and feeds[item].title or item
@@ -230,7 +230,7 @@ M.prune_feed = {
          ui.prune_feed(url)
       else
          nui.select(feedlist(feeds, true), {
-            prompt = "Feed to prune>",
+            prompt = "Feed to prune",
             format_item = function(item)
                local feed = feeds[item]
                return type(feed) == "table" and feeds[item].title or item
@@ -278,7 +278,7 @@ end
 function M._menu()
    local items = M._list_commands()
    nui.select(items, {
-      prompt = "Feed commands> ",
+      prompt = "Feed commands",
       format_item = function(item)
          return item .. ": " .. M[item].doc
       end,

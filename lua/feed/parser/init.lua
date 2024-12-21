@@ -35,28 +35,19 @@ local M = {}
 ---@param url string
 ---@return table?
 function M.parse(src, url)
-   local ret
-   if vim.trim(src):sub(1, 1) == "{" then
-      ret = handle_json(vim.json.decode(src, {
-         luanil = {
-            object = true
-         }
-      }), url)
-      ret.encoding = ret.encoding or "utf-8"
-      return ret
+   if vim.startswith(vim.trim(src), "{") then
+      local ast = vim.json.decode(src, { luanil = { object = true } })
+      return handle_json(ast, url)
    else
-      local raw_ast = xml.parse(src, url)
-      if raw_ast then
-         if raw_ast.rss or raw_ast["rdf:RDF"] then
-            ret = handle_rss(raw_ast, url)
-            ret.encoding = raw_ast.encoding or "utf-8"
-         elseif raw_ast.feed then
-            ret = handle_atom(raw_ast, url)
-            ret.encoding = raw_ast.encoding or "utf-8"
+      local ast = xml.parse(src, url)
+      if ast then
+         if ast['rss'] or ast["rdf:RDF"] then
+            return handle_rss(ast, url)
+         elseif ast['feed'] then
+            return handle_atom(ast, url)
          else
             log.warn(url, "unknown feedtype")
          end
-         return ret
       end
    end
 end

@@ -1,11 +1,11 @@
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
 local log = require "feed.lib.log"
-local ts_ut = require "feed.utils.treesitter"
+local ut = require "feed.utils"
 
-local get_text = ts_ut.get_text
-local get_root = ts_ut.get_root
-local tree_contains = ts_ut.tree_contains
+local get_text = ut.get_text
+local get_root = ut.get_root
+local tree_contains = ut.tree_contains
 
 local ENTITIES = {
    ["&lt;"] = "<",
@@ -23,6 +23,8 @@ local r_ENTITIES = {
    { '"', "&quot;" },
 }
 
+---@param str string
+---@return string
 local function encode(str)
    for _, v in ipairs(r_ENTITIES) do
       if str:find(v[1]) then
@@ -32,6 +34,8 @@ local function encode(str)
    return str
 end
 
+---@param tag string
+---@return vim.lpeg.Pattern
 local function gen_tag_rule(tag)
    local st = P "<" * P(tag) * P ">"
    local et = P("</" .. tag .. ">")
@@ -43,10 +47,14 @@ local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / encode) * lpeg.P "]]>"
 local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) *
     C(P "</content>")
 
+---@param rule vim.lpeg.Pattern
+---@return vim.lpeg.Pattern
 local function gen_extract_pat(rule)
    return Ct((C((1 - rule) ^ 0) * rule ^ 1 * C((1 - rule) ^ 0)) ^ 1)
 end
 
+---@param str string
+---@return string
 local rm_text = function(str)
    local res = gen_extract_pat(gen_tag_rule "title"):match(str)
    if res and not vim.tbl_isempty(res) then
@@ -55,6 +63,8 @@ local rm_text = function(str)
    return str
 end
 
+---@param str string
+---@return string
 local rm_cdata = function(str)
    local res = gen_extract_pat(cdata):match(str)
    if res and not vim.tbl_isempty(res) then
@@ -63,6 +73,8 @@ local rm_cdata = function(str)
    return str
 end
 
+---@param str string
+---@return string
 local san_xhtml = function(str)
    local res = gen_extract_pat(xhtml):match(str)
    if res and not vim.tbl_isempty(res) then
@@ -71,6 +83,8 @@ local san_xhtml = function(str)
    return str
 end
 
+---@param str string
+---@return string
 local function sanitize(str)
    return san_xhtml(rm_text(rm_cdata(str)))
 end
@@ -205,7 +219,7 @@ end
 ---@param url string
 ---@return table?
 local function parse(src, url)
-   ts_ut.assert_parser('xml')
+   ut.assert_parser('xml')
    src = sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
