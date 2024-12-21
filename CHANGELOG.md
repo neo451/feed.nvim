@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.5](https://github.com/neo451/feed.nvim/compare/v1.14.4...v1.14.5) (2024-12-21)
+
+
+### Bug Fixes
+
+* **fetch:** add cb fetch back ... ([bbce910](https://github.com/neo451/feed.nvim/commit/bbce910671ca0828ab585f434eb3a5e4d62e29fb))
+* **tag:** use vim.defaulttable for tags ([bbce910](https://github.com/neo451/feed.nvim/commit/bbce910671ca0828ab585f434eb3a5e4d62e29fb))
+
 ## [1.14.4](https://github.com/neo451/feed.nvim/compare/v1.14.3...v1.14.4) (2024-12-21)
 
 
