@@ -54,7 +54,6 @@ local default = {
    },
    ---@type table[]
    layout = {
-      -- TODO: validate
       {
          "date",
          width = 10,
@@ -176,25 +175,41 @@ setmetatable(M, {
    end,
 })
 
--- local function pval(name, val, validator, message)
---    return pcall(vim.validate, name, val, validator, message)
--- end
---
---
--- ---@param cfg feed.config
--- local function validate(cfg)
---    local ok, err = pval('options', cfg.options, 'table')
---    if not ok then
---       vim.notify(err)
---    end
--- end
+local function pval(name, val, validator, message)
+   return pcall(vim.validate, name, val, validator, message)
+end
+
+---@param cfg feed.config
+local function validate(cfg)
+   local path = {
+      db_dir = "string",
+      colorscheme = "string",
+      date_format = "string",
+      rsshub_instance = "string",
+      curl_params = "table",
+      options = "table",
+      layout = "table",
+      search = "table",
+      progress = "table",
+      data = "table",
+      feeds = "table",
+      keys = "table",
+      tag2icon = "table",
+   }
+   for k, v in pairs(path) do
+      local ok, err = pval(k, cfg[k], v)
+      if not ok then
+         vim.notify("failed to validate feed.nvim config at config." .. err)
+      end
+   end
+end
 
 --- Merge the user configuration with the default values.
 ---@param config feed.config
 function M.resolve(config)
    config = config or {}
-   -- validate(config)
    M.config = vim.tbl_deep_extend("keep", config, default)
+   validate(M.config)
 end
 
 return M

@@ -1,6 +1,7 @@
 local fzf = require("fzf-lua")
 local ui = require("feed.ui")
-local format = require("feed.ui.format")
+local DB = require "feed.db"
+local Format = require("feed.ui.format")
 local builtin = require("fzf-lua.previewer.builtin")
 
 local MyPreviewer = builtin.base:extend()
@@ -39,7 +40,7 @@ local function feed_search()
       local on_display = ui.refresh({ query = str, show = false })
       local ret = {}
       for i, id in ipairs(on_display) do
-         ret[i] = format.entry(id) .. (" "):rep(100) .. id
+         ret[i] = Format.entry(id) .. (" "):rep(100) .. id
       end
       return ret
    end, {
@@ -55,6 +56,40 @@ local function feed_search()
       },
    })
 end
+
+local function feed_grep(opts)
+   local fzf_lua = require("fzf-lua")
+   opts = opts or {}
+   opts.prompt = "> "
+   opts.git_icons = true
+   opts.file_icons = true
+   opts.color_icons = true
+   -- setup default actions for edit, quickfix, etc
+   opts.actions = fzf_lua.defaults.actions.files
+   -- see preview overview for more info on previewers
+   opts.previewer = "builtin"
+   opts.fn_transform = function(x)
+      local id = x:sub(10, 10 + 63)
+      -- return Format.entry(id)
+      return fzf_lua.make_entry.file(x, opts)
+   end
+   opts.cwd = tostring(DB.dir / "data")
+   -- we only need 'fn_preprocess' in order to display 'git_icons'
+   -- it runs once before the actual command to get modified files
+   -- 'make_entry.file' uses 'opts.diff_files' to detect modified files
+   -- will probaly make this more straight forward in the future
+   opts.fn_preprocess = function(o)
+      opts.diff_files = fzf_lua.make_entry.preprocess(o).diff_files
+      return opts
+   end
+   return fzf_lua.fzf_live(function(q)
+      return "rg --column --color=always -- " .. vim.fn.shellescape(q or "")
+   end, opts)
+end
+
+-- We can use our new function on any folder or
+-- with any other fzf-lua options ('winopts', etc)
+-- _G.live_grep()
 
 return {
    feed_search = feed_search,

@@ -21,6 +21,10 @@ add {
 }
 
 add {
+   source = "nvim-lua/plenary.nvim",
+}
+
+add {
    source = "pysan3/pathlib.nvim",
 }
 

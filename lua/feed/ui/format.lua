@@ -2,6 +2,7 @@ local M = {}
 local Config = require "feed.config"
 local DB = require "feed.db"
 local ut = require "feed.utils"
+local strings = require "plenary.strings"
 
 local align = ut.align
 local tag2icon = Config.tag2icon
@@ -39,7 +40,16 @@ function M.tags(id)
          taglist = { 'unread' }
       end
    end
-   return "[" .. table.concat(taglist, ", ") .. "]"
+
+   local tags_len
+
+   for _, v in ipairs(Config.layout) do
+      if v[1] == "tags" then
+         tags_len = v.width - 2
+      end
+   end
+
+   return "[" .. strings.truncate(table.concat(taglist, ", "), tags_len) .. "]"
 end
 
 ---@param id string
@@ -119,7 +129,7 @@ function M.gen_format(id, comps)
          text = M[v[1]](id)
       end
       v.width = v.width or #text
-      v.width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+      -- v.width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
       text = align(text, v.width, v.right_justify) .. " "
       res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
       acc_width = acc_width + v.width + 1

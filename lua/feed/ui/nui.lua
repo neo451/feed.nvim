@@ -107,26 +107,25 @@ local function telescope_select(items, opts, on_choice)
        :find()
 end
 
-local registered_once = false
-
 M.select = function(items, opts, on_choice)
    local backend = ut.choose_backend(Config.search.backend)
    if backend == 'fzf-lua' then
       local prompt = ' ' .. opts.prompt .. ' '
       opts.prompt = "> "
-      if not registered_once then
-         require("fzf-lua").register_ui_select(function(_, items)
-            local min_h, max_h = 0.15, 0.70
-            local h = (#items + 4) / vim.o.lines
-            if h < min_h then
-               h = min_h
-            elseif h > max_h then
-               h = max_h
-            end
-            return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
-         end)
-         registered_once = true
+      local ui_select = require "fzf-lua.providers.ui_select"
+      if ui_select.is_registered() then
+         ui_select.deregister()
       end
+      require("fzf-lua").register_ui_select(function(_, i)
+         local min_h, max_h = 0.15, 0.70
+         local h = (#i + 4) / vim.o.lines
+         if h < min_h then
+            h = min_h
+         elseif h > max_h then
+            h = max_h
+         end
+         return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
+      end)
       require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
    else
       if backend == 'pick' then
@@ -167,7 +166,5 @@ function M.split(percentage, lines)
    api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
    return split
 end
-
----TODO: search and grep
 
 return M
