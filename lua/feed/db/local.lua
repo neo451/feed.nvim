@@ -187,7 +187,7 @@ end
 function M:tag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = true
-      self:save_feeds()
+      self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
@@ -209,7 +209,7 @@ end
 function M:untag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = nil
-      self:save_feeds()
+      self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
@@ -376,9 +376,9 @@ function M:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds, { process = false }))
 end
 
-function M:save_feeds()
+function M:save_tags()
    local tags = vim.deepcopy(self.tags)
-   setmetatable(tags, {})
+   setmetatable(tags, nil)
    return save_file(tags_fp, "return " .. vim.inspect(tags, { process = false }))
 end
 
