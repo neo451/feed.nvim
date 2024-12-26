@@ -18,11 +18,6 @@ function M.listify(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end
 
----@return integer
-function M.get_cursor_row()
-   return api.nvim_win_get_cursor(0)[1]
-end
-
 --- Telescope Wrapper around vim.notify
 ---@param funname string: name of the function that will be
 ---@param opts table: opts.level string, opts.msg string, opts.once bool
@@ -36,36 +31,6 @@ function M.notify(funname, opts)
    notify_fn(string.format("[feed.%s]: %s", funname, opts.msg), level, {
       title = "feed.nvim",
    })
-end
-
----@param f fun(cb:function, ...)
-function M.cb_to_co(f)
-   local f_co = function(...)
-      local co = coroutine.running()
-      assert(co ~= nil, "The result of cb_to_co must be called within a coroutine.")
-      local args = { ... }
-
-      -- f needs to have the callback as its first argument, because varargs
-      -- passing doesn’t work otherwise.
-      f(function(ret)
-         local ok = coroutine.resume(co, ret)
-         if not ok then
-            vim.print("coroutine failed", unpack(args))
-            -- error "The coroutine failed"
-         end
-      end, ...)
-      return coroutine.yield()
-   end
-
-   return f_co
-end
-
----@param f function
----@return function
-function M.wrap(f)
-   return function(...)
-      coroutine.wrap(f)(...)
-   end
 end
 
 M.pdofile = function(fp)
@@ -173,14 +138,6 @@ M.align = function(str, width, right_justify)
    str = strings.truncate(str, width)
    return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
 end
-
-M.input = M.cb_to_co(function(cb, opts)
-   pcall(vim.ui.input, opts, vim.schedule_wrap(cb))
-end)
-
-M.select = M.cb_to_co(function(cb, items, opts)
-   pcall(vim.ui.select, items, opts, cb)
-end)
 
 M.unescape = function(str)
    return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`!|#<>_()$.])", function(s)
@@ -293,6 +250,24 @@ end
 
 function M.capticalize(str)
    return str:sub(1, 1):upper() .. str:sub(2)
+end
+
+--- Set window-local options.
+---@param win number
+---@param wo vim.wo
+function M.wo(win, wo)
+   for k, v in pairs(wo or {}) do
+      vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
+   end
+end
+
+--- Set buffer-local options.
+---@param buf number
+---@param bo vim.bo
+function M.bo(buf, bo)
+   for k, v in pairs(bo or {}) do
+      vim.api.nvim_set_option_value(k, v, { buf = buf })
+   end
 end
 
 return M

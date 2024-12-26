@@ -2,7 +2,8 @@ local MiniPick = require "mini.pick"
 local ui = require "feed.ui"
 local db = require "feed.db"
 local format = require "feed.ui.format"
-local config = require "feed.config"
+local Config = require "feed.config"
+local ut = require "feed.utils"
 
 local function feed_search()
    local lookup = {}
@@ -44,14 +45,11 @@ local function feed_search()
          items = ids,
          match = match,
          show = show,
-         preview = function(buf_id, id)
-            ui.show_entry { buf = buf_id, id = id }
+         preview = function(buf, id)
+            ui.show_entry { buf = buf, id = id }
             local win = vim.api.nvim_get_current_win()
-            for key, value in pairs(config.options.entry) do
-               pcall(vim.api.nvim_set_option_value, key, value, { buf = buf_id })
-               pcall(vim.api.nvim_set_option_value, key, value, { win = win })
-               vim.treesitter.start(buf_id, "markdown")
-            end
+            ut.wo(win, Config.options.entry.wo)
+            ut.bo(buf, Config.options.entry.bo)
          end,
          choose = function(id)
             vim.cmd "q"
@@ -106,20 +104,17 @@ local function feed_grep()
          items = ids,
          match = match,
          show = show,
-         preview = function(buf_id, id)
-            ui.show_entry { buf = buf_id, id = id }
+         preview = function(buf, id)
+            ui.show_entry { buf = buf, id = id }
             local win = vim.api.nvim_get_current_win()
-            for key, value in pairs(config.options.entry) do
-               pcall(vim.api.nvim_set_option_value, key, value, { buf = buf_id })
-               pcall(vim.api.nvim_set_option_value, key, value, { win = win })
-               vim.treesitter.start(buf_id, "markdown")
-            end
+            ut.wo(win, Config.options.entry.wo)
+            ut.bo(buf, Config.options.entry.bo)
             local loc = id2loc[id]
             local pos = { loc.lnum + 5, 0 }
             local pos_end = { loc.lnum + 6, -1 }
             vim.api.nvim_win_set_cursor(win, pos)
             local ns = vim.api.nvim_create_namespace("FeedPreviewHighlight")
-            vim.hl.range(buf_id, ns, "MiniPickMatchMarked", pos, pos_end)
+            vim.hl.range(buf, ns, "MiniPickMatchMarked", pos, pos_end)
          end,
          choose = function(id)
             vim.cmd "q"

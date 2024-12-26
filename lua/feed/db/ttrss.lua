@@ -92,17 +92,17 @@
 -- feed_dates - newest first, goes by feed date
 -- (nothing) - default
 
----@class ttrss
----@field getHeadlines fun(self: ttrss, param: ttrss.headlineParams): ttrss.headline[]
----@field getFeeds fun(self: ttrss, param: { cat_id: integer, unread_only: boolean, limit: integer, offset: integer, inclued_nested: boolean }): ttrss.feed[]
----@field getArticle fun(self: ttrss, param: { article_id: string | integer }): ttrss.article[]
----@field getUnread fun(self: ttrss): integer
----@field getVersion fun(self: ttrss): string
----@field getApiLevel fun(self: ttrss): integer
----@field getConfig fun(self: ttrss): table
----@field getCounters fun(self: ttrss): table
----@field setArticleLabel fun(self: ttrss, param: { article_ids: string, label_id: integer, assign: boolean })
----@field updateArticle fun(self: ttrss, param: { article_ids: string, mode: integer, field: integer, data: string })
+---@class ttrssApi
+---@field getHeadlines fun(self: ttrssApi, param: ttrss.headlineParams): ttrss.headline[]
+---@field getFeeds fun(self: ttrssApi, param: { cat_id: integer, unread_only: boolean, limit: integer, offset: integer, inclued_nested: boolean }): ttrss.feed[]
+---@field getArticle fun(self: ttrssApi, param: { article_id: string | integer }): ttrss.article[]
+---@field getUnread fun(self: ttrssApi): integer
+---@field getVersion fun(self: ttrssApi): string
+---@field getApiLevel fun(self: ttrssApi): integer
+---@field getConfig fun(self: ttrssApi): table
+---@field getCounters fun(self: ttrssApi): table
+---@field setArticleLabel fun(self: ttrssApi, param: { article_ids: string, label_id: integer, assign: boolean })
+---@field updateArticle fun(self: ttrssApi, param: { article_ids: string, mode: integer, field: integer, data: string })
 
 local api = {}
 local Curl = require "feed.curl"
@@ -121,7 +121,7 @@ local function decode_check(obj, method) --- TODO: assert decode gets the method
    return response.content
 end
 
----@return ttrss
+---@return ttrssApi
 function api.new()
    return setmetatable({
       sid = api:login({
@@ -195,6 +195,8 @@ M.__index = M
 
 local query = require "feed.db.query"
 
+
+---@return feed.db
 function M.new()
    local ttrss = api.new()
    local feeds = {}

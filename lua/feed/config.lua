@@ -16,42 +16,13 @@ local default = {
    ---@type string
    db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type string
-   colorscheme = vim.g.colorname,
+   colorscheme = "",
    ---@type string
    date_format = "%Y-%m-%d",
    ---@type string
    rsshub_instance = "https://rsshub.app",
    ---@type string[]
    curl_params = {},
-   options = {
-      ---@type table<string, any>
-      index = {
-         swapfile = false,
-         undolevels = -1,
-         undoreload = 0,
-         conceallevel = 0,
-         signcolumn = "no",
-         wrap = false,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-         list = false,
-         statuscolumn = " ",
-      },
-
-      ---@type table<string, any>
-      entry = {
-         conceallevel = 3,
-         concealcursor = "nvc",
-         wrap = true,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-         list = false,
-         spell = false,
-         statuscolumn = " ",
-      },
-   },
    ---@type table[]
    layout = {
       {
@@ -161,6 +132,45 @@ local default = {
          open_url = "gx",
       },
    },
+   options = {
+      ---@type { wo: table, bo: table }
+      index = {
+         wo = {
+            signcolumn = "no",
+            wrap = false,
+            number = false,
+            relativenumber = false,
+            list = false,
+            statuscolumn = " ",
+            conceallevel = 0,
+         },
+         bo = {
+            swapfile = false,
+            undolevels = -1,
+            modifiable = false,
+         }
+      },
+
+      ---@type { wo: table, bo: table }
+      entry = {
+         wo = {
+            signcolumn = "no",
+            wrap = true,
+            number = false,
+            relativenumber = false,
+            list = false,
+            statuscolumn = " ",
+            spell = false,
+            conceallevel = 0,
+         },
+         bo = {
+            filetype = "markdown",
+            swapfile = false,
+            undolevels = -1,
+            modifiable = false,
+         },
+      },
+   }
 }
 
 local M = {}

@@ -108,8 +108,6 @@ function M.get(url, opts, cb)
    end
 end
 
--- M.get_co = ut.cb_to_co(M.get)
-
 ---@param url string
 ---@param opts table -- TODO:
 ---@return vim.SystemCompleted?

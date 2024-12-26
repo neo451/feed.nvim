@@ -1,5 +1,5 @@
 local image_c = 0
-local ut = pandoc.utils
+
 local function remove_attr(x)
    if x.attr then
       x.attr = pandoc.Attr()

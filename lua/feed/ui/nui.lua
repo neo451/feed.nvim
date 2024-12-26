@@ -2,6 +2,7 @@ local M = {}
 local Config = require "feed.config"
 local Split = require("nui.split")
 local Menu = require("nui.menu")
+local Input = require "nui.input"
 local event = require("nui.utils.autocmd").event
 local api = vim.api
 local ut = require "feed.utils"
@@ -165,6 +166,39 @@ function M.split(percentage, lines)
    api.nvim_set_option_value("relativenumber", false, { win = split.winid })
    api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
    return split
+end
+
+function M.input(opts, on_submit)
+   local input = Input({
+      position = {
+         row = vim.o.lines,
+         col = 0
+      },
+      size = {
+         width = vim.o.columns,
+         height = 1,
+      },
+      border = {
+         style = "none",
+      },
+      zindex = 1000,
+      win_options = {
+         winhighlight = "Normal:Normal,FloatBorder:Normal",
+      },
+   }, {
+      prompt = opts.prompt,
+      default_value = opts.default,
+      on_submit = on_submit,
+   })
+
+   input:mount()
+
+   input:on(event.BufLeave, function()
+      input:unmount()
+   end)
+   input:map("n", "q", function()
+      input:unmount()
+   end)
 end
 
 return M
