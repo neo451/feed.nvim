@@ -1,14 +1,22 @@
 local ut = require "feed.utils"
 
-local function append(str)
-   vim.wo.winbar = vim.wo.winbar .. str
-end
+-- local function append(str)
+--    vim.wo.winbar = vim.wo.winbar .. str
+-- end
 
+---@param name any
+---@param str any
+---@param width any
+---@param grp any
+---@param right any
+---@return string
 local function new_comp(name, str, width, grp, right)
+   local buf = {}
    width = width or 0
    vim.g["feed_" .. name] = str
-   append("%#" .. grp .. "#")
-   append("%" .. (right and "" or "-") .. width + 1 .. "{g:feed_" .. name .. "}")
+   buf[#buf + 1] = ("%#" .. grp .. "#")
+   buf[#buf + 1] = ("%" .. (right and "" or "-") .. width + 1 .. "{g:feed_" .. name .. "}")
+   return table.concat(buf, "")
 end
 
 local providers = {}
@@ -38,19 +46,23 @@ end
 --    return ("[%d/%d]"):format(current_index, #on_display)
 -- end
 
+---@return string
 local function show_winbar()
-   vim.wo.winbar = " "
+   local buf = { " " }
    for _, v in ipairs(Config.layout) do
       if not v.right then
-         new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
       end
    end
-   append "%="
+
+   buf[#buf + 1] = "%="
+
    for _, v in ipairs(Config.layout) do
       if v.right then
-         new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
       end
    end
+   return table.concat(buf, "")
 end
 
 -- TODO: idea: show keymap hints at bottom like newsboat

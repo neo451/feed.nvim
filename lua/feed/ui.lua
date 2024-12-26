@@ -1,6 +1,5 @@
 local Config = require("feed.config")
 local ut = require("feed.utils")
----@type feed.db
 local DB = require("feed.db")
 local Format = require("feed.ui.format")
 local NuiText = require("nui.text")
@@ -14,7 +13,6 @@ local fetch = require "feed.fetch"
 local Win = require "feed.ui.window"
 local read_file = ut.read_file
 local save_file = ut.save_file
-
 
 local api = vim.api
 local feeds = DB.feeds
@@ -115,8 +113,8 @@ M.get_entry = get_entry
 ---@param id string
 local function mark_read(id)
    DB:tag(id, "read")
-   local buf = state.index.buf
-   if buf and api.nvim_buf_is_valid(buf) then
+   if state.index:valid() then
+      local buf = state.index.buf
       local NLine = Format.gen_nui_line(id, true)
       vim.bo[buf].modifiable = true
       NLine:render(buf, -1, current_index)
@@ -414,7 +412,10 @@ M.search       = function(q)
    if q then
       M.refresh({ query = q })
    elseif ut.in_index() or not backend then
-      Nui.input({ prompt = "Feed query: ", default = vim.g.feed_current_query .. " " }, function(val)
+      Nui.input({
+         prompt = "Feed query: ",
+         default = Config.search.show_last and vim.g.feed_current_query .. " " or ""
+      }, function(val)
          if not val then
             return
          end
