@@ -33,7 +33,7 @@ function M.notify(funname, opts)
    })
 end
 
-M.pdofile = function(fp)
+M.load_file = function(fp)
    if type(fp) == "table" then
       fp = tostring(fp)
    end
@@ -46,13 +46,13 @@ M.pdofile = function(fp)
    end
 end
 
----@param fp string
+---@param fp string | PathlibPath
 ---@param object table
 M.save_obj = function(fp, object)
    M.save_file(fp, "return " .. vim.inspect(object))
 end
 
----@param path string
+---@param path string | PathlibPath
 ---@param content string
 M.save_file = function(path, content)
    if not path then
@@ -63,6 +63,7 @@ M.save_file = function(path, content)
       ---@diagnostic disable-next-line: param-type-mismatch
       path = tostring(path)
    end
+   ---@cast path string
    local f = io.open(path, "w")
    if f then
       f:write(content)

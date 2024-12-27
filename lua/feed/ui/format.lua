@@ -5,7 +5,7 @@ local ut = require "feed.utils"
 local strings = require "plenary.strings"
 
 local align = ut.align
-local tag2icon = Config.tag2icon
+local icons = Config.icons
 
 -- TODO: this whole module should be user definable
 
@@ -25,8 +25,8 @@ function M.tags(id)
    local taglist = vim.iter(DB.tags)
        :fold({}, function(acc, tag, v)
           if type(v) == "table" and v[id] then
-             if tag2icon.enabled then
-                acc[#acc + 1] = tag2icon[tag] or tag
+             if icons.enabled then
+                acc[#acc + 1] = icons[tag] or tag
              else
                 acc[#acc + 1] = tag
              end
@@ -34,8 +34,8 @@ function M.tags(id)
           return acc
        end)
    if vim.tbl_isempty(taglist) then
-      if tag2icon.enabled then
-         taglist = { tag2icon.unread }
+      if icons.enabled then
+         taglist = { icons.unread }
       else
          taglist = { 'unread' }
       end

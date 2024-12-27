@@ -4,7 +4,7 @@
 ---@field db_dir? string
 ---@field date_format? string
 ---@field curl_params? string[]
----@field rsshub_instance? string move all options here as a enum??
+---@field rsshub? { instance: string, export: string } move all options here as a enum??
 ---@field layout? table
 ---@field progress? { backend: "mini.notify" | "snacks" | "nvim-notify" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
@@ -19,8 +19,11 @@ local default = {
    colorscheme = "",
    ---@type string
    date_format = "%Y-%m-%d",
-   ---@type string
-   rsshub_instance = "https://rsshub.app",
+   ---@type { instance: string, export: string }
+   rsshub = {
+      instance = "https://rsshub.app",
+      export = "https://rsshub.app",
+   },
    ---@type string[]
    curl_params = {},
    ---@type table[]
@@ -42,25 +45,24 @@ local default = {
       },
       {
          "title",
-         width = 0,
+         -- width = 80,
          color = "FeedTitle",
       },
       {
          "last_updated",
          right = true,
-         width = 0,
          color = "FeedDate",
       },
       {
          "query",
          right = true,
-         width = 0,
          color = "FeedLabel",
       },
    },
 
    search = {
       default_query = "@6-months-ago +unread",
+      show_last = false,
       backend = {
          "mini.pick",
          "telescope",
@@ -89,7 +91,7 @@ local default = {
       telescope = {},
    },
 
-   tag2icon = {
+   icons = {
       enabled = false,
       pod = "📻",
       unread = "👀",
@@ -195,7 +197,7 @@ local function validate(cfg)
       db_dir = "string",
       colorscheme = "string",
       date_format = "string",
-      rsshub_instance = "string",
+      rsshub = "table",
       curl_params = "table",
       options = "table",
       layout = "table",
@@ -204,7 +206,7 @@ local function validate(cfg)
       data = "table",
       feeds = "table",
       keys = "table",
-      tag2icon = "table",
+      icons = "table",
    }
    for k, v in pairs(path) do
       local ok, err = pval(k, cfg[k], v)

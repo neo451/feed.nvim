@@ -18,6 +18,7 @@ local ut = require "feed.utils"
 ---@field untag fun(db: feed.db, id: string, tag: string | string[])
 ---@field blowup fun(db: feed.db)
 ---@field update fun(db: feed.db)
+---@field lastUpdated fun(db: feed.db)
 
 local M = {}
 M.__index = M
@@ -32,10 +33,10 @@ local tags_fp = db_dir / "tags.lua"
 local list_fp = db_dir / "list.lua"
 local index_fp = db_dir / "index"
 
-local pdofile = ut.pdofile
+local load_file = ut.load_file
 local save_file = ut.save_file
 local save_obj = ut.save_obj
-local remove_file = function(fp)
+local rm_file = function(fp)
    if vim.fs.rm then
       vim.fs.rm(tostring(fp), { recursive = true })
    else
@@ -113,7 +114,7 @@ function M:__index(k)
    if rawget(M, k) then
       return M[k]
    elseif k == "feeds" then
-      local feeds = pdofile(feeds_fp)
+      local feeds = load_file(feeds_fp)
       rawset(self, "feeds", feeds)
       return rawget(self, "feeds")
    elseif k == "index" then
@@ -121,7 +122,7 @@ function M:__index(k)
       rawset(self, "index", index)
       return rawget(self, "index")
    elseif k == "tags" then
-      local tags = pdofile(tags_fp)
+      local tags = load_file(tags_fp)
       setmetatable(tags, {
          __index = function(t, tag)
             rawset(t, tag, {})
@@ -135,7 +136,7 @@ function M:__index(k)
       if not r then
          local path = if_path(k)
          if path then
-            r = pdofile(path)
+            r = load_file(path)
             mem[k] = r
          end
       end
@@ -144,11 +145,11 @@ function M:__index(k)
 end
 
 function M:update()
-   local feeds = pdofile(feeds_fp)
+   local feeds = load_file(feeds_fp)
    rawset(self, "feeds", feeds)
    local index = parse_index()
    rawset(self, "index", index)
-   local tags = pdofile(tags_fp)
+   local tags = load_file(tags_fp)
    setmetatable(tags, {
       __index = function(t, tag)
          rawset(t, tag, {})
@@ -245,8 +246,8 @@ function M:rm(id)
    end
    self:save_feeds()
    self:save_index()
-   pcall(remove_file, data_dir / id)
-   pcall(remove_file, object_dir / id)
+   pcall(rm_file, data_dir / id)
+   pcall(rm_file, object_dir / id)
    rawset(self, id, nil)
    rawset(mem, id, nil)
 end
@@ -259,7 +260,7 @@ function M:iter(sort)
    end
    return vim.iter(self.index):map(function(v)
       local id = v[1]
-      local r = pdofile(object_dir / id)
+      local r = load_file(object_dir / id)
       mem[id] = r
       return id, r
    end)
@@ -328,7 +329,7 @@ function M:filter(str)
 
    if q.re then
       iter = iter:filter(function(id)
-         mem[id] = pdofile(object_dir / id)
+         mem[id] = load_file(object_dir / id)
          local entry = self[id]
          if not entry or not entry.title then
             return false
@@ -344,7 +345,7 @@ function M:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         mem[id] = pdofile(object_dir / id)
+         mem[id] = load_file(object_dir / id)
          local url = self[id].feed
          local feed_name = self.feeds[url] and self.feeds[url].title
          if q.feed:match_str(url) or (feed_name and q.feed:match_str(feed_name)) then
@@ -356,7 +357,7 @@ function M:filter(str)
 
    local ret = iter:fold({}, function(acc, id)
       if not mem[id] then
-         mem[id] = pdofile(object_dir / id)
+         mem[id] = load_file(object_dir / id)
       end
       acc[#acc + 1] = id
       return acc
@@ -371,19 +372,18 @@ function M:filter(str)
    return ret
 end
 
----@return boolean
 function M:save_feeds()
-   return save_file(feeds_fp, "return " .. vim.inspect(self.feeds, { process = false }))
+   return save_file(feeds_fp, "return " .. vim.inspect(self.feeds))
 end
 
 function M:save_tags()
    local tags = vim.deepcopy(self.tags)
    setmetatable(tags, nil)
-   return save_file(tags_fp, "return " .. vim.inspect(tags, { process = false }))
+   return save_file(tags_fp, "return " .. vim.inspect(tags))
 end
 
 function M:blowup()
-   remove_file(db_dir)
+   rm_file(db_dir)
 end
 
 return M.new()
