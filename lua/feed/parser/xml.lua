@@ -99,6 +99,9 @@ setmetatable(H, {
    end,
 })
 
+---@param node TSNode
+---@param src string
+---@return table
 H.XMLDecl = function(node, src)
    local res = {}
    for child in node:iter_children() do
@@ -109,6 +112,9 @@ H.XMLDecl = function(node, src)
    return res
 end
 
+---@param node TSNode
+---@param src string
+---@return table
 H.prolog = function(node, src)
    local res = {}
    for child in node:iter_children() do
@@ -140,6 +146,9 @@ H.STag = function(node, src)
    return name, res
 end
 
+---@param node TSNode
+---@param src string
+---@return string
 H.CharData = function(node, src)
    local text = get_text(node, src)
    if text:find "%S" then
@@ -147,14 +156,26 @@ H.CharData = function(node, src)
    end
 end
 
+---@param node TSNode
+---@param src string
+---@return string
 H.CharRef = function(node, src)
    local text = get_text(node, src)
    local num = tonumber(text:sub(3, -2))
-   if num then
-      return string.char(num)
-   end
+   return num and string.char(num) or ""
 end
 
+---@param node TSNode
+---@param src string
+---@return string
+H.EntityRef = function(node, src)
+   local entity = get_text(node, src)
+   return ENTITIES[entity]
+end
+
+---@param node TSNode
+---@param src string
+---@return string
 H.CDSect = function(node, src)
    return get_text(node:child(1), src)
 end
@@ -172,11 +193,6 @@ H.content = function(node, src)
       return { table.concat(ret) }
    end
    return ret
-end
-
-H.EntityRef = function(node, src)
-   local entity = get_text(node, src)
-   return ENTITIES[entity]
 end
 
 H.EmptyElemTag = H.STag
