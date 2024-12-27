@@ -70,7 +70,6 @@ function M.update_feed(url, opts, cb)
                for _, entry in ipairs(d.entries) do
                   local content = entry.content
                   entry.content = nil
-                  -- local id = vim.fn.sha256(entry.link)
                   local id = vim.fn.sha256(entry.link)
                   Markdown.convert(content, function() end, true, tostring(DB.dir / "data" / id))
                   DB[id] = entry
@@ -108,7 +107,6 @@ function M.update_all()
    Coop.spawn(function()
       while not q:empty() do
          for _ = 1, size do
-            -- if not q:empty() then
             jobs = jobs + 1
             if jobs > size then
                uv_utils.sleep(1000)

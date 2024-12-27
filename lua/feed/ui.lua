@@ -9,7 +9,7 @@ local Markdown = require("feed.ui.markdown")
 local Nui = require("feed.ui.nui")
 local Curl = require("feed.curl")
 local Opml = require("feed.parser.opml")
-local fetch = require "feed.fetch"
+local Fetch = require "feed.fetch"
 local Win = require "feed.ui.window"
 local read_file = ut.read_file
 local save_file = ut.save_file
@@ -22,8 +22,6 @@ local resolve_and_open = ut.resolve_and_open
 local Split = Nui.split
 
 local on_display
-local current_entry, current_index
-
 
 local og = {
    colorscheme = vim.g.colors_name,
@@ -46,12 +44,7 @@ local function show_index()
       state.index = Win.new({
          wo = Config.options.index.wo,
          bo = Config.options.index.bo,
-         keys = {
-            { "q",    ":Feed quit" },
-            { "<cr>", ":Feed entry" },
-            { "r",    ":Feed refresh" },
-            { "s",    ":Feed search" },
-         },
+         keys = Config.keys.index,
          autocmds = {
             [{ "BufEnter", "WinEnter", "VimResized" }] = function()
                vim.wo.winbar = M.show_winbar()
@@ -66,7 +59,7 @@ local function show_index()
       })
    end
    local buf = state.index.buf
-   pcall(api.nvim_buf_set_name, buf, "FeedIndex")
+   api.nvim_buf_set_name(buf, "FeedIndex")
    on_display = on_display or DB:filter(vim.g.feed_current_query)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear lines
@@ -77,47 +70,46 @@ local function show_index()
    api.nvim_exec_autocmds("User", { pattern = "ShowIndexPost" })
 end
 
+---get entry base on current context, and update current_index
 ---@return feed.entry
 ---@return string
-local function get_entry(opts)
-   opts = opts or {}
+local function get_entry(ctx)
+   ctx = ctx or {}
    local id
-   if opts.id then
-      id = opts.id
+   if ctx.id then
+      id = ctx.id
       if ut.in_index() then
-         current_index = api.nvim_win_get_cursor(0)[1]
+         state.cur = api.nvim_win_get_cursor(0)[1]
       elseif on_display then
          for i, v in ipairs(on_display) do
             if v == id then
-               current_index = i
+               state.cur = i
             end
          end
       end
-   elseif opts.row then
-      current_index = opts.row
-      id = on_display[current_index]
+   elseif ctx.row then
+      state.cur = ctx.row
+      id = on_display[state.cur]
    elseif ut.in_index() then
-      current_index = api.nvim_win_get_cursor(0)[1]
-      id = on_display[current_index]
+      state.cur = api.nvim_win_get_cursor(0)[1]
+      id = on_display[state.cur]
    elseif ut.in_entry() then
-      id = on_display[current_index]
+      id = on_display[state.cur]
    else
       error("no context to show entry")
    end
    return DB[id], id
 end
 
-M.get_entry = get_entry
-
 ---Mark entry in db with read tag, if index rendered then grey out the entry
 ---@param id string
 local function mark_read(id)
    DB:tag(id, "read")
-   if state.index:valid() then
+   if state.index and state.index:valid() then
       local buf = state.index.buf
       local NLine = Format.gen_nui_line(id, true)
       vim.bo[buf].modifiable = true
-      NLine:render(buf, -1, current_index)
+      NLine:render(buf, -1, state.cur)
       vim.bo[buf].modifiable = false
    end
 end
@@ -145,38 +137,37 @@ local function render_entry(ctx, lines, id, is_preview)
       end
    end
 
-
    if not is_preview then
-      local ok, urls = pcall(get_buf_urls, buf, current_entry.link)
+      local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
 
-      if not state.entry or not state.entry:valid() then
-         state.entry = Win.new {
-            buf = buf,
-            b = {
-               urls = ok and urls or {},
-            },
-            wo = Config.options.entry.wo,
-            bo = Config.options.entry.bo,
-            keys = {
-               { "q", "close" },
-               { "r", ":Feed urlview" },
-            },
-            ft = "markdown",
-            autocmds = {
-               [{ "BufEnter", "WinEnter", "VimResized" }] = function()
-                  vim.o.cmdheight = 0
-                  pcall(vim.cmd.colorscheme, Config.colorscheme)
-               end,
-               [{ "BufLeave", "WinLeave" }] = function()
-                  vim.o.cmdheight = og.cmdheight
-                  vim.cmd.colorscheme(og.colorscheme)
-               end
-            }
+      -- if not state.entry or not state.entry:valid() then
+      state.entry = Win.new {
+         prev_win = (state.index and state.index:valid()) and state.index.win or nil,
+         buf = buf,
+         b = {
+            urls = ok and urls or {},
+         },
+         wo = Config.options.entry.wo,
+         bo = Config.options.entry.bo,
+         keys = Config.keys.entry,
+         ft = "markdown",
+         autocmds = {
+            [{ "BufEnter", "WinEnter", "VimResized" }] = function()
+               vim.o.cmdheight = 0
+               pcall(vim.cmd.colorscheme, Config.colorscheme)
+            end,
+            [{ "BufLeave", "WinLeave" }] = function()
+               vim.o.cmdheight = og.cmdheight
+               vim.cmd.colorscheme(og.colorscheme)
+            end
          }
-      end
+      }
+      -- end
 
       local win = state.entry.win
-      pcall(api.nvim_buf_set_name, buf, "FeedEntry")
+
+      api.nvim_buf_set_name(buf, "FeedEntry")
+      -- pcall(api.nvim_buf_set_name, buf, "FeedEntry")
       api.nvim_win_set_cursor(win, { 1, 0 })
       api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 
@@ -213,7 +204,6 @@ local function show_entry(ctx)
    if not entry then
       return
    end
-   current_entry = entry
 
    ---@alias entry_line NuiLine | string
    ---@type entry_line[]
@@ -282,19 +272,20 @@ M.quit         = function()
 end
 
 M.show_prev    = function()
-   if current_index > 1 then
-      show_entry({ row = current_index - 1 })
+   if state.cur > 1 then
+      show_entry({ row = state.cur - 1 })
    end
 end
 
 M.show_next    = function()
-   if current_index < #on_display then
-      show_entry({ row = current_index + 1 })
+   if state.cur < #on_display then
+      show_entry({ row = state.cur + 1 })
    end
 end
 
 M.show_urls    = function()
    local urls = vim.b[state.entry.buf].urls
+   local base = get_entry().link
    Nui.select(urls, {
       prompt = "urlview",
       format_item = function(item)
@@ -302,21 +293,22 @@ M.show_urls    = function()
       end,
    }, function(item)
       if item then
-         resolve_and_open(item[2], current_entry.link)
+         resolve_and_open(item[2], base)
       end
    end)
 end
 
 M.open_url     = function()
-   vim.cmd.normal("yi[") -- FIX:
+   vim.cmd.normal("yi[")
    local text = vim.fn.getreg("0")
    local urls = vim.b[state.entry.buf].urls
+   local base = get_entry().link
    local item = vim.iter(urls):find(function(v)
       return v[1] == text
    end)
    local url = item and item[2] or vim.ui._get_urls()[1]
    if url then
-      resolve_and_open(url, current_entry.link)
+      resolve_and_open(url, base)
    end
 end
 
@@ -333,7 +325,11 @@ end
 M.show_log     = function()
    local str = ut.read_file(vim.fn.stdpath("data") .. "/feed.nvim.log")
    if str then
-      Split("50%", vim.split(str, "\n"))
+      if ut.in_index() then
+         Split("50%", vim.split(str, "\n"), state.index.win)
+      else
+         Split("50%", vim.split(str, "\n"))
+      end
    end
 end
 
@@ -343,6 +339,8 @@ M.show_hints   = function()
       maps = Config.keys.entry
    elseif ut.in_index() then
       maps = Config.keys.index
+   else
+      maps = Config.keys.index
    end
 
    local lines = {}
@@ -350,7 +348,7 @@ M.show_hints   = function()
       lines[#lines + 1] = v .. " -> " .. k
    end
 
-   Split("30%", lines)
+   Split("50%", lines, state.index and state.index.winid)
 end
 
 ---Open split to show entry
@@ -523,12 +521,12 @@ end
 
 ---@param url string
 M.update_feed = function(url)
-   local coop = require "coop"
+   local Coop = require "coop"
    if not url or not ut.looks_like_url(url) then
       return
    end
-   coop.spawn(function()
-      local ok = fetch.update_feed_co(url, { force = true })
+   Coop.spawn(function()
+      local ok = Fetch.update_feed_co(url, { force = true })
       ut.notify("fetch", { msg = ut.url2name(url, feeds) .. (ok and " success" or " failed"), level = "INFO" })
    end)
 end
@@ -550,7 +548,6 @@ end
 M.show_winbar = require "feed.ui.bar"
 M.show_index = show_index
 M.show_entry = show_entry
-
----make
+M.get_entry = get_entry
 
 return M

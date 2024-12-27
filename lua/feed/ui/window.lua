@@ -156,11 +156,7 @@ function M:map()
       opts.desc = "Feed " .. rhs
       assert(type(rhs) == "string")
       vim.keymap.set("n", lhs, function()
-         if lhs == "quit" then
-            self:close()
-         else
-            vim.cmd.Feed(rhs)
-         end
+         vim.cmd.Feed(rhs)
       end, opts)
    end
 end
@@ -178,17 +174,9 @@ end
 ---@param opts? { buf: boolean }
 function M:close(opts)
    opts = opts or {}
-   local wipe = opts.buf ~= false and not self.opts.buf and not self.opts.file
 
    local win = self.win
-   local buf = wipe and self.buf
-
-   -- never close modified buffers
-   if buf and vim.bo[buf].modified then
-      if not pcall(vim.api.nvim_buf_delete, buf, { force = false }) then
-         return
-      end
-   end
+   local buf = self.buf
 
    self.win = nil
    if buf then
