@@ -19,7 +19,7 @@ function M.new(opts)
       width = vim.o.columns,
       row = 0,
       col = 0,
-      zindex = 1,
+      zindex = 50,
       wo = {},
       bo = {},
       w = {},
@@ -30,19 +30,6 @@ function M.new(opts)
       opts = opts,
       id = id,
    }, { __index = M })
-
-   self.keys = {}
-   for key, spec in pairs(opts.keys) do
-      if spec then
-         if type(spec) == "string" then
-            spec = { key, spec, desc = spec }
-         elseif type(spec) == "function" then
-            spec = { key, spec }
-         end
-         table.insert(self.keys, spec)
-      end
-   end
-
 
    if opts.show ~= false then
       self:show()
@@ -86,23 +73,10 @@ function M:win_opts()
 end
 
 function M:show()
-   if self.buf and vim.api.nvim_buf_is_valid(self.buf) then
-      -- keep existing buffer
-      self.buf = self.buf
-   elseif self.opts.buf then
+   if self.opts.buf then
       self.buf = self.opts.buf
    else
       self.buf = vim.api.nvim_create_buf(false, true)
-      local text = type(self.opts.text) == "function" and self.opts.text() or self.opts.text
-      text = type(text) == "string" and { text } or text
-      if text then
-         ---@cast text string[]
-         vim.api.nvim_buf_set_lines(self.buf, 0, -1, false, text)
-      end
-
-      if vim.bo[self.buf].filetype == "" and not self.opts.bo.filetype then
-         self.opts.bo.filetype = "feed_win"
-      end
    end
 
    if self.opts.b then
@@ -111,32 +85,24 @@ function M:show()
       end
    end
 
+   self.augroup = vim.api.nvim_create_augroup("feed_win_" .. self.id, { clear = true })
+
    if self.opts.autocmds then
       for k, v in pairs(self.opts.autocmds) do
          vim.api.nvim_create_autocmd(k, {
+            -- group = self.augroup,
             buffer = self.buf,
             callback = v
          })
       end
    end
 
-   self.augroup = vim.api.nvim_create_augroup("feed_win_" .. self.id, { clear = true })
-
    self.win = vim.api.nvim_open_win(self.buf, true, self:win_opts())
 
    ut.wo(self.win, self.opts.wo)
    ut.bo(self.buf, self.opts.bo)
 
-   -- Go back to the previous window when closing,
-   -- and it's the current window
-   vim.api.nvim_create_autocmd("WinClosed", {
-      group = self.augroup,
-      callback = function(ev)
-         if ev.buf == self.buf and vim.api.nvim_get_current_win() == self.win then
-            pcall(vim.cmd.wincmd, "p")
-         end
-      end,
-   })
+   -- TODO: handle popup windows hide self
 
    -- update window size when resizing
    vim.api.nvim_create_autocmd("VimResized", {
@@ -162,13 +128,7 @@ function M:show()
             return
          end
 
-         -- -- don't swap if fixbuf is disabled
-         -- if self.opts.fixbuf == false then
-         --    self.buf = buf
-         --    -- update window options
-         --    ut.wo(self.win, self.opts.wo)
-         --    return
-         -- end
+         self:map()
 
          -- another buffer was opened in this window
          -- find another window to swap with
@@ -185,28 +145,23 @@ function M:show()
          end
       end,
    })
+   self:map()
+end
 
-   for _, spec in pairs(self.keys) do
-      local opts = vim.deepcopy(spec)
-      opts[1] = nil
-      opts[2] = nil
-      opts.mode = nil
+function M:map()
+   for rhs, lhs in pairs(self.opts.keys) do
+      local opts = {}
       opts.buffer = self.buf
       opts.nowait = true
-      local rhs = spec[2]
+      opts.desc = "Feed " .. rhs
       assert(type(rhs) == "string")
-      if not rhs:find(":") then
-         opts.expr = true
-         rhs = function()
-            return self[spec[2]](self)
+      vim.keymap.set("n", lhs, function()
+         if lhs == "quit" then
+            self:close()
+         else
+            vim.cmd.Feed(rhs)
          end
-      else
-         rhs = function()
-            vim.cmd(spec[2]:sub(2))
-         end
-      end
-      ---@cast spec feed.win.Keys
-      vim.keymap.set(spec.mode or "n", spec[1], rhs, opts)
+      end, opts)
    end
 end
 
@@ -250,6 +205,7 @@ function M:close(opts)
          pcall(vim.api.nvim_del_augroup_by_id, self.augroup)
          self.augroup = nil
       end
+      vim.api.nvim_set_current_win(self.opts.prev_win or 0)
    end
    local try_close
    try_close = function()

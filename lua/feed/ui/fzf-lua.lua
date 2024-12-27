@@ -93,4 +93,5 @@ end
 
 return {
    feed_search = feed_search,
+   feed_grep = feed_grep
 }

@@ -1,21 +1,16 @@
 local ut = require "feed.utils"
 
--- local function append(str)
---    vim.wo.winbar = vim.wo.winbar .. str
--- end
-
 ---@param name any
 ---@param str any
 ---@param width any
 ---@param grp any
----@param right any
 ---@return string
 local function new_comp(name, str, width, grp, right)
    local buf = {}
-   width = width or 0
+   width = width or #str
    vim.g["feed_" .. name] = str
    buf[#buf + 1] = ("%#" .. grp .. "#")
-   buf[#buf + 1] = ("%" .. (right and "" or "-") .. width + 1 .. "{g:feed_" .. name .. "}")
+   buf[#buf + 1] = right and str or ut.align(str, width + 1)
    return table.concat(buf, "")
 end
 
@@ -56,6 +51,7 @@ local function show_winbar()
    end
 
    buf[#buf + 1] = "%="
+   buf[#buf + 1] = "%<"
 
    for _, v in ipairs(Config.layout) do
       if v.right then

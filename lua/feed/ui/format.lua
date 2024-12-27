@@ -155,6 +155,7 @@ function M.gen_nui_line(id, read)
          if M[v[1]] then
             text = M[v[1]](id)
          end
+         v.width = v.width or #text
          local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
          line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
          acc_width = acc_width + v.width + 1
