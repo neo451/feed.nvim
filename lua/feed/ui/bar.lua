@@ -1,17 +1,19 @@
 local ut = require "feed.utils"
+local DB = require "feed.db"
+local Config = require 'feed.config'
 
----@param name any
+local M = {}
+
 ---@param str any
 ---@param width any
 ---@param grp any
 ---@return string
-local function new_comp(name, str, width, grp, right)
+local function append(str, width, grp, right)
    local buf = {}
    width = width or #str
-   vim.g["feed_" .. name] = str
-   buf[#buf + 1] = ("%#" .. grp .. "#")
+   buf[#buf + 1] = "%#" .. grp .. "#"
    buf[#buf + 1] = right and str or ut.align(str, width + 1)
-   return table.concat(buf, "")
+   return table.concat(buf)
 end
 
 local providers = {}
@@ -23,9 +25,6 @@ setmetatable(providers, {
       end
    end,
 })
-
-local DB = require "feed.db"
-local Config = require 'feed.config'
 
 providers.query = function()
    return vim.g.feed_current_query
@@ -42,11 +41,11 @@ end
 -- end
 
 ---@return string
-local function show_winbar()
+function M.show_winbar()
    local buf = { " " }
    for _, v in ipairs(Config.layout) do
       if not v.right then
-         buf[#buf + 1] = new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = append(providers[v[1]](v), v.width, v.color, v.right)
       end
    end
 
@@ -55,12 +54,20 @@ local function show_winbar()
 
    for _, v in ipairs(Config.layout) do
       if v.right then
-         buf[#buf + 1] = new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = append(providers[v[1]](v), v.width, v.color, v.right)
       end
    end
    return table.concat(buf, "")
 end
 
--- TODO: idea: show keymap hints at bottom like newsboat
+---@return string
+function M.show_keyhints()
+   local buf = {}
+   for rhs, lhs in vim.spairs(Config.keys.entry) do
+      buf[#buf + 1] = ("%s:%s"):format(lhs, ut.capticalize((rhs)))
+   end
 
-return show_winbar
+   return " %#FeedRead#" .. table.concat(buf, "   ") .. "%<"
+end
+
+return M

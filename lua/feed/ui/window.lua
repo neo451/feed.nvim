@@ -1,6 +1,6 @@
 local ut = require "feed.utils"
 
-local M = {}
+local Win = {}
 local id = 0
 
 ---@class feed.win.Config: vim.api.keyset.win_config
@@ -12,8 +12,8 @@ local id = 0
 
 ---@param opts feed.win.Config | {}
 ---@return table
-function M.new(opts)
-   opts = vim.tbl_extend("keep", opts, {
+function Win.new(opts)
+   opts = vim.tbl_deep_extend("force", {
       relative = "editor",
       height = vim.o.lines,
       width = vim.o.columns,
@@ -24,12 +24,12 @@ function M.new(opts)
       bo = {},
       w = {},
       b = {},
-   })
+   }, opts)
    id = id + 1
    local self = setmetatable({
       opts = opts,
       id = id,
-   }, { __index = M })
+   }, { __index = Win })
 
    if opts.show ~= false then
       self:show()
@@ -62,17 +62,32 @@ local win_opts = {
 }
 
 
-function M:win_opts()
+function Win:win_opts()
    local opts = {}
    for _, k in ipairs(win_opts) do
       opts[k] = self.opts[k]
    end
-   opts.height = vim.o.lines
-   opts.width = vim.o.columns
    return opts
 end
 
-function M:show()
+local split_minimal_wo = {
+   cursorcolumn = false,
+   cursorline = false,
+   cursorlineopt = "both",
+   fillchars = "eob: ,lastline:…",
+   list = false,
+   listchars = "extends:…,tab:  ",
+   number = false,
+   relativenumber = false,
+   signcolumn = "no",
+   spell = false,
+   winbar = "",
+   statuscolumn = "",
+   wrap = false,
+   sidescrolloff = 0,
+}
+
+function Win:show()
    if self.opts.buf then
       self.buf = self.opts.buf
    else
@@ -97,10 +112,21 @@ function M:show()
       end
    end
 
-   self.win = vim.api.nvim_open_win(self.buf, true, self:win_opts())
+   if self.opts.type == "split" then
+      vim.api.nvim_win_call(0, function()
+         vim.cmd("silent noswapfile belowright split")
+         vim.api.nvim_win_set_buf(0, self.buf)
+         self.win = vim.api.nvim_get_current_win()
+         vim.api.nvim_set_current_win(self.win)
+      end)
+      self.opts.wo = vim.tbl_extend("force", split_minimal_wo, self.opts.wo)
+   else
+      self.win = vim.api.nvim_open_win(self.buf, true, self:win_opts())
+   end
 
-   ut.wo(self.win, self.opts.wo)
+
    ut.bo(self.buf, self.opts.bo)
+   ut.wo(self.win, self.opts.wo)
 
    -- TODO: handle popup windows hide self
 
@@ -128,8 +154,6 @@ function M:show()
             return
          end
 
-         self:map()
-
          -- another buffer was opened in this window
          -- find another window to swap with
          for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -145,10 +169,14 @@ function M:show()
          end
       end,
    })
-   self:map()
+
+   self:maps()
 end
 
-function M:map()
+function Win:maps()
+   if self.opts.keys == nil then
+      return
+   end
    for rhs, lhs in pairs(self.opts.keys) do
       local opts = {}
       opts.buffer = self.buf
@@ -161,18 +189,24 @@ function M:map()
    end
 end
 
-function M:update()
+function Win:map(mode, lhs, rhs)
+   vim.keymap.set(mode, lhs, rhs, { buffer = self.buf, nowait = true })
+end
+
+function Win:update()
    if self:valid() then
       ut.bo(self.buf, self.opts.bo)
       ut.wo(self.win, self.opts.wo)
       local opts = self:win_opts()
       opts.noautocmd = nil
+      opts.height = vim.o.lines
+      opts.width = vim.o.columns
       vim.api.nvim_win_set_config(self.win, opts)
    end
 end
 
 ---@param opts? { buf: boolean }
-function M:close(opts)
+function Win:close(opts)
    opts = opts or {}
 
    local win = self.win
@@ -205,16 +239,16 @@ function M:close(opts)
    vim.schedule(try_close)
 end
 
-function M:buf_valid()
+function Win:buf_valid()
    return self.buf and vim.api.nvim_buf_is_valid(self.buf)
 end
 
-function M:win_valid()
+function Win:win_valid()
    return self.win and vim.api.nvim_win_is_valid(self.win)
 end
 
-function M:valid()
+function Win:valid()
    return self:win_valid() and self:buf_valid() and vim.api.nvim_win_get_buf(self.win) == self.buf
 end
 
-return M
+return Win
