@@ -9,7 +9,7 @@
 ---@field progress? { backend: "mini.notify" | "snacks" | "nvim-notify" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
 ---@field data? { backend: "local" | "ttrss" }
----@field options? table
+---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
 
 ---@class feed._config
 local default = {
@@ -45,7 +45,6 @@ local default = {
       },
       {
          "title",
-         -- width = 80,
          color = "FeedTitle",
       },
       {
@@ -144,6 +143,7 @@ local default = {
             relativenumber = false,
             list = false,
             statuscolumn = " ",
+            spell = false,
             conceallevel = 0,
          },
          bo = {
@@ -163,7 +163,8 @@ local default = {
             list = false,
             statuscolumn = " ",
             spell = false,
-            conceallevel = 0,
+            conceallevel = 3,
+            concealcursor = 'n',
          },
          bo = {
             filetype = "markdown",

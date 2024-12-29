@@ -128,9 +128,7 @@ function M.gen_format(id, comps)
       if M[v[1]] then
          text = M[v[1]](id)
       end
-      v.width = v.width or #text
-      -- v.width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
-      text = align(text, v.width, v.right_justify) .. " "
+      text = align(text, v.width or #text, v.right_justify) .. " "
       res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
       acc_width = acc_width + v.width + 1
    end
@@ -141,7 +139,7 @@ end
 ---@param id string
 ---@param read boolean
 ---@return NuiLine
-function M.gen_nui_line(id, read)
+function M.entry_obj(id, read)
    local NuiLine = require "nui.line"
    local line = NuiLine()
    local acc_width = 0
@@ -150,15 +148,16 @@ function M.gen_nui_line(id, read)
       return NuiLine()
    end
    for _, v in ipairs(Config.layout) do
+      local T = v[1]
       if not v.right then
-         local text = entry[v[1]] or ""
-         if M[v[1]] then
-            text = M[v[1]](id)
+         local text = entry[T] or ""
+         if M[T] then
+            text = M[T](id)
          end
-         v.width = v.width or #text
-         local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+         local width = v.width or #text
+         width = T == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or width
          line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
-         acc_width = acc_width + v.width + 1
+         acc_width = acc_width + width + 1
       end
    end
    return line
