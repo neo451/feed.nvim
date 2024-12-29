@@ -1,6 +1,5 @@
 local M = {}
 local Config = require "feed.config"
-local Split = require("nui.split")
 local Menu = require("nui.menu")
 local Input = require "nui.input"
 local event = require("nui.utils.autocmd").event
@@ -108,7 +107,7 @@ local function telescope_select(items, opts, on_choice)
        :find()
 end
 
-M.select = function(items, opts, on_choice)
+function M.select(items, opts, on_choice)
    local backend = ut.choose_backend(Config.search.backend)
    if backend == 'fzf-lua' then
       local prompt = ' ' .. opts.prompt .. ' '
@@ -141,31 +140,51 @@ M.select = function(items, opts, on_choice)
    end
 end
 
+---@param opts table
 ---@param percentage string
 ---@param lines? string[]
 ---@return NuiSplit
-function M.split(percentage, lines)
+function M.split(opts, percentage, lines)
    lines = lines or {}
-   local split = Split({
+   local Win = require "feed.ui.window"
+
+   local height = math.floor(vim.o.lines * (tonumber(percentage:sub(1, -2)) / 100))
+   local width = vim.o.columns
+   local col = vim.o.columns - width
+   local row = vim.o.lines - height - vim.o.cmdheight
+
+   opts = vim.tbl_extend("force", {
       relative = "editor",
-      position = "bottom",
-      size = percentage,
-   })
-   split:mount()
+      style = "minimal",
+      focusable = false,
+      noautocmd = true,
+      height = height,
+      width = width,
+      col = col,
+      row = row,
+      wo = {
+         winbar = "",
+         scrolloff = 0,
+         foldenable = false,
+         -- winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
+         statusline = "",
+         wrap = false,
+      },
+      bo = {
+         buftype = "nofile",
+         bufhidden = "wipe",
+      },
+   }, opts)
 
-   split:map("n", "q", function()
-      split:unmount()
-   end, { noremap = true })
+   local win = Win.new(opts)
 
-   split:on(event.BufLeave, function()
-      split:unmount()
+   win:map("n", "q", function()
+      win:close()
    end)
 
-   api.nvim_buf_set_lines(split.bufnr, 0, -1, false, lines)
-   api.nvim_set_option_value("number", false, { win = split.winid })
-   api.nvim_set_option_value("relativenumber", false, { win = split.winid })
-   api.nvim_set_option_value("modifiable", false, { buf = split.bufnr })
-   return split
+   api.nvim_buf_set_lines(win.buf, 0, -1, false, lines)
+
+   return win
 end
 
 function M.input(opts, on_submit)
@@ -196,6 +215,7 @@ function M.input(opts, on_submit)
    input:on(event.BufLeave, function()
       input:unmount()
    end)
+
    input:map("n", "q", function()
       input:unmount()
    end)

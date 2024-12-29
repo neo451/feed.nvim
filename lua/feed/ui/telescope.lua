@@ -19,7 +19,7 @@ local function feed_search()
           previewer = previewers.new_buffer_previewer {
              define_preview = function(self, entry, _)
                 vim.schedule(function()
-                   ui.show_entry { buf = self.state.bufnr, id = entry.value }
+                   ui.preview_entry { buf = self.state.bufnr, id = entry.value }
                    local winid = self.state.winid
                    vim.wo[winid].spell = false
                    vim.wo[winid].conceallevel = 3

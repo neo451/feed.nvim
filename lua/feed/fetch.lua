@@ -63,7 +63,7 @@ function M.update_feed(url, opts, cb)
                feeds[url] = d.href  -- to keep config consistent
                url = d.href
             elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
-               feeds[url] = false -- TODO: set to false
+               feeds[url] = false
                ok = false
             end
             if d.entries and not vim.tbl_isempty(d.entries) then
@@ -71,7 +71,12 @@ function M.update_feed(url, opts, cb)
                   local content = entry.content
                   entry.content = nil
                   local id = vim.fn.sha256(entry.link)
-                  Markdown.convert(content, function() end, true, tostring(DB.dir / "data" / id))
+                  Markdown.convert {
+                     src = content,
+                     cb = function() end,
+                     fp = tostring(DB.dir / "data" / id),
+                     metadata = entry
+                  }
                   DB[id] = entry
                   if tags then
                      DB:tag(id, tags)

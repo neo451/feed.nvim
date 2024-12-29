@@ -67,8 +67,8 @@ M.get_buf_urls = function(buf, cur_link)
             end
          end
       end
-      vim.bo[buf].modifiable = false
    end
+   vim.bo[buf].modifiable = false
    return ret
 end
 

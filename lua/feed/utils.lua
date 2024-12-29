@@ -141,7 +141,7 @@ M.align = function(str, width, right_justify)
 end
 
 M.unescape = function(str)
-   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`!|#<>_()$.])", function(s)
+   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
       return s:sub(2)
    end)
 end
