@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.15.0](https://github.com/neo451/feed.nvim/compare/v1.14.5...v1.15.0) (2024-12-30)
+
+
+### Features
+
+* **nui:** nui based input with normal mode! ([de1bc63](https://github.com/neo451/feed.nvim/commit/de1bc63b559bc38e18852fcf9b7a6d18897dd2b3))
+* **ui.bar:** show keyhints ([b4f5418](https://github.com/neo451/feed.nvim/commit/b4f54180f81b2f392c28cd56b5c4e9124c000e3d))
+* **ui.bar:** show progress ([4fd6a93](https://github.com/neo451/feed.nvim/commit/4fd6a93208e376b44a94e66a804f9102c8974f55))
+* **ui.markdown:** grammarly correct header in yaml format with pandoc ([2b43cbb](https://github.com/neo451/feed.nvim/commit/2b43cbbcce0a4490c0af5743ff6f717d7fc99d16))
+* **ui.split:** use floating window for list, hints, split... ([2b43cbb](https://github.com/neo451/feed.nvim/commit/2b43cbbcce0a4490c0af5743ff6f717d7fc99d16))
+* **ui:** manage window and buf with a single obj ([de1bc63](https://github.com/neo451/feed.nvim/commit/de1bc63b559bc38e18852fcf9b7a6d18897dd2b3))
+
+
+### Bug Fixes
+
+* **config:** concealcursor in entry ([9ec065f](https://github.com/neo451/feed.nvim/commit/9ec065f3c83d9cbb59b20feeadb87648018b3637))
+* **config:** option to choose whether fill in last search ([e3ea9de](https://github.com/neo451/feed.nvim/commit/e3ea9de32b04691078267ebb489cadaa7c63f090))
+* **fetch:** cleanup fetch ([a898db5](https://github.com/neo451/feed.nvim/commit/a898db57b7ac19c81d74bba181fc1ddcf7065136))
+* **paser.opml:** replace rsshub links when exporting ([de118fd](https://github.com/neo451/feed.nvim/commit/de118fde1e1a19e80c258dea0d679304c05eff22))
+* **ui.bar:** correct winbar truncate ([9ec065f](https://github.com/neo451/feed.nvim/commit/9ec065f3c83d9cbb59b20feeadb87648018b3637))
+* **ui.bar:** properly truncate right parts ([d8fe2c3](https://github.com/neo451/feed.nvim/commit/d8fe2c39ae8e79d85059294d35478962cf0ccd1e))
+* **ui.bar:** returns a string and sets vim.wo.winbar ([e3ea9de](https://github.com/neo451/feed.nvim/commit/e3ea9de32b04691078267ebb489cadaa7c63f090))
+* **ui.config:** add option to have padding ([4fd6a93](https://github.com/neo451/feed.nvim/commit/4fd6a93208e376b44a94e66a804f9102c8974f55))
+* **ui.window:** augroup and keymaps for window class ([d8fe2c3](https://github.com/neo451/feed.nvim/commit/d8fe2c39ae8e79d85059294d35478962cf0ccd1e))
+* **ui:** reliable buffer state ([ce9c602](https://github.com/neo451/feed.nvim/commit/ce9c60285e2b2293c51b701233b490065a5497db))
+
 ## [1.14.5](https://github.com/neo451/feed.nvim/compare/v1.14.4...v1.14.5) (2024-12-22)
 
 
