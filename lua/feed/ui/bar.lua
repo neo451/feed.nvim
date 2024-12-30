@@ -3,60 +3,67 @@ local DB = require "feed.db"
 local Config = require 'feed.config'
 
 local M = {}
+local cmp = {}
 
----@param str any
----@param width any
----@param grp any
----@return string
-local function append(str, width, grp, right)
-   local buf = {}
-   width = width or #str
-   buf[#buf + 1] = "%#" .. grp .. "#"
-   buf[#buf + 1] = right and str or ut.align(str, width + 1)
-   return table.concat(buf)
+function _G._feed_bar_component(name)
+   return cmp[name]()
 end
 
-local providers = {}
+local name2width, name2hl = {}, {}
 
-setmetatable(providers, {
+for _, v in ipairs(Config.layout) do
+   name2width[v[1]] = v.width
+end
+
+for _, v in ipairs(Config.layout) do
+   name2hl[v[1]] = v.color
+end
+
+local hi_pattern = '%%#%s#%s%%*'
+
+setmetatable(cmp, {
    __index = function(_, k)
       return function()
-         return ut.capticalize(k)
+         local width = name2width[k] or #k
+         local color = name2hl[k]
+         return hi_pattern:format(color, ut.align(ut.capticalize(k), width + 1))
       end
    end,
 })
 
-providers.query = function()
-   return vim.g.feed_current_query
+cmp.query = function()
+   return hi_pattern:format(name2hl["query"], vim.g.feed_current_query)
 end
 
-providers.last_updated = function()
-   return DB:lastUpdated() .. " "
+cmp.last_updated = function()
+   return hi_pattern:format(name2hl["last_updated"], DB:lastUpdated())
 end
 
--- TODO: needs to be auto updated
--- providers.progress = function()
---    current_index = current_index or 1
---    return ("[%d/%d]"):format(current_index, #on_display)
--- end
+cmp.progress = function()
+   local count = vim.api.nvim_buf_line_count(0) - 1
+   local cur = math.min(count, vim.api.nvim_win_get_cursor(0)[1])
+   return hi_pattern:format("FeedRead", ("[%d/%d]"):format(cur, count))
+end
 
 ---@return string
 function M.show_winbar()
-   local buf = { " " }
+   local buf = { Config.layout.padding.enabled and " " or "" }
    for _, v in ipairs(Config.layout) do
       if not v.right then
-         buf[#buf + 1] = append(providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. v[1] .. "')%}"
       end
    end
 
-   buf[#buf + 1] = "%="
-   buf[#buf + 1] = "%<"
+   buf[#buf + 1] = "%=%<"
 
+   local right = {}
    for _, v in ipairs(Config.layout) do
       if v.right then
-         buf[#buf + 1] = append(providers[v[1]](v), v.width, v.color, v.right)
+         right[#right + 1] = "%{%v:lua._feed_bar_component('" .. v[1] .. "')%}"
       end
    end
+
+   table.insert(buf, table.concat(right, " "))
    return table.concat(buf, "")
 end
 
@@ -67,7 +74,7 @@ function M.show_keyhints()
       buf[#buf + 1] = ("%s:%s"):format(lhs, ut.capticalize((rhs)))
    end
 
-   return " %#FeedRead#" .. table.concat(buf, "   ") .. "%<"
+   return (Config.layout.padding.enabled and " " or "") .. "%#FeedRead#" .. table.concat(buf, "   ") .. "%<"
 end
 
 return M

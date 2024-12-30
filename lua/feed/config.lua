@@ -28,6 +28,9 @@ local default = {
    curl_params = {},
    ---@type table[]
    layout = {
+      padding = {
+         enabled = true,
+      },
       {
          "date",
          width = 10,
@@ -46,6 +49,11 @@ local default = {
       {
          "title",
          color = "FeedTitle",
+      },
+      {
+         "progress",
+         right = true,
+         color = "FeedDate",
       },
       {
          "last_updated",

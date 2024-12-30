@@ -1,7 +1,14 @@
 local ut = require "feed.utils"
+local Config = require "feed.config"
 
 local Win = {}
 local id = 0
+
+---@class feed.win
+---@field opts feed.win.Config
+---@field id number
+---@field win integer
+---@field buf integer
 
 ---@class feed.win.Config: vim.api.keyset.win_config
 ---@field wo? vim.wo|{} window options
@@ -25,6 +32,12 @@ function Win.new(opts)
       w = {},
       b = {},
    }, opts)
+
+   if Config.layout.padding.enabled then
+      opts.wo.statuscolumn = " "
+   else
+      opts.wo.statuscolumn = ""
+   end
    id = id + 1
    local self = setmetatable({
       opts = opts,

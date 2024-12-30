@@ -190,14 +190,14 @@ end
 --    vim.notify("unsubscribed!")
 -- end
 
-local M = {}
-M.__index = M
+local TT = {}
+TT.__index = TT
 
 local query = require "feed.db.query"
 
 
 ---@return feed.db
-function M.new()
+function TT.new()
    local ttrss = api.new()
    local feeds = {}
    for _, feed in ipairs(ttrss:getFeeds({})) do
@@ -215,10 +215,10 @@ function M.new()
       feeds = feeds,
       tags = vim.defaulttable(),
       last = os.time()
-   }, M)
+   }, TT)
 end
 
-function M:lastUpdated()
+function TT:lastUpdated()
    return os.date("%c", self.last)
 end
 
@@ -226,7 +226,7 @@ end
 
 ---@param str string
 ---@return integer[]
-function M:filter(str)
+function TT:filter(str)
    local q = query.parse_query(str)
    local headlines = {}
 
@@ -285,7 +285,7 @@ function M:filter(str)
    return ret
 end
 
-function M:tag(id, tag)
+function TT:tag(id, tag)
    self.tags[id][tag] = true
    if tag == "read" then
       self.api:updateArticle({ article_ids = id, field = 2, mode = 0 })
@@ -298,7 +298,7 @@ function M:tag(id, tag)
    end
 end
 
-function M:untag(id, tag)
+function TT:untag(id, tag)
    self.tags[id][tag] = nil
    if tag == "star" then
       self.api:updateArticle({ article_ids = id, field = 0, mode = 0 })
@@ -312,8 +312,8 @@ function M:untag(id, tag)
 end
 
 --- TODO:
-function M:save_feeds() end
+function TT:save_feeds() end
 
-function M:update() end
+function TT:update() end
 
-return M.new()
+return TT.new()

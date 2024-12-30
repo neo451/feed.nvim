@@ -33,6 +33,7 @@ local M = {
 vim.g.feed_current_query = Config.search.default_query
 
 local function show_index()
+   Config.options.index.wo.winbar = M.show_winbar()
    if not state.index or not state.index:valid() then
       state.index = Win.new({
          wo = Config.options.index.wo,
@@ -40,7 +41,6 @@ local function show_index()
          keys = Config.keys.index,
          autocmds = {
             [{ "BufEnter", "WinEnter", "VimResized" }] = function()
-               vim.wo.winbar = M.show_winbar()
                vim.o.cmdheight = 0
                pcall(vim.cmd.colorscheme, Config.colorscheme)
             end,
@@ -108,52 +108,6 @@ local function mark_read(id)
    end
 end
 
--- local function render_entry(ctx, lines, id)
---    local buf
---    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
---       buf = ctx.buf
---    else
---       buf = api.nvim_create_buf(false, true)
---    end
---
---    vim.bo[buf].modifiable = true
---    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
---
---    for i, line in ipairs(lines) do
---       line = vim.trim(ut.unescape(line:gsub("\n", "")))
---       api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
---    end
---
---    state.entry = Win.new {
---       prev_win = (state.index and state.index:valid()) and state.index.win or nil,
---       buf = buf,
---       wo = Config.options.entry.wo,
---       bo = Config.options.entry.bo,
---       keys = Config.keys.entry,
---       ft = "markdown",
---       autocmds = {
---          [{ "BufEnter", "WinEnter", "VimResized" }] = function()
---             vim.o.cmdheight = 0
---             pcall(vim.cmd.colorscheme, Config.colorscheme)
---          end,
---          [{ "BufLeave", "WinLeave" }] = function()
---             vim.o.cmdheight = og.cmdheight
---             vim.cmd.colorscheme(og.colorscheme)
---          end
---       }
---    }
---    state.urls = get_buf_urls(buf, DB[id].link)
---
---    local win = state.entry.win
---    vim.wo[win].winbar = M.show_keyhints()
---
---    api.nvim_buf_set_name(buf, "FeedEntry")
---    api.nvim_win_set_cursor(win, { 1, 0 })
---    api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
---
---    mark_read(id)
--- end
---
 ---temparay solution for getting rid of junks and get clean markdown
 ---@param lines string[]
 ---@return string[]
@@ -176,10 +130,22 @@ local function entry_filter(lines)
    return res
 end
 
-local function set_content(buf, lines)
+---@param buf integer
+---@param body_lines string[]
+---@param id string
+local function set_content(buf, body_lines, id)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
-   lines = entry_filter(lines)
+
+   local header_lines = {}
+
+   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
+      header_lines[i] = ut.capticalize(v) .. ": " .. Format[v](id)
+   end
+
+   table.insert(header_lines, "")
+   body_lines = entry_filter(body_lines)
+   local lines = vim.list_extend(header_lines, body_lines)
 
    for i, v in ipairs(lines) do
       v = vim.trim(ut.unescape(v:gsub("\n", "")))
@@ -190,9 +156,7 @@ end
 local function preview_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then
-      return
-   end
+   if not entry then return end
 
    local buf
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
@@ -203,7 +167,7 @@ local function preview_entry(ctx)
    local str = ut.read_file(DB.dir .. "/data/" .. id)
    if str then
       local lines = vim.split(str, "\n")
-      set_content(buf, lines)
+      set_content(buf, lines, entry)
    else
       vim.notify "no content to preview"
    end
@@ -213,9 +177,7 @@ end
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then
-      return
-   end
+   if not entry then return end
 
    local buf
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
@@ -228,27 +190,27 @@ local function show_entry(ctx)
       Markdown.convert {
          link = ctx.link,
          cb = function(lines)
-            set_content(buf, lines)
+            set_content(buf, lines, id)
          end,
-         metadata = entry,
       }
    elseif entry.content then
       Markdown.convert {
          src = entry.content(),
          cb = function(lines)
-            set_content(buf, lines)
+            set_content(buf, lines, id)
          end,
-         metadata = entry
       }
    else
       local str = ut.read_file(DB.dir .. "/data/" .. id)
       if str then
          local lines = vim.split(str, "\n")
-         set_content(buf, lines)
+         set_content(buf, lines, id)
       else
          vim.notify "no content to preview"
       end
    end
+
+   Config.options.entry.wo.winbar = M.show_keyhints()
 
    state.entry = Win.new {
       prev_win = (state.index and state.index:valid()) and state.index.win or nil,
@@ -271,10 +233,9 @@ local function show_entry(ctx)
    state.urls = get_buf_urls(buf, DB[id].link)
 
    local win = state.entry.win
-   vim.wo[win].winbar = M.show_keyhints()
 
    api.nvim_buf_set_name(buf, "FeedEntry")
-   api.nvim_win_set_cursor(win, { 9, 0 })
+   api.nvim_win_set_cursor(win, { 1, 0 })
    api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 
    mark_read(id)
@@ -296,9 +257,8 @@ M.refresh      = function(opts)
    DB:update()
    state.entries = DB:filter(vim.g.feed_current_query)
    if opts.show then
-      local pos = ut.in_index() and api.nvim_win_get_cursor(0) or { 1, 0 }
       show_index()
-      api.nvim_win_set_cursor(0, pos)
+      api.nvim_win_set_cursor(0, { 1, 0 })
    end
    return state.entries
 end
@@ -382,17 +342,21 @@ M.show_hints   = function()
       lines[#lines + 1] = v .. " -> " .. k
    end
 
-   Split({}, "50%", lines)
+   Split({
+      wo = {
+         winbar = "%#FeedRead#Key Hints",
+      }
+   }, "50%", lines)
 end
-
----FIXME:
 
 ---Open split to show entry
 ---@param percentage any
 M.show_split   = function(percentage)
    local _, id = get_entry()
    local split = Split({}, percentage or "50%")
-   show_entry({ buf = split.bufnr, id = id })
+   preview_entry({ buf = split.buf, id = id })
+   ut.wo(split.win, Config.options.entry.wo)
+   ut.bo(split.buf, Config.options.entry.bo)
 end
 
 ---Open split to show feeds

@@ -20,8 +20,8 @@ local ut = require "feed.utils"
 ---@field update fun(db: feed.db)
 ---@field lastUpdated fun(db: feed.db)
 
-local M = {}
-M.__index = M
+local DB = {}
+DB.__index = DB
 
 local db_dir = Path.new(Config.db_dir)
 
@@ -79,7 +79,7 @@ local function parse_index()
    return res
 end
 
-function M:save_index()
+function DB:save_index()
    local buf = {}
    for i, v in ipairs(self.index) do
       buf[i] = tostring(v[2]) .. " " .. v[1]
@@ -90,7 +90,7 @@ end
 local mem = {}
 
 ---@return feed.db
-function M.new()
+function DB.new()
    ensure_path(db_dir, "dir")
    ensure_path(data_dir, "dir")
    ensure_path(object_dir, "dir")
@@ -101,7 +101,7 @@ function M.new()
 
    return setmetatable({
       dir = db_dir
-   }, M)
+   }, DB)
 end
 
 local function if_path(k)
@@ -110,9 +110,9 @@ end
 
 ---@param k any
 ---@return function | feed.entry | string
-function M:__index(k)
-   if rawget(M, k) then
-      return M[k]
+function DB:__index(k)
+   if rawget(DB, k) then
+      return DB[k]
    elseif k == "feeds" then
       local feeds = load_file(feeds_fp)
       rawset(self, "feeds", feeds)
@@ -144,7 +144,7 @@ function M:__index(k)
    end
 end
 
-function M:update()
+function DB:update()
    local feeds = load_file(feeds_fp)
    rawset(self, "feeds", feeds)
    local index = parse_index()
@@ -159,13 +159,13 @@ function M:update()
    rawset(self, "tags", tags)
 end
 
-function M:lastUpdated()
+function DB:lastUpdated()
    return os.date("%c", vim.fn.getftime(tostring(feeds_fp)))
 end
 
 ---@param id string
 ---@param entry feed.entry
-function M:__newindex(id, entry)
+function DB:__newindex(id, entry)
    if not id or if_path(id) then
       return
    end
@@ -185,7 +185,7 @@ end
 
 ---@param id string | string[]
 ---@param tag string
-function M:tag(id, tag)
+function DB:tag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = true
       self:save_tags()
@@ -207,7 +207,7 @@ end
 
 ---@param id string | string[]
 ---@param tag string
-function M:untag(id, tag)
+function DB:untag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = nil
       self:save_tags()
@@ -227,13 +227,13 @@ function M:untag(id, tag)
    end
 end
 
-function M:sort()
+function DB:sort()
    table.sort(self.index, function(a, b)
       return a[2] > b[2]
    end)
 end
 
-function M:rm(id)
+function DB:rm(id)
    for i, v in ipairs(self.index) do
       if v[1] == id then
          table.remove(self.index, i)
@@ -254,7 +254,7 @@ end
 
 ---@param sort any
 ---@return Iter
-function M:iter(sort)
+function DB:iter(sort)
    if sort then
       self:sort()
    end
@@ -269,7 +269,7 @@ end
 ---return a list of db ids base on query
 ---@param str string
 ---@return string[]
-function M:filter(str)
+function DB:filter(str)
    if str == "" then
       return {}
    end
@@ -372,18 +372,18 @@ function M:filter(str)
    return ret
 end
 
-function M:save_feeds()
+function DB:save_feeds()
    return save_file(feeds_fp, "return " .. vim.inspect(self.feeds))
 end
 
-function M:save_tags()
+function DB:save_tags()
    local tags = vim.deepcopy(self.tags)
    setmetatable(tags, nil)
    return save_file(tags_fp, "return " .. vim.inspect(tags))
 end
 
-function M:blowup()
+function DB:blowup()
    rm_file(db_dir)
 end
 
-return M.new()
+return DB.new()

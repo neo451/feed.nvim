@@ -24,6 +24,16 @@ function Writer(doc, opts)
          image_c = image_c + 1
          return ("![Image %d](%s)"):format(image_c, elem.src)
       end,
+      CodeBlock = function(cb)
+         -- only modify if code block has no attributes
+         if cb.attr == pandoc.Attr() then
+            local delimited = "```\n" .. cb.text .. "\n```"
+            return pandoc.RawBlock("markdown", delimited)
+         elseif cb.attr.classes[1] ~= nil then
+            local delimited = "```" .. cb.attr.classes[1] .. "\n" .. cb.text .. "\n```"
+            return pandoc.RawBlock("markdown", delimited)
+         end
+      end,
    }
    return pandoc.write(doc:walk(filter), "gfm", opts)
 end

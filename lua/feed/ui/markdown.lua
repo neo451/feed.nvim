@@ -21,7 +21,6 @@ local function convert(ctx)
       return vim.schedule_wrap(cb)(vim.split(obj.stdout, "\n"))
    end
 
-
    local cmd = vim.tbl_flatten {
       "pandoc",
       link and "-r" or "-f",
@@ -32,16 +31,6 @@ local function convert(ctx)
       link and link or nil,
       fp and { '-o', fp } or nil,
    }
-
-   if ctx.metadata then
-      for k, v in pairs(ctx.metadata) do
-         local key = ut.capticalize(k == "time" and "date" or k)
-         local value = k == "time" and os.date("%c", v) or v
-         table.insert(cmd, "--metadata=" .. key .. ":" .. value)
-      end
-      table.insert(cmd, '--standalone')
-   end
-
    if not cb then
       return vim.system(cmd, { text = true, stdin = src }):wait().stdout
    else

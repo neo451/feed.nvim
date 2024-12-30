@@ -143,7 +143,7 @@ end
 ---@param opts table
 ---@param percentage string
 ---@param lines? string[]
----@return NuiSplit
+---@return feed.win
 function M.split(opts, percentage, lines)
    lines = lines or {}
    local Win = require "feed.ui.window"
@@ -166,7 +166,6 @@ function M.split(opts, percentage, lines)
          winbar = "",
          scrolloff = 0,
          foldenable = false,
-         -- winhighlight = "Normal:WhichKeyNormal,FloatBorder:WhichKeyBorder,FloatTitle:WhichKeyTitle",
          statusline = "",
          wrap = false,
       },
@@ -217,6 +216,12 @@ function M.input(opts, on_submit)
    end)
 
    input:map("n", "q", function()
+      input:unmount()
+   end)
+   input:map("i", "<esc>", function()
+      input:unmount()
+   end)
+   input:map("n", "<esc>", function()
       input:unmount()
    end)
 end
