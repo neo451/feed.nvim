@@ -2,7 +2,6 @@
 local ut = require("feed.utils")
 local log = require("feed.lib.log")
 local Config = require("feed.config")
-local coop_vim = require "coop.vim"
 
 local M = {}
 local read_file = ut.read_file
@@ -53,10 +52,10 @@ local function build_header(t)
    return res
 end
 
--- ---@param url string
--- ---@param opts table -- TODO:
--- ---@param cb? any
--- ---@return vim.SystemCompleted?
+---@param url string
+---@param opts table
+---@param cb? any
+---@return vim.SystemCompleted?
 function M.get(url, opts, cb)
    assert(type(url) == "string", "url must be a string")
    opts = opts or {}
@@ -72,7 +71,7 @@ function M.get(url, opts, cb)
       dump_fp,
       "--connect-timeout",
       opts.timeout or 10,
-      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub_instance) .. "?format=json?mode=fulltext" or url,
+      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub.instance) .. "?format=json?mode=fulltext" or url,
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
@@ -108,49 +107,9 @@ function M.get(url, opts, cb)
    end
 end
 
--- M.get_co = ut.cb_to_co(M.get)
+local task_utils = require "coop.task-utils"
+local f_utils = require "coop.functional-utils"
 
----@param url string
----@param opts table -- TODO:
----@return vim.SystemCompleted?
-function M.get_co(url, opts)
-   assert(type(url) == "string", "url must be a string")
-   opts = opts or {}
-   local additional = build_header({
-      is_none_match = opts.etag,
-      if_modified_since = opts.last_modified,
-   })
-   local dump_fp = vim.fn.tempname()
-   local cmds = {
-      "curl",
-      "-sSL",
-      "-D",
-      dump_fp,
-      "--connect-timeout",
-      opts.timeout or 10,
-      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub_instance) .. "?format=json?mode=fulltext" or url,
-   }
-   cmds = vim.list_extend(cmds, additional)
-   cmds = vim.list_extend(cmds, opts.cmds or {})
-   if opts.data then
-      table.insert(cmds, "-d")
-      table.insert(cmds, vim.json.encode(opts.data))
-   end
-   local obj = coop_vim.system(cmds, { text = true })
-   if obj.code == 0 then
-      local headers = parse_header(dump_fp, url)
-      obj.href = headers.location or url
-      obj.etag = headers.etag
-      obj.last_modified = headers.last_modified
-      obj.status = headers.status
-      obj.headers = headers
-      if obj.stdout:find("<!DOCTYPE html>") then
-         return
-      end
-      return obj
-   else
-      log.warn("[feed.nvim]:", url, obj.stderr)
-   end
-end
+M.get_co = task_utils.cb_to_tf(f_utils.shift_parameters(M.get))
 
 return M

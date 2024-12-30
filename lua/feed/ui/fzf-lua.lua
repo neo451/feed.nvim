@@ -16,7 +16,7 @@ function MyPreviewer:populate_preview_buf(entry_str)
    local tmpbuf = self:get_tmp_buffer()
    self:set_preview_buf(tmpbuf)
    local id = entry_str:sub(-64, -1)
-   ui.show_entry({ buf = tmpbuf, id = id })
+   ui.preview_entry({ buf = tmpbuf, id = id })
    vim.treesitter.start(tmpbuf, "markdown")
    self.win:update_scrollbar()
 end
@@ -93,4 +93,5 @@ end
 
 return {
    feed_search = feed_search,
+   feed_grep = feed_grep
 }

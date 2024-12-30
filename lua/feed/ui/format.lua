@@ -5,7 +5,7 @@ local ut = require "feed.utils"
 local strings = require "plenary.strings"
 
 local align = ut.align
-local tag2icon = Config.tag2icon
+local icons = Config.icons
 
 -- TODO: this whole module should be user definable
 
@@ -25,8 +25,8 @@ function M.tags(id)
    local taglist = vim.iter(DB.tags)
        :fold({}, function(acc, tag, v)
           if type(v) == "table" and v[id] then
-             if tag2icon.enabled then
-                acc[#acc + 1] = tag2icon[tag] or tag
+             if icons.enabled then
+                acc[#acc + 1] = icons[tag] or tag
              else
                 acc[#acc + 1] = tag
              end
@@ -34,8 +34,8 @@ function M.tags(id)
           return acc
        end)
    if vim.tbl_isempty(taglist) then
-      if tag2icon.enabled then
-         taglist = { tag2icon.unread }
+      if icons.enabled then
+         taglist = { icons.unread }
       else
          taglist = { 'unread' }
       end
@@ -128,9 +128,7 @@ function M.gen_format(id, comps)
       if M[v[1]] then
          text = M[v[1]](id)
       end
-      v.width = v.width or #text
-      -- v.width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
-      text = align(text, v.width, v.right_justify) .. " "
+      text = align(text, v.width or #text, v.right_justify) .. " "
       res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
       acc_width = acc_width + v.width + 1
    end
@@ -141,7 +139,7 @@ end
 ---@param id string
 ---@param read boolean
 ---@return NuiLine
-function M.gen_nui_line(id, read)
+function M.entry_obj(id, read)
    local NuiLine = require "nui.line"
    local line = NuiLine()
    local acc_width = 0
@@ -150,14 +148,16 @@ function M.gen_nui_line(id, read)
       return NuiLine()
    end
    for _, v in ipairs(Config.layout) do
+      local T = v[1]
       if not v.right then
-         local text = entry[v[1]] or ""
-         if M[v[1]] then
-            text = M[v[1]](id)
+         local text = entry[T] or ""
+         if M[T] then
+            text = M[T](id)
          end
-         local width = v[1] == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or v.width
+         local width = v.width or #text
+         width = T == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or width
          line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
-         acc_width = acc_width + v.width + 1
+         acc_width = acc_width + width + 1
       end
    end
    return line

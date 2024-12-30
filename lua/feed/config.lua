@@ -4,56 +4,33 @@
 ---@field db_dir? string
 ---@field date_format? string
 ---@field curl_params? string[]
----@field rsshub_instance? string move all options here as a enum??
+---@field rsshub? { instance: string, export: string } move all options here as a enum??
 ---@field layout? table
 ---@field progress? { backend: "mini.notify" | "snacks" | "nvim-notify" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
 ---@field data? { backend: "local" | "ttrss" }
----@field options? table
+---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
 
 ---@class feed._config
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type string
-   colorscheme = vim.g.colorname,
+   colorscheme = "",
    ---@type string
    date_format = "%Y-%m-%d",
-   ---@type string
-   rsshub_instance = "https://rsshub.app",
+   ---@type { instance: string, export: string }
+   rsshub = {
+      instance = "https://rsshub.app",
+      export = "https://rsshub.app",
+   },
    ---@type string[]
    curl_params = {},
-   options = {
-      ---@type table<string, any>
-      index = {
-         swapfile = false,
-         undolevels = -1,
-         undoreload = 0,
-         conceallevel = 0,
-         signcolumn = "no",
-         wrap = false,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-         list = false,
-         statuscolumn = " ",
-      },
-
-      ---@type table<string, any>
-      entry = {
-         conceallevel = 3,
-         concealcursor = "nvc",
-         wrap = true,
-         number = false,
-         relativenumber = false,
-         modifiable = false,
-         list = false,
-         spell = false,
-         statuscolumn = " ",
-      },
-   },
    ---@type table[]
    layout = {
+      padding = {
+         enabled = true,
+      },
       {
          "date",
          width = 10,
@@ -71,25 +48,28 @@ local default = {
       },
       {
          "title",
-         width = 0,
          color = "FeedTitle",
+      },
+      {
+         "progress",
+         right = true,
+         color = "FeedDate",
       },
       {
          "last_updated",
          right = true,
-         width = 0,
          color = "FeedDate",
       },
       {
          "query",
          right = true,
-         width = 0,
          color = "FeedLabel",
       },
    },
 
    search = {
       default_query = "@6-months-ago +unread",
+      show_last = false,
       backend = {
          "mini.pick",
          "telescope",
@@ -118,7 +98,7 @@ local default = {
       telescope = {},
    },
 
-   tag2icon = {
+   icons = {
       enabled = false,
       pod = "📻",
       unread = "👀",
@@ -161,6 +141,47 @@ local default = {
          open_url = "gx",
       },
    },
+   options = {
+      ---@type { wo: table, bo: table }
+      index = {
+         wo = {
+            signcolumn = "no",
+            wrap = false,
+            number = false,
+            relativenumber = false,
+            list = false,
+            statuscolumn = " ",
+            spell = false,
+            conceallevel = 0,
+         },
+         bo = {
+            swapfile = false,
+            undolevels = -1,
+            modifiable = false,
+         }
+      },
+
+      ---@type { wo: table, bo: table }
+      entry = {
+         wo = {
+            signcolumn = "no",
+            wrap = true,
+            number = false,
+            relativenumber = false,
+            list = false,
+            statuscolumn = " ",
+            spell = false,
+            conceallevel = 3,
+            concealcursor = 'n',
+         },
+         bo = {
+            filetype = "markdown",
+            swapfile = false,
+            undolevels = -1,
+            modifiable = false,
+         },
+      },
+   }
 }
 
 local M = {}
@@ -185,7 +206,7 @@ local function validate(cfg)
       db_dir = "string",
       colorscheme = "string",
       date_format = "string",
-      rsshub_instance = "string",
+      rsshub = "table",
       curl_params = "table",
       options = "table",
       layout = "table",
@@ -194,7 +215,7 @@ local function validate(cfg)
       data = "table",
       feeds = "table",
       keys = "table",
-      tag2icon = "table",
+      icons = "table",
    }
    for k, v in pairs(path) do
       local ok, err = pval(k, cfg[k], v)

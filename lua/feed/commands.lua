@@ -16,7 +16,7 @@ M.load_opml = {
       if path then
          ui.load_opml(path)
       else
-         vim.ui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
+         nui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
       end
    end,
    context = { all = true },
@@ -28,7 +28,7 @@ M.export_opml = {
       if fp then
          ui.export_opml(fp)
       else
-         vim.ui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
+         nui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
       end
    end,
    context = { all = true },
@@ -146,7 +146,7 @@ M.tag = {
       if t then
          ui.tag(t)
       else
-         vim.ui.input({ prompt = "Tag: " }, ui.tag)
+         nui.input({ prompt = "Tag: " }, ui.tag)
       end
    end,
    context = { index = true, entry = true },
@@ -160,7 +160,7 @@ M.untag = {
       if t then
          ui.untag(t)
       else
-         vim.ui.input({ prompt = "Untag: " }, ui.untag)
+         nui.input({ prompt = "Untag: " }, ui.untag)
       end
    end,
    context = { index = true, entry = true },
@@ -183,7 +183,7 @@ M.update = {
    impl = function()
       local Progress = require("feed.ui.progress")
       local prog = Progress.new(#ut.feedlist(feeds, false))
-      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all_co()' }, {
+      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
          stdout = function(err, data)
             if data then

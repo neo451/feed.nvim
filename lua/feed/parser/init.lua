@@ -2,7 +2,7 @@ local xml = require "feed.parser.xml"
 local log = require "feed.lib.log"
 
 ---@alias feed.type "rss" | "atom" | "json"
----@alias feed.opml table<string, feed.feed | string>
+---@alias feed.opml table<string, feed.feed | boolean>
 ---@alias feed.version "rss20" | "rss091" | "rss092" | "rss" | "atom10" | "atom03" | "json1"
 
 ---@class feed.feed

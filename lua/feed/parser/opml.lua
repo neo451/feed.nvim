@@ -58,6 +58,11 @@ local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
 %s
 </body></opml>]]
 
+local function rsshub_replace(url)
+   local Config = require "feed.config"
+   return url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub.export) or url
+end
+
 ---@param feeds feed.opml
 ---@return string
 function M.export(feeds)
@@ -68,7 +73,7 @@ function M.export(feeds)
             text = v.description or v.title,
             title = v.title,
             htmlUrl = v.htmlUrl,
-            xmlUrl = xmlUrl,
+            xmlUrl = rsshub_replace(xmlUrl),
             type = "rss",
          }
       end

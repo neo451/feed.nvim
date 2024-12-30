@@ -1,58 +1,80 @@
 local ut = require "feed.utils"
+local DB = require "feed.db"
+local Config = require 'feed.config'
 
-local function append(str)
-   vim.wo.winbar = vim.wo.winbar .. str
+local M = {}
+local cmp = {}
+
+function _G._feed_bar_component(name)
+   return cmp[name]()
 end
 
-local function new_comp(name, str, width, grp, right)
-   width = width or 0
-   vim.g["feed_" .. name] = str
-   append("%#" .. grp .. "#")
-   append("%" .. (right and "" or "-") .. width + 1 .. "{g:feed_" .. name .. "}")
+local name2width, name2hl = {}, {}
+
+for _, v in ipairs(Config.layout) do
+   name2width[v[1]] = v.width
 end
 
-local providers = {}
+for _, v in ipairs(Config.layout) do
+   name2hl[v[1]] = v.color
+end
 
-setmetatable(providers, {
+local hi_pattern = '%%#%s#%s%%*'
+
+setmetatable(cmp, {
    __index = function(_, k)
       return function()
-         return ut.capticalize(k)
+         local width = name2width[k] or #k
+         local color = name2hl[k]
+         return hi_pattern:format(color, ut.align(ut.capticalize(k), width + 1))
       end
    end,
 })
 
-local DB = require "feed.db"
-local Config = require 'feed.config'
-
-providers.query = function()
-   return vim.g.feed_current_query
+cmp.query = function()
+   return hi_pattern:format(name2hl["query"], vim.g.feed_current_query)
 end
 
-providers.last_updated = function()
-   return DB:lastUpdated() .. " "
+cmp.last_updated = function()
+   return hi_pattern:format(name2hl["last_updated"], DB:lastUpdated())
 end
 
--- TODO: needs to be auto updated
--- providers.progress = function()
---    current_index = current_index or 1
---    return ("[%d/%d]"):format(current_index, #on_display)
--- end
+cmp.progress = function()
+   local count = vim.api.nvim_buf_line_count(0) - 1
+   local cur = math.min(count, vim.api.nvim_win_get_cursor(0)[1])
+   return hi_pattern:format("FeedRead", ("[%d/%d]"):format(cur, count))
+end
 
-local function show_winbar()
-   vim.wo.winbar = " "
+---@return string
+function M.show_winbar()
+   local buf = { Config.layout.padding.enabled and " " or "" }
    for _, v in ipairs(Config.layout) do
       if not v.right then
-         new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. v[1] .. "')%}"
       end
    end
-   append "%="
+
+   buf[#buf + 1] = "%=%<"
+
+   local right = {}
    for _, v in ipairs(Config.layout) do
       if v.right then
-         new_comp(v[1], providers[v[1]](v), v.width, v.color, v.right)
+         right[#right + 1] = "%{%v:lua._feed_bar_component('" .. v[1] .. "')%}"
       end
    end
+
+   table.insert(buf, table.concat(right, " "))
+   return table.concat(buf, "")
 end
 
--- TODO: idea: show keymap hints at bottom like newsboat
+---@return string
+function M.show_keyhints()
+   local buf = {}
+   for rhs, lhs in vim.spairs(Config.keys.entry) do
+      buf[#buf + 1] = ("%s:%s"):format(lhs, ut.capticalize((rhs)))
+   end
 
-return show_winbar
+   return (Config.layout.padding.enabled and " " or "") .. "%#FeedRead#" .. table.concat(buf, "   ") .. "%<"
+end
+
+return M
