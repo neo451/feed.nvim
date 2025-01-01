@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.15.1](https://github.com/neo451/feed.nvim/compare/v1.15.0...v1.15.1) (2025-01-01)
+
+
+### Bug Fixes
+
+* **config:** drop validate for now ([38c6c0a](https://github.com/neo451/feed.nvim/commit/38c6c0a3e94f82d2a93e1130753b50d805d53ab8))
+* **date:** fix new year months ago problem, happy new year ([38c6c0a](https://github.com/neo451/feed.nvim/commit/38c6c0a3e94f82d2a93e1130753b50d805d53ab8))
+* **fetch:** use concurrent task with coop.nvim ([38c6c0a](https://github.com/neo451/feed.nvim/commit/38c6c0a3e94f82d2a93e1130753b50d805d53ab8))
+
 ## [1.15.0](https://github.com/neo451/feed.nvim/compare/v1.14.5...v1.15.0) (2024-12-30)
 
 
