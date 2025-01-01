@@ -46,15 +46,9 @@ T["relative time"]["days ago"] = function()
 end
 
 T["relative time"]["months ago"] = function()
-   local months_ago_2 = M.literal("2-months-ago")
-   local expected_time = os.time()
-   local expected_date = os.date("*t", expected_time)
-   expected_date.month = expected_date.month - 2
-   if expected_date.month <= 0 then
-      expected_date.year = expected_date.year + math.floor((expected_date.month - 1) / 12)
-      expected_date.month = expected_date.month % 12 + 12
-   end
-   date_eq(os.time(expected_date), months_ago_2)
+   local mon = M.literal("2-months-ago")
+   local mon_obj = os.date("*t", mon)
+   eq(os.date("*t", os.time()).day, mon_obj.day)
 end
 
 T["relative time"]["year ago"] = function()

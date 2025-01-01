@@ -154,8 +154,12 @@ function M.entry_obj(id, read)
          if M[T] then
             text = M[T](id)
          end
-         local width = v.width or #text
-         width = T == "title" and vim.api.nvim_win_get_width(0) - acc_width - 1 or width
+         local width
+         if T == "title" then
+            width = #text
+         else
+            width = v.width
+         end
          line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
          acc_width = acc_width + width + 1
       end

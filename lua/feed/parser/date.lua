@@ -14,25 +14,39 @@ local function years_ago(num)
    local new_time = os.time()
    local new_date = os.date("*t", new_time)
    new_date.year = new_date.year - num
+   ---@diagnostic disable-next-line: param-type-mismatch
    return os.time(new_date)
 end
 
----@param num integer
+---@param n integer
 ---@return integer
 ---@private
-local function months_ago(num)
-   local new_date = os.date("*t", os.time())
-   new_date.month = new_date.month - num
-   if new_date.month <= 0 then
-      new_date.year = new_date.year + math.floor((new_date.month - 1) / 12)
-      new_date.month = new_date.month % 12 + 12
+local function months_ago(n)
+   -- Get the current date
+   local now = os.date("*t")
+
+   -- Calculate the new month and year
+   local year = now.year
+   local month = now.month - n
+
+   while month <= 0 do
+      month = month + 12
+      year = year - 1
    end
-   return os.time(new_date)
+
+   -- Keep the day the same, but ensure the new month is valid
+   local day = now.day
+   local days_in_new_month = os.date("*t", os.time { year = year, month = month + 1, day = 0 }).day
+   if day > days_in_new_month then
+      day = days_in_new_month
+   end
+
+   return os.time { year = year, month = month, day = day }
 end
 
 local patterns = {}
 local months =
-   { Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
+{ Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
 local weekdays = { Sun = 1, Mon = 2, Tue = 3, Wed = 4, Thu = 5, Fri = 6, Sat = 7 }
 
 do
@@ -48,33 +62,34 @@ do
    local zone = (S("+-") * digit) + C(R("AZ") ^ 1)
    local min_and_sec = L.digit ^ 2 * P(":") * L.digit ^ 2 * P("-")
    patterns.RFC2822 = alpha
-      * P(", ")
-      * digit
-      * ws
-      * alpha
-      * ws
-      * digit
-      * ws
-      * digit
-      * col
-      * digit
-      * col
-      * digit
-      * ws
-      * zone
+       * P(", ")
+       * digit
+       * ws
+       * alpha
+       * ws
+       * digit
+       * ws
+       * digit
+       * col
+       * digit
+       * col
+       * digit
+       * ws
+       * zone
    patterns.RFC3339 = digit
-      * P("-")
-      * digit
-      * P("-")
-      * digit
-      * S("Tt")
-      * digit
-      * (P(":") * min_and_sec ^ -1)
-      * digit
-      * (P(":") ^ -1)
-      * (digit ^ -1)
-      * (R("AZ") ^ -1)
-   patterns.ASCTIME = alpha * ws * alpha * ws * digit * ws * digit * ws * digit * col * digit * col * digit * ws -- TODO: zone
+       * P("-")
+       * digit
+       * P("-")
+       * digit
+       * S("Tt")
+       * digit
+       * (P(":") * min_and_sec ^ -1)
+       * digit
+       * (P(":") ^ -1)
+       * (digit ^ -1)
+       * (R("AZ") ^ -1)
+   patterns.ASCTIME = alpha * ws * alpha * ws * digit * ws * digit * ws * digit * col * digit * col * digit *
+       ws -- TODO: zone
 end
 
 ---@param str string

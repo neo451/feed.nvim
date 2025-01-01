@@ -1,135 +1,117 @@
+local Coop = require "coop"
 local Feedparser = require "feed.parser"
-local DB = require "feed.db"
+local Curl = require "feed.curl"
 local Config = require "feed.config"
 local Markdown = require "feed.ui.markdown"
-local Curl = require "feed.curl"
+local db = require "feed.db"
 local ut = require "feed.utils"
-local url2name = ut.url2name
-local Coop = require "coop"
-local MpscQueue = require('coop.mpsc-queue').MpscQueue
-local q = MpscQueue.new()
-local uv_utils = require "coop.uv-utils"
-
+local feeds = db.feeds
 local M = {}
-local feeds = DB.feeds
+local as_completed = require("coop.control").as_completed
 
-local encoding_blacklist = {
-   ["gb2312"] = true,
-}
+local valid_response = ut.list2lookup { 200, 301, 302, 303, 304, 307, 308 }
+local encoding_blacklist = ut.list2lookup { "gb2312" }
 
-local valid_response = {
-   [200] = true,
-   [301] = true,
-   [302] = true,
-   [303] = true,
-   [304] = true,
-   [307] = true,
-   [308] = true,
-}
-
----parse feed fetch from source
+--- process feed fetch from source
 ---@param url string
 ---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
----@return table?
-function M.parse(url, opts, cb)
+---@return feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }
+local function parse_co(url, opts)
    opts = opts or {}
-   Curl.get(url, opts, function(response)
-      if response then
-         if response.stdout ~= "" and valid_response[response.status] then
-            local d = Feedparser.parse(response.stdout, url)
-            if d then
-               return cb(vim.tbl_extend("keep", response, d))
-            end
-         end
-         return cb(response)
+   local response = Curl.get_co(url, opts)
+   if response and response.stdout ~= "" and valid_response[response.status] then
+      local d = Feedparser.parse(response.stdout, url)
+      if d then
+         return vim.tbl_extend("keep", response, d)
       end
-   end)
+   end
+   return response
 end
 
 ---@param url string
 ---@param opts { force: boolean }
-function M.update_feed(url, opts, cb)
+function M.update_feed_co(url, opts)
    local tags, last_modified, etag
    if feeds[url] and not opts.force then
       last_modified = feeds[url].last_modified
       etag = feeds[url].etag
-      tags = vim.deepcopy(feeds[url].tags)
    end
-   M.parse(url, { timeout = 10, etag = etag, last_modified = last_modified, cmds = Config.curl_params },
-      function(d)
-         local ok = true
-         if d then
-            if d.status == 301 then -- permenantly moved
-               feeds[url] = d.href  -- to keep config consistent
-               url = d.href
-            elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
-               feeds[url] = false
-               ok = false
+
+   local d = parse_co(url, { last_modified = last_modified, etag = etag, timeout = 10, cmds = Config.curl_params })
+   if d then
+      if d.status == 301 or d.status == 308 then
+         feeds[url] = false
+         url = d.href
+      elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
+         feeds[url] = false
+         return false
+      end
+
+      if d.entries then
+         for _, entry in ipairs(d.entries) do
+            local content = entry.content
+            entry.content = nil
+            local id = vim.fn.sha256(entry.link)
+            Markdown.convert {
+               src = content,
+               cb = function() end,
+               fp = tostring(db.dir / "data" / id),
+            }
+            db[id] = entry
+            if tags then
+               db:tag(id, tags)
             end
-            if d.entries and not vim.tbl_isempty(d.entries) then
-               for _, entry in ipairs(d.entries) do
-                  local content = entry.content
-                  entry.content = nil
-                  local id = vim.fn.sha256(entry.link)
-                  Markdown.convert {
-                     src = content,
-                     cb = function() end,
-                     fp = tostring(DB.dir / "data" / id),
-                     metadata = entry
-                  }
-                  DB[id] = entry
-                  if tags then
-                     DB:tag(id, tags)
-                  end
-               end
-            end
-            feeds[url] = feeds[url] or {}
-            -- TODO: tags and htmlUrl can change? --
-            feeds[url].htmlUrl = feeds[url].htmlUrl or d.link
-            feeds[url].title = feeds[url].title or d.title
-            feeds[url].description = feeds[url].description or d.desc
-            feeds[url].version = feeds[url].version or d.version
-            feeds[url].tags = feeds[url].tags or tags -- TDOO: feed tags -- FIX: compare new tgs
-            feeds[url].last_modified = d.last_modified
-            feeds[url].etag = d.etag
-            DB:save_feeds()
-         else
-            ok = false
          end
-         return cb(ok)
-      end)
+      end
+
+      feeds[url] = feeds[url] or {}
+      local feed = feeds[url]
+
+      feed.htmlUrl = feed.htmlUrl or d.htmlUrl
+      feed.title = feed.title or d.title
+      feed.description = feed.description or d.description
+      feed.version = feed.version or d.version
+
+      feed.last_modified = d.last_modified
+      feed.etag = d.etag
+      db:save_feeds()
+      return true
+   else
+      return false
+   end
+end
+
+---@return boolean
+local function is_headless()
+   return vim.tbl_isempty(vim.api.nvim_list_uis())
 end
 
 function M.update_all()
-   vim.iter(feeds):each(function(k)
-      q:push(k)
-   end)
+   local jobs, c = 0, 0
+   local list = ut.feedlist(feeds, false)
 
-   local jobs = 0
-   local size = 20
-   local c = 0
+   local tasks = {}
+
+   for i = 1, #list do
+      tasks[#tasks + 1] = Coop.spawn(function()
+         jobs = jobs + 1
+         local url = list[i]
+         local ok = M.update_feed_co(url, {})
+         local name = ut.url2name(url, feeds)
+         return ok, name
+      end)
+   end
 
    Coop.spawn(function()
-      while not q:empty() do
-         for _ = 1, size do
-            jobs = jobs + 1
-            if jobs > size then
-               uv_utils.sleep(1000)
-            end
-            local url = q:pop()
-            M.update_feed(url, {}, function(ok)
-               local name = url2name(url, feeds)
-               c = c + 1
-               jobs = jobs - 1
-               io.write(table.concat(
-               -- { jobs, c, "/", vim.tbl_count(feeds), name, (ok and "success" or "failed"), "\n" }, " "))
-                  { name, (ok and "success" or "failed"), "\n" }, " "))
-               if c == vim.tbl_count(feeds) and q:empty() then
-                  os.exit()
-               end
-            end)
-         end
+      for t in as_completed(tasks) do
+         local ok, name = t()
+         c = c + 1
+         jobs = jobs - 1
+         io.write(table.concat(
+            vim.tbl_flatten { (is_headless() and { jobs, c, "/", #list }), name, (ok and "success" or "failed"), "\n" },
+            " "))
       end
+      os.exit()
    end)
 end
 
