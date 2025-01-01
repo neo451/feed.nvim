@@ -74,7 +74,7 @@ function M.show_keyhints()
       buf[#buf + 1] = ("%s:%s"):format(lhs, ut.capticalize((rhs)))
    end
 
-   return (Config.layout.padding.enabled and " " or "") .. "%#FeedRead#" .. table.concat(buf, "   ") .. "%<"
+   return (Config.layout.padding.enabled and " " or "") .. "%#FeedRead#" .. table.concat(buf, "  ") .. "%<"
 end
 
 return M

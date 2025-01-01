@@ -271,4 +271,13 @@ function M.bo(buf, bo)
    end
 end
 
+M.list2lookup = function(list)
+   local lookup = {}
+   for _, v in ipairs(list) do
+      lookup[v] = true
+   end
+   return lookup
+end
+
+
 return M

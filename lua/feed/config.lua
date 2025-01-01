@@ -230,7 +230,7 @@ end
 function M.resolve(config)
    config = config or {}
    M.config = vim.tbl_deep_extend("keep", config, default)
-   validate(M.config)
+   -- validate(M.config)
 end
 
 return M

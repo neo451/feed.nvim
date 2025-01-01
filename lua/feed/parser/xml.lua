@@ -161,7 +161,7 @@ end
 ---@return string
 H.CharRef = function(node, src)
    local text = get_text(node, src)
-   local num = tonumber(text:sub(3, -2))
+   local num = text and tonumber(text:sub(3, -2)) or nil
    return num and string.char(num) or ""
 end
 

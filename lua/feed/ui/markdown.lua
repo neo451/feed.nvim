@@ -11,7 +11,8 @@ local function convert(ctx)
    local fp = ctx.fp
 
    if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
-      cb({ "you need pandoc to view feeds https://pandoc.org" })
+      vim.schedule_wrap(cb)({ "you need pandoc to view feeds https://pandoc.org" })
+      return
    end
 
    local function process(obj)
@@ -31,6 +32,7 @@ local function convert(ctx)
       link and link or nil,
       fp and { '-o', fp } or nil,
    }
+
    if not cb then
       return vim.system(cmd, { text = true, stdin = src }):wait().stdout
    else
