@@ -18,21 +18,6 @@ function M.listify(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end
 
---- Telescope Wrapper around vim.notify
----@param funname string: name of the function that will be
----@param opts table: opts.level string, opts.msg string, opts.once bool
-function M.notify(funname, opts)
-   opts.once = vim.F.if_nil(opts.once, false)
-   local level = vim.log.levels[opts.level]
-   if not level then
-      error("Invalid error level", 2)
-   end
-   local notify_fn = opts.once and vim.notify_once or vim.notify
-   notify_fn(string.format("[feed.%s]: %s", funname, opts.msg), level, {
-      title = "feed.nvim",
-   })
-end
-
 M.load_file = function(fp)
    if type(fp) == "table" then
       fp = tostring(fp)
@@ -41,7 +26,7 @@ M.load_file = function(fp)
    if ok and res then
       return res
    else
-      vim.notify(fp .. " not loaded", "ERROR")
+      vim.notify(fp .. " not loaded")
       return {}
    end
 end
@@ -91,46 +76,12 @@ M.read_file = function(path)
    return ret
 end
 
----@param str string
----@param len integer
----@return string
-local truncate = function(str, len)
-   if fn.strdisplaywidth(str) <= len then
-      return str
-   end
-   local dots = "…"
-   local start = 0
-   local current = 0
-   local result = ""
-   local len_of_dots = fn.strdisplaywidth(dots)
-   local concat = function(a, b, dir)
-      if dir > 0 then
-         return a .. b
-      else
-         return b .. a
-      end
-   end
-   while true do
-      local part = fn.strcharpart(str, start, 1)
-      current = current + fn.strdisplaywidth(part)
-      if (current + len_of_dots) > len then
-         result = concat(result, dots, 1)
-         break
-      end
-      result = concat(result, part, 1)
-      start = start + 1
-   end
-   return result
-end
-
 -- TODO: edge case
 -- [观点&amp;评…]
 -- [Articles, 新…]
 -- [Social Media…]
 -- [Articles, 新…]
 -- [Articles, 新…]
-
-M.truncate = truncate
 
 local strings = require "plenary.strings"
 
@@ -162,11 +113,13 @@ function M.get_selection()
    end
 end
 
-function M.in_index()
+---@return boolean
+M.in_index = function()
    return api.nvim_buf_get_name(0):find("FeedIndex") ~= nil
 end
 
-function M.in_entry()
+---@return boolean
+M.in_entry = function()
    return api.nvim_buf_get_name(0):find("FeedEntry") ~= nil
 end
 
@@ -278,6 +231,12 @@ M.list2lookup = function(list)
    end
    return lookup
 end
+
+---@return boolean
+M.is_headless = function()
+   return vim.tbl_isempty(vim.api.nvim_list_uis())
+end
+
 
 
 return M
