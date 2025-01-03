@@ -9,26 +9,14 @@
   </a>
 </p>
 
-
-
-
 **feed.nvim** is a web feed reader in Neovim.
 
-
-
-
 > [!WARNING]
-> This project is young, things like database format is prune to breaking changes, but it can deal with most feeds you can find, if you just wanna do some simple reading, go ahead and enjoy! 
+> This project is young, expect breaking changes on things like db format, but it can deal with most feeds you can find, go ahead and enjoy! 
 >
 > see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
-
-
-
 ## 🌟 Features
-
-
-
 
 - 🌲 Fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - 📝 View entries as beautiful markdown powered by [pandoc](https://pandoc.org)
@@ -36,39 +24,23 @@
 - 📚 Powerful entry searching by date, tag, feed, regex, and fulltext
 - 📂 OPML support to import and export all your feeds and podcasts
 - 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track *everything*
-
-
-
+- [ ] Work as a feed server with a web interface
+- [ ] Work as a feed client with support for services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
 ## 🚀 Installation
 
-
-
-
 ### Basic Installation
-
-
-
 
 > [!NOTE]
 > requires `nvim 0.10` and above
 > 
 > requires `pandoc` and `curl` to be installed on your path.
 
-
-
-
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
-
-
-
 
 ```
 Rocks install feed.nvim
 ```
-
-
-
 
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
@@ -76,22 +48,19 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 { "neo451/feed.nvim", cmd = "Feed" }
 ```
 
-
 ### Health Check
 
 - run `:checkhealth feed` to see your installation status
 
-### Optional Integrations
-
-- [Optional Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
 
 ## 🔖 Usage
 
+- [Optional Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
 - [Usage Guide](https://github.com/neo451/feed.nvim/wiki/Usage-Guide)
-- [Default Configs](https://github.com/neo451/feed.nvim/wiki/Default-Config)
+- [Default Configs](https://github.com/neo451/feed.nvim/blob/5382d972e8ed9c2dc2b010fc86b32ddd54e75fde/lua/feed/config.lua#L15)
 - [Recipes](https://github.com/neo451/feed.nvim/wiki/Recipes)
 
-## Related Projects
+## ❤️ Related Projects
 
 - [elfeed](https://github.com/skeeto/elfeed)
 - [nvim-rss](https://github.com/EMPAT94/nvim-rss)
