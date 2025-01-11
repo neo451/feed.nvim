@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.16.1](https://github.com/neo451/feed.nvim/compare/v1.16.0...v1.16.1) (2025-01-11)
+
+
+### Bug Fixes
+
+* **ui:** mark last visted entry as grey ([79ed4e2](https://github.com/neo451/feed.nvim/commit/79ed4e2c1995e7b44cfc42dec32dba2a19dbd027))
+* **ui:** ui.input with noautocmd win_config, no colorscheme blinking ([b06bdbe](https://github.com/neo451/feed.nvim/commit/b06bdbeaa55b1a55bdf263b3ea08ca668434df60))
+* **ui:** use vim.hl + my own alignment to render index ([c566fc6](https://github.com/neo451/feed.nvim/commit/c566fc64cce8d19866b0632d707b22b47448a7a2))
+* **url:** fix github link handling when not using short links ([b06bdbe](https://github.com/neo451/feed.nvim/commit/b06bdbeaa55b1a55bdf263b3ea08ca668434df60))
+
 ## [1.16.0](https://github.com/neo451/feed.nvim/compare/v1.15.1...v1.16.0) (2025-01-11)
 
 
