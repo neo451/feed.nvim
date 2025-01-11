@@ -28,64 +28,55 @@ local function parse_co(url, opts)
    return response
 end
 
+--- update a feed and load it to db
 ---@param url string
 ---@param opts { force: boolean }
 function M.update_feed_co(url, opts)
-   local tags, last_modified, etag
+   local last_modified, etag
    if feeds[url] and not opts.force then
       last_modified = feeds[url].last_modified
       etag = feeds[url].etag
    end
 
    local d = parse_co(url, { last_modified = last_modified, etag = etag, timeout = 10, cmds = Config.curl_params })
-   if d then
-      if d.status == 301 or d.status == 308 then
-         feeds[url] = false
-         url = d.href
-      elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
-         feeds[url] = false
-         return false
-      end
-
-      if d.entries then
-         for _, entry in ipairs(d.entries) do
-            local content = entry.content
-            entry.content = nil
-            local id = vim.fn.sha256(entry.link)
-            Markdown.convert {
-               src = content,
-               cb = function() end,
-               fp = tostring(db.dir / "data" / id),
-            }
-            db[id] = entry
-            if tags then
-               db:tag(id, tags)
-            end
-         end
-      end
-
-      feeds[url] = feeds[url] or {}
-      local feed = feeds[url]
-
-      feed.htmlUrl = feed.htmlUrl or d.htmlUrl
-      feed.title = feed.title or d.title
-      feed.description = feed.description or d.description
-      feed.version = feed.version or d.version
-
-      feed.last_modified = d.last_modified
-      feed.etag = d.etag
-      db:save_feeds()
-      return true
-   else
+   if not d then
       return false
    end
+   if d.status == 301 or d.status == 308 then
+      feeds[url] = false
+      url = ut.url_resolve(url, d.href)
+   elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
+      feeds[url] = nil
+      return false
+   end
+
+   for _, entry in ipairs(d.entries or {}) do
+      local content = entry.content
+      entry.content = nil
+      local id = vim.fn.sha256(entry.link)
+      Markdown.convert {
+         src = content,
+         cb = function() end,
+         fp = tostring(db.dir / "data" / id),
+      }
+      db[id] = entry
+   end
+
+   feeds[url] = feeds[url] or {}
+   local feed = feeds[url]
+
+   feed.htmlUrl = feed.htmlUrl or d.htmlUrl
+   feed.title = feed.title or d.title
+   feed.description = feed.desc or d.description
+   feed.version = feed.version or d.version
+
+   feed.last_modified = d.last_modified
+   feed.etag = d.etag
+   db:save_feeds()
+   return true
 end
 
----@return boolean
-local function is_headless()
-   return vim.tbl_isempty(vim.api.nvim_list_uis())
-end
-
+--- update all feeds
 function M.update_all()
    local jobs, c = 0, 0
    local list = ut.feedlist(feeds, false)
@@ -107,9 +98,8 @@ function M.update_all()
          local ok, name = t()
          c = c + 1
          jobs = jobs - 1
-         io.write(table.concat(
-            vim.tbl_flatten { (is_headless() and { jobs, c, "/", #list }), name, (ok and "success" or "failed"), "\n" },
-            " "))
+         -- io.write(table.concat({ jobs, c, "/", #list, name, (ok and "success" or "failed"), "\n" }, " "))
+         io.write(table.concat({ name, (ok and "success" or "failed"), "\n" }, " "))
       end
       os.exit()
    end)

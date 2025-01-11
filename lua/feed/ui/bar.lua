@@ -1,6 +1,7 @@
 local ut = require "feed.utils"
 local DB = require "feed.db"
 local Config = require 'feed.config'
+local state = require "feed.ui.state"
 
 local M = {}
 local cmp = {}
@@ -32,7 +33,7 @@ setmetatable(cmp, {
 })
 
 cmp.query = function()
-   return hi_pattern:format(name2hl["query"], vim.g.feed_current_query)
+   return hi_pattern:format(name2hl["query"], state.query)
 end
 
 cmp.last_updated = function()

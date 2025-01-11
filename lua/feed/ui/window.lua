@@ -4,34 +4,44 @@ local Config = require "feed.config"
 local Win = {}
 local id = 0
 
----@class feed.win
----@field opts feed.win.Config
+---@class diy.win
+---@field opts diy.win.Config
 ---@field id number
 ---@field win integer
 ---@field buf integer
+---@field open fun(feed.win: self)
+---@field close fun(feed.win: self)
+---@field valid fun(feed.win: self): boolean
+---@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
 
----@class feed.win.Config: vim.api.keyset.win_config
+---@class diy.win.Config: vim.api.keyset.win_config
+---@field text? string | string[]
 ---@field wo? vim.wo|{} window options
 ---@field bo? vim.bo|{} buffer options
 ---@field b? table<string, any> buffer local variables
 ---@field w? table<string, any> window local variables
----@field ft? string filetype to use for treesitter/syntax highlighting. Won't override existing filetype
+---@field ft? string
 
----@param opts feed.win.Config | {}
+---@param opts diy.win.Config | {}
+---@param enter? boolean
 ---@return table
-function Win.new(opts)
+function Win.new(opts, enter)
    opts = vim.tbl_deep_extend("force", {
       relative = "editor",
       height = vim.o.lines,
       width = vim.o.columns,
       row = 0,
       col = 0,
-      zindex = 50,
-      wo = {},
+      zindex = 30,
+      wo = {
+         winhighlight = "Normal:Normal,FloatBorder:Normal",
+      },
       bo = {},
       w = {},
       b = {},
    }, opts)
+
+   opts.enter = vim.F.if_nil(enter, true)
 
    if Config.layout.padding.enabled then
       opts.wo.statuscolumn = " "
@@ -107,6 +117,11 @@ function Win:show()
       self.buf = vim.api.nvim_create_buf(false, true)
    end
 
+   if self.opts.text then
+      local lines = type(self.opts.text) == "string" and vim.split(self.opts.text, "\n") or self.opts.text
+      vim.api.nvim_buf_set_lines(self.buf, 0, -1, false, lines)
+   end
+
    if self.opts.b then
       for k, v in pairs(self.opts.b) do
          vim.api.nvim_buf_set_var(self.buf, k, v)
@@ -116,11 +131,13 @@ function Win:show()
    self.augroup = vim.api.nvim_create_augroup("feed_win_" .. self.id, { clear = true })
 
    if self.opts.autocmds then
-      for k, v in pairs(self.opts.autocmds) do
+      for k, cb in pairs(self.opts.autocmds) do
          vim.api.nvim_create_autocmd(k, {
             -- group = self.augroup,
             buffer = self.buf,
-            callback = v
+            callback = function()
+               cb(self)
+            end
          })
       end
    end
@@ -134,14 +151,14 @@ function Win:show()
       end)
       self.opts.wo = vim.tbl_extend("force", split_minimal_wo, self.opts.wo)
    else
-      self.win = vim.api.nvim_open_win(self.buf, true, self:win_opts())
+      self.win = vim.api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
    end
 
 
    ut.bo(self.buf, self.opts.bo)
    ut.wo(self.win, self.opts.wo)
 
-   -- TODO: handle popup windows hide self
+   -- FIX: handle popup windows hide self
 
    -- update window size when resizing
    vim.api.nvim_create_autocmd("VimResized", {
@@ -202,8 +219,19 @@ function Win:maps()
    end
 end
 
+--- like vim.api.nvim_buf_set_keymap but with buffer set to self.buf
+---@param mode string | string[]
+---@param lhs string
+---@param rhs string | function
 function Win:map(mode, lhs, rhs)
-   vim.keymap.set(mode, lhs, rhs, { buffer = self.buf, nowait = true })
+   local set = vim.keymap.set
+   if type(lhs) == "table" then
+      for _, l in ipairs(lhs) do
+         set(mode, l, rhs, { buffer = self.buf, nowait = true })
+      end
+   else
+      set(mode, lhs, rhs, { buffer = self.buf, nowait = true })
+   end
 end
 
 function Win:update()
@@ -218,10 +246,7 @@ function Win:update()
    end
 end
 
----@param opts? { buf: boolean }
-function Win:close(opts)
-   opts = opts or {}
-
+function Win:close()
    local win = self.win
    local buf = self.buf
 

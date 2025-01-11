@@ -2,10 +2,8 @@ local Config = require("feed.config")
 local ut = require("feed.utils")
 local db = require("feed.db")
 local ui = require("feed.ui")
-local feeds = db.feeds
-local nui = require("feed.ui.nui")
 local log = require("feed.lib.log")
-
+local feeds = db.feeds
 local feedlist = ut.feedlist
 
 local M = {}
@@ -16,7 +14,7 @@ M.load_opml = {
       if path then
          ui.load_opml(path)
       else
-         nui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
+         ui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
       end
    end,
    context = { all = true },
@@ -28,7 +26,7 @@ M.export_opml = {
       if fp then
          ui.export_opml(fp)
       else
-         nui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
+         ui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
       end
    end,
    context = { all = true },
@@ -40,7 +38,6 @@ M.search = {
    context = { all = true },
 }
 
-
 M.grep = {
    doc = "full-text search through the entry contents",
    impl = ui.grep,
@@ -48,7 +45,7 @@ M.grep = {
 }
 
 M.refresh = {
-   doc = "re-renders the index buffer",
+   doc = "refresh the index buffer",
    impl = ui.refresh,
    context = { index = true },
 }
@@ -139,19 +136,17 @@ M._dot = {
    context = { index = true },
 }
 
-
 M.tag = {
    doc = "tag an entry",
    impl = function(t)
       if t then
          ui.tag(t)
       else
-         nui.input({ prompt = "Tag: " }, ui.tag)
+         ui.input({ prompt = "Tag: " }, ui.tag)
       end
    end,
    context = { index = true, entry = true },
 }
-
 
 --- TODO: make tag untag visual line mode
 M.untag = {
@@ -160,7 +155,7 @@ M.untag = {
       if t then
          ui.untag(t)
       else
-         nui.input({ prompt = "Untag: " }, ui.untag)
+         ui.input({ prompt = "Untag: " }, ui.untag)
       end
    end,
    context = { index = true, entry = true },
@@ -206,7 +201,7 @@ M.update_feed = {
       if url then
          ui.update_feed(url)
       else
-         nui.select(feedlist(feeds, true), {
+         ui.select(feedlist(feeds, true), {
             prompt = "Feed to update",
             format_item = function(item)
                local feed = feeds[item]
@@ -224,12 +219,11 @@ M.update_feed = {
 
 M.prune_feed = {
    doc = "remove a feed and its entries",
-   -- TODO: remove db links/refs
    impl = function(url)
       if url then
          ui.prune_feed(url)
       else
-         nui.select(feedlist(feeds, true), {
+         ui.select(feedlist(feeds, true), {
             prompt = "Feed to prune",
             format_item = function(item)
                local feed = feeds[item]
@@ -277,7 +271,7 @@ end
 
 function M._menu()
    local items = M._list_commands()
-   nui.select(items, {
+   ui.select(items, {
       prompt = "Feed commands",
       format_item = function(item)
          return item .. ": " .. M[item].doc

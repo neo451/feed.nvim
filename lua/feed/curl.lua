@@ -1,7 +1,9 @@
 ---@diagnostic disable: inject-field
 local ut = require("feed.utils")
 local log = require("feed.lib.log")
-local Config = require("feed.config")
+
+local github = require "feed.integrations.github"
+local rsshub = require "feed.integrations.rsshub"
 
 local M = {}
 local read_file = ut.read_file
@@ -57,7 +59,7 @@ end
 ---@param cb? any
 ---@return vim.SystemCompleted?
 function M.get(url, opts, cb)
-   assert(type(url) == "string", "url must be a string")
+   vim.validate("url", url, "string")
    opts = opts or {}
    local additional = build_header({
       is_none_match = opts.etag,
@@ -71,7 +73,7 @@ function M.get(url, opts, cb)
       dump_fp,
       "--connect-timeout",
       opts.timeout or 10,
-      url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub.instance) .. "?format=json?mode=fulltext" or url,
+      rsshub(github(url))
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
