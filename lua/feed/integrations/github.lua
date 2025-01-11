@@ -3,9 +3,9 @@ return function(url)
       return url
    end
    local user, repo
-   if url:find("github.com") then
+   if url:find("github.com") and not url:find("news.txt") then
       user, repo = url:match("github.com/([^/]+)/([^/]+)")
-   elseif url:find("github:/") then
+   elseif url:find("^github:/") then
       user, repo = url:match("github://([^/]+)/([^/]+)")
    else
       user, repo = url:match("^([^/]+)/([^/]+)")

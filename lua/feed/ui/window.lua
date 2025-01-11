@@ -4,8 +4,8 @@ local Config = require "feed.config"
 local Win = {}
 local id = 0
 
----@class diy.win
----@field opts diy.win.Config
+---@class feed.win
+---@field opts feed.win.Config
 ---@field id number
 ---@field win integer
 ---@field buf integer
@@ -14,7 +14,7 @@ local id = 0
 ---@field valid fun(feed.win: self): boolean
 ---@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
 
----@class diy.win.Config: vim.api.keyset.win_config
+---@class feed.win.Config: vim.api.keyset.win_config
 ---@field text? string | string[]
 ---@field wo? vim.wo|{} window options
 ---@field bo? vim.bo|{} buffer options
@@ -22,7 +22,7 @@ local id = 0
 ---@field w? table<string, any> window local variables
 ---@field ft? string
 
----@param opts diy.win.Config | {}
+---@param opts feed.win.Config | {}
 ---@param enter? boolean
 ---@return table
 function Win.new(opts, enter)
