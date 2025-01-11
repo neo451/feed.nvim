@@ -6,7 +6,7 @@
   <a href="https://github.com/neo451/feed.nvim">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
   </a>
-  <a herf="https://github.com/neo451/feed.nvim/releases.atom">
+  <a href="https://github.com/neo451/feed.nvim/releases.atom">
     <img src="https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white">
   </a>
 </p>
