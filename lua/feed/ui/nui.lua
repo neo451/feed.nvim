@@ -1,77 +1,126 @@
 local M = {}
+local Win = require "feed.ui.window"
 local Config = require "feed.config"
-local Menu = require("nui.menu")
-local Input = require "nui.input"
-local event = require("nui.utils.autocmd").event
-local api = vim.api
 local ut = require "feed.utils"
+local db = require "feed.db"
+local api = vim.api
 
-local nui_select = function(items, opts, on_choice, config)
-   config = config or {}
-   local lines = {}
-   local line_width = opts.prompt and vim.api.nvim_strwidth(opts.prompt) or 1
-   for i, item in ipairs(items) do
-      local line = opts.format_item(item)
-      line_width = math.max(line_width, vim.api.nvim_strwidth(line))
-      table.insert(lines, Menu.item(line, { value = item, idx = i }))
+-- Levenshtein distance function
+local function levenshtein(a, b)
+   local len_a, len_b = #a, #b
+   local dp = {}
+   for i = 0, len_a do
+      dp[i] = {}
+      dp[i][0] = i
    end
-
-   if not config.size then
-      line_width = math.max(line_width, config.min_width or 20)
-      local height = math.max(#lines, config.min_height or 20)
-      config.size = {
-         width = line_width,
-         height = height,
-      }
+   for j = 0, len_b do
+      dp[0][j] = j
    end
-
-   local callback
-   callback = function(...)
-      if vim.tbl_isempty({ ... }) then
-         return
+   for i = 1, len_a do
+      for j = 1, len_b do
+         local cost = (a:sub(i, i) == b:sub(j, j)) and 0 or 1
+         dp[i][j] = math.min(
+            dp[i - 1][j] + 1,       -- deletion
+            dp[i][j - 1] + 1,       -- insertion
+            dp[i - 1][j - 1] + cost -- substitution
+         )
       end
-      on_choice(...)
-      -- Prevent double-calls
-      callback = function() end
+   end
+   return dp[len_a][len_b]
+end
+
+-- Fuzzy match function
+local function fuzzy_match(input, items, threshold)
+   threshold = threshold or 0.5 -- Default similarity threshold
+   local results = {}
+
+   for _, item in ipairs(items) do
+      local distance = levenshtein(input, item)
+      local similarity = 1 - (distance / math.max(#input, #item))
+      if similarity >= threshold then
+         table.insert(results, { item = item, score = similarity })
+      end
    end
 
-   local menu = Menu({
-      position = "50%",
-      size = {
-         width = 70,
-         height = 10,
-      },
+   table.sort(results, function(a, b)
+      return a.score > b.score
+   end)
 
-      border = {
-         style = "single",
-         text = {
-            top = opts.prompt,
-            top_align = "center",
-         },
+   return vim.iter(results):map(function(item)
+      return item.item
+   end):totable()
+end
+
+M._select = function(items, opts, on_choice)
+   local height = math.floor(vim.o.lines / 2)
+   local width = math.floor(vim.o.columns / 2)
+
+   local col = math.floor(vim.o.columns / 4)
+   local row = math.floor(vim.o.lines / 4)
+
+   local res = Win.new({
+      style = "minimal",
+      row = row,
+      col = col,
+      height = height,
+      width = width,
+      focusable = false,
+      noautocmd = true,
+      border = "rounded",
+      wo = {
+         signcolumn = "yes:1",
+         winhighlight = "Normal:Normal,FloatBorder:Normal",
+         cursorline = true,
       },
-   }, {
-      lines = lines,
-      max_width = config.max_width or 80,
-      max_height = config.max_height or 20,
-      keymap = {
-         focus_next = { "j", "<Down>", "<Tab>" },
-         focus_prev = { "k", "<Up>", "<S-Tab>" },
-         close = { "q", "<C-c>" },
-         submit = { "<CR>" },
+      bo = {
+         buftype = "nofile",
+      }
+   }, false)
+
+   local input = Win.new({
+      style = "minimal",
+      row = row - 2,
+      col = col,
+      height = 1,
+      width = width,
+      title = " " .. opts.prompt .. " ",
+      title_pos = "center",
+      border = { "╭", "─", "╮", "│", "│", "─", "│", "│" },
+      wo = {
+         signcolumn = "yes:1",
+         winhighlight = "Normal:Normal,FloatBorder:Normal",
+         cursorline = true,
       },
-      on_close = function()
-         vim.schedule(function()
-            callback(nil, nil)
-         end)
-      end,
-      on_submit = function(item)
-         callback(item.value, item.idx)
-      end,
+      b = {
+         completion = false,
+      }
+   }, true)
+
+   vim.cmd("startinsert!")
+
+   local lines = vim.tbl_map(opts.format_item, items)
+
+   vim.api.nvim_buf_set_lines(res.buf, 0, -1, false, lines)
+
+   vim.api.nvim_buf_attach(input.buf, false, {
+      on_lines = vim.schedule_wrap(function()
+         vim.api.nvim_buf_set_lines(res.buf, 0, -1, false, {})
+         local query = vim.api.nvim_get_current_line()
+         local set_items = fuzzy_match(query, lines, 0.3)
+         vim.api.nvim_buf_set_lines(res.buf, 0, -1, false, set_items)
+      end),
    })
 
-   menu:mount()
+   input:map("n", "q", function()
+      res:close()
+      input:close()
+   end)
 
-   menu:on(event.BufLeave, menu.menu_props.on_close, { once = true })
+   input:map("n", "<enter>", function()
+      local item = vim.api.nvim_get_current_line()
+      res:close()
+      on_choice(item)
+   end)
 end
 
 local function telescope_select(items, opts, on_choice)
@@ -132,10 +181,11 @@ function M.select(items, opts, on_choice)
          MiniPick.ui_select(items, opts, on_choice)
       elseif backend == 'telescope' then
          telescope_select(items, opts, on_choice)
-      elseif pcall(require, "dressing") then
-         vim.ui.select(items, opts, on_choice)
       else
-         nui_select(items, opts, on_choice)
+         vim.ui.select(items, opts, on_choice)
+         -- else
+         --    vim.ui.select(items, opts, on_choice)
+         -- M._select(items, opts, on_choice)
       end
    end
 end
@@ -146,7 +196,6 @@ end
 ---@return feed.win
 function M.split(opts, percentage, lines)
    lines = lines or {}
-   local Win = require "feed.ui.window"
 
    local height = math.floor(vim.o.lines * (tonumber(percentage:sub(1, -2)) / 100))
    local width = vim.o.columns
@@ -187,42 +236,59 @@ function M.split(opts, percentage, lines)
 end
 
 function M.input(opts, on_submit)
-   local input = Input({
-      position = {
-         row = vim.o.lines,
-         col = 0
-      },
-      size = {
-         width = vim.o.columns,
-         height = 1,
-      },
-      border = {
-         style = "none",
-      },
+   local fp = db.dir / "input_history"
+   local str = ut.read_file(fp)
+
+   opts = opts or {}
+
+   local lines = vim.split(str or "", "\n")
+   lines[#lines] = opts.default or ""
+
+   local win = Win.new({
+      text = lines,
+      row = vim.o.lines,
+      col = 0,
+      width = vim.o.columns,
+      height = 1,
+      style = "minimal",
       zindex = 1000,
-      win_options = {
+      wo = {
          winhighlight = "Normal:Normal,FloatBorder:Normal",
       },
-   }, {
-      prompt = opts.prompt,
-      default_value = opts.default,
-      on_submit = on_submit,
+      autocmds = {
+         BufLeave = function()
+            local text = vim.api.nvim_get_current_line()
+            fp:fs_append(text)
+            fp:fs_append("\n")
+            vim.cmd("stopinsert")
+         end,
+         BufEnter = function(self)
+            local col = api.nvim_buf_line_count(self.buf)
+            api.nvim_win_set_cursor(0, { col, 0 })
+            vim.cmd("startinsert")
+         end
+      }
    })
 
-   input:mount()
+   on_submit = on_submit or function() end
 
-   input:on(event.BufLeave, function()
-      input:unmount()
+   local prompt = opts.prompt
+   if prompt then
+      vim.wo[win.win].statuscolumn = prompt
+   end
+
+   win:map("n", { "<esc>", "q" }, function()
+      win:close()
    end)
 
-   input:map("n", "q", function()
-      input:unmount()
+   win:map("i", "<esc>", function()
+      win:close()
    end)
-   input:map("i", "<esc>", function()
-      input:unmount()
-   end)
-   input:map("n", "<esc>", function()
-      input:unmount()
+
+   win:map({ "n", "i" }, "<enter>", function()
+      local text = api.nvim_get_current_line()
+      win:close()
+      on_submit(text)
    end)
 end
 

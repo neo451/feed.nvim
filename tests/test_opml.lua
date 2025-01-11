@@ -1,4 +1,4 @@
-local M = require "feed.parser.opml"
+local M = require "feed.opml"
 local h = require "tests.helpers"
 local readfile = h.readfile
 local eq = MiniTest.expect.equality

@@ -9,7 +9,6 @@ local icons = Config.icons
 
 -- TODO: this whole module should be user definable
 
-
 ---@param str string
 ---@return string
 local function cleanup(str)

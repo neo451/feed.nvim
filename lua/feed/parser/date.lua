@@ -1,48 +1,65 @@
 local M = {}
 
----@param num integer
----@return integer
----@private
-local function days_ago(num)
-   return os.time() - (num * 24 * 60 * 60)
-end
+---@class feed._date
+---@field year integer
+---@field month integer
+---@field day integer
 
----@param num integer
+---@param date feed._date?
 ---@return integer
----@private
-local function years_ago(num)
-   local new_time = os.time()
-   local new_date = os.date("*t", new_time)
-   new_date.year = new_date.year - num
-   ---@diagnostic disable-next-line: param-type-mismatch
-   return os.time(new_date)
+local os_time = function(date)
+   return os.time(date)
 end
 
 ---@param n integer
+---@param now feed._date?
 ---@return integer
 ---@private
-local function months_ago(n)
-   -- Get the current date
-   local now = os.date("*t")
-
-   -- Calculate the new month and year
-   local year = now.year
-   local month = now.month - n
-
-   while month <= 0 do
-      month = month + 12
-      year = year - 1
-   end
-
-   -- Keep the day the same, but ensure the new month is valid
-   local day = now.day
-   local days_in_new_month = os.date("*t", os.time { year = year, month = month + 1, day = 0 }).day
-   if day > days_in_new_month then
-      day = days_in_new_month
-   end
-
-   return os.time { year = year, month = month, day = day }
+local function days_ago(n, now)
+   now = os_time(now) or os.time()
+   local day = 24 * 60 * 60
+   return now - day * n
 end
+
+---@param n integer
+---@param now? feed._date
+---@return integer
+---@private
+local function years_ago(n, now)
+   now = now or os.date("*t")
+   return os.time { year = now.year - n, month = now.month, day = now.day }
+end
+
+---@param n integer
+---@param now? feed._date
+---@return integer
+local function months_ago(n, now)
+   now = now or os.date("*t")
+   now.month = now.month - n
+
+   while now.month < 1 do
+      now.month = now.month + 12
+      now.year = now.year - 1
+   end
+
+   local last_day = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
+
+   if now.year % 4 == 0 and (now.year % 100 ~= 0 or now.year % 400 == 0) then -- Check for leap year
+      last_day[2] = 29
+   end
+
+   -- Adjust the day if it exceeds the number of days in the new month
+   if now.day > last_day[now.month] then
+      now.day = last_day[now.month]
+   end
+
+   ---@diagnostic disable-next-line: param-type-mismatch
+   return os.time(now)
+end
+
+M._days_ago = days_ago
+M._years_ago = years_ago
+M._months_ago = months_ago
 
 local patterns = {}
 local months =
