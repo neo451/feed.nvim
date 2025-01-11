@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.16.0](https://github.com/neo451/feed.nvim/compare/v1.15.1...v1.16.0) (2025-01-11)
+
+
+### Features
+
+* **curl:** shorthand to subscribe to github repos ([adcd768](https://github.com/neo451/feed.nvim/commit/adcd768cd55cbd541f406679adab4ee436439ced))
+
+
+### Bug Fixes
+
+* **ui:** move ui.state as a module ([adcd768](https://github.com/neo451/feed.nvim/commit/adcd768cd55cbd541f406679adab4ee436439ced))
+* **ui:** open_url action with &lt;cfile&gt; ([adcd768](https://github.com/neo451/feed.nvim/commit/adcd768cd55cbd541f406679adab4ee436439ced))
+* **ui:** proper handle of colorschemes ([adcd768](https://github.com/neo451/feed.nvim/commit/adcd768cd55cbd541f406679adab4ee436439ced))
+
 ## [1.15.1](https://github.com/neo451/feed.nvim/compare/v1.15.0...v1.15.1) (2025-01-01)
 
 
