@@ -11,11 +11,13 @@ local ut = require("feed.utils")
 local read_file = ut.read_file
 local save_file = ut.save_file
 
+local hl = vim.hl or vim.highlight
 local api = vim.api
 local feeds = DB.feeds
 local feedlist = ut.feedlist
 local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
+
 
 local state = require "feed.ui.state"
 
@@ -30,6 +32,7 @@ for name, f in pairs(require "feed.ui.nui") do
 end
 
 state.query = Config.search.default_query
+local ns = api.nvim_create_namespace("feed_index")
 
 local function show_index()
    if not state.index or not state.index:valid() then
@@ -58,7 +61,15 @@ local function show_index()
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear lines
    for i, id in ipairs(state.entries) do
-      Format.entry_obj(id, false):render(buf, -1, i)
+      api.nvim_buf_set_lines(buf, i - 1, i, false, { Format.entry(id, Config.layout) })
+   end
+   for i = 1, #state.entries do
+      local acc = 0
+      for _, comp in ipairs(Config.layout) do
+         local width = comp.width or math.huge
+         hl.range(buf, ns, comp.color, { i - 1, acc }, { i - 1, acc + width })
+         acc = acc + width + 1
+      end
    end
    api.nvim_buf_set_lines(buf, #state.entries, #state.entries + 1, false, { "" })
    vim.bo[buf].modifiable = false
@@ -102,10 +113,8 @@ local function mark_read(id)
    DB:tag(id, "read")
    if state.index and state.index:valid() then
       local buf = state.index.buf
-      local NLine = Format.entry_obj(id, true)
-      vim.bo[buf].modifiable = true
-      NLine:render(buf, -1, state.cur)
-      vim.bo[buf].modifiable = false
+      api.nvim_buf_clear_namespace(buf, ns, state.cur - 1, state.cur)
+      hl.range(buf, ns, "FeedRead", { state.cur - 1, 0 }, { state.cur - 1, -1 })
    end
 end
 
@@ -154,8 +163,8 @@ local function set_content(buf, body, id)
    end
 end
 
----@param ctx? { row: integer, id: string, buf: integer, link: string }
-local function preview_entry(ctx)
+---@param ctx? { row: integer, id: string, buf: integer, link: string, read: boolean }
+function M.preview_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
    if not entry then return end
@@ -170,6 +179,9 @@ local function preview_entry(ctx)
    if str then
       local lines = vim.split(str, "\n")
       set_content(buf, lines, id)
+      if ctx.read then
+         mark_read(id)
+      end
    else
       vim.notify "no content to preview"
    end
@@ -332,7 +344,7 @@ end
 
 M.show_log     = function()
    local str = ut.read_file(vim.fn.stdpath("data") .. "/feed.nvim.log") or ""
-   M.Split({}, "50%", vim.split(str, "\n"))
+   M.split({}, "50%", vim.split(str, "\n"))
 end
 
 M.show_hints   = function()
@@ -350,7 +362,7 @@ M.show_hints   = function()
       lines[#lines + 1] = v .. " -> " .. k
    end
 
-   M.Split({
+   M.split({
       wo = {
          winbar = "%#FeedRead#Key Hints",
       }
@@ -361,8 +373,8 @@ end
 ---@param percentage any
 M.show_split   = function(percentage)
    local _, id = get_entry()
-   local split = M.Split({}, percentage or "50%")
-   preview_entry({ buf = split.buf, id = id })
+   local split = M.split({}, percentage or "50%")
+   M.preview_entry({ buf = split.buf, id = id, read = true })
    ut.wo(split.win, Config.options.entry.wo)
    ut.bo(split.buf, Config.options.entry.bo)
 end
@@ -370,7 +382,7 @@ end
 ---Open split to show feeds
 ---@param percentage string
 M.show_feeds   = function(percentage)
-   local split = M.Split({
+   local split = M.split({
       wo = {
          winbar = "%#FeedRead#Feedlist: <Tab>: Toggle Node",
       }
@@ -562,6 +574,5 @@ M.show_keyhints = require "feed.ui.bar".show_keyhints
 M.show_index = show_index
 M.show_entry = show_entry
 M.get_entry = get_entry
-M.preview_entry = preview_entry
 
 return M

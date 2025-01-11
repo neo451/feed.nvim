@@ -32,6 +32,7 @@ local feeds_fp = db_dir / "feeds.lua"
 local tags_fp = db_dir / "tags.lua"
 local list_fp = db_dir / "list.lua"
 local index_fp = db_dir / "index"
+local history_fp = db_dir / "input_history"
 
 local load_file = ut.load_file
 local save_file = ut.save_file
@@ -98,6 +99,7 @@ function DB.new()
    ensure_path(tags_fp, "obj")
    ensure_path(list_fp, "obj")
    ensure_path(index_fp, "file")
+   ensure_path(history_fp, "file")
 
    return setmetatable({
       dir = db_dir

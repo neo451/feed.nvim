@@ -183,8 +183,6 @@ function M.select(items, opts, on_choice)
          telescope_select(items, opts, on_choice)
       else
          vim.ui.select(items, opts, on_choice)
-         -- else
-         --    vim.ui.select(items, opts, on_choice)
          -- M._select(items, opts, on_choice)
       end
    end
@@ -252,6 +250,7 @@ function M.input(opts, on_submit)
       height = 1,
       style = "minimal",
       zindex = 1000,
+      noautocmd = true,
       wo = {
          winhighlight = "Normal:Normal,FloatBorder:Normal",
       },

@@ -112,7 +112,7 @@ M.entry = function(id, comps)
    for _, v in ipairs(M.gen_format(id, comps)) do
       buf[#buf + 1] = v.text
    end
-   return table.concat(buf, " ")
+   return table.concat(buf)
 end
 
 ---return a format info for an entry base on user config
@@ -127,43 +127,12 @@ function M.gen_format(id, comps)
       if M[v[1]] then
          text = M[v[1]](id)
       end
-      text = align(text, v.width or #text, v.right_justify) .. " "
+      local width = v.width or #text
+      text = align(text, width, v.right_justify) .. " "
       res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
-      acc_width = acc_width + v.width + 1
+      acc_width = acc_width + width
    end
    return res
-end
-
----return a NuiLine obj for an entry base on user config
----@param id string
----@param read boolean
----@return NuiLine
-function M.entry_obj(id, read)
-   local NuiLine = require "nui.line"
-   local line = NuiLine()
-   local acc_width = 0
-   local entry = DB[id]
-   if not entry then
-      return NuiLine()
-   end
-   for _, v in ipairs(Config.layout) do
-      local T = v[1]
-      if not v.right then
-         local text = entry[T] or ""
-         if M[T] then
-            text = M[T](id)
-         end
-         local width
-         if T == "title" then
-            width = #text
-         else
-            width = v.width
-         end
-         line:append(align(text, width + 1, v.right_justify), read and "FeedRead" or v.color)
-         acc_width = acc_width + width + 1
-      end
-   end
-   return line
 end
 
 return M
