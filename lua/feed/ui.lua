@@ -32,7 +32,7 @@ for name, f in pairs(require "feed.ui.nui") do
 end
 
 state.query = Config.search.default_query
-local ns = vim.api.nvim_create_namespace("feed_index")
+local ns = api.nvim_create_namespace("feed_index")
 
 local function show_index()
    if not state.index or not state.index:valid() then
@@ -113,10 +113,8 @@ local function mark_read(id)
    DB:tag(id, "read")
    if state.index and state.index:valid() then
       local buf = state.index.buf
-      local NLine = Format.entry_obj(id, true)
-      vim.bo[buf].modifiable = true
-      NLine:render(buf, -1, state.cur)
-      vim.bo[buf].modifiable = false
+      api.nvim_buf_clear_namespace(buf, ns, state.cur - 1, state.cur)
+      hl.range(buf, ns, "FeedRead", { state.cur - 1, 0 }, { state.cur - 1, -1 })
    end
 end
 
@@ -165,7 +163,7 @@ local function set_content(buf, body, id)
    end
 end
 
----@param ctx? { row: integer, id: string, buf: integer, link: string }
+---@param ctx? { row: integer, id: string, buf: integer, link: string, read: boolean }
 function M.preview_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
@@ -181,6 +179,9 @@ function M.preview_entry(ctx)
    if str then
       local lines = vim.split(str, "\n")
       set_content(buf, lines, id)
+      if ctx.read then
+         mark_read(id)
+      end
    else
       vim.notify "no content to preview"
    end
@@ -373,7 +374,7 @@ end
 M.show_split   = function(percentage)
    local _, id = get_entry()
    local split = M.split({}, percentage or "50%")
-   M.preview_entry({ buf = split.buf, id = id })
+   M.preview_entry({ buf = split.buf, id = id, read = true })
    ut.wo(split.win, Config.options.entry.wo)
    ut.bo(split.buf, Config.options.entry.bo)
 end
