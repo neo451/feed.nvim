@@ -1,0 +1,105 @@
+local M = {}
+
+-- TODO: edge case
+-- [观点&amp;评…]
+-- [Articles, 新…]
+-- [Social Media…]
+-- [Articles, 新…]
+-- [Articles, 新…]
+
+--- from plenary.nvim
+local truncate = function(str, len, dots, direction)
+   if vim.fn.strdisplaywidth(str) <= len then
+      return str
+   end
+   local start = direction > 0 and 0 or str:len()
+   local current = 0
+   local result = ""
+   local len_of_dots = vim.fn.strdisplaywidth(dots)
+   local concat = function(a, b, dir)
+      if dir > 0 then
+         return a .. b
+      else
+         return b .. a
+      end
+   end
+   while true do
+      local part = vim.fn.strcharpart(str, start, 1)
+      current = current + vim.fn.strdisplaywidth(part)
+      if (current + len_of_dots) > len then
+         result = concat(result, dots, direction)
+         break
+      end
+      result = concat(result, part, direction)
+      start = start + direction
+   end
+   return result
+end
+
+--- from plenary.nvim
+M.truncate = function(str, len, dots, direction)
+   str = tostring(str) -- We need to make sure its an actually a string and not a number
+   dots = dots or "…"
+   direction = direction or 1
+   if direction ~= 0 then
+      return truncate(str, len, dots, direction)
+   else
+      if vim.fn.strdisplaywidth(str) <= len then
+         return str
+      end
+      local len1 = math.floor((len + vim.fn.strdisplaywidth(dots)) / 2)
+      local s1 = truncate(str, len1, dots, 1)
+      local len2 = len - vim.fn.strdisplaywidth(s1) + vim.fn.strdisplaywidth(dots)
+      local s2 = truncate(str, len2, dots, -1)
+      return s1 .. s2:sub(dots:len() + 1)
+   end
+end
+
+--- from plenary.nvim
+M.align = function(str, width, right_justify)
+   local str_len = vim.fn.strdisplaywidth(str)
+   str = M.truncate(str, width)
+   return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
+end
+
+M.unescape = function(str)
+   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
+      return s:sub(2)
+   end)
+end
+
+---split with max length
+M.split = function(str, sep, width)
+   local ret = {}
+
+   for v in vim.gsplit(str, sep) do
+      if vim.fn.strdisplaywidth(v) <= width then
+         ret[#ret + 1] = v
+      else
+         local acc = 0
+         local buf = {}
+         local len = vim.fn.strdisplaywidth(v)
+         for i = 1, len do
+            local part = vim.fn.strcharpart(v, i - 1, 1)
+            acc = acc + vim.fn.strdisplaywidth(part)
+            buf[#buf + 1] = part
+            if acc >= width or i == len then
+               ret[#ret + 1] = table.concat(buf, "")
+               buf = {}
+               acc = 0
+            end
+         end
+      end
+   end
+   return vim.iter(ret)
+       :filter(function(v)
+          return v ~= ""
+       end)
+       :totable()
+end
+
+M.capticalize = function(str)
+   return str:sub(1, 1):upper() .. str:sub(2)
+end
+
+return M

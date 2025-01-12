@@ -1,7 +1,6 @@
 local Config = require("feed.config")
 local DB = require("feed.db")
 local Format = require("feed.ui.format")
-local NuiTree = require("nui.tree")
 local Markdown = require("feed.ui.markdown")
 local Curl = require("feed.curl")
 local Opml = require("feed.opml")
@@ -14,7 +13,6 @@ local save_file = ut.save_file
 local hl = vim.hl or vim.highlight
 local api = vim.api
 local feeds = DB.feeds
-local feedlist = ut.feedlist
 local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
 
@@ -50,7 +48,7 @@ local function show_index()
             BufLeave = function()
                vim.o.cmdheight = og.cmdheight
                pcall(vim.cmd.colorscheme, og.colorscheme)
-            end
+            end,
          }
       })
    end
@@ -65,9 +63,9 @@ local function show_index()
    end
    for i = 1, #state.entries do
       local acc = 0
-      for _, comp in ipairs(Config.layout) do
-         local width = comp.width or math.huge
-         hl.range(buf, ns, comp.color, { i - 1, acc }, { i - 1, acc + width })
+      for _, sect in ipairs(Config.layout) do
+         local width = sect.width or math.huge
+         hl.range(buf, ns, sect.color, { i - 1, acc }, { i - 1, acc + width })
          acc = acc + width + 1
       end
    end
@@ -364,7 +362,7 @@ M.show_hints   = function()
 
    M.split({
       wo = {
-         winbar = "%#FeedRead#Key Hints",
+         winbar = "%#Title# Key Hints",
       }
    }, "50%", lines)
 end
@@ -379,51 +377,41 @@ M.show_split   = function(percentage)
    ut.bo(split.buf, Config.options.entry.bo)
 end
 
----Open split to show feeds
----@param percentage string
 M.show_feeds   = function(percentage)
    local split = M.split({
       wo = {
-         winbar = "%#FeedRead#Feedlist: <Tab>: Toggle Node",
+         spell = false,
+         winbar = "%#Title# Feedlist",
+      },
+      bo = {
+         filetype = "markdown",
+      },
+      autocmds = {
+         BufLeave = function(self)
+            self:close()
+         end
       }
    }, percentage or "50%", {})
 
-   local nodes = {}
-
-   local function kv(k, v)
-      return string.format("%s: %s", k, v)
+   local function node_to_md(heading, items)
+      local res = {}
+      res[#res + 1] = "# " .. heading
+      for k, v in pairs(items) do
+         res[#res + 1] = "- " .. ut.capticalize(k) .. ": " .. (type(v) == "table" and vim.inspect(v) or v)
+      end
+      res[#res + 1] = ""
+      return res
    end
 
-   for _, url in ipairs(feedlist(feeds, false)) do
-      local child = {}
-      local feed = feeds[url]
-      if feed and type(feed) == "table" then
-         for k, v in pairs(feed) do
-            child[#child + 1] = NuiTree.Node({ text = kv(k, vim.inspect(v)) })
-         end
+   local lines = {}
+
+   for url, feed in pairs(feeds) do
+      if type(feed) == "table" then
+         lines = vim.list_extend(lines, node_to_md(feed.title or url, feed))
       end
-      nodes[#nodes + 1] = NuiTree.Node({ text = feeds[url].title or url }, child or nil)
    end
 
-   local tree = NuiTree({
-      bufnr = split.buf,
-      nodes = nodes,
-   })
-   -- FIXME:
-   split:map("n", "<Tab>", function()
-      local node, _ = tree:get_node()
-      if node and node:has_children() then
-         if not node:is_expanded() then
-            node:expand()
-            tree:render()
-         else
-            node:collapse()
-            tree:render()
-         end
-      end
-   end, { noremap = true })
-
-   tree:render()
+   vim.api.nvim_buf_set_lines(split.buf, 0, -1, false, lines)
 end
 
 ---In Index: prompt for input and refresh
