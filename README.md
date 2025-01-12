@@ -6,6 +6,12 @@
   <a href="https://github.com/neo451/feed.nvim">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
   </a>
+  <a href="https://github.com/neo451/feed.nvim](https://github.com/neo451/feed.nvim/actions/workflows/mini-test.yml">
+    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/neo451/feed.nvim/mini-test.yml?style=for-the-badge">
+  </a>
+  <a href="https://luarocks.org/modules/neo451/feed.nvim">
+    <img alt="LuaRocks" src="https://img.shields.io/luarocks/v/neo451/feed.nvim?style=for-the-badge">
+  </a>
   <a href="https://github.com/neo451/feed.nvim/releases.atom">
     <img src="https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white">
   </a>
