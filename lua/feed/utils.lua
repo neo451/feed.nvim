@@ -11,10 +11,14 @@ for k, v in pairs(require("feed.utils.treesitter")) do
    M[k] = v
 end
 
+for k, v in pairs(require("feed.utils.strings")) do
+   M[k] = v
+end
+
 ---make sure a table is a list insted of a map
 ---@param t table
 ---@return table
-function M.listify(t)
+M.listify = function(t)
    return (#t == 0 and not vim.islist(t)) and { t } or t
 end
 
@@ -76,28 +80,7 @@ M.read_file = function(path)
    return ret
 end
 
--- TODO: edge case
--- [观点&amp;评…]
--- [Articles, 新…]
--- [Social Media…]
--- [Articles, 新…]
--- [Articles, 新…]
-
-local strings = require "plenary.strings"
-
-M.align = function(str, width, right_justify)
-   local str_len = strings.strdisplaywidth(str)
-   str = strings.truncate(str, width)
-   return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
-end
-
-M.unescape = function(str)
-   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
-      return s:sub(2)
-   end)
-end
-
-function M.get_selection()
+M.get_selection = function()
    local mode = api.nvim_get_mode().mode
 
    if mode == "n" then
@@ -172,40 +155,6 @@ M.url2name = function(url, feeds)
    return url
 end
 
----split with max length
-M.split = function(str, sep, width)
-   local ret = {}
-
-   for v in vim.gsplit(str, sep) do
-      if vim.fn.strdisplaywidth(v) <= width then
-         ret[#ret + 1] = v
-      else
-         local acc = 0
-         local buf = {}
-         local len = vim.fn.strdisplaywidth(v)
-         for i = 1, len do
-            local part = vim.fn.strcharpart(v, i - 1, 1)
-            acc = acc + vim.fn.strdisplaywidth(part)
-            buf[#buf + 1] = part
-            if acc >= width or i == len then
-               ret[#ret + 1] = table.concat(buf, "")
-               buf = {}
-               acc = 0
-            end
-         end
-      end
-   end
-   return vim.iter(ret)
-       :filter(function(v)
-          return v ~= ""
-       end)
-       :totable()
-end
-
-function M.capticalize(str)
-   return str:sub(1, 1):upper() .. str:sub(2)
-end
-
 --- Set window-local options.
 ---@param win number
 ---@param wo vim.wo
@@ -236,7 +185,5 @@ end
 M.is_headless = function()
    return vim.tbl_isempty(vim.api.nvim_list_uis())
 end
-
-
 
 return M
