@@ -14,10 +14,8 @@ local dependencies = {
 }
 
 local plugins = {
-   { lib = "plenary",         optional = false, info = "required for feed.nvim to work" },
+   { lib = "coop",            optional = false, info = "required for concurrency" },
    { lib = "pathlib",         optional = false, info = "required for handling path" },
-   { lib = "nui",             req = "nui.text", optional = false,                                                       info = "required for text rendering" },
-   --- TODO: optional and good if one is found
    { lib = "nvim-treesitter", optional = true,  info = "required for installing TS parsers if you don't use rocks.nvim" },
 }
 
@@ -28,7 +26,7 @@ local parsers = {
 local function check_treesitter_parser(name)
    local res, _ = pcall(vim.treesitter.language.inspect, name)
    if res then
-      ok(name .. " installed")
+      ok("tree-sitter-" .. name .. " installed")
    else
       local lib_not_installed = "tree-sitter-" .. name .. " not found."
       error(lib_not_installed)
