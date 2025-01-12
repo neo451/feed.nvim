@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/neo451/feed.nvim/compare/v1.16.1...v1.16.2) (2025-01-12)
+
+
+### Bug Fixes
+
+* **ui:** list feeds info with markdown instead of nui.Tree ([bbb702f](https://github.com/neo451/feed.nvim/commit/bbb702f3475e564601bd2d2871853cd1b63ca327))
+
 ## [1.16.1](https://github.com/neo451/feed.nvim/compare/v1.16.0...v1.16.1) (2025-01-11)
 
 
