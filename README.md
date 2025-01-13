@@ -1,10 +1,13 @@
 <h1 align="center"> 📻 feed.nvim </h1>
 <p align="center">
   <a href="https://github.com/neovim/neovim">
-    <img alt="Static Badge" src="https://img.shields.io/badge/neovim-version?style=for-the-badge&logo=neovim&label=%3E%3D%200.10&color=green">
+    <img alt="Static Badge" src="https://img.shields.io/badge/Neovim%200.10.0+-green.svg?style=for-the-badge&logo=neovim">
   </a>
-  <a href="https://github.com/neo451/feed.nvim">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neo451/feed.nvim?style=for-the-badge&logo=hackthebox">
+  <a href="https://www.lua.org">
+    <img alt="Static Badge" src="https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua">
+  </a>
+  <a href="https://github.com/neo451/feed.nvim/releases.atom">
+    <img src="https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white">
   </a>
   <a href="https://github.com/neo451/feed.nvim](https://github.com/neo451/feed.nvim/actions/workflows/mini-test.yml">
     <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/neo451/feed.nvim/mini-test.yml?style=for-the-badge">
@@ -12,15 +15,12 @@
   <a href="https://luarocks.org/modules/neo451/feed.nvim">
     <img alt="LuaRocks" src="https://img.shields.io/luarocks/v/neo451/feed.nvim?style=for-the-badge">
   </a>
-  <a href="https://github.com/neo451/feed.nvim/releases.atom">
-    <img src="https://img.shields.io/badge/rss-F88900?style=for-the-badge&logo=rss&logoColor=white">
-  </a>
 </p>
 
 **feed.nvim** is a web feed reader in Neovim.
 
 > [!WARNING]
-> This project is young, expect breaking changes on things like db format, but it can deal with most feeds you can find, go ahead and enjoy! 
+> This project is young, expect breaking changes, but usage should be fun and seamless, go ahead and enjoy! 
 >
 > see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
@@ -32,6 +32,7 @@
 - 📚 Powerful entry searching by date, tag, feed, regex, and fulltext
 - 📂 OPML support to import and export all your feeds and podcasts
 - 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track *everything*
+- :octocat: Github integration to subscrbe to the new commits/release of your favorite repo/plugin
 - [ ] Work as a feed server with a web interface
 - [ ] Work as a feed client with support for services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
