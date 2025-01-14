@@ -19,6 +19,11 @@
 
 **feed.nvim** is a web feed reader in Neovim.
 
+![image](https://github.com/user-attachments/assets/246a4e76-9ac8-4cb1-a351-141fe5038443)
+
+![image](https://github.com/user-attachments/assets/e8f9c546-48f6-48d8-8cd6-a9b154df0625)
+
+
 > [!WARNING]
 > This project is young, expect breaking changes, but usage should be fun and seamless, go ahead and enjoy! 
 >
