@@ -45,9 +45,10 @@ local function show_index()
                og.cmdheight = vim.o.cmdheight
                pcall(vim.cmd.colorscheme, Config.colorscheme)
             end,
-            BufLeave = function()
+            BufLeave = function(self)
                vim.o.cmdheight = og.cmdheight
                pcall(vim.cmd.colorscheme, og.colorscheme)
+               self:close()
             end,
          }
       })
@@ -238,9 +239,10 @@ local function show_entry(ctx)
             og.cmdheight = vim.o.cmdheight
             pcall(vim.cmd.colorscheme, Config.colorscheme)
          end,
-         BufLeave = function()
+         BufLeave = function(self)
             vim.o.cmdheight = og.cmdheight
             pcall(vim.cmd.colorscheme, og.colorscheme)
+            self:close()
          end
       }
    }
