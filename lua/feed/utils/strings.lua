@@ -37,6 +37,10 @@ local truncate = function(str, len, dots, direction)
 end
 
 --- from plenary.nvim
+---@param str string
+---@param len integer
+---@param dots string?
+---@param direction integer?
 M.truncate = function(str, len, dots, direction)
    str = tostring(str) -- We need to make sure its an actually a string and not a number
    dots = dots or "…"
@@ -56,18 +60,25 @@ M.truncate = function(str, len, dots, direction)
 end
 
 --- from plenary.nvim
+---@param str string
+---@param width integer
+---@param right_justify boolean
+---@return string
 M.align = function(str, width, right_justify)
    local str_len = vim.fn.strdisplaywidth(str)
    str = M.truncate(str, width)
    return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
 end
 
+---@param str string
+---@return string
 M.unescape = function(str)
-   return str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
+   return select(1, str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
       return s:sub(2)
-   end)
+   end))
 end
 
+---TODO:
 ---split with max length
 M.split = function(str, sep, width)
    local ret = {}
@@ -98,6 +109,8 @@ M.split = function(str, sep, width)
        :totable()
 end
 
+---@param str string
+---@return string
 M.capticalize = function(str)
    return str:sub(1, 1):upper() .. str:sub(2)
 end

@@ -2,7 +2,6 @@ local M = {}
 local Config = require "feed.config"
 local DB = require "feed.db"
 local ut = require "feed.utils"
-local strings = require "plenary.strings"
 
 local align = ut.align
 local icons = Config.icons
@@ -48,7 +47,7 @@ function M.tags(id)
       end
    end
 
-   return "[" .. strings.truncate(table.concat(taglist, ", "), tags_len) .. "]"
+   return "[" .. ut.truncate(table.concat(taglist, ", "), tags_len) .. "]"
 end
 
 ---@param id string
