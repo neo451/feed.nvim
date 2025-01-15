@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.3](https://github.com/neo451/feed.nvim/compare/v1.16.2...v1.16.3) (2025-01-15)
+
+
+### Bug Fixes
+
+* **format:** remove plenary require ([60b2003](https://github.com/neo451/feed.nvim/commit/60b20030c5052fa86be84bfdfe2663cf7608f73a))
+
 ## [1.16.2](https://github.com/neo451/feed.nvim/compare/v1.16.1...v1.16.2) (2025-01-12)
 
 
