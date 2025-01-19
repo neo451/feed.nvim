@@ -43,12 +43,13 @@
 
 ## 🚀 Installation
 
-### Basic Installation
+### Requirements
+- neovim 0.10+
+- curl
+- [pandoc](https://www.pandoc.org)
+- (optional) [rg](https://github.com/BurntSushi/ripgrep)
 
-> [!NOTE]
-> requires `nvim 0.10` and above
-> 
-> requires `pandoc` and `curl` to be installed on your path.
+### Basic Installation
 
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
