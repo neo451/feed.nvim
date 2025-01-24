@@ -65,7 +65,7 @@ local function show_index()
    for i = 1, #state.entries do
       local acc = 0
       for _, sect in ipairs(Config.layout) do
-         local width = sect.width or math.huge
+         local width = sect.width or 100
          hl.range(buf, ns, sect.color, { i - 1, acc }, { i - 1, acc + width })
          acc = acc + width + 1
       end
@@ -246,7 +246,11 @@ local function show_entry(ctx)
          end
       }
    }
-   state.urls = get_buf_urls(buf, DB[id].link)
+
+   local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
+   if ok then
+      state.urls = urls
+   end
 
    local win = state.entry.win
 

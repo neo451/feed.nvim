@@ -28,11 +28,11 @@ local id = 0
 function Win.new(opts, enter)
    opts = vim.tbl_deep_extend("force", {
       relative = "editor",
-      height = vim.o.lines,
+      height = vim.o.lines - 1,
       width = vim.o.columns,
       row = 0,
       col = 0,
-      zindex = 30,
+      zindex = 5,
       wo = {
          winhighlight = "Normal:Normal,FloatBorder:Normal",
       },
