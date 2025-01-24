@@ -247,7 +247,7 @@ local function show_entry(ctx)
       }
    }
 
-   local ok, urls = get_buf_urls(buf, DB[id].link)
+   local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
    if ok then
       state.urls = urls
    end
