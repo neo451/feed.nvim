@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.16.4](https://github.com/neo451/feed.nvim/compare/v1.16.3...v1.16.4) (2025-01-24)
+
+
+### Bug Fixes
+
+* **parser:** entry content fallback to empty string ([0917c8c](https://github.com/neo451/feed.nvim/commit/0917c8cd69c2bc1f844c0b4e4e78e3805d1deec2))
+* remove wrong validate call for back compatibility ([22316e0](https://github.com/neo451/feed.nvim/commit/22316e05bfdeef1d2ea9a33871f879076b07dd60))
+* **ui:** correct hl range for vim 0.10 ([0917c8c](https://github.com/neo451/feed.nvim/commit/0917c8cd69c2bc1f844c0b4e4e78e3805d1deec2))
+* **url:** pcall get_buf_urls for now because of api difference ([0917c8c](https://github.com/neo451/feed.nvim/commit/0917c8cd69c2bc1f844c0b4e4e78e3805d1deec2))
+
 ## [1.16.3](https://github.com/neo451/feed.nvim/compare/v1.16.2...v1.16.3) (2025-01-15)
 
 
