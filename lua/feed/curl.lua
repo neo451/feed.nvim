@@ -59,7 +59,6 @@ end
 ---@param cb? any
 ---@return vim.SystemCompleted?
 function M.get(url, opts, cb)
-   vim.validate("url", url, "string")
    opts = opts or {}
    local additional = build_header({
       is_none_match = opts.etag,
@@ -93,20 +92,12 @@ function M.get(url, opts, cb)
             cb({ status = 404 })
             return
          end
-         if cb then
-            vim.schedule_wrap(cb)(obj)
-         else
-            return obj
-         end
+         vim.schedule_wrap(cb)(obj)
       else
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
    end
-   if cb then
-      vim.system(cmds, { text = true }, process)
-   else
-      return process(vim.system(cmds, { text = true }):wait())
-   end
+   vim.system(cmds, { text = true }, process)
 end
 
 local task_utils = require "coop.task-utils"
