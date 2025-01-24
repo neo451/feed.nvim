@@ -33,7 +33,7 @@ setmetatable(cmp, {
 })
 
 cmp.query = function()
-   return hi_pattern:format(name2hl["query"], state.query)
+   return hi_pattern:format(name2hl["query"], vim.trim(state.query))
 end
 
 cmp.last_updated = function()
@@ -65,7 +65,7 @@ function M.show_winbar()
    end
 
    table.insert(buf, table.concat(right, " "))
-   return table.concat(buf, "")
+   return table.concat(buf, "") .. " "
 end
 
 ---@return string

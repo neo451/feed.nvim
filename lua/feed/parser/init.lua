@@ -17,12 +17,12 @@ local log = require "feed.lib.log"
 ---@field version? feed.version
 
 ---@class feed.entry
----@field feed string
----@field link string
+---@field feed string url to the feed
+---@field link string url to the entry
 ---@field time? integer -> os.time
 ---@field title? string -> "no title"
 ---@field author? string -> feed
----@field content? string -> "empty entry"
+---@field content? string -> ""
 ---@field tags? table<string, boolean>
 
 local handle_rss = require "feed.parser.rss"

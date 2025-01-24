@@ -87,7 +87,7 @@ local function handle_entry(entry, base, feed_name, url_id)
    res.time = handle_date(entry)
    res.title = decode(handle_title(entry, "no title"))
    res.author = decode(handle_author(entry, feed_name))
-   res.content = handle_content(entry, "empty entry")
+   res.content = handle_content(entry, "")
    res.feed = url_id
    return res
 end
