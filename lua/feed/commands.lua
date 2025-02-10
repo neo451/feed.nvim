@@ -3,7 +3,6 @@ local ut = require("feed.utils")
 local db = require("feed.db")
 local ui = require("feed.ui")
 local log = require("feed.lib.log")
-local feeds = db.feeds
 local feedlist = ut.feedlist
 
 local M = {}
@@ -177,7 +176,7 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       local Progress = require("feed.ui.progress")
-      local prog = Progress.new(#ut.feedlist(feeds, false))
+      local prog = Progress.new(#ut.feedlist(db.feeds, false))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
          stdout = function(err, data)
@@ -201,18 +200,18 @@ M.update_feed = {
       if url then
          ui.update_feed(url)
       else
-         ui.select(feedlist(feeds, true), {
+         ui.select(feedlist(db.feeds, true), {
             prompt = "Feed to update",
             format_item = function(item)
-               local feed = feeds[item]
-               return type(feed) == "table" and feeds[item].title or item
+               local feed = db.feeds[item]
+               return type(feed) == "table" and db.feeds[item].title or item
             end,
          }, ui.update_feed)
       end
    end,
 
    complete = function()
-      return feedlist(feeds, true)
+      return feedlist(db.feeds, true)
    end,
    context = { all = true },
 }
@@ -223,17 +222,17 @@ M.prune_feed = {
       if url then
          ui.prune_feed(url)
       else
-         ui.select(feedlist(feeds, true), {
+         ui.select(feedlist(db.feeds, true), {
             prompt = "Feed to prune",
             format_item = function(item)
-               local feed = feeds[item]
-               return type(feed) == "table" and feeds[item].title or item
+               local feed = db.feeds[item]
+               return type(feed) == "table" and db.feeds[item].title or item
             end,
          }, ui.prune_feed)
       end
    end,
    complete = function()
-      return feedlist(feeds, true)
+      return feedlist(db.feeds, true)
    end,
    context = { all = true }
 }
@@ -286,6 +285,7 @@ function M._menu()
 end
 
 function M._sync_feedlist()
+   local feeds = db.feeds
    for _, v in ipairs(Config.feeds) do
       local url = type(v) == "table" and v[1] or v
       local title = type(v) == "table" and v.name or nil

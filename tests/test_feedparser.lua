@@ -1,4 +1,4 @@
-local M = require "feed.parser"
+local M = require "feed.parser.init"
 local eq = MiniTest.expect.equality
 
 local h = require "tests.helpers"
@@ -104,6 +104,7 @@ T["atom"] = MiniTest.new_set {
       { "atom03.xml",            { version = "atom03" } },
       { "atom10.xml",            { version = "atom10" } },
       { "atom_html_content.xml", { version = "atom10" } },
+      { "reddit.xml",            { version = "atom10" } },
    },
 }
 
@@ -182,6 +183,7 @@ T["feedparser test suite"] = MiniTest.new_set {
       { "/data/sanitize" },
       { "/data/xml" },
       { "/data/rdf" },
+      -- { "/data/itunes" },
    },
 }
 

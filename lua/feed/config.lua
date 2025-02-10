@@ -17,8 +17,11 @@ local default = {
    db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type string
    colorscheme = "",
-   ---@type string
-   date_format = "%Y-%m-%d",
+   ---@type { long: string, short: string }
+   date_format = {
+      short = "%Y-%m-%d",
+      long = "%c",
+   },
    ---@type { instance: string, export: string }
    rsshub = {
       instance = "https://rsshub.app",
@@ -56,20 +59,20 @@ local default = {
          color = "FeedDate",
       },
       {
-         "last_updated",
-         right = true,
-         color = "FeedDate",
-      },
-      {
          "query",
          right = true,
          color = "FeedLabel",
       },
+      {
+         "last_updated",
+         right = true,
+         color = "FeedDate",
+      },
    },
 
    search = {
-      default_query = "@6-months-ago +unread",
-      show_last = false,
+      default_query = "@6-months-ago +unread ",
+      -- show_last = false,
       backend = {
          "mini.pick",
          "telescope",
@@ -120,6 +123,7 @@ local default = {
          split = "<M-CR>",
          browser = "b",
          refresh = "r",
+         update = "R",
          search = "s",
          yank_url = "y",
          untag = "-",
@@ -155,6 +159,7 @@ local default = {
             conceallevel = 0,
          },
          bo = {
+            filetype = "feed",
             swapfile = false,
             undolevels = -1,
             modifiable = false,

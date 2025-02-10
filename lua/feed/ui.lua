@@ -7,17 +7,16 @@ local Opml = require("feed.opml")
 local Fetch = require "feed.fetch"
 local Win = require "feed.ui.window"
 local ut = require("feed.utils")
+local state = require "feed.ui.state"
 local read_file = ut.read_file
 local save_file = ut.save_file
 
 local hl = vim.hl or vim.highlight
 local api = vim.api
 local feeds = DB.feeds
+local layout = Config.layout
 local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
-
-
-local state = require "feed.ui.state"
 
 local og = {}
 
@@ -29,7 +28,6 @@ for name, f in pairs(require "feed.ui.nui") do
    M[name] = f
 end
 
-state.query = Config.search.default_query
 local ns = api.nvim_create_namespace("feed_index")
 
 local function show_index()
@@ -59,9 +57,13 @@ local function show_index()
    state.entries = state.entries or DB:filter(state.query)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear lines
+
+   local lines = {}
    for i, id in ipairs(state.entries) do
-      api.nvim_buf_set_lines(buf, i - 1, i, false, { Format.entry(id, Config.layout) })
+      lines[i] = Format.entry(id, layout, DB)
    end
+   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
    for i = 1, #state.entries do
       local acc = 0
       for _, sect in ipairs(Config.layout) do
@@ -148,7 +150,7 @@ local function set_content(buf, body, id)
 
    local header = {}
    for _, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id)
+      header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id, DB)
    end
 
    header[#header + 1] = ""
@@ -174,7 +176,7 @@ function M.preview_entry(ctx)
    else
       buf = api.nvim_create_buf(false, true)
    end
-   local str = ut.read_file(DB.dir .. "/data/" .. id)
+   local str = ut.read_file(DB.dir / "data" / id)
    if str then
       local lines = vim.split(str, "\n")
       set_content(buf, lines, id)
@@ -214,7 +216,7 @@ local function show_entry(ctx)
          end,
       }
    else
-      local str = ut.read_file(DB.dir .. "/data/" .. id)
+      local str = ut.read_file(tostring(DB.dir / "data" / id))
       if str then
          local lines = vim.split(str, "\n")
          set_content(buf, lines, id)
@@ -383,6 +385,8 @@ M.show_split   = function(percentage)
    ut.bo(split.buf, Config.options.entry.bo)
 end
 
+
+---FIXME: xmlUrl htmlUrl desc
 M.show_feeds   = function(percentage)
    local split = M.split({
       wo = {
@@ -430,7 +434,7 @@ M.search       = function(q)
    elseif ut.in_index() or not backend then
       M.input({
          prompt = "Feed query: ",
-         default = Config.search.show_last and state.query .. " " or ""
+         default = state.query,
       }, function(val)
          if not val then
             return

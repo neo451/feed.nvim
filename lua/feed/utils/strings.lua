@@ -73,9 +73,12 @@ end
 ---@param str string
 ---@return string
 M.unescape = function(str)
-   return select(1, str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
-      return s:sub(2)
-   end))
+   return select(
+      1,
+      str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
+         return s:sub(2)
+      end)
+   )
 end
 
 ---TODO:
@@ -103,16 +106,26 @@ M.split = function(str, sep, width)
       end
    end
    return vim.iter(ret)
-       :filter(function(v)
-          return v ~= ""
-       end)
-       :totable()
+      :filter(function(v)
+         return v ~= ""
+      end)
+      :totable()
 end
 
 ---@param str string
 ---@return string
 M.capticalize = function(str)
    return str:sub(1, 1):upper() .. str:sub(2)
+end
+
+function M.split_comma(str)
+   return vim.iter(vim.split(str, ","))
+      :map(function(v)
+         return vim.trim(v)
+      end)
+      :filter(function(v)
+         return v ~= ""
+      end)
 end
 
 return M

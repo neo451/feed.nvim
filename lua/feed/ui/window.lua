@@ -246,14 +246,16 @@ function Win:update()
    end
 end
 
-function Win:close()
+function Win:close(opts)
+   opts = opts or {}
    local win = self.win
    local buf = self.buf
 
    self.win = nil
-   if buf then
+   if opts.keep_buf then
       self.buf = nil
    end
+
    local close = function()
       if win and vim.api.nvim_win_is_valid(win) then
          vim.api.nvim_win_close(win, true)

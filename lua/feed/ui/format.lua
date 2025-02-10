@@ -1,7 +1,6 @@
 local M = {}
-local Config = require "feed.config"
-local DB = require "feed.db"
-local ut = require "feed.utils"
+local Config = require("feed.config")
+local ut = require("feed.utils")
 
 local align = ut.align
 local icons = Config.icons
@@ -19,23 +18,22 @@ end
 
 ---@param id string
 ---@return string
-function M.tags(id)
-   local taglist = vim.iter(DB.tags)
-       :fold({}, function(acc, tag, v)
-          if type(v) == "table" and v[id] then
-             if icons.enabled then
-                acc[#acc + 1] = icons[tag] or tag
-             else
-                acc[#acc + 1] = tag
-             end
-          end
-          return acc
-       end)
+function M.tags(id, db)
+   local taglist = vim.iter(db.tags):fold({}, function(acc, tag, v)
+      if type(v) == "table" and v[id] then
+         if icons.enabled then
+            acc[#acc + 1] = icons[tag] or tag
+         else
+            acc[#acc + 1] = tag
+         end
+      end
+      return acc
+   end)
    if vim.tbl_isempty(taglist) then
       if icons.enabled then
          taglist = { icons.unread }
       else
-         taglist = { 'unread' }
+         taglist = { "unread" }
       end
    end
 
@@ -53,26 +51,26 @@ end
 ---@param id string
 ---@return string
 ---@return string
-M.title = function(id)
-   local entry = DB[id]
+M.title = function(id, db)
+   local entry = db[id]
    return cleanup(entry.title), "FeedTitle"
 end
 
 ---@param id string
 ---@return string
 ---@return string
-M.feed = function(id)
-   local entry = DB[id]
-   local feed = DB.feeds[entry.feed] and DB.feeds[entry.feed].title or entry.feed
+M.feed = function(id, db)
+   local entry = db[id]
+   local feed = db.feeds[entry.feed] and db.feeds[entry.feed].title or entry.feed
    return cleanup(feed), "FeedTitle" -- FIX: for ttrss
 end
 
 ---@param id string
 ---@return string
 ---@return string
-M.author = function(id)
+M.author = function(id, db)
    ---@type feed.entry
-   local entry = DB[id]
+   local entry = db[id]
    local text
    if entry.author == "" then
       text = entry.feed
@@ -85,53 +83,49 @@ end
 ---@param id string
 ---@return string
 ---@return string
-M.link = function(id)
-   return DB[id].link, "FeedLink"
+M.link = function(id, db)
+   return db[id].link, "FeedLink"
 end
 
 ---@param id string
 ---@return string
 ---@return string
-M.date = function(id)
+M.date = function(id, db)
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format, DB[id].time), "FeedTitle"
+   return os.date(Config.date_format.short, db[id].time), "FeedTitle"
 end
 
----@param id string
----@param comps table?
----@return string
-M.entry = function(id, comps)
-   local buf = {}
-   comps = comps or {
-      { "feed",  width = 15 },
-      { "tags",  width = 5 },
-      { "title", width = 80 },
-   }
-
-   for _, v in ipairs(M.gen_format(id, comps)) do
-      buf[#buf + 1] = v.text
-   end
-   return table.concat(buf)
-end
-
----return a format info for an entry base on user config
+---return a formated line for an entry base on user config
 ---@param id string
 ---@param comps table
----@return table
-function M.gen_format(id, comps)
-   local acc_width = 0
+---@param db feed.db
+---@return string
+function M.entry(id, comps, db)
+   local entry = db[id]
+   if not entry then
+      return ""
+   end
+
+   comps = comps
+      or {
+         { "feed", width = 20 },
+         { "tags", width = 15 },
+         { "title", width = math.huge },
+      }
+   local acc = 0
    local res = {}
+
    for _, v in ipairs(comps) do
-      local text = DB[id][v[1]] or ""
+      local text = entry[v[1]] or ""
       if M[v[1]] then
-         text = M[v[1]](id)
+         text = M[v[1]](id, db)
       end
       local width = v.width or #text
       text = align(text, width, v.right_justify) .. " "
-      res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
-      acc_width = acc_width + width
+      res[#res + 1] = text
+      acc = acc + width
    end
-   return res
+   return table.concat(res)
 end
 
 return M

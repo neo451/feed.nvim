@@ -1,21 +1,21 @@
-local Coop = require "coop"
-local Feedparser = require "feed.parser"
-local Curl = require "feed.curl"
-local Config = require "feed.config"
-local Markdown = require "feed.ui.markdown"
-local db = require "feed.db"
-local ut = require "feed.utils"
-local feeds = db.feeds
+local Coop = require("coop")
+local Feedparser = require("feed.parser")
+local Curl = require("feed.curl")
+local Config = require("feed.config")
+local Markdown = require("feed.ui.markdown")
+local db = require("feed.db")
+local ut = require("feed.utils")
 local M = {}
 local as_completed = require("coop.control").as_completed
 
-local valid_response = ut.list2lookup { 200, 301, 302, 303, 304, 307, 308 }
-local encoding_blacklist = ut.list2lookup { "gb2312" }
+local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
+local encoding_blacklist = ut.list2lookup({ "gb2312" })
 
 --- process feed fetch from source
 ---@param url string
 ---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
 ---@return feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }
+---@async
 local function parse_co(url, opts)
    opts = opts or {}
    local response = Curl.get_co(url, opts)
@@ -31,7 +31,9 @@ end
 --- update a feed and load it to db
 ---@param url string
 ---@param opts { force: boolean }
+---@async
 function M.update_feed_co(url, opts)
+   local feeds = db.feeds
    local last_modified, etag
    if feeds[url] and not opts.force then
       last_modified = feeds[url].last_modified
@@ -54,11 +56,12 @@ function M.update_feed_co(url, opts)
       local content = entry.content
       entry.content = nil
       local id = vim.fn.sha256(entry.link)
-      Markdown.convert {
+      local fp = tostring(db.dir / "data" / id)
+      Markdown.convert({
          src = content,
          cb = function() end,
-         fp = tostring(db.dir / "data" / id),
-      }
+         fp = fp,
+      })
       db[id] = entry
    end
 
@@ -77,7 +80,9 @@ function M.update_feed_co(url, opts)
 end
 
 --- update all feeds
+---@async
 function M.update_all()
+   local feeds = db.feeds
    local jobs, c = 0, 0
    local list = ut.feedlist(feeds, false)
 
