@@ -25,40 +25,6 @@ DB.__index = DB
 
 local uv = vim.uv
 
-local function savefile(fp, str)
-   if type(fp) == "table" then
-      fp = tostring(fp)
-   end
-   local f = io.open(fp, "w")
-   assert(f)
-   f:write(str)
-   f:close()
-end
-
-local rm_file = function(fp)
-   if type(fp) == "table" then
-      fp = tostring(fp)
-   end
-   if vim.fs.rm then
-      vim.fs.rm(tostring(fp), { recursive = true })
-   else
-      vim.fn.delete(tostring(fp), "rf")
-   end
-end
-
----@param dir
-local function rmdir(dir)
-   dir = type(dir) == "table" and tostring(dir) or dir
-   for name, t in vim.fs.dir(dir) do
-      name = dir .. "/" .. name
-      local ok = (t == "directory") and uv.fs_rmdir(name) or uv.fs_unlink(name)
-      if not ok then
-         return ok
-      end
-   end
-   return uv.fs_rmdir(dir)
-end
-
 local function mkdir(dir)
    local suc = uv.fs_mkdir(dir, 493)
    if not suc then
@@ -77,39 +43,23 @@ local function touch(fp)
 end
 
 ---@param fp string
----@param object table
-local save_obj = function(fp, object)
-   fp = type(fp) == "table" and tostring(fp) or fp
-   savefile(fp, "return " .. vim.inspect(object))
-end
-
----@param fp string
 ---@param t any
 local ensure_path = function(fp, t)
-   fp = tostring(fp)
-   if not uv.fs_stat(fp) then
+   local fpstr = tostring(fp)
+   if not uv.fs_stat(fpstr) then
       if t == "dir" then
-         mkdir(fp)
+         mkdir(fpstr)
       elseif t == "file" then
-         touch(fp)
+         touch(fpstr)
       elseif t == "obj" then
-         touch(fp)
-         save_obj(fp, {})
+         touch(fpstr)
+         Path.save(fp, {})
       end
    end
 end
 
 local function if_path(k, dir)
    return vim.fs.find({ k }, { path = tostring(dir / "object"), type = "file" })[1] -- TODO: remove
-end
-
----@return table
-local function load_obj(str)
-   local ok, res = pcall(dofile, tostring(str))
-   if not ok then
-      return {}
-   end
-   return res
 end
 
 function DB:append_time_id(time, id)
@@ -140,7 +90,7 @@ function DB:save_index()
    for i, v in ipairs(self.index) do
       buf[i] = tostring(v[2]) .. " " .. v[1]
    end
-   savefile(self.dir / "index", table.concat(buf, "\n"))
+   Path.save(self.dir / "index", table.concat(buf, "\n"))
 end
 
 local mem = {}
@@ -163,8 +113,8 @@ function DB.new(db_dir)
 
    return setmetatable({
       dir = db_dir,
-      feeds = load_obj(feeds_fp),
-      tags = setmetatable(load_obj(tags_fp), {
+      feeds = feeds_fp:load(),
+      tags = setmetatable(tags_fp:load(), {
          __index = function(t, tag)
             rawset(t, tag, {})
             return rawget(t, tag)
@@ -185,7 +135,7 @@ function DB:__index(k)
    else
       local r = mem[k]
       if not r then
-         r = load_obj(self.dir / "object" / k)
+         r = Path.load(self.dir / "object" / k)
          mem[k] = r
       end
       return r
@@ -193,11 +143,11 @@ function DB:__index(k)
 end
 
 function DB:update()
-   local feeds = load_obj(self.dir / "feeds.lua")
+   local feeds = Path.load(self.dir / "feeds.lua")
    rawset(self, "feeds", feeds)
    local index = parse_index(self.dir / "index")
    rawset(self, "index", index)
-   local tags = load_obj(self.dir / "tags.lua")
+   local tags = Path.load(self.dir / "tags.lua")
    setmetatable(tags, {
       __index = function(t, tag)
          rawset(t, tag, {})
@@ -219,7 +169,7 @@ function DB:__newindex(id, entry)
    end
    table.insert(self.index, { id, entry.time })
    self:append_time_id(entry.time, id)
-   save_obj(self.dir / "object" / id, entry)
+   Path.save(self.dir / "object" / id, entry)
 end
 
 ---@param id string | string[]
@@ -285,8 +235,8 @@ function DB:rm(id)
    end
    self:save_feeds()
    self:save_index()
-   pcall(rm_file, self.dir / "data" / id)
-   pcall(rm_file, self.dir / "object" / id)
+   pcall(Path.rm, self.dir / "data" / id)
+   pcall(Path.rm, self.dir / "object" / id)
    rawset(self, id, nil)
    rawset(mem, id, nil)
 end
@@ -299,7 +249,7 @@ function DB:iter(sort)
    end
    return vim.iter(self.index):map(function(v)
       local id = v[1]
-      local r = load_obj(self.dir / "object" / id)
+      local r = Path.load(self.dir / "object" / id)
       mem[id] = r
       return id, r
    end)
@@ -368,7 +318,7 @@ function DB:filter(str)
 
    if q.re then
       iter = iter:filter(function(id)
-         mem[id] = load_obj(self.dir / "object" / id)
+         mem[id] = Path.load(self.dir / "object" / id)
          local entry = self[id]
          if not entry or not entry.title then
             return false
@@ -384,7 +334,7 @@ function DB:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         mem[id] = load_obj(self.dir / "object" / id)
+         mem[id] = Path.load(self.dir / "object" / id)
          local url = self[id].feed
          local feed_name = self.feeds[url] and self.feeds[url].title
          if q.feed:match_str(url) or (feed_name and q.feed:match_str(feed_name)) then
@@ -396,7 +346,7 @@ function DB:filter(str)
 
    local ret = iter:fold({}, function(acc, id)
       if not mem[id] then
-         mem[id] = load_obj(self.dir / "object" / id)
+         mem[id] = Path.load(self.dir / "object" / id)
       end
       acc[#acc + 1] = id
       return acc
@@ -412,17 +362,17 @@ function DB:filter(str)
 end
 
 function DB:save_feeds()
-   return save_obj(self.dir / "feeds.lua", self.feeds)
+   return Path.save(self.dir / "feeds.lua", self.feeds)
 end
 
 function DB:save_tags()
    local tags = vim.deepcopy(self.tags)
    setmetatable(tags, nil)
-   return save_obj(self.dir / "tags.lua", tags)
+   return Path.save(self.dir / "tags.lua", tags)
 end
 
 function DB:blowup()
-   rmdir(self.dir)
+   Path.rm(self.dir)
 end
 
 return DB.new()
