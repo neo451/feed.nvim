@@ -106,7 +106,7 @@ local function handle_rss(ast, url_id)
    res.entries = {}
    res.type = "rss"
    if channel.item then
-      for _, v in ipairs(ut.listify(channel.item)) do
+      for _, v in ipairs(vim._ensure_list(channel.item)) do
          res.entries[#res.entries + 1] = handle_entry(v, res.link, res.title, feed_author, url_id)
       end
    end

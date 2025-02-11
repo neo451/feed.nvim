@@ -15,13 +15,6 @@ for k, v in pairs(require("feed.utils.strings")) do
    M[k] = v
 end
 
----make sure a table is a list insted of a map
----@param t table
----@return table
-M.listify = function(t)
-   return (#t == 0 and not vim.islist(t)) and { t } or t
-end
-
 M.load_file = function(fp)
    if type(fp) == "table" then
       fp = tostring(fp)
@@ -129,17 +122,17 @@ end
 ---@return string[]
 M.feedlist = function(feeds, all)
    return vim.iter(feeds)
-       :filter(function(_, v)
-          if all then
-             return true
-          else
-             return type(v) == "table"
-          end
-       end)
-       :fold({}, function(acc, k)
-          table.insert(acc, k)
-          return acc
-       end)
+      :filter(function(_, v)
+         if all then
+            return true
+         else
+            return type(v) == "table"
+         end
+      end)
+      :fold({}, function(acc, k)
+         table.insert(acc, k)
+         return acc
+      end)
 end
 
 ---@param url string
