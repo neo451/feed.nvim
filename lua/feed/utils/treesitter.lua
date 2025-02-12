@@ -1,9 +1,8 @@
 local M = {}
 
-function M.assert_parser(name)
-   local res, _ = pcall(vim.treesitter.language.inspect, name)
+M.assert_parser = function(name)
    local lib_not_installed = "tree-sitter-" .. name .. " not found."
-   assert(res, lib_not_installed)
+   assert(pcall(vim.treesitter.language.inspect, name), lib_not_installed)
 end
 
 M.get_text = function(node, src)
@@ -16,10 +15,8 @@ end
 ---@param str string
 ---@return TSNode
 M.get_root = function(str, language)
-   local ok, parser = pcall(vim.treesitter.get_string_parser, str, language)
-   if not ok then
-      error "xml TS parser not found"
-   end
+   M.assert_parser(language)
+   local parser = vim.treesitter.get_string_parser(str, language)
    return parser:parse()[1]:root()
 end
 

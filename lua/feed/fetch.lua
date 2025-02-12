@@ -19,7 +19,7 @@ local encoding_blacklist = ut.list2lookup({ "gb2312" })
 local function parse_co(url, opts)
    opts = opts or {}
    local response = Curl.get_co(url, opts)
-   if response and response.stdout ~= "" and valid_response[response.status] then
+   if response and response.stdout and valid_response[response.status] then
       local d = Feedparser.parse(response.stdout, url)
       if d then
          return vim.tbl_extend("keep", response, d)

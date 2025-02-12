@@ -2,8 +2,8 @@
 local ut = require("feed.utils")
 local log = require("feed.lib.log")
 
-local github = require "feed.integrations.github"
-local rsshub = require "feed.integrations.rsshub"
+local github = require("feed.integrations.github")
+local rsshub = require("feed.integrations.rsshub")
 
 local M = {}
 local read_file = ut.read_file
@@ -57,7 +57,6 @@ end
 ---@param url string
 ---@param opts table
 ---@param cb? any
----@return vim.SystemCompleted?
 function M.get(url, opts, cb)
    opts = opts or {}
    local additional = build_header({
@@ -72,7 +71,7 @@ function M.get(url, opts, cb)
       dump_fp,
       "--connect-timeout",
       opts.timeout or 10,
-      rsshub(github(url))
+      rsshub(github(url)),
    }
    cmds = vim.list_extend(cmds, additional)
    cmds = vim.list_extend(cmds, opts.cmds or {})
@@ -88,20 +87,25 @@ function M.get(url, opts, cb)
          obj.last_modified = headers.last_modified
          obj.status = headers.status
          obj.headers = headers
-         if obj.stdout:find("<!DOCTYPE html>") then
-            cb({ status = 404 })
-            return
+         local content_type = headers.content_type
+
+         if content_type and (not content_type:find("xml") and not content_type:find("json")) then
+            return { status = 404 } -- ?
          end
          vim.schedule_wrap(cb)(obj)
       else
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
    end
-   vim.system(cmds, { text = true }, process)
+   if cb then
+      return vim.system(cmds, { text = true }, cb and process or nil)
+   else
+      process(vim.system(cmds, { text = true }):wait())
+   end
 end
 
-local task_utils = require "coop.task-utils"
-local f_utils = require "coop.functional-utils"
+local task_utils = require("coop.task-utils")
+local f_utils = require("coop.functional-utils")
 
 M.get_co = task_utils.cb_to_tf(f_utils.shift_parameters(M.get))
 

@@ -36,7 +36,7 @@ return function(ast, url) -- no link resolve for now only do html link resolve l
    res.entries = {}
    res.type = "json"
    if ast.items then
-      for _, v in ipairs(vim._ensure_list(ast.items)) do
+      for _, v in ipairs(ut.listify(ast.items)) do
          res.entries[#res.entries + 1] = handle_entry(v, res.author, res.title, res.link, url)
       end
    end

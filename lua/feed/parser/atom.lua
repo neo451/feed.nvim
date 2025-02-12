@@ -17,7 +17,7 @@ local function handle_link(ast, base)
    local T = type(ast.link)
    base = ut.url_rebase(ast, base)
    if T == "table" then
-      for _, v in ipairs(vim._ensure_list(ast.link)) do
+      for _, v in ipairs(ut.listify(ast.link)) do
          if v.rel == "alternate" then
             return ut.url_resolve(base, v.href)
             -- elseif v.rel == "self" then
@@ -103,7 +103,7 @@ local function handle_atom(ast, url)
    res.entries = {}
    res.type = "atom"
    if feed.entry then
-      for _, v in ipairs(vim._ensure_list(feed.entry)) do
+      for _, v in ipairs(ut.listify(feed.entry)) do
          res.entries[#res.entries + 1] = handle_entry(v, root_base, res.title, url)
       end
    end

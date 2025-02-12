@@ -28,6 +28,10 @@ M.load_file = function(fp)
    end
 end
 
+M.listify = function(t)
+   return (#t == 0 and not vim.islist(t)) and { t } or t
+end
+
 ---@param fp string | PathlibPath
 ---@param object table
 M.save_obj = function(fp, object)

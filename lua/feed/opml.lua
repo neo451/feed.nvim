@@ -1,6 +1,6 @@
 local M = {}
-local ut = require "feed.utils"
-local xml = require "feed.parser.xml"
+local ut = require("feed.utils")
+local xml = require("feed.parser.xml")
 
 local format, concat = string.format, table.concat
 local spairs, ipairs = vim.spairs, ipairs
@@ -59,7 +59,7 @@ local root_format = [[<?xml version="1.0" encoding="UTF-8"?>
 </body></opml>]]
 
 local function rsshub_replace(url)
-   local Config = require "feed.config"
+   local Config = require("feed.config")
    return url:find("rsshub:/") and url:gsub("rsshub:/", Config.rsshub.export) or url
 end
 
@@ -69,13 +69,13 @@ function M.export(feeds)
    local buf = {}
    for xmlUrl, v in spairs(feeds) do
       if type(v) == "table" then
-         buf[#buf + 1] = format_outline {
+         buf[#buf + 1] = format_outline({
             text = v.description or v.title,
             title = v.title,
             htmlUrl = v.htmlUrl,
             xmlUrl = rsshub_replace(xmlUrl),
             type = "rss",
-         }
+         })
       end
    end
    return format(root_format, "feed.nvim export", concat(buf, "\n"))

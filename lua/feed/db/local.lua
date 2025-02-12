@@ -34,12 +34,8 @@ local function mkdir(dir)
 end
 
 local function touch(fp)
-   local file = io.open(fp, "w")
-   if file then
-      file:close()
-   else
-      vim.notify("Error: Could not touch file " .. fp)
-   end
+   local file = uv.fs_open(fp, "w", 438)
+   assert(uv.fs_close(file), "Error: Could not touch file " .. fp)
 end
 
 ---@param fp string
