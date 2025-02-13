@@ -34,6 +34,15 @@ local function savefile(fp, str)
    f:close()
 end
 
+local function readfile(fp)
+   local ret
+   local f = io.open(fp, "r")
+   assert(f)
+   ret = f:read("*a")
+   f:close()
+   return ret
+end
+
 ---@param dir
 local function rmdir(dir)
    dir = type(dir) == "table" and tostring(dir) or dir
@@ -54,6 +63,10 @@ local function pload(str)
       return {}
    end
    return res
+end
+
+Path.touch = function(self)
+   self:save("")
 end
 
 Path.rm = function(self)
@@ -81,8 +94,16 @@ end
 
 ---@return table
 Path.load = function(self)
-   local fp = tostring(self)
-   return pload(fp)
+   return pload(tostring(self))
+end
+
+---@return table
+Path.read = function(self)
+   return readfile(tostring(self))
+end
+
+Path.mkdir = function(self)
+   vim.fn.mkdir(tostring(self), "p")
 end
 
 return setmetatable(Path, {

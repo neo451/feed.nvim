@@ -25,30 +25,17 @@ DB.__index = DB
 
 local uv = vim.uv
 
-local function mkdir(dir)
-   local suc = uv.fs_mkdir(dir, 493)
-   if not suc then
-      return false
-   end
-   return true
-end
-
-local function touch(fp)
-   local file = uv.fs_open(fp, "w", 438)
-   assert(uv.fs_close(file), "Error: Could not touch file " .. fp)
-end
-
 ---@param fp string
 ---@param t any
 local ensure_path = function(fp, t)
    local fpstr = tostring(fp)
    if not uv.fs_stat(fpstr) then
       if t == "dir" then
-         mkdir(fpstr)
+         Path.mkdir(fp)
       elseif t == "file" then
-         touch(fpstr)
+         Path.touch(fp)
       elseif t == "obj" then
-         touch(fpstr)
+         Path.touch(fp)
          Path.save(fp, {})
       end
    end

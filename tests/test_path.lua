@@ -33,4 +33,16 @@ T["path"]["load"] = function()
    })
 end
 
+T["path"]["touch"] = function()
+   local obj = M("~/.feed.path/") / "feeds2.lua"
+   obj:touch()
+   eq(obj:read(), "")
+end
+
+T["path"]["mkdir"] = function()
+   local obj = M("~/.feed.path/") / "object"
+   obj:mkdir()
+   eq(vim.uv.fs_stat(tostring(obj)).type, "directory")
+end
+
 return T
