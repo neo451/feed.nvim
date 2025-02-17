@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.17.0](https://github.com/neo451/feed.nvim/compare/v1.16.4...v1.17.0) (2025-02-17)
+
+
+### Features
+
+* remove pathlib.nvim as dependency ([4df67b5](https://github.com/neo451/feed.nvim/commit/4df67b58d36eb9708bdfa65001115312db120934))
+
+
+### Bug Fixes
+
+* **curl:** properly quote req headers ([0a9d415](https://github.com/neo451/feed.nvim/commit/0a9d415f22b55b7a8fb811ab3c746a9a16e9aa38))
+* remove some tests for now.. ([142ef75](https://github.com/neo451/feed.nvim/commit/142ef75e28c1a729436e115216bb0a1955753e0b))
+* use content_type in curl headers to check valid feed ([7d0034d](https://github.com/neo451/feed.nvim/commit/7d0034de87ec62e15151cebbd285147885fdf099))
+* use copcall to get err msg in task ([7d0034d](https://github.com/neo451/feed.nvim/commit/7d0034de87ec62e15151cebbd285147885fdf099))
+
 ## [1.16.4](https://github.com/neo451/feed.nvim/compare/v1.16.3...v1.16.4) (2025-01-24)
 
 
@@ -583,4 +598,3 @@
 
 * clean render logic, idea for a content validater... ([4a58ec7](https://github.com/neo451/feed.nvim/commit/4a58ec7718779623c2060b69961692e502df74b9))
 * proper lazy load in whole plugin, fixed bug in intial db mkdir ([11ee5b0](https://github.com/neo451/feed.nvim/commit/11ee5b09ff546e63f1ceb25a187ffee794547046))
-
