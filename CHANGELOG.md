@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.18.0](https://github.com/neo451/feed.nvim/compare/v1.17.0...v1.18.0) (2025-02-17)
+
+
+### Features
+
+* **ui:** use za to toggle list fold, better ts fold ([afcdc6b](https://github.com/neo451/feed.nvim/commit/afcdc6b47893c6fbbd9d3e445c9639b25394d28e))
+
+
+### Bug Fixes
+
+* **db:** fix field name mismatch between db and parser ([afcdc6b](https://github.com/neo451/feed.nvim/commit/afcdc6b47893c6fbbd9d3e445c9639b25394d28e))
+* **ui:** add back entry highlights ([afcdc6b](https://github.com/neo451/feed.nvim/commit/afcdc6b47893c6fbbd9d3e445c9639b25394d28e))
+* **ui:** better handling of custom colorscheme ([afcdc6b](https://github.com/neo451/feed.nvim/commit/afcdc6b47893c6fbbd9d3e445c9639b25394d28e))
+
 ## [1.17.0](https://github.com/neo451/feed.nvim/compare/v1.16.4...v1.17.0) (2025-02-17)
 
 
