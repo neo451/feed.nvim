@@ -68,9 +68,9 @@ function M.update_feed_co(url, opts)
    feeds[url] = feeds[url] or {}
    local feed = feeds[url]
 
-   feed.htmlUrl = feed.htmlUrl or d.htmlUrl
+   feed.htmlUrl = feed.htmlUrl or d.link
    feed.title = feed.title or d.title
-   feed.description = feed.desc or d.description
+   feed.desc = feed.desc or d.desc
    feed.version = feed.version or d.version
 
    feed.last_modified = d.last_modified

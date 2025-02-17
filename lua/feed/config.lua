@@ -16,7 +16,7 @@ local default = {
    ---@type string
    db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type string
-   colorscheme = "",
+   colorscheme = nil,
    ---@type { long: string, short: string }
    date_format = {
       short = "%Y-%m-%d",
@@ -163,7 +163,7 @@ local default = {
             swapfile = false,
             undolevels = -1,
             modifiable = false,
-         }
+         },
       },
 
       ---@type { wo: table, bo: table }
@@ -177,7 +177,7 @@ local default = {
             statuscolumn = " ",
             spell = false,
             conceallevel = 3,
-            concealcursor = 'n',
+            concealcursor = "n",
          },
          bo = {
             filetype = "markdown",
@@ -186,7 +186,7 @@ local default = {
             modifiable = false,
          },
       },
-   }
+   },
 }
 
 local M = {}

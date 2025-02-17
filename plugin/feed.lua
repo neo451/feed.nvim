@@ -15,6 +15,8 @@ local highlights = {
    FeedTags = { default = true, link = "@punctuation.bracket" },
    FeedDate = { default = true, link = "function" },
    FeedBold = { default = true, link = "Bold" },
+   FeedAuthor = { default = true, link = "Label" },
+   FeedFeed = { default = true, link = "Label" },
    FeedLabel = { default = true, link = "Label" },
 }
 

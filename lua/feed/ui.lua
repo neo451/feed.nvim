@@ -30,6 +30,13 @@ end
 
 local ns = api.nvim_create_namespace("feed_index")
 
+---@param colorscheme string
+local function set_colorscheme(colorscheme)
+   if Config.colorscheme and vim.g.colors_name ~= colorscheme then
+      pcall(vim.cmd.colorscheme, Config.colorscheme)
+   end
+end
+
 local function show_index()
    if not state.index or not state.index:valid() then
       state.index = Win.new({
@@ -41,12 +48,11 @@ local function show_index()
                vim.o.cmdheight = 0
                og.colorscheme = vim.g.colors_name
                og.cmdheight = vim.o.cmdheight
-               pcall(vim.cmd.colorscheme, Config.colorscheme)
+               set_colorscheme(Config.colorscheme)
             end,
-            BufLeave = function(self)
+            BufLeave = function()
                vim.o.cmdheight = og.cmdheight
-               pcall(vim.cmd.colorscheme, og.colorscheme)
-               self:close()
+               set_colorscheme(og.colorscheme)
             end,
          },
       })
@@ -147,9 +153,10 @@ end
 local function set_content(buf, body, id)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
+   local entry_ns = api.nvim_create_namespace("feed_entry")
 
    local header = {}
-   for _, v in ipairs({ "title", "author", "feed", "link", "date" }) do
+   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
       header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id)
    end
 
@@ -161,6 +168,17 @@ local function set_content(buf, body, id)
    for i, v in ipairs(lines) do
       v = vim.trim(ut.unescape(v:gsub("\n", "")))
       api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
+   end
+
+   for i, t in ipairs({
+      { 7, "FeedTitle" },
+      { 8, "FeedAuthor" },
+      { 6, "FeedFeed" },
+      { 6, "FeedLink" },
+      { 6, "FeedDate" },
+   }) do
+      local j, hi = t[1], t[2]
+      hl.range(buf, entry_ns, hi, { i - 1, j }, { i - 1, 200 })
    end
 end
 
@@ -243,11 +261,11 @@ local function show_entry(ctx)
             vim.o.cmdheight = 0
             og.colorscheme = vim.g.colors_name
             og.cmdheight = vim.o.cmdheight
-            pcall(vim.cmd.colorscheme, Config.colorscheme)
+            set_colorscheme(Config.colorscheme)
          end,
          BufLeave = function(self)
             vim.o.cmdheight = og.cmdheight
-            pcall(vim.cmd.colorscheme, og.colorscheme)
+            set_colorscheme(og.colorscheme)
             self:close()
          end,
       },
@@ -389,12 +407,11 @@ M.show_split = function(percentage)
    ut.bo(split.buf, Config.options.entry.bo)
 end
 
----FIXME: xmlUrl htmlUrl desc
 M.show_feeds = function(percentage)
    local split = M.split({
       wo = {
          spell = false,
-         winbar = "%#Title# Feedlist",
+         winbar = "%#Title# Feedlist: <za> to toggle fold",
       },
       bo = {
          filetype = "markdown",
@@ -406,12 +423,13 @@ M.show_feeds = function(percentage)
       },
    }, percentage or "50%", {})
 
-   local function node_to_md(heading, items)
+   local function node_to_md(heading, url, items)
       local res = {}
       res[#res + 1] = "# " .. heading
       for k, v in pairs(items) do
-         res[#res + 1] = "- " .. ut.capticalize(k) .. ": " .. (type(v) == "table" and vim.inspect(v) or v)
+         res[#res + 1] = ("- %s: `%s`"):format(k, (type(v) == "table" and vim.inspect(v) or v))
       end
+      res[#res + 1] = ("- xmlUrl: `%s`"):format(url)
       res[#res + 1] = ""
       return res
    end
@@ -420,9 +438,17 @@ M.show_feeds = function(percentage)
 
    for url, feed in pairs(feeds) do
       if type(feed) == "table" then
-         lines = vim.list_extend(lines, node_to_md(feed.title or url, feed))
+         lines = vim.list_extend(lines, node_to_md(feed.title or url, url, feed))
       end
    end
+
+   vim.wo[split.win].foldmethod = "expr"
+   vim.wo[split.win].foldlevel = 0
+   vim.wo[split.win].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+   vim.wo[split.win].foldtext = ""
+   vim.wo[split.win].fillchars = "foldopen:,foldclose:,fold: ,foldsep: "
+
+   vim.keymap.set("n", "za", "zA", { buffer = split.buf })
 
    vim.api.nvim_buf_set_lines(split.buf, 0, -1, false, lines)
 end
