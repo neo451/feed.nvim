@@ -1,5 +1,5 @@
-local ut = require "feed.utils"
-local Config = require "feed.config"
+local ut = require("feed.utils")
+local Config = require("feed.config")
 
 local Win = {}
 local id = 0
@@ -84,7 +84,6 @@ local win_opts = {
    "zindex",
 }
 
-
 function Win:win_opts()
    local opts = {}
    for _, k in ipairs(win_opts) do
@@ -137,23 +136,12 @@ function Win:show()
             buffer = self.buf,
             callback = function()
                cb(self)
-            end
+            end,
          })
       end
    end
 
-   if self.opts.type == "split" then
-      vim.api.nvim_win_call(0, function()
-         vim.cmd("silent noswapfile belowright split")
-         vim.api.nvim_win_set_buf(0, self.buf)
-         self.win = vim.api.nvim_get_current_win()
-         vim.api.nvim_set_current_win(self.win)
-      end)
-      self.opts.wo = vim.tbl_extend("force", split_minimal_wo, self.opts.wo)
-   else
-      self.win = vim.api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
-   end
-
+   self.win = vim.api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
 
    ut.bo(self.buf, self.opts.bo)
    ut.wo(self.win, self.opts.wo)
@@ -240,7 +228,7 @@ function Win:update()
       ut.wo(self.win, self.opts.wo)
       local opts = self:win_opts()
       opts.noautocmd = nil
-      opts.height = vim.o.lines
+      opts.height = vim.o.lines - 1
       opts.width = vim.o.columns
       vim.api.nvim_win_set_config(self.win, opts)
    end
@@ -252,9 +240,7 @@ function Win:close(opts)
    local buf = self.buf
 
    self.win = nil
-   if opts.keep_buf then
-      self.buf = nil
-   end
+   self.buf = nil
 
    local close = function()
       if win and vim.api.nvim_win_is_valid(win) then
