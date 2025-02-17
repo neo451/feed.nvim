@@ -1,7 +1,7 @@
-local M = require "feed.parser.init"
+local M = require("feed.parser")
 local eq = MiniTest.expect.equality
 
-local h = require "tests.helpers"
+local h = dofile("tests/helpers.lua")
 local readfile = h.readfile
 local is_url = h.is_url
 
@@ -46,7 +46,7 @@ end
 
 local T = MiniTest.new_set()
 
-T["rss"] = MiniTest.new_set {
+T["rss"] = MiniTest.new_set({
    parametrize = {
       {
          "rss091.xml",
@@ -91,31 +91,31 @@ T["rss"] = MiniTest.new_set {
       },
       { "rss_atom.xml", { version = "rss20" } },
    },
-}
+})
 
-T["json"] = MiniTest.new_set {
+T["json"] = MiniTest.new_set({
    parametrize = {
       { "json1", "json1" },
    },
-}
+})
 
-T["atom"] = MiniTest.new_set {
+T["atom"] = MiniTest.new_set({
    parametrize = {
-      { "atom03.xml",            { version = "atom03" } },
-      { "atom10.xml",            { version = "atom10" } },
+      { "atom03.xml", { version = "atom03" } },
+      { "atom10.xml", { version = "atom10" } },
       { "atom_html_content.xml", { version = "atom10" } },
-      { "reddit.xml",            { version = "atom10" } },
+      { "reddit.xml", { version = "atom10" } },
    },
-}
+})
 
-T["json"] = MiniTest.new_set {
+T["json"] = MiniTest.new_set({
    parametrize = {
       { "json1.json", { version = "json1" } },
       { "json2.json", { version = "json1" } },
    },
-}
+})
 
-T["url resolover"] = MiniTest.new_set {
+T["url resolover"] = MiniTest.new_set({
    parametrize = {
       {
          "url_atom.xml",
@@ -145,9 +145,9 @@ T["url resolover"] = MiniTest.new_set {
                link = "http://example.org/archives/000001.html",
             },
          },
-      }
+      },
    },
-}
+})
 
 local function check(filename, checks)
    local f = M.parse(readfile(filename), "http://placehoder.feed")
@@ -176,7 +176,7 @@ T["url resolover"]["works"] = check
 --
 --- TODO: parse the condition in the feed parser test suite, into a check table, and wemo check!!
 
-T["feedparser test suite"] = MiniTest.new_set {
+T["feedparser test suite"] = MiniTest.new_set({
    parametrize = {
       { "/data/atom" },
       { "/data/rss" },
@@ -185,7 +185,7 @@ T["feedparser test suite"] = MiniTest.new_set {
       { "/data/rdf" },
       -- { "/data/itunes" },
    },
-}
+})
 
 local function check_suite(dir)
    for f in vim.fs.dir(dir) do

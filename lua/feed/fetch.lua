@@ -103,8 +103,7 @@ function M.update_all()
          local ok, name = t()
          c = c + 1
          jobs = jobs - 1
-         -- io.write(table.concat({ jobs, c, "/", #list, name, (ok and "success" or "failed"), "\n" }, " "))
-         io.write(table.concat({ name, (ok and "success" or "failed"), "\n" }, " "))
+         print(name, ok and "success" or "failed", "\n")
       end
       os.exit()
    end)

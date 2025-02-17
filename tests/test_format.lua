@@ -1,28 +1,25 @@
-local M = require "feed.ui.format"
+local M = require("feed.ui.format")
 local eq = MiniTest.expect.equality
-local config = require"feed.config"
 
 local T = MiniTest.new_set()
 
 local db = {
-      ['1'] = {
-          title = "title",
-          feed = "https://neovim.io/news.xml",
-          author = "author",
-          link = "link",
-          time = os.time({year = 2025, month = 1, day =1})
+   ["1"] = {
+      title = "title",
+      feed = "https://neovim.io/news.xml",
+      author = "author",
+      link = "link",
+      time = os.time({ year = 2025, month = 1, day = 1 }),
+   },
+   feeds = {
+      ["https://neovim.io/news.xml"] = {
+         title = "neovim",
       },
-      feeds = {
-["https://neovim.io/news.xml"] = {
-   title = "neovim"
+   },
+   tags = {},
 }
-      },
-      tags = {
 
-      }
-   }
-
-T["format"] = MiniTest.new_set {}
+T["format"] = MiniTest.new_set({})
 
 T.format["tags"] = function()
    local id = "1"
@@ -46,8 +43,8 @@ end
 
 T.format["entry"] = function()
    local id = "1"
-   local expect = "2025-01-01 neovim                    [unread]        title    "
-   eq(expect, M.entry(id, config.layout, db))
+   local expect = "neovim               [unread]        title "
+   eq(expect, M.entry(id, nil, db))
 end
 
 return T

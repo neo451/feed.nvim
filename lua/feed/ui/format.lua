@@ -5,8 +5,6 @@ local ut = require("feed.utils")
 local align = ut.align
 local icons = Config.icons
 
--- TODO: this whole module should be user definable
-
 ---@param str string
 ---@return string
 local function cleanup(str)
@@ -17,8 +15,10 @@ local function cleanup(str)
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
 function M.tags(id, db)
+   db = db or require("feed.db")
    local taglist = vim.iter(db.tags):fold({}, function(acc, tag, v)
       if type(v) == "table" and v[id] then
          if icons.enabled then
@@ -49,26 +49,30 @@ function M.tags(id, db)
 end
 
 ---@param id string
----@return string
+---@param db feed.db
 ---@return string
 M.title = function(id, db)
+   db = db or require("feed.db")
    local entry = db[id]
-   return cleanup(entry.title), "FeedTitle"
+   return cleanup(entry.title)
 end
 
 ---@param id string
----@return string
+---@param db feed.db
 ---@return string
 M.feed = function(id, db)
+   db = db or require("feed.db")
+   local feeds = db.feeds
    local entry = db[id]
-   local feed = db.feeds[entry.feed] and db.feeds[entry.feed].title or entry.feed
-   return cleanup(feed), "FeedTitle" -- FIX: for ttrss
+   local feed = feeds[entry.feed] and feeds[entry.feed].title or entry.feed
+   return cleanup(feed) -- FIX: for ttrss
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
----@return string
-M.author = function(id, db)
+M.author = function(id)
+   db = db or require("feed.db")
    ---@type feed.entry
    local entry = db[id]
    local text
@@ -77,22 +81,24 @@ M.author = function(id, db)
    else
       text = entry.author
    end
-   return cleanup(text), "FeedTitle"
+   return cleanup(text)
 end
 
 ---@param id string
----@return string
+---@param db feed.db
 ---@return string
 M.link = function(id, db)
-   return db[id].link, "FeedLink"
+   db = db or require("feed.db")
+   return db[id].link
 end
 
 ---@param id string
----@return string
+---@param db feed.db
 ---@return string
 M.date = function(id, db)
+   db = db or require("feed.db")
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format.short, db[id].time), "FeedTitle"
+   return os.date(Config.date_format.short, db[id].time)
 end
 
 ---return a formated line for an entry base on user config
@@ -100,7 +106,8 @@ end
 ---@param comps table
 ---@param db feed.db
 ---@return string
-function M.entry(id, comps, db)
+M.entry = function(id, comps, db)
+   db = db or require("feed.db")
    local entry = db[id]
    if not entry then
       return ""

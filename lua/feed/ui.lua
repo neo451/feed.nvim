@@ -60,7 +60,7 @@ local function show_index()
 
    local lines = {}
    for i, id in ipairs(state.entries) do
-      lines[i] = Format.entry(id, layout, DB)
+      lines[i] = Format.entry(id, layout)
    end
    api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
@@ -150,7 +150,7 @@ local function set_content(buf, body, id)
 
    local header = {}
    for _, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id, DB)
+      header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id)
    end
 
    header[#header + 1] = ""
