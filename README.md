@@ -25,7 +25,9 @@
 
 
 > [!WARNING]
-> This project is young, expect breaking changes, but usage should be fun and seamless, go ahead and enjoy! 
+> This project is young, expect breaking changes, and for now there's a nasty bug if you are on neovim stable [#125](https://github.com/neo451/feed.nvim/issues/125#issuecomment-2612966517), recommand to use nightly or wait for the coming release of 0.11
+> 
+> other than that usage should be fun and smooth, go ahead and enjoy! 
 >
 > see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
