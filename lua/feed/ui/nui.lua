@@ -2,7 +2,6 @@ local M = {}
 local Win = require "feed.ui.window"
 local Config = require "feed.config"
 local ut = require "feed.utils"
-local db = require "feed.db"
 local api = vim.api
 
 -- Levenshtein distance function
@@ -233,62 +232,47 @@ function M.split(opts, percentage, lines)
    return win
 end
 
-function M.input(opts, on_submit)
-   local fp = db.dir / "input_history"
-   local str = ut.read_file(fp)
+M.input = vim.ui.input
 
-   opts = opts or {}
-
-   local lines = vim.split(str or "", "\n")
-   lines[#lines] = opts.default or ""
-
-   local win = Win.new({
-      text = lines,
-      row = vim.o.lines,
-      col = 0,
-      width = vim.o.columns,
-      height = 1,
-      style = "minimal",
-      zindex = 1000,
-      noautocmd = true,
-      wo = {
-         winhighlight = "Normal:Normal,FloatBorder:Normal",
-      },
-      autocmds = {
-         BufLeave = function()
-            local text = vim.api.nvim_get_current_line()
-            fp:fs_append(text)
-            fp:fs_append("\n")
-            vim.cmd("stopinsert")
-         end,
-         BufEnter = function(self)
-            local col = api.nvim_buf_line_count(self.buf)
-            api.nvim_win_set_cursor(0, { col, 0 })
-            vim.cmd("startinsert")
-         end
-      }
-   })
-
-   on_submit = on_submit or function() end
-
-   local prompt = opts.prompt
-   if prompt then
-      vim.wo[win.win].statuscolumn = prompt
-   end
-
-   win:map("n", { "<esc>", "q" }, function()
-      win:close()
-   end)
-
-   win:map("i", "<esc>", function()
-      win:close()
-   end)
-
-   win:map({ "n", "i" }, "<enter>", function()
-      local text = api.nvim_get_current_line()
-      win:close()
-      on_submit(text)
-   end)
-end
+-- function M.input(opts, on_submit)
+--    opts = opts or {}
+--
+--    local win = Win.new({
+--       row = vim.o.lines,
+--       col = 0,
+--       width = vim.o.columns,
+--       height = 1,
+--       style = "minimal",
+--       zindex = 1000,
+--       noautocmd = true,
+--       autocmds = {
+--          BufLeave = function()
+--             vim.cmd "stopinsert"
+--          end
+--       }
+--    })
+--    vim.cmd "startinsert"
+--
+--    on_submit = on_submit or function() end
+--
+--    local prompt = opts.prompt
+--    if prompt then
+--       vim.wo[win.win].statuscolumn = prompt
+--    end
+--
+--    win:map("n", { "<esc>", "q" }, function()
+--       win:close()
+--    end)
+--
+--    win:map("i", "<esc>", function()
+--       win:close()
+--    end)
+--
+--    win:map({ "n", "i" }, "<enter>", function()
+--       local text = api.nvim_get_current_line()
+--       win:close()
+--       on_submit(text)
+--    end)
+-- end
 
 return M

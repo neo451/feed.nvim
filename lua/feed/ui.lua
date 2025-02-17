@@ -4,32 +4,30 @@ local Format = require("feed.ui.format")
 local Markdown = require("feed.ui.markdown")
 local Curl = require("feed.curl")
 local Opml = require("feed.opml")
-local Fetch = require "feed.fetch"
-local Win = require "feed.ui.window"
+local Fetch = require("feed.fetch")
+local Win = require("feed.ui.window")
 local ut = require("feed.utils")
+local state = require("feed.ui.state")
 local read_file = ut.read_file
 local save_file = ut.save_file
 
 local hl = vim.hl or vim.highlight
 local api = vim.api
 local feeds = DB.feeds
+local layout = Config.layout
 local get_buf_urls = ut.get_buf_urls
 local resolve_and_open = ut.resolve_and_open
-
-
-local state = require "feed.ui.state"
 
 local og = {}
 
 local M = {
-   state = state
+   state = state,
 }
 
-for name, f in pairs(require "feed.ui.nui") do
+for name, f in pairs(require("feed.ui.nui")) do
    M[name] = f
 end
 
-state.query = Config.search.default_query
 local ns = api.nvim_create_namespace("feed_index")
 
 local function show_index()
@@ -50,7 +48,7 @@ local function show_index()
                pcall(vim.cmd.colorscheme, og.colorscheme)
                self:close()
             end,
-         }
+         },
       })
    end
    local buf, win = state.index.buf, state.index.win
@@ -59,9 +57,13 @@ local function show_index()
    state.entries = state.entries or DB:filter(state.query)
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear lines
+
+   local lines = {}
    for i, id in ipairs(state.entries) do
-      api.nvim_buf_set_lines(buf, i - 1, i, false, { Format.entry(id, Config.layout) })
+      lines[i] = Format.entry(id, layout)
    end
+   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
    for i = 1, #state.entries do
       local acc = 0
       for _, sect in ipairs(Config.layout) do
@@ -166,7 +168,9 @@ end
 function M.preview_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then return end
+   if not entry then
+      return
+   end
 
    local buf
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
@@ -174,7 +178,7 @@ function M.preview_entry(ctx)
    else
       buf = api.nvim_create_buf(false, true)
    end
-   local str = ut.read_file(DB.dir .. "/data/" .. id)
+   local str = ut.read_file(DB.dir / "data" / id)
    if str then
       local lines = vim.split(str, "\n")
       set_content(buf, lines, id)
@@ -182,7 +186,7 @@ function M.preview_entry(ctx)
          mark_read(id)
       end
    else
-      vim.notify "no content to preview"
+      vim.notify("no content to preview")
    end
 end
 
@@ -190,7 +194,9 @@ end
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then return end
+   if not entry then
+      return
+   end
 
    local buf
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
@@ -200,32 +206,32 @@ local function show_entry(ctx)
    end
 
    if ctx.link then
-      Markdown.convert {
+      Markdown.convert({
          link = ctx.link,
          cb = function(lines)
             set_content(buf, lines, id)
          end,
-      }
+      })
    elseif entry.content then
-      Markdown.convert {
+      Markdown.convert({
          src = entry.content(),
          cb = function(lines)
             set_content(buf, lines, id)
          end,
-      }
+      })
    else
-      local str = ut.read_file(DB.dir .. "/data/" .. id)
+      local str = ut.read_file(tostring(DB.dir / "data" / id))
       if str then
          local lines = vim.split(str, "\n")
          set_content(buf, lines, id)
       else
-         vim.notify "no content to preview"
+         vim.notify("no content to preview")
       end
    end
 
    Config.options.entry.wo.winbar = M.show_keyhints()
 
-   state.entry = Win.new {
+   state.entry = Win.new({
       prev_win = (state.index and state.index:valid()) and state.index.win or nil,
       buf = buf,
       wo = Config.options.entry.wo,
@@ -243,9 +249,9 @@ local function show_entry(ctx)
             vim.o.cmdheight = og.cmdheight
             pcall(vim.cmd.colorscheme, og.colorscheme)
             self:close()
-         end
-      }
-   }
+         end,
+      },
+   })
 
    local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
    if ok then
@@ -261,16 +267,16 @@ local function show_entry(ctx)
    mark_read(id)
 end
 
-M.show_full    = function()
+M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
-      show_entry { link = entry.link, buf = state.entry.buf }
+      show_entry({ link = entry.link, buf = state.entry.buf })
    else
-      vim.notify "no link to fetch"
+      vim.notify("no link to fetch")
    end
 end
 
-M.refresh      = function(opts)
+M.refresh = function(opts)
    opts = opts or {}
    opts.show = vim.F.if_nil(opts.show, true)
    state.query = opts.query or state.query
@@ -283,7 +289,7 @@ M.refresh      = function(opts)
    return state.entries
 end
 
-M.quit         = function()
+M.quit = function()
    if ut.in_index() then
       state.index:close()
       state.index = nil
@@ -292,19 +298,19 @@ M.quit         = function()
    end
 end
 
-M.show_prev    = function()
+M.show_prev = function()
    if state.cur > 1 then
       show_entry({ row = state.cur - 1, buf = state.entry.buf })
    end
 end
 
-M.show_next    = function()
+M.show_next = function()
    if state.cur < #state.entries then
       show_entry({ row = state.cur + 1, buf = state.entry.buf })
    end
 end
 
-M.show_urls    = function()
+M.show_urls = function()
    local base = get_entry().link
    M.select(state.urls, {
       prompt = "urlview",
@@ -318,7 +324,7 @@ M.show_urls    = function()
    end)
 end
 
-M.open_url     = function()
+M.open_url = function()
    local base = get_entry().link
    local text = vim.fn.expand("<cfile>")
    if ut.looks_like_url(text) then
@@ -346,12 +352,12 @@ M.show_browser = function()
    end
 end
 
-M.show_log     = function()
+M.show_log = function()
    local str = ut.read_file(vim.fn.stdpath("data") .. "/feed.nvim.log") or ""
    M.split({}, "50%", vim.split(str, "\n"))
 end
 
-M.show_hints   = function()
+M.show_hints = function()
    local maps
    if ut.in_entry() then
       maps = Config.keys.entry
@@ -369,13 +375,13 @@ M.show_hints   = function()
    M.split({
       wo = {
          winbar = "%#Title# Key Hints",
-      }
+      },
    }, "50%", lines)
 end
 
 ---Open split to show entry
 ---@param percentage any
-M.show_split   = function(percentage)
+M.show_split = function(percentage)
    local _, id = get_entry()
    local split = M.split({}, percentage or "50%")
    M.preview_entry({ buf = split.buf, id = id, read = true })
@@ -383,7 +389,8 @@ M.show_split   = function(percentage)
    ut.bo(split.buf, Config.options.entry.bo)
 end
 
-M.show_feeds   = function(percentage)
+---FIXME: xmlUrl htmlUrl desc
+M.show_feeds = function(percentage)
    local split = M.split({
       wo = {
          spell = false,
@@ -395,8 +402,8 @@ M.show_feeds   = function(percentage)
       autocmds = {
          BufLeave = function(self)
             self:close()
-         end
-      }
+         end,
+      },
    }, percentage or "50%", {})
 
    local function node_to_md(heading, items)
@@ -423,14 +430,14 @@ end
 ---In Index: prompt for input and refresh
 ---Everywhere else: openk search backend
 ---@param q string
-M.search       = function(q)
+M.search = function(q)
    local backend = ut.choose_backend(Config.search.backend)
    if q then
       M.refresh({ query = q })
    elseif ut.in_index() or not backend then
       M.input({
          prompt = "Feed query: ",
-         default = Config.search.show_last and state.query .. " " or ""
+         default = state.query,
       }, function(val)
          if not val then
             return
@@ -444,13 +451,13 @@ M.search       = function(q)
 end
 
 -- TODO: support argument
-M.grep         = function()
+M.grep = function()
    local backend = ut.choose_backend(Config.search.backend)
    local engine = require("feed.ui." .. backend)
    engine.feed_grep()
 end
 
-M.load_opml    = function(path)
+M.load_opml = function(path)
    if not path then
       return
    end
@@ -476,7 +483,7 @@ M.load_opml    = function(path)
    end
 end
 
-M.export_opml  = function(fp)
+M.export_opml = function(fp)
    if not fp then
       return
    end
@@ -491,9 +498,8 @@ M.export_opml  = function(fp)
    end
 end
 
-M.dot          = function() end
+M.dot = function() end
 local tag_hist = {}
-
 
 M.undo = function()
    local act = table.remove(tag_hist, #tag_hist)
@@ -537,15 +543,20 @@ M.untag = function(t, id)
    table.insert(tag_hist, { type = "untag", tag = t, id = id })
 end
 
+local coroutine_utils = require("coop.coroutine-utils")
+local copcall = coroutine_utils.copcall
+
 ---@param url string
 M.update_feed = function(url)
-   local Coop = require "coop"
+   local Coop = require("coop")
    if not url or not ut.looks_like_url(url) then
       return
    end
    Coop.spawn(function()
-      local ok = Fetch.update_feed_co(url, { force = true })
-      vim.notify(ut.url2name(url, feeds) .. (ok and " success" or " failed"))
+      local ok, res = copcall(Fetch.update_feed_co, url, { force = true })
+      if not ok then
+         vim.notify(ut.url2name(url, feeds) .. (ok and " success" or " failed") .. ": " .. res)
+      end
    end)
 end
 
@@ -563,8 +574,8 @@ M.prune_feed = function(url)
    DB:save_feeds()
 end
 
-M.show_winbar = require "feed.ui.bar".show_winbar
-M.show_keyhints = require "feed.ui.bar".show_keyhints
+M.show_winbar = require("feed.ui.bar").show_winbar
+M.show_keyhints = require("feed.ui.bar").show_keyhints
 M.show_index = show_index
 M.show_entry = show_entry
 M.get_entry = get_entry

@@ -34,7 +34,7 @@ local function feed_search()
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
           :map(function(id)
-             return format.entry(id)
+             return format.entry(id, nil, db)
           end)
           :totable()
       vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
@@ -66,7 +66,7 @@ local function feed_grep()
          show = function(buf_id, items_arr, _)
             for i, line in ipairs(items_arr) do
                local id = line:sub(1, 64)
-               vim.api.nvim_buf_set_lines(buf_id, i - 1, i, false, { format.entry(id) })
+               vim.api.nvim_buf_set_lines(buf_id, i - 1, i, false, { format.entry(id, nil, db) })
             end
          end,
       },

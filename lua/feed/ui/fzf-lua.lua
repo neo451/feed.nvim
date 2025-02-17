@@ -1,6 +1,6 @@
 local fzf = require("fzf-lua")
 local ui = require("feed.ui")
-local DB = require "feed.db"
+local DB = require("feed.db")
 local Format = require("feed.ui.format")
 local builtin = require("fzf-lua.previewer.builtin")
 
@@ -18,7 +18,6 @@ function MyPreviewer:populate_preview_buf(entry_str)
    local id = entry_str:sub(-64, -1)
    ui.preview_entry({ buf = tmpbuf, id = id })
    vim.treesitter.start(tmpbuf, "markdown")
-   self.win:update_scrollbar()
 end
 
 -- Disable line numbering and word wrap
@@ -93,5 +92,5 @@ end
 
 return {
    feed_search = feed_search,
-   feed_grep = feed_grep
+   feed_grep = feed_grep,
 }

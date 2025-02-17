@@ -1,7 +1,7 @@
 local lpeg = vim.lpeg
 local P, C, Ct = lpeg.P, lpeg.C, lpeg.Ct
-local log = require "feed.lib.log"
-local ut = require "feed.utils"
+local log = require("feed.lib.log")
+local ut = require("feed.utils")
 
 local get_text = ut.get_text
 local get_root = ut.get_root
@@ -37,15 +37,16 @@ end
 ---@param tag string
 ---@return vim.lpeg.Pattern
 local function gen_tag_rule(tag)
-   local st = P "<" * P(tag) * P ">"
+   local st = P("<") * P(tag) * P(">")
    local et = P("</" .. tag .. ">")
    local rule = C(st) * ((1 - et) ^ 0 / encode) * C(et)
    return rule
 end
 
-local cdata = P "<![CDATA[" * ((1 - lpeg.P "]]>") ^ 0 / encode) * lpeg.P "]]>"
-local xhtml = C(P '<content type="xhtml"' * (1 - lpeg.P ">") ^ 0 * lpeg.P ">") * ((1 - lpeg.P "</content>") ^ 0 / encode) *
-    C(P "</content>")
+local cdata = P("<![CDATA[") * ((1 - lpeg.P("]]>")) ^ 0 / encode) * lpeg.P("]]>")
+local xhtml = C(P('<content type="xhtml"') * (1 - lpeg.P(">")) ^ 0 * lpeg.P(">"))
+   * ((1 - lpeg.P("</content>")) ^ 0 / encode)
+   * C(P("</content>"))
 
 ---@param rule vim.lpeg.Pattern
 ---@return vim.lpeg.Pattern
@@ -56,7 +57,7 @@ end
 ---@param str string
 ---@return string
 local rm_text = function(str)
-   local res = gen_extract_pat(gen_tag_rule "title"):match(str)
+   local res = gen_extract_pat(gen_tag_rule("title")):match(str)
    if res and not vim.tbl_isempty(res) then
       return table.concat(res)
    end
@@ -151,7 +152,7 @@ end
 ---@return string
 H.CharData = function(node, src)
    local text = get_text(node, src)
-   if text:find "%S" then
+   if text:find("%S") then
       return text
    end
 end
@@ -229,13 +230,12 @@ H.element = function(node, src)
    return { [K] = V }
 end
 
-
 ---tree-sitter powered parser to turn markup to simple lua table
 ---@param src string
 ---@param url string
 ---@return table?
 local function parse(src, url)
-   ut.assert_parser('xml')
+   ut.assert_parser("xml")
    src = sanitize(src)
    local root = get_root(src, "xml")
    if root:has_error() then
@@ -253,5 +253,5 @@ end
 
 return {
    parse = parse,
-   sanitize = sanitize
+   sanitize = sanitize,
 }

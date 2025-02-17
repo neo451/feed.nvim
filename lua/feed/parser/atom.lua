@@ -1,6 +1,6 @@
-local date = require "feed.parser.date"
-local ut = require "feed.utils"
-local p_ut = require "feed.parser.utils"
+local date = require("feed.parser.date")
+local ut = require("feed.utils")
+local p_ut = require("feed.parser.utils")
 local sensible = p_ut.sensible
 local decode = require("feed.lib.entities").decode
 

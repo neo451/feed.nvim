@@ -1,12 +1,9 @@
 local M = {}
-local Config = require "feed.config"
-local DB = require "feed.db"
-local ut = require "feed.utils"
+local Config = require("feed.config")
+local ut = require("feed.utils")
 
 local align = ut.align
 local icons = Config.icons
-
--- TODO: this whole module should be user definable
 
 ---@param str string
 ---@return string
@@ -18,24 +15,25 @@ local function cleanup(str)
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
-function M.tags(id)
-   local taglist = vim.iter(DB.tags)
-       :fold({}, function(acc, tag, v)
-          if type(v) == "table" and v[id] then
-             if icons.enabled then
-                acc[#acc + 1] = icons[tag] or tag
-             else
-                acc[#acc + 1] = tag
-             end
-          end
-          return acc
-       end)
+function M.tags(id, db)
+   db = db or require("feed.db")
+   local taglist = vim.iter(db.tags):fold({}, function(acc, tag, v)
+      if type(v) == "table" and v[id] then
+         if icons.enabled then
+            acc[#acc + 1] = icons[tag] or tag
+         else
+            acc[#acc + 1] = tag
+         end
+      end
+      return acc
+   end)
    if vim.tbl_isempty(taglist) then
       if icons.enabled then
          taglist = { icons.unread }
       else
-         taglist = { 'unread' }
+         taglist = { "unread" }
       end
    end
 
@@ -51,87 +49,90 @@ function M.tags(id)
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
----@return string
-M.title = function(id)
-   local entry = DB[id]
-   return cleanup(entry.title), "FeedTitle"
+M.title = function(id, db)
+   db = db or require("feed.db")
+   local entry = db[id]
+   return cleanup(entry.title)
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
----@return string
-M.feed = function(id)
-   local entry = DB[id]
-   local feed = DB.feeds[entry.feed] and DB.feeds[entry.feed].title or entry.feed
-   return cleanup(feed), "FeedTitle" -- FIX: for ttrss
+M.feed = function(id, db)
+   db = db or require("feed.db")
+   local feeds = db.feeds
+   local entry = db[id]
+   local feed = feeds[entry.feed] and feeds[entry.feed].title or entry.feed
+   return cleanup(feed) -- FIX: for ttrss
 end
 
 ---@param id string
----@return string
+---@param db feed.db
 ---@return string
 M.author = function(id)
+   db = db or require("feed.db")
    ---@type feed.entry
-   local entry = DB[id]
+   local entry = db[id]
    local text
    if entry.author == "" then
       text = entry.feed
    else
       text = entry.author
    end
-   return cleanup(text), "FeedTitle"
+   return cleanup(text)
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
----@return string
-M.link = function(id)
-   return DB[id].link, "FeedLink"
+M.link = function(id, db)
+   db = db or require("feed.db")
+   return db[id].link
 end
 
 ---@param id string
+---@param db feed.db
 ---@return string
----@return string
-M.date = function(id)
+M.date = function(id, db)
+   db = db or require("feed.db")
    ---@diagnostic disable-next-line: return-type-mismatch
-   return os.date(Config.date_format, DB[id].time), "FeedTitle"
+   return os.date(Config.date_format.short, db[id].time)
 end
 
----@param id string
----@param comps table?
----@return string
-M.entry = function(id, comps)
-   local buf = {}
-   comps = comps or {
-      { "feed",  width = 15 },
-      { "tags",  width = 5 },
-      { "title", width = 80 },
-   }
-
-   for _, v in ipairs(M.gen_format(id, comps)) do
-      buf[#buf + 1] = v.text
-   end
-   return table.concat(buf)
-end
-
----return a format info for an entry base on user config
+---return a formated line for an entry base on user config
 ---@param id string
 ---@param comps table
----@return table
-function M.gen_format(id, comps)
-   local acc_width = 0
+---@param db feed.db
+---@return string
+M.entry = function(id, comps, db)
+   db = db or require("feed.db")
+   local entry = db[id]
+   if not entry then
+      return ""
+   end
+
+   comps = comps
+      or {
+         { "feed", width = 20 },
+         { "tags", width = 15 },
+         { "title", width = math.huge },
+      }
+   local acc = 0
    local res = {}
+
    for _, v in ipairs(comps) do
-      local text = DB[id][v[1]] or ""
+      local text = entry[v[1]] or ""
       if M[v[1]] then
-         text = M[v[1]](id)
+         text = M[v[1]](id, db)
       end
       local width = v.width or #text
       text = align(text, width, v.right_justify) .. " "
-      res[#res + 1] = { color = v.color, width = acc_width, right_justify = v.right_justify, text = text }
-      acc_width = acc_width + width
+      res[#res + 1] = text
+      acc = acc + width
    end
-   return res
+   return table.concat(res)
 end
 
 return M
