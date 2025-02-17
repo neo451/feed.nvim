@@ -6,16 +6,6 @@ require("mini.deps").setup({ path = { package = "deps/" } })
 local add = MiniDeps.add
 
 add({
-   source = "nvim-treesitter/nvim-treesitter",
-})
-
-vim.cmd.TSInstall("xml")
-
--- require("nvim-treesitter.configs").setup({
---    ensure_installed = { "xml", "html", "markdown" },
--- })
---
-add({
    source = "gregorias/coop.nvim",
 })
 
