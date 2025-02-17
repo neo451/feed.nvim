@@ -31,6 +31,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install C/C++ Compiler
+        uses: rlalik/setup-cpp-compiler@master
+        with:
+          compiler: clang-latest
+      # Required to build tree-sitter parsers
+      - name: Install tree-sitter CLI
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: tree-sitter-cli
+
       - name: Setup neovim
         uses: rhysd/action-setup-vim@v1
         with:
