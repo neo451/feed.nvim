@@ -83,30 +83,22 @@ end
 ---@async
 function M.update_all()
    local feeds = db.feeds
-   local jobs, c = 0, 0
+   local c = 0
    local list = ut.feedlist(feeds, false)
+   local n = #list
 
-   local tasks = {}
-
-   for i = 1, #list do
-      tasks[#tasks + 1] = Coop.spawn(function()
-         jobs = jobs + 1
+   for i = 1, n do
+      Coop.spawn(function()
          local url = list[i]
-         local ok = M.update_feed_co(url, {})
+         local ok = M.update_feed_co(url, { force = false })
          local name = ut.url2name(url, feeds)
-         return ok, name
+         c = c + 1
+         print(name, ok and "success" or "failed", "\n")
+         if c == n then
+            os.exit()
+         end
       end)
    end
-
-   Coop.spawn(function()
-      for t in as_completed(tasks) do
-         local ok, name = t()
-         c = c + 1
-         jobs = jobs - 1
-         print(name, ok and "success" or "failed", "\n")
-      end
-      os.exit()
-   end)
 end
 
 return M

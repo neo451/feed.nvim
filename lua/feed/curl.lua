@@ -49,7 +49,7 @@ local function build_header(t)
    local res = {}
    for k, v in pairs(t) do
       res[#res + 1] = "-H"
-      res[#res + 1] = upper(k:gsub("_", "%-")) .. ": " .. v
+      res[#res + 1] = ("'%s: %s'"):format(upper(k:gsub("_", "%-")), v)
    end
    return res
 end
@@ -97,16 +97,13 @@ function M.get(url, opts, cb)
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
    end
-   if cb then
-      return vim.system(cmds, { text = true }, cb and process or nil)
-   else
-      process(vim.system(cmds, { text = true }):wait())
-   end
+   return vim.system(cmds, { text = true }, process)
 end
 
 local task_utils = require("coop.task-utils")
 local f_utils = require("coop.functional-utils")
 
+---@async
 M.get_co = task_utils.cb_to_tf(f_utils.shift_parameters(M.get))
 
 return M

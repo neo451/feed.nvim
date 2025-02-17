@@ -2,7 +2,6 @@ local Config = require("feed.config")
 local ut = require("feed.utils")
 local db = require("feed.db")
 local ui = require("feed.ui")
-local log = require("feed.lib.log")
 local feedlist = ut.feedlist
 
 local M = {}
@@ -179,14 +178,9 @@ M.update = {
       local prog = Progress.new(#ut.feedlist(db.feeds, false))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
-         stdout = function(err, data)
-            if data then
-               prog:update(vim.trim(data))
-            end
-         end,
          stderr = function(err, data)
             if data then
-               log.warn(data)
+               prog:update(vim.trim(data))
             end
          end,
       })
@@ -209,7 +203,6 @@ M.update_feed = {
          }, ui.update_feed)
       end
    end,
-
    complete = function()
       return feedlist(db.feeds, true)
    end,
@@ -234,7 +227,7 @@ M.prune_feed = {
    complete = function()
       return feedlist(db.feeds, true)
    end,
-   context = { all = true }
+   context = { all = true },
 }
 
 function M._list_commands()
