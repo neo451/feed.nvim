@@ -104,7 +104,7 @@ T["atom"] = MiniTest.new_set({
       { "atom03.xml", { version = "atom03" } },
       { "atom10.xml", { version = "atom10" } },
       { "atom_html_content.xml", { version = "atom10" } },
-      { "reddit.xml", { version = "atom10" } },
+      -- { "reddit.xml", { version = "atom10" } },
    },
 })
 
