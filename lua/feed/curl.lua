@@ -70,7 +70,7 @@ function M.get(url, opts, cb)
       "-D",
       dump_fp,
       "--connect-timeout",
-      opts.timeout or 10,
+      opts.timeout or "10",
       rsshub(github(url)),
    }
    cmds = vim.list_extend(cmds, additional)

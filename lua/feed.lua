@@ -8,15 +8,15 @@ M.setup = function(usr_config)
    Config.resolve(usr_config)
    local cmds = require("feed.commands")
    cmds._sync_feedlist()
-end
 
-for k, v in pairs(require("feed.commands")) do
-   if not vim.startswith(k, "_") then
-      M[k] = v.impl
+   for k, v in pairs(require("feed.commands")) do
+      if not vim.startswith(k, "_") then
+         M[k] = v.impl
+      end
    end
-end
 
-local ui = require("feed.ui")
-M.get_entry = ui.get_entry
+   local ui = require("feed.ui")
+   M.get_entry = ui.get_entry
+end
 
 return M

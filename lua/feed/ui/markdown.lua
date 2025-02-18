@@ -1,9 +1,6 @@
 local health = require("feed.health")
 local ut = require("feed.utils")
 
---- FIX: wrap with current window width, and config.opt wrap false
---- FIX: strip html comments
-
 local function convert(ctx)
    local cb = ctx.cb
    local link = ctx.link
@@ -22,16 +19,15 @@ local function convert(ctx)
       return vim.schedule_wrap(cb)(vim.split(obj.stdout, "\n"))
    end
 
-   local cmd = vim.tbl_flatten {
+   local cmd = vim.tbl_flatten({
       "pandoc",
       link and "-r" or "-f",
       "html",
       "-t",
       vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1],
       "--wrap=none",
-      link and link or nil,
-      fp and { '-o', fp } or nil,
-   }
+      link or fp,
+   })
 
    if not cb then
       return vim.system(cmd, { text = true, stdin = src }):wait().stdout

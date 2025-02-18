@@ -232,9 +232,7 @@ function DB:iter(sort)
    end
    return vim.iter(self.index):map(function(v)
       local id = v[1]
-      local r = Path.load(self.dir / "object" / id)
-      mem[id] = r
-      return id, r
+      return id, self[id]
    end)
 end
 
