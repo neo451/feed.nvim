@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Feeds</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      :root {
+        --background-color: #ffffff;
+        --text-color: #000000;
+        --link-color: #007bff;
+        --hover-link-color: #0056b3;
+        --active-link-color: #004085;
+        --focus-shadow: rgba(0, 123, 255, 0.5);
+      }
+
+      /* Dark mode styles */
+      [data-theme="dark"] {
+        --background-color: #121212;
+        --text-color: #ffffff;
+        --link-color: #5588ff;
+        --hover-link-color: #4477dd;
+        --active-link-color: #3366bb;
+        --focus-shadow: rgba(85, 136, 255, 0.5);
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: Arial, sans-serif;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+      }
+
+      .doc-list {
+        margin: 20px;
+      }
+      .doc-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s;
+      }
+      .doc-item:hover {
+        background: #f5f5f5;
+      }
+      .doc-title {
+        font-size: 1.2em;
+        text-decoration: none;
+      }
+      .doc-meta {
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+      .doc-content {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      .markdown-body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .markdown-body pre {
+        background: #f6f8fa;
+        padding: 16px;
+        border-radius: 6px;
+        overflow: auto;
+      }
+
+      .header-container {
+        margin: 20px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .entry-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      a {
+        color: #007bff; /* Modern blue color */
+        text-decoration: none; /* Remove underline */
+        font-weight: 500; /* Slightly bold */
+        transition:
+          color 0.3s ease,
+          text-shadow 0.3s ease; /* Smooth transition */
+      }
+
+      /* Active state (when clicked) */
+      a:active {
+        color: #004085; /* Even darker shade */
+        text-shadow: 0 0 5px rgba(0, 123, 255, 0.7); /* Stronger glow */
+      }
+
+      /* Focus state (for accessibility) */
+      a:focus {
+        outline: none; /* Remove default outline */
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Modern focus ring */
+      }
+    </style>
+  </head>
+  <body>
+    {{content}}
+    <script>
+      const toggleTheme = document.getElementById("toggleTheme");
+
+      toggleTheme.addEventListener("click", () => {
+        const body = document.body;
+        body.dataset.theme = body.dataset.theme === "dark" ? "light" : "dark";
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const body = document.body;
+        const toggleTheme = document.getElementById("toggleTheme");
+        const savedTheme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        body.dataset.theme = savedTheme;
+        toggleTheme.checked = savedTheme === "dark";
+
+        toggleTheme.addEventListener("change", () => {
+          const newTheme = toggleTheme.checked ? "dark" : "light";
+          localStorage.setItem("theme", newTheme);
+          body.dataset.theme = newTheme;
+        });
+      });
+    </script>
+  </body>
+</html>
