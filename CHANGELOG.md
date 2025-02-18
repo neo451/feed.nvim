@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0](https://github.com/neo451/feed.nvim/compare/v1.19.0...v2.0.0) (2025-02-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* save html on fetch for performance & web interface
+
+### Features
+
+* save html on fetch for performance & web interface ([6e1d6c2](https://github.com/neo451/feed.nvim/commit/6e1d6c2b06a6e62de54e8214159dc27ad2538cc9))
+* **server:** web interface to view entries! ([6e1d6c2](https://github.com/neo451/feed.nvim/commit/6e1d6c2b06a6e62de54e8214159dc27ad2538cc9))
+* **web:** dark mode ([696a3ed](https://github.com/neo451/feed.nvim/commit/696a3ed309f1eef773948a0fcb64343536659317))
+
+
+### Bug Fixes
+
+* **config:** resolve defalult_query properly ([42d7f41](https://github.com/neo451/feed.nvim/commit/42d7f41ec5f1ff18ce07ab5eedd1c3ce98830ecd))
+
 ## [1.19.0](https://github.com/neo451/feed.nvim/compare/v1.18.0...v1.19.0) (2025-02-18)
 
 
