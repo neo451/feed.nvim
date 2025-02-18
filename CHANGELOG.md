@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.19.0](https://github.com/neo451/feed.nvim/compare/v1.18.0...v1.19.0) (2025-02-18)
+
+
+### Features
+
+* support image rendering with snacks.image ([6bd7ab9](https://github.com/neo451/feed.nvim/commit/6bd7ab98dd71328facfaae36134e38fa87bf0dab))
+
+
+### Bug Fixes
+
+* avoid error on last empty index line ([cf64692](https://github.com/neo451/feed.nvim/commit/cf64692470ac05fcfee7d128e39572a57e56a523))
+
 ## [1.18.0](https://github.com/neo451/feed.nvim/compare/v1.17.0...v1.18.0) (2025-02-17)
 
 
