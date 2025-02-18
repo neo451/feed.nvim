@@ -40,7 +40,7 @@
 - 📂 OPML support to import and export all your feeds and podcasts
 - 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track *everything*
 - :octocat: Github integration to subscrbe to the new commits/release of your favorite repo/plugin
-- [ ] Work as a feed server with a web interface
+- 📶 Work as a feed server with a web interface
 - [ ] Work as a feed client with support for services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
 ## 🚀 Installation
