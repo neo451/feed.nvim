@@ -38,6 +38,7 @@ local function set_colorscheme(colorscheme)
 end
 
 local function show_index()
+   DB:update()
    if not state.index or not state.index:valid() then
       state.index = Win.new({
          wo = Config.options.index.wo,
@@ -149,10 +150,24 @@ local function entry_filter(lines)
    return res
 end
 
+---@param buf number
+local function image_attach(buf)
+   if not Snacks then
+      return
+   end
+   pcall(function()
+      local ok, f = pcall(Snacks.image.doc.inline, buf)
+      return ok and f()
+   end)
+end
+
 ---@param buf integer
 ---@param body string[]
 ---@param id string
-local function set_content(buf, body, id)
+local function render(buf, body, id)
+   if not api.nvim_buf_is_valid(buf) then
+      return
+   end
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
    local entry_ns = api.nvim_create_namespace("feed_entry")
@@ -182,13 +197,15 @@ local function set_content(buf, body, id)
       local j, hi = t[1], t[2]
       hl.range(buf, entry_ns, hi, { i - 1, j }, { i - 1, 200 })
    end
+
+   image_attach(buf)
 end
 
 ---@param ctx? { row: integer, id: string, buf: integer, link: string, read: boolean }
 function M.preview_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then
+   if not entry or not id then
       return
    end
 
@@ -198,43 +215,20 @@ function M.preview_entry(ctx)
    else
       buf = api.nvim_create_buf(false, true)
    end
-   local str = ut.read_file(DB.dir / "data" / id)
-   if str then
-      local lines = vim.split(str, "\n")
-      set_content(buf, lines, id)
-      if ctx.read then
-         mark_read(id)
-      end
-   else
-      vim.notify("no content to preview")
-   end
-end
 
----@param buf number
-local function image_attach(buf)
-   if vim.b[buf].snacks_image_attached then
-      return
-   end
-   vim.b[buf].snacks_image_attached = true
-
-   local group = vim.api.nvim_create_augroup("snacks.image.doc." .. buf, { clear = true })
-   local update = Snacks.image.doc.inline(buf)
-
-   vim.api.nvim_create_autocmd("BufWritePost", {
-      group = group,
-      buffer = buf,
-      callback = vim.schedule_wrap(function()
-         pcall(update)
-      end),
+   Markdown.convert({
+      fp = tostring(DB.dir / "data" / id),
+      cb = function(lines)
+         render(buf, lines, id)
+      end,
    })
-   pcall(update)
 end
 
 ---@param ctx? { row: integer, id: string, buf: integer, link: string }
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
-   if not entry then
+   if not entry or not id then
       return
    end
 
@@ -247,50 +241,51 @@ local function show_entry(ctx)
 
    Config.options.entry.wo.winbar = M.show_keyhints()
 
-   state.entry = Win.new({
-      prev_win = (state.index and state.index:valid()) and state.index.win or nil,
-      buf = buf,
-      wo = Config.options.entry.wo,
-      bo = Config.options.entry.bo,
-      keys = Config.keys.entry,
-      ft = "markdown",
-      autocmds = {
-         BufEnter = function()
-            og.cmdheight = vim.o.cmdheight
-            og.colorscheme = vim.g.colors_name
-            vim.o.cmdheight = 0
-            set_colorscheme(Config.colorscheme)
-         end,
-         BufLeave = function(self)
-            vim.o.cmdheight = og.cmdheight
-            set_colorscheme(og.colorscheme)
-            self:close()
-         end,
-      },
-   })
+   state.entry = state.entry
+      or Win.new({
+         prev_win = (state.index and state.index:valid()) and state.index.win or nil,
+         buf = buf,
+         wo = Config.options.entry.wo,
+         bo = Config.options.entry.bo,
+         keys = Config.keys.entry,
+         ft = "markdown",
+         autocmds = {
+            BufEnter = function()
+               og.cmdheight = vim.o.cmdheight
+               og.colorscheme = vim.g.colors_name
+               vim.o.cmdheight = 0
+               set_colorscheme(Config.colorscheme)
+            end,
+            BufLeave = function(self)
+               vim.o.cmdheight = og.cmdheight
+               set_colorscheme(og.colorscheme)
+               self:close()
+               state.entry = nil
+            end,
+         },
+      })
 
    if ctx.link then
       Markdown.convert({
          link = ctx.link,
          cb = function(lines)
-            set_content(buf, lines, id)
+            render(buf, lines, id)
          end,
       })
    elseif entry.content then
       Markdown.convert({
          src = entry.content(),
          cb = function(lines)
-            set_content(buf, lines, id)
+            render(buf, lines, id)
          end,
       })
    else
-      local str = ut.read_file(tostring(DB.dir / "data" / id))
-      if str then
-         local lines = vim.split(str, "\n")
-         set_content(buf, lines, id)
-      else
-         vim.notify("no content to preview")
-      end
+      Markdown.convert({
+         fp = tostring(DB.dir / "data" / id),
+         cb = function(lines)
+            render(buf, lines, id)
+         end,
+      })
    end
 
    local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
@@ -304,22 +299,7 @@ local function show_entry(ctx)
    api.nvim_win_set_cursor(win, { 1, 0 })
    api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 
-   if Snacks and Snacks.image then
-      pcall(image_attach, state.entry.buf)
-   end
-
    mark_read(id)
-end
-
-M.show_full = function()
-   local entry = get_entry()
-   if entry and entry.link then
-      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ link = entry.link, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
-   else
-      vim.notify("no link to fetch")
-   end
 end
 
 M.refresh = function(opts)
@@ -338,9 +318,19 @@ end
 M.quit = function()
    if ut.in_index() then
       state.index:close()
-      state.index = nil
    elseif ut.in_entry() then
       state.entry:close()
+   end
+end
+
+M.show_full = function()
+   local entry = get_entry()
+   if entry and entry.link then
+      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
+      show_entry({ link = entry.link, buf = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", {})
+   else
+      vim.notify("no link to fetch")
    end
 end
 
@@ -348,7 +338,7 @@ M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur - 1, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", {})
    end
 end
 
@@ -356,7 +346,7 @@ M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur + 1, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", {})
    end
 end
 

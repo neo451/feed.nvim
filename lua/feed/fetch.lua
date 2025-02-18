@@ -57,11 +57,7 @@ function M.update_feed_co(url, opts)
       entry.content = nil
       local id = vim.fn.sha256(entry.link)
       local fp = tostring(db.dir / "data" / id)
-      Markdown.convert({
-         src = content,
-         cb = function() end,
-         fp = fp,
-      })
+      ut.save_file(fp, content)
       db[id] = entry
    end
 

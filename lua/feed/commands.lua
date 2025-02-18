@@ -6,6 +6,15 @@ local feedlist = ut.feedlist
 
 local M = {}
 
+M.server = {
+   doc = "opens server",
+   impl = function(port)
+      require("feed.server").open(port)
+      vim.ui.open("http://0.0.0.0:8080")
+   end,
+   context = { all = true },
+}
+
 M.load_opml = {
    doc = "takes filepath of your opml",
    impl = function(path)
