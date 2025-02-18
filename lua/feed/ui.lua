@@ -84,8 +84,8 @@ local function show_index()
 end
 
 ---get entry base on current context, and update current_index
----@return feed.entry
----@return string
+---@return feed.entry?
+---@return string?
 local function get_entry(ctx)
    ctx = ctx or {}
    local id
@@ -111,7 +111,9 @@ local function get_entry(ctx)
    else
       vim.notify("no context to show entry")
    end
-   return DB[id], id
+   if id then
+      return DB[id], id
+   end
 end
 
 ---Mark entry in db with read tag, if index rendered then grey out the entry
