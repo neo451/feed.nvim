@@ -157,7 +157,7 @@ local function set_content(buf, body, id)
 
    local header = {}
    for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      header[#header + 1] = ut.capticalize(v) .. ": " .. Format[v](id)
+      header[i] = ut.capticalize(v) .. ": " .. Format[v](id)
    end
 
    header[#header + 1] = ""
@@ -208,6 +208,26 @@ function M.preview_entry(ctx)
    end
 end
 
+---@param buf number
+local function image_attach(buf)
+   if vim.b[buf].snacks_image_attached then
+      return
+   end
+   vim.b[buf].snacks_image_attached = true
+
+   local group = vim.api.nvim_create_augroup("snacks.image.doc." .. buf, { clear = true })
+   local update = Snacks.image.doc.inline(buf)
+
+   vim.api.nvim_create_autocmd("BufWritePost", {
+      group = group,
+      buffer = buf,
+      callback = vim.schedule_wrap(function()
+         pcall(update)
+      end),
+   })
+   pcall(update)
+end
+
 ---@param ctx? { row: integer, id: string, buf: integer, link: string }
 local function show_entry(ctx)
    ctx = ctx or {}
@@ -222,6 +242,30 @@ local function show_entry(ctx)
    else
       buf = api.nvim_create_buf(false, true)
    end
+
+   Config.options.entry.wo.winbar = M.show_keyhints()
+
+   state.entry = Win.new({
+      prev_win = (state.index and state.index:valid()) and state.index.win or nil,
+      buf = buf,
+      wo = Config.options.entry.wo,
+      bo = Config.options.entry.bo,
+      keys = Config.keys.entry,
+      ft = "markdown",
+      autocmds = {
+         BufEnter = function()
+            og.cmdheight = vim.o.cmdheight
+            og.colorscheme = vim.g.colors_name
+            vim.o.cmdheight = 0
+            set_colorscheme(Config.colorscheme)
+         end,
+         BufLeave = function(self)
+            vim.o.cmdheight = og.cmdheight
+            set_colorscheme(og.colorscheme)
+            self:close()
+         end,
+      },
+   })
 
    if ctx.link then
       Markdown.convert({
@@ -247,30 +291,6 @@ local function show_entry(ctx)
       end
    end
 
-   Config.options.entry.wo.winbar = M.show_keyhints()
-
-   state.entry = Win.new({
-      prev_win = (state.index and state.index:valid()) and state.index.win or nil,
-      buf = buf,
-      wo = Config.options.entry.wo,
-      bo = Config.options.entry.bo,
-      keys = Config.keys.entry,
-      ft = "markdown",
-      autocmds = {
-         BufEnter = function()
-            vim.o.cmdheight = 0
-            og.colorscheme = vim.g.colors_name
-            og.cmdheight = vim.o.cmdheight
-            set_colorscheme(Config.colorscheme)
-         end,
-         BufLeave = function(self)
-            vim.o.cmdheight = og.cmdheight
-            set_colorscheme(og.colorscheme)
-            self:close()
-         end,
-      },
-   })
-
    local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
    if ok then
       state.urls = urls
@@ -282,13 +302,19 @@ local function show_entry(ctx)
    api.nvim_win_set_cursor(win, { 1, 0 })
    api.nvim_exec_autocmds("User", { pattern = "ShowEntryPost" })
 
+   if Snacks and Snacks.image then
+      pcall(image_attach, state.entry.buf)
+   end
+
    mark_read(id)
 end
 
 M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
+      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ link = entry.link, buf = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
    else
       vim.notify("no link to fetch")
    end
@@ -318,13 +344,17 @@ end
 
 M.show_prev = function()
    if state.cur > 1 then
+      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur - 1, buf = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
    end
 end
 
 M.show_next = function()
    if state.cur < #state.entries then
+      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur + 1, buf = state.entry.buf })
+      api.nvim_exec_autocmds("BufWritePost", { buffer = state.entry.buf })
    end
 end
 
