@@ -16,7 +16,7 @@ local function convert(ctx)
       if obj.code ~= 0 then
          return vim.schedule_wrap(cb)({ "pandoc failed: " .. obj.stderr })
       end
-      return vim.schedule_wrap(cb)(vim.split(obj.stdout, "\n"))
+      return vim.schedule_wrap(cb)(ut.unescape(obj.stdout))
    end
 
    local cmd = vim.tbl_flatten({

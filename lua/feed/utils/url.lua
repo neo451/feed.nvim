@@ -1,5 +1,5 @@
 local M = {}
-local URL = require "feed.lib.url"
+local URL = require("feed.lib.url")
 local vim = vim
 local fn = vim.fn
 local ipairs, tostring = ipairs, tostring
@@ -29,37 +29,34 @@ M.url_rebase = function(el, base_uri)
 end
 
 --- Returns all URLs in markdown buffer, if any.
----@param buf integer
+---@param src string
 ---@return string[][]
-M.get_buf_urls = function(buf, cur_link)
-   vim.bo[buf].modifiable = true
+M.get_urls = function(src, cur_link)
    local ret = { { cur_link, cur_link } }
 
    local lang = "markdown_inline"
    local q = vim.treesitter.query.get(lang, "highlights")
-   local tree = vim.treesitter.get_parser(buf, lang, {}):parse()[1]:root()
+   local tree = vim.treesitter.get_string_parser(src, lang, {}):parse()[1]:root()
    if q then
-      for _, match, metadata in q:iter_matches(tree, buf) do
+      for _, match, metadata in q:iter_matches(tree, src) do
          for id, nodes in pairs(match) do
             for _, node in ipairs(nodes) do
                local url = metadata[id] and metadata[id].url
                if url and match[url] then
                   for _, n in
-                  ipairs(match[url] --[[@as TSNode[] ]])
+                     ipairs(match[url] --[[@as TSNode[] ]])
                   do
-                     local link = vim.treesitter.get_node_text(n, buf, { metadata = metadata[url] })
+                     local link = vim.treesitter.get_node_text(n, src, { metadata = metadata[url] })
                      if node:type() == "inline_link" and node:child(1):type() == "link_text" then
                         ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(1), buf, { metadata = metadata[url] })
-                        local row = node:child(1):range() + 1
+                        local text = vim.treesitter.get_node_text(node:child(1), src, { metadata = metadata[url] })
                         ret[#ret + 1] = { text, link }
-                        local sub_pattern = row .. "s/(" .. fn.escape(link, "/~") .. ")//ge"
-                        vim.cmd(sub_pattern)
                      elseif node:type() == "image" and node:child(2):type() == "image_description" then
                         ---@diagnostic disable-next-line: param-type-mismatch
-                        local text = vim.treesitter.get_node_text(node:child(2), buf, { metadata = metadata[url] })
+                        local text = vim.treesitter.get_node_text(node:child(2), src, { metadata = metadata[url] })
                         ret[#ret + 1] = { text, link }
                      else
+                        link = link:sub(2, -2)
                         ret[#ret + 1] = { link, link }
                      end
                   end
@@ -68,8 +65,25 @@ M.get_buf_urls = function(buf, cur_link)
          end
       end
    end
-   vim.bo[buf].modifiable = false
    return ret
+end
+
+local function escape_pattern(text)
+   return "%(" .. text:gsub("([%%%.%[%]%(%)%$%^%+%-%*%?])", "%%%1") .. "%)" -- Escape all magic characters in the pattern
+end
+
+---@param body string
+---@param id string
+---@return string
+M.remove_links = function(body, id)
+   local text_n_links = M.get_urls(body, require("feed.db")[id].link)
+   for _, v in ipairs(text_n_links) do
+      if not v[1]:find("^Image") then
+         local link = escape_pattern(v[2])
+         body = string.gsub(body, link, "()")
+      end
+   end
+   return body
 end
 
 ---@param url string
