@@ -8,6 +8,7 @@ local M = {}
 ---@field must_have? string[] #+
 ---@field must_not_have? string[] #-
 ---@field feed? vim.regex #=
+---@field not_feed? vim.regex #~
 ---@field limit? number ##
 ---@field re? vim.regex[]
 
@@ -42,6 +43,8 @@ function M.parse_query(str)
          table.insert(query.must_not_have, q:sub(2))
       elseif kind == "=" then
          query.feed = build_regex(q:sub(2))
+      elseif kind == "~" then
+         query.not_feed = build_regex(q:sub(2))
       else
          if not query.re then
             query.re = {}
