@@ -1,91 +1,115 @@
-local ut = require "feed.utils"
+local ut = require("feed.utils")
 local backend = ut.choose_backend(require("feed.config").progress.backend)
 
-local _, notify = pcall(require, "notify")
 local _, MiniNotify = pcall(require, "mini.notify")
-local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
-
--- FIX: nvim-notify subsitude
---
 
 local function format_message(idx, total, message)
    return ("[%d/%d] %s"):format(idx, total, message)
 end
 
-local mt = {}
-mt.__index = mt
+local M = {}
+M.__index = M
 
-function mt.new(total)
+local backends = {
+   winbar = {},
+}
+
+function M.new(total)
    local ret = {}
    local starting_message = "Start fetching.."
-   if backend == "fidget" then
-      local _, progress = pcall(require, "fidget.progress")
-      ret.handle = progress.handle.create {
-         title = "Feed update",
-         message = starting_message,
-         percentage = 0,
-      }
-   elseif backend == "notify" then
-      ret.id = notify(starting_message, nil, {
-         hide_from_history = true,
-         icon = spinner_frames[1],
-         title = "Feed update",
-      }).id
-   elseif backend == "mini" then
-      ret.id = MiniNotify.add(starting_message, "INFO", "Title")
-   elseif backend == "snacks" then
-      Snacks.notifier.notify(starting_message, "info", { id = "feed" })
-   end
+   backends[backend].new(ret, starting_message)
    ret.total = total
    ret.count = 0
    ret.t = os.time()
-   return setmetatable(ret, mt)
+   return setmetatable(ret, M)
 end
 
 local function finish(self)
    local msg = ("Fetched update in %ds"):format(os.time() - self.t)
-   if backend == "fidget" then
-      self.handle.message = msg
-      self.handle:finish()
-   elseif backend == "notify" then
-      self.id = notify(msg, nil, {
-         hide_from_history = true,
-         icon = "",
-         replace = self.id,
-      }).id
-   elseif backend == "mini" then
-      MiniNotify.remove(self.id)
-      local opts = { INFO = { duration = 1000 } }
-      MiniNotify.make_notify(opts)(msg)
-   elseif backend == "snacks" then
-      Snacks.notifier.notify(msg, "info", { id = "feed" })
-   elseif backend == "native" then
-      print(msg)
-   end
+   backends[backend].finish(self, msg)
 end
 
-function mt:update(message)
+function M:update(message)
    self.count = self.count + 1
    local msg = format_message(self.count, self.total, message)
-   if backend == "fidget" then
-      self.handle.percentage = self.handle.percentage + 100 / self.total
-      self.handle.message = msg
-   elseif backend == "notify" then
-      self.handle = notify(msg, nil, {
-         hide_from_history = true,
-         -- icon = spinner_frames[(self.count + 1) % #spinner_frames],
-         replace = self.handle
-      })
-   elseif backend == "mini" then
-      MiniNotify.update(self.id, { msg = msg })
-   elseif backend == "snacks" then
-      Snacks.notifier.notify(msg, "info", { id = "feed" })
-   else
-      print(msg)
-   end
+   backends[backend].update(self, msg)
    if self.count == self.total then
       finish(self)
    end
 end
 
-return mt
+function M.extend(name, class)
+   backends[name] = class
+end
+
+local fidget = {}
+
+function fidget:new(msg)
+   local _, progress = pcall(require, "fidget.progress")
+   self.handle = progress.handle.create({
+      title = "Feed update",
+      message = msg,
+      percentage = 0,
+   })
+end
+
+function fidget:update(msg)
+   self.handle.percentage = self.handle.percentage + 100 / self.total
+   self.handle.message = msg
+end
+
+function fidget:finish(msg)
+   self.handle.message = msg
+   self.handle:finish()
+end
+
+local mini = {}
+
+function mini:new(msg)
+   self.id = MiniNotify.add(msg, "INFO", "Title")
+end
+
+function mini:update(msg)
+   pcall(MiniNotify.update, self.id, { msg = msg })
+end
+
+function mini:finish(msg)
+   MiniNotify.remove(self.id)
+   local opts = { INFO = { duration = 1000 } }
+   MiniNotify.make_notify(opts)(msg)
+end
+
+local snacks = {}
+
+function snacks:new(msg)
+   Snacks.notifier.notify(msg, "info", { id = "feed" })
+end
+
+function snacks:update(msg)
+   Snacks.notifier.notify(msg, "info", { id = "feed" })
+end
+
+function snacks:finish(msg)
+   Snacks.notifier.notify(msg, "info", { id = "feed" })
+end
+
+local native = {}
+
+function native:new(msg)
+   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
+end
+
+function native:update(_, msg)
+   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
+end
+
+function native:finsih(_, msg)
+   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
+end
+
+M.extend("fidget", fidget)
+M.extend("mini", mini)
+M.extend("snacks", snacks)
+M.extend("native", native)
+
+return M

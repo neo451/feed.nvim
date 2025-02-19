@@ -6,7 +6,7 @@
 ---@field curl_params? string[]
 ---@field rsshub? { instance: string, export: string } move all options here as a enum??
 ---@field layout? table
----@field progress? { backend: "mini.notify" | "snacks" | "nvim-notify" | "fidget" | "native" }
+---@field progress? { backend: "mini.notify" | "snacks" | "fidget" | "native" }
 ---@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", default_query: string }
 ---@field data? { backend: "local" | "ttrss" }
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
