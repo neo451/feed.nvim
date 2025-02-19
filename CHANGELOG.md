@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/neo451/feed.nvim/compare/v2.0.0...v2.0.1) (2025-02-19)
+
+
+### Bug Fixes
+
+* **curl:** incorrect pass of cb resulting in progress stall ([45a1798](https://github.com/neo451/feed.nvim/commit/45a17980ee502d23effe58c5d08265f2a3de9802))
+* **progress:** remove nvim-notify for now ([45a1798](https://github.com/neo451/feed.nvim/commit/45a17980ee502d23effe58c5d08265f2a3de9802))
+
 ## [2.0.0](https://github.com/neo451/feed.nvim/compare/v1.19.0...v2.0.0) (2025-02-18)
 
 
