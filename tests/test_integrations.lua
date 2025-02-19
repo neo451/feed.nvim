@@ -14,7 +14,7 @@ T["rsshub"]["works"] = function()
 
    local url = "rsshub://163/exclusive/fd"
 
-   eq("127.0.0.1/163/exclusive/fd", rsshub(url))
+   eq("127.0.0.1/163/exclusive/fd?format=json?mode=fulltext", rsshub(url))
 end
 
 T["github"]["works"] = function()
