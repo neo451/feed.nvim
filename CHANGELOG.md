@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/neo451/feed.nvim/compare/v2.0.1...v2.0.2) (2025-02-19)
+
+
+### Bug Fixes
+
+* more functional get_urls + remove_urls ([e1169b5](https://github.com/neo451/feed.nvim/commit/e1169b5b6a02701e1422234b4fd93cce62054a5b))
+
 ## [2.0.1](https://github.com/neo451/feed.nvim/compare/v2.0.0...v2.0.1) (2025-02-19)
 
 
