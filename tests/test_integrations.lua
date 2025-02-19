@@ -1,11 +1,21 @@
-local github = require "feed.integrations.github"
+local github = require("feed.integrations.github")
+local rsshub = require("feed.integrations.rsshub")
 local eq = MiniTest.expect.equality
 
 local T = MiniTest.new_set()
 
-T["github"] = MiniTest.new_set {}
+T["github"] = MiniTest.new_set({})
 
-T["rsshub"] = MiniTest.new_set {}
+T["rsshub"] = MiniTest.new_set({})
+
+T["rsshub"]["works"] = function()
+   local config = require("feed.config")
+   config.rsshub.instance = "127.0.0.1"
+
+   local url = "rsshub://163/exclusive/fd"
+
+   eq("127.0.0.1/163/exclusive/fd", rsshub(url))
+end
 
 T["github"]["works"] = function()
    local url1 = "https://github.com/neo451/feed.nvim"
