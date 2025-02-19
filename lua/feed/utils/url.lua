@@ -52,18 +52,19 @@ M.get_urls = function(src, cur_link)
                      ipairs(ut.listify(match[url] --[[@as TSNode[] ]]))
                   do
                      local link = vim.treesitter.get_node_text(n, src, { metadata = metadata[url] })
+                     if link:match("^<%S+>$") then
+                        link = link:sub(2, -2)
+                     end
+                     local res = { link, link }
                      if node:type() == "inline_link" and node:child(1):type() == "link_text" then
-                        ---@diagnostic disable-next-line: param-type-mismatch
                         local text = vim.treesitter.get_node_text(node:child(1), src, { metadata = metadata[url] })
-                        ret[#ret + 1] = { text, link }
+                        res[1] = text
                      elseif node:type() == "image" and node:child(2):type() == "image_description" then
                         ---@diagnostic disable-next-line: param-type-mismatch
                         local text = vim.treesitter.get_node_text(node:child(2), src, { metadata = metadata[url] })
-                        ret[#ret + 1] = { text, link }
-                     else
-                        link = link:sub(2, -2)
-                        ret[#ret + 1] = { link, link }
+                        res[1] = text
                      end
+                     ret[#ret + 1] = res
                   end
                end
             end
