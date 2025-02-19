@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/neo451/feed.nvim/compare/v2.0.2...v2.1.0) (2025-02-19)
+
+
+### Features
+
+* query syntax support for `!`, meaning inverse regex match ([8d48ccc](https://github.com/neo451/feed.nvim/commit/8d48ccc0f588f24c149b7614ca93bcbde4dbb719))
+* query syntax support for `~`, meaning not matching a feed ([c949c05](https://github.com/neo451/feed.nvim/commit/c949c05e7d28e6003ed60c51615e9e5744f1bd5b))
+* regex also matches a feed's link like in elfeed ([293b022](https://github.com/neo451/feed.nvim/commit/293b0226f6784c5ff550ec5a05bdb420495d3eea))
+
 ## [2.0.2](https://github.com/neo451/feed.nvim/compare/v2.0.1...v2.0.2) (2025-02-19)
 
 
