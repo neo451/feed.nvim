@@ -2,6 +2,7 @@ local Path = require("feed.db.path")
 local Config = require("feed.config")
 local query = require("feed.db.query")
 local ut = require("feed.utils")
+local uv = vim.uv
 
 ---@class feed.db
 ---@field dir string
@@ -9,8 +10,8 @@ local ut = require("feed.utils")
 ---@field index table
 ---@field tags table<string, table<string, boolean>>
 ---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
----@field rm fun(db: feed.db, id: integer)
----@field iter Iter
+---@field rm fun(db: feed.db, id: string)
+---@field iter fun(db: feed.db, sort: boolean): Iter
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field save_entry fun(db: feed.db, id: string): boolean
 ---@field save_feeds fun(db: feed.db): boolean
@@ -19,41 +20,27 @@ local ut = require("feed.utils")
 ---@field blowup fun(db: feed.db)
 ---@field update fun(db: feed.db)
 ---@field lastUpdated fun(db: feed.db)
-
-local DB = {}
-DB.__index = DB
-
-local uv = vim.uv
+local M = {}
 
 ---@param fp string
 ---@param t any
-local ensure_path = function(fp, t)
-   local fpstr = tostring(fp)
-   if not uv.fs_stat(fpstr) then
+local ensure_exists = function(fp, t)
+   if not uv.fs_stat(tostring(fp)) then
       if t == "dir" then
          Path.mkdir(fp)
       elseif t == "file" then
-         Path.touch(fp)
+         Path.save(fp, "")
       elseif t == "obj" then
-         Path.touch(fp)
          Path.save(fp, {})
       end
    end
 end
 
 local function if_path(k, dir)
-   return vim.fs.find({ k }, { path = tostring(dir / "object"), type = "file" })[1] -- TODO: remove
+   return vim.fs.find({ k }, { path = tostring(dir / "object"), type = "file" })[1]
 end
 
-function DB:append_time_id(time, id)
-   local fp = tostring(self.dir / "index")
-   local f = io.open(fp, "a")
-   assert(f)
-   f:write(time .. " " .. id .. "\n")
-   f:close()
-end
-
-local function parse_index(fp)
+local function load_index(fp)
    local res = {}
    fp = tostring(fp)
    if not uv.fs_stat(fp) then
@@ -68,34 +55,27 @@ local function parse_index(fp)
    return res
 end
 
-function DB:save_index()
-   local buf = {}
-   for i, v in ipairs(self.index) do
-      buf[i] = tostring(v[2]) .. " " .. v[1]
-   end
-   Path.save(self.dir / "index", table.concat(buf, "\n"))
-end
-
 local mem = {}
 
 ---@return feed.db
-function DB.new(db_dir)
-   db_dir = Path.new(db_dir or Config.db_dir)
-   local data_dir = db_dir / "data"
-   local object_dir = db_dir / "object"
-   local feeds_fp = db_dir / "feeds.lua"
-   local tags_fp = db_dir / "tags.lua"
-   local index_fp = db_dir / "index"
+function M.new(dir)
+   dir = Path.new(dir or Config.db_dir)
+   local data_dir = dir / "data"
+   local object_dir = dir / "object"
+   local feeds_fp = dir / "feeds.lua"
+   local tags_fp = dir / "tags.lua"
+   local index_fp = dir / "index"
 
-   ensure_path(db_dir, "dir")
-   ensure_path(data_dir, "dir")
-   ensure_path(object_dir, "dir")
-   ensure_path(feeds_fp, "obj")
-   ensure_path(tags_fp, "obj")
-   ensure_path(index_fp, "file")
+   ensure_exists(dir, "dir")
+   ensure_exists(data_dir, "dir")
+   ensure_exists(object_dir, "dir")
+   ensure_exists(feeds_fp, "obj")
+   ensure_exists(tags_fp, "obj")
+   ensure_exists(index_fp, "file")
 
    return setmetatable({
-      dir = db_dir,
+      dir = dir,
+      index = load_index(dir / "index"),
       feeds = feeds_fp:load(),
       tags = setmetatable(tags_fp:load(), {
          __index = function(t, tag)
@@ -103,32 +83,28 @@ function DB.new(db_dir)
             return rawget(t, tag)
          end,
       }),
-   }, DB)
+   }, M)
 end
 
 ---@param k any
----@return function | feed.entry | string
-function DB:__index(k)
-   if rawget(DB, k) then
-      return DB[k]
-   elseif k == "index" then
-      local index = parse_index(self.dir / "index")
-      rawset(self, "index", index)
-      return rawget(self, "index")
-   else
-      local r = mem[k]
-      if not r then
-         r = Path.load(self.dir / "object" / k)
-         mem[k] = r
-      end
-      return r
+---@return function | feed.entry
+function M:__index(k)
+   local ms = rawget(M, k)
+   if ms then
+      return ms
    end
+   local r = mem[k]
+   if not r then
+      r = Path.load(self.dir / "object" / k)
+      mem[k] = r
+   end
+   return r
 end
 
-function DB:update()
+function M:update()
    local feeds = Path.load(self.dir / "feeds.lua")
    rawset(self, "feeds", feeds)
-   local index = parse_index(self.dir / "index")
+   local index = load_index(self.dir / "index")
    rawset(self, "index", index)
    local tags = Path.load(self.dir / "tags.lua")
    setmetatable(tags, {
@@ -140,31 +116,33 @@ function DB:update()
    rawset(self, "tags", tags)
 end
 
-function DB:lastUpdated()
+function M:lastUpdated()
    return os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
 end
 
 ---@param id string
 ---@param entry feed.entry
-function DB:__newindex(id, entry)
+function M:__newindex(id, entry)
    if not id or if_path(id, self.dir) then
       return
    end
-   table.insert(self.index, { id, entry.time })
-   self:append_time_id(entry.time, id)
+   mem[id] = entry
+   local time = entry.time
+   table.insert(self.index, { id, time })
+   Path.append(self.dir / "index", time .. " " .. id .. "\n")
    Path.save(self.dir / "object" / id, entry)
 end
 
 ---@param id string | string[]
 ---@param tag string
-function DB:tag(id, tag)
+function M:tag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = true
       self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
-         for t in ut.split_comma(tag) do
+         for t in ut.split(tag, ",") do
             tag_one(t)
          end
       else
@@ -179,14 +157,14 @@ end
 
 ---@param id string | string[]
 ---@param tag string
-function DB:untag(id, tag)
+function M:untag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = nil
       self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
-         for t in split_comma(tag) do
+         for t in ut.split(tag, ",") do
             tag_one(t)
          end
       else
@@ -199,13 +177,14 @@ function DB:untag(id, tag)
    end
 end
 
-function DB:sort()
+function M:sort()
    table.sort(self.index, function(a, b)
       return a[2] > b[2]
    end)
 end
 
-function DB:rm(id)
+---@param id string
+function M:rm(id)
    for i, v in ipairs(self.index) do
       if v[1] == id then
          table.remove(self.index, i)
@@ -226,7 +205,7 @@ end
 
 ---@param sort any
 ---@return Iter
-function DB:iter(sort)
+function M:iter(sort)
    if sort then
       self:sort()
    end
@@ -239,7 +218,7 @@ end
 ---return a list of db ids base on query
 ---@param str string
 ---@return string[]
-function DB:filter(str)
+function M:filter(str)
    if str == "" then
       return {}
    end
@@ -299,13 +278,12 @@ function DB:filter(str)
 
    if q.re then
       iter = iter:filter(function(id)
-         mem[id] = Path.load(self.dir / "object" / id)
          local entry = self[id]
          if not entry or not entry.title then
             return false
          end
          for _, reg in ipairs(q.re) do
-            if not reg:match_str(entry.title) then
+            if not reg:match_str(entry.title) or not reg:match(entry.link) then
                return false
             end
          end
@@ -315,13 +293,23 @@ function DB:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         mem[id] = Path.load(self.dir / "object" / id)
          local url = self[id].feed
          local feed_name = self.feeds[url] and self.feeds[url].title
          if q.feed:match_str(url) or (feed_name and q.feed:match_str(feed_name)) then
             return true
          end
          return false
+      end)
+   end
+
+   if q.not_feed then
+      iter = iter:filter(function(id)
+         local url = self[id].feed
+         local feed_name = self.feeds[url] and self.feeds[url].title
+         if q.not_feed:match_str(url) or (feed_name and q.not_feed:match_str(feed_name)) then
+            return false
+         end
+         return true
       end)
    end
 
@@ -342,18 +330,26 @@ function DB:filter(str)
    return ret
 end
 
-function DB:save_feeds()
+function M:save_feeds()
    return Path.save(self.dir / "feeds.lua", self.feeds)
 end
 
-function DB:save_tags()
+function M:save_tags()
    local tags = vim.deepcopy(self.tags)
    setmetatable(tags, nil)
    return Path.save(self.dir / "tags.lua", tags)
 end
 
-function DB:blowup()
+function M:save_index()
+   local buf = {}
+   for i, v in ipairs(self.index) do
+      buf[i] = tostring(v[2]) .. " " .. v[1]
+   end
+   Path.save(self.dir / "index", table.concat(buf, "\n"))
+end
+
+function M:blowup()
    Path.rm(self.dir)
 end
 
-return DB.new()
+return M.new()

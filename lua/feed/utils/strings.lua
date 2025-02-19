@@ -1,12 +1,5 @@
 local M = {}
 
--- TODO: edge case
--- [观点&amp;评…]
--- [Articles, 新…]
--- [Social Media…]
--- [Articles, 新…]
--- [Articles, 新…]
-
 --- from plenary.nvim
 local truncate = function(str, len, dots, direction)
    if vim.fn.strdisplaywidth(str) <= len then
@@ -87,8 +80,11 @@ M.capticalize = function(str)
    return str:sub(1, 1):upper() .. str:sub(2)
 end
 
-M.split_comma = function(str)
-   return vim.iter(vim.split(str, ","))
+---@param str string
+---@param sep string
+---@return Iter
+M.split = function(str, sep)
+   return vim.iter(vim.split(str, sep))
       :map(function(v)
          return vim.trim(v)
       end)

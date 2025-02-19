@@ -2,12 +2,17 @@ local M = {}
 
 local vim = vim
 local api, fn = vim.api, vim.fn
-local ipairs, tostring = ipairs, tostring
+local ipairs, pcall, dofile, type = ipairs, pcall, dofile, type
+local io = io
+
+M.listify = function(t)
+   if type(t) ~= "table" then
+      return { t }
+   end
+   return (#t == 0 and not vim.islist(t)) and { t } or t
+end
 
 M.load_file = function(fp)
-   if type(fp) == "table" then
-      fp = tostring(fp)
-   end
    local ok, res = pcall(dofile, fp)
    if ok and res then
       return res
@@ -17,55 +22,25 @@ M.load_file = function(fp)
    end
 end
 
-M.listify = function(t)
-   if type(t) ~= "table" then
-      return { t }
-   end
-   return (#t == 0 and not vim.islist(t)) and { t } or t
-end
-
----@param fp string | PathlibPath
----@param object table
-M.save_obj = function(fp, object)
-   M.save_file(fp, "return " .. vim.inspect(object))
-end
-
----@param path string | PathlibPath
----@param content string
-M.save_file = function(path, content)
-   if not path then
-      return
-   end
-   content = content or ""
-   if type(path) == "table" then
-      ---@diagnostic disable-next-line: param-type-mismatch
-      path = tostring(path)
-   end
-   ---@cast path string
-   local f = io.open(path, "w")
-   if f then
-      f:write(content)
-      f:close()
-      return true
-   else
-      return false
-   end
+---@param fp string
+---@param str string
+---@param mode "w" | "a"
+M.save_file = function(fp, str, mode)
+   mode = mode or "w"
+   local f = io.open(fp, mode)
+   assert(f, fp)
+   f:write(str)
+   f:close()
 end
 
 ---@param path string
 ---@return string?
 M.read_file = function(path)
    local ret
-
-   if type(path) == "table" then
-      ---@diagnostic disable-next-line: param-type-mismatch
-      path = tostring(path)
-   end
    local f = io.open(path, "r")
-   if f then
-      ret = f:read("*a")
-      f:close()
-   end
+   assert(f, "could not open " .. path)
+   ret = f:read("*a")
+   f:close()
    return ret
 end
 
@@ -149,7 +124,7 @@ end
 ---@param wo vim.wo
 function M.wo(win, wo)
    for k, v in pairs(wo or {}) do
-      vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
+      api.nvim_set_option_value(k, v, { scope = "local", win = win })
    end
 end
 
@@ -158,7 +133,7 @@ end
 ---@param bo vim.bo
 function M.bo(buf, bo)
    for k, v in pairs(bo or {}) do
-      vim.api.nvim_set_option_value(k, v, { buf = buf })
+      api.nvim_set_option_value(k, v, { buf = buf })
    end
 end
 
@@ -172,7 +147,7 @@ end
 
 ---@return boolean
 M.is_headless = function()
-   return vim.tbl_isempty(vim.api.nvim_list_uis())
+   return vim.tbl_isempty(api.nvim_list_uis())
 end
 
 return M

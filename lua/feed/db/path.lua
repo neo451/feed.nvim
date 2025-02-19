@@ -4,6 +4,10 @@
 
 local Path = {}
 local uv = vim.uv
+local ut = require("feed.utils")
+local save_file = ut.save_file
+local read_file = ut.read_file
+local load_file = ut.load_file
 
 local sep = package.config:sub(1, 1)
 
@@ -27,22 +31,6 @@ Path.new = function(path)
    })
 end
 
-local function savefile(fp, str)
-   local f = io.open(fp, "w")
-   assert(f, fp)
-   f:write(str)
-   f:close()
-end
-
-local function readfile(fp)
-   local ret
-   local f = io.open(fp, "r")
-   assert(f)
-   ret = f:read("*a")
-   f:close()
-   return ret
-end
-
 ---@param dir
 local function rmdir(dir)
    dir = type(dir) == "table" and tostring(dir) or dir
@@ -54,19 +42,6 @@ local function rmdir(dir)
       end
    end
    return uv.fs_rmdir(dir)
-end
-
----@return table
-local function pload(str)
-   local ok, res = pcall(dofile, tostring(str))
-   if not ok then
-      return {}
-   end
-   return res
-end
-
-Path.touch = function(self)
-   self:save("")
 end
 
 Path.rm = function(self)
@@ -86,20 +61,26 @@ end
 Path.save = function(self, content)
    local fp = tostring(self)
    if type(content) == "string" then
-      savefile(fp, content)
+      save_file(fp, content, "w")
    else
-      savefile(fp, "return " .. vim.inspect(content))
+      save_file(fp, "return " .. vim.inspect(content), "w")
    end
+end
+
+---@param line string
+Path.append = function(self, line)
+   local fp = tostring(self)
+   save_file(fp, line, "a")
 end
 
 ---@return table
 Path.load = function(self)
-   return pload(tostring(self))
+   return load_file(tostring(self))
 end
 
 ---@return table
 Path.read = function(self)
-   return readfile(tostring(self))
+   return read_file(tostring(self))
 end
 
 Path.mkdir = function(self)

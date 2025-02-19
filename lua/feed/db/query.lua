@@ -8,16 +8,28 @@ local M = {}
 ---@field must_have? string[] #+
 ---@field must_not_have? string[] #-
 ---@field feed? vim.regex #=
+---@field not_feed? vim.regex #~
 ---@field limit? number ##
 ---@field re? vim.regex[]
 
+---wrapper arround vim.regex, ! is inverse, respects vim.o.ignorecase
+---@param str string
 local function build_regex(str)
-   -- local rev = str:sub(0, 1) == "!"
-   -- if rev then
-   --    str = str:sub(2)
-   -- end
-   return vim.regex(str .. "\\c")
+   local pattern
+   if str:sub(0, 1) == "!" then
+      pattern = [[^\(.*]] .. vim.fn.escape(str:sub(2), "\\") .. [[.*\)\@!.*]]
+   else
+      pattern = str
+   end
+   if vim.o.ignorecase then
+      pattern = pattern .. "\\c"
+   else
+      pattern = pattern .. "\\C"
+   end
+   return vim.regex(pattern)
 end
+
+M._build_regex = build_regex
 
 ---@param str string
 ---@return feed.query
@@ -42,6 +54,8 @@ function M.parse_query(str)
          table.insert(query.must_not_have, q:sub(2))
       elseif kind == "=" then
          query.feed = build_regex(q:sub(2))
+      elseif kind == "~" then
+         query.not_feed = build_regex(q:sub(2))
       else
          if not query.re then
             query.re = {}
