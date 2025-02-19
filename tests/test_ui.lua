@@ -29,8 +29,8 @@ T.remove_links = function()
 3. img: ![Image 1](https://neovim.io/image1)]]
    local expected = [[1. autolink: <https://neovim.io/news>
 2. link: [neovim]()
-3. img: ![Image 1]()]]
-   eq(remove_links(str, get_urls(str, "https://neovim.io")), expected)
+3. img: ![Image 1](https://neovim.io/image1)]]
+   eq(remove_links(str, ""), expected)
 end
 
 -- T["ui"] = MiniTest.new_set {

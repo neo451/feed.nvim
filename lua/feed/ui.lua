@@ -128,28 +128,6 @@ local function mark_read(id)
    end
 end
 
----temparay solution for getting rid of junks and get clean markdown
----@param lines string[]
----@return string[]
-local function entry_filter(lines)
-   local idx
-   local res = {}
-   for i, v in ipairs(lines) do
-      if v:find("^# ") or v:find("^## ") then
-         idx = i
-         break
-      end
-   end
-   if idx then
-      for i = idx, #lines do
-         res[#res + 1] = lines[i]
-      end
-   else
-      return lines
-   end
-   return res
-end
-
 ---@param buf number
 local function image_attach(buf)
    if not Snacks then
@@ -162,7 +140,9 @@ local function image_attach(buf)
 end
 
 local body_callbacks = {
-   require("feed.utils").remove_links,
+   require("feed.utils").remove_urls,
+   -- TODO: get rid of html headers and stuff
+   -- TODO: allow user
 }
 
 ---@param buf integer

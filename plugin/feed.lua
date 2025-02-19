@@ -1,5 +1,5 @@
 if 1 ~= vim.fn.has("nvim-0.10.0") then
-   vim.api.nvim_err_writeln("feed.nvim requires at least nvim-0.10.0")
+   vim.api.nvim_echo({ "feed.nvim requires at least nvim-0.10.0" }, true, { err = true })
    return
 end
 

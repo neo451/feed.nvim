@@ -1,7 +1,6 @@
 local M = {}
 local URL = require("feed.lib.url")
 local vim = vim
-local fn = vim.fn
 local ipairs, tostring = ipairs, tostring
 
 ---@param base_url string
@@ -32,7 +31,11 @@ end
 ---@param src string
 ---@return string[][]
 M.get_urls = function(src, cur_link)
-   local ret = { { cur_link, cur_link } }
+   local ret = {}
+
+   if cur_link then
+      ret[1] = { cur_link, cur_link }
+   end
 
    local lang = "markdown_inline"
    local q = vim.treesitter.query.get(lang, "highlights")
@@ -40,6 +43,7 @@ M.get_urls = function(src, cur_link)
    if q then
       for _, match, metadata in q:iter_matches(tree, src) do
          for id, nodes in pairs(match) do
+            nodes = type(nodes) == "userdata" and { nodes } or nodes
             for _, node in ipairs(nodes) do
                local url = metadata[id] and metadata[id].url
                if url and match[url] then
@@ -75,7 +79,7 @@ end
 ---@param body string
 ---@param id string
 ---@return string
-M.remove_links = function(body, id)
+M.remove_urls = function(body, id)
    local text_n_links = M.get_urls(body, require("feed.db")[id].link)
    for _, v in ipairs(text_n_links) do
       if not v[1]:find("^Image") then
