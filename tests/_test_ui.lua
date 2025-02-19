@@ -1,8 +1,7 @@
-local config = require "feed.config"
+local config = require("feed.config")
 config.db_dir = "~/.feed.nvim.test/"
-local db = require "feed.db"
-local M = require "feed.ui"
-local urlview = require "feed.ui.urlview"
+local get_urls = require("feed.utils").get_urls
+local remove_urls = require("feed.utils").remove_urls
 local eq = MiniTest.expect.equality
 
 local T = MiniTest.new_set()
@@ -10,21 +9,26 @@ local T = MiniTest.new_set()
 T.urlview = function()
    local str = [[1. autolink: <https://neovim.io/news>
 2. link: [neovim](https://neovim.io)
-3. img: ![image](https://neovim.io/image1)]]
-   local expected = {
-      "1. autolink: <https://neovim.io/news>",
-      "2. link: [neovim]",
-      "3. img: ![image]",
-   }
+3. img: ![Image 1](https://neovim.io/image1)]]
+
    local expected_links = {
+      { "https://neovim.io", "https://neovim.io" },
       { "https://neovim.io/news", "https://neovim.io/news" },
       { "neovim", "https://neovim.io" },
       { "Image 1", "https://neovim.io/image1" },
-      { "entry url", "https://neovim.io" },
    }
-   local res, res_links = urlview(vim.split(str, "\n"), "https://neovim.io")
-   eq(expected, res)
+   local res_links = get_urls(str, "https://neovim.io")
    eq(expected_links, res_links)
+end
+
+T.remove_links = function()
+   local str = [[1. autolink: <https://neovim.io/news>
+2. link: [neovim](https://neovim.io)
+3. img: ![Image 1](https://neovim.io/image1)]]
+   local expected = [[1. autolink: <https://neovim.io/news>
+2. link: [neovim]()
+3. img: ![Image 1](https://neovim.io/image1)]]
+   eq(remove_urls(str, ""), expected)
 end
 
 -- T["ui"] = MiniTest.new_set {

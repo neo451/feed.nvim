@@ -15,7 +15,7 @@ local hl = vim.hl or vim.highlight
 local api = vim.api
 local feeds = DB.feeds
 local layout = Config.layout
-local get_buf_urls = ut.get_buf_urls
+local get_urls = ut.get_urls
 local resolve_and_open = ut.resolve_and_open
 
 local og = {}
@@ -128,28 +128,6 @@ local function mark_read(id)
    end
 end
 
----temparay solution for getting rid of junks and get clean markdown
----@param lines string[]
----@return string[]
-local function entry_filter(lines)
-   local idx
-   local res = {}
-   for i, v in ipairs(lines) do
-      if v:find("^# ") or v:find("^## ") then
-         idx = i
-         break
-      end
-   end
-   if idx then
-      for i = idx, #lines do
-         res[#res + 1] = lines[i]
-      end
-   else
-      return lines
-   end
-   return res
-end
-
 ---@param buf number
 local function image_attach(buf)
    if not Snacks then
@@ -161,8 +139,14 @@ local function image_attach(buf)
    end)
 end
 
+local body_callbacks = {
+   require("feed.utils").remove_urls,
+   -- TODO: get rid of html headers and stuff
+   -- TODO: allow user
+}
+
 ---@param buf integer
----@param body string[]
+---@param body string
 ---@param id string
 local function render(buf, body, id)
    if not api.nvim_buf_is_valid(buf) then
@@ -177,13 +161,21 @@ local function render(buf, body, id)
       header[i] = ut.capticalize(v) .. ": " .. Format[v](id)
    end
 
+   local ok, urls = pcall(get_urls, body, DB[id].link)
+   if ok then
+      state.urls = urls
+   end
+
+   for _, f in ipairs(body_callbacks) do
+      body = f(body, id)
+   end
+
    header[#header + 1] = ""
 
-   body = entry_filter(body)
-   local lines = vim.list_extend(header, body)
+   -- body = entry_filter(body)
+   local lines = vim.list_extend(header, vim.split(body, "\n"))
 
    for i, v in ipairs(lines) do
-      v = vim.trim(ut.unescape(v:gsub("\n", "")))
       api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
    end
 
@@ -197,6 +189,7 @@ local function render(buf, body, id)
       local j, hi = t[1], t[2]
       hl.range(buf, entry_ns, hi, { i - 1, j }, { i - 1, 200 })
    end
+   vim.bo[buf].modifiable = false
 
    image_attach(buf)
 end
@@ -218,8 +211,8 @@ function M.preview_entry(ctx)
 
    Markdown.convert({
       fp = tostring(DB.dir / "data" / id),
-      cb = function(lines)
-         render(buf, lines, id)
+      cb = function(body)
+         render(buf, body, id)
       end,
    })
 end
@@ -268,29 +261,24 @@ local function show_entry(ctx)
    if ctx.link then
       Markdown.convert({
          link = ctx.link,
-         cb = function(lines)
-            render(buf, lines, id)
+         cb = function(body)
+            render(buf, body, id)
          end,
       })
    elseif entry.content then
       Markdown.convert({
          src = entry.content(),
-         cb = function(lines)
-            render(buf, lines, id)
+         cb = function(body)
+            render(buf, body, id)
          end,
       })
    else
       Markdown.convert({
          fp = tostring(DB.dir / "data" / id),
-         cb = function(lines)
-            render(buf, lines, id)
+         cb = function(body)
+            render(buf, body, id)
          end,
       })
-   end
-
-   local ok, urls = pcall(get_buf_urls, buf, DB[id].link)
-   if ok then
-      state.urls = urls
    end
 
    local win = state.entry.win

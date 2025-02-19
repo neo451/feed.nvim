@@ -1,9 +1,9 @@
-local MiniPick = require "mini.pick"
-local ui = require "feed.ui"
-local db = require "feed.db"
-local format = require "feed.ui.format"
-local Config = require "feed.config"
-local ut = require "feed.utils"
+local MiniPick = require("mini.pick")
+local ui = require("feed.ui")
+local db = require("feed.db")
+local format = require("feed.ui.format")
+local Config = require("feed.config")
+local ut = require("feed.utils")
 
 local function feed_search()
    local lookup = {}
@@ -22,7 +22,7 @@ local function feed_search()
          return {}
       end
       query = table.concat(query)
-      local on_display = ui.refresh { query = query, show = false }
+      local on_display = ui.refresh({ query = query, show = false })
       local ret = {}
       for _, v in ipairs(on_display) do
          if lookup[v] then
@@ -33,30 +33,30 @@ local function feed_search()
    end
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
-          :map(function(id)
-             return format.entry(id, nil, db)
-          end)
-          :totable()
+         :map(function(id)
+            return format.entry(id, nil, db)
+         end)
+         :totable()
       vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
    end
 
-   MiniPick.start {
+   MiniPick.start({
       source = {
          items = ids,
          match = match,
          show = show,
          preview = function(buf, id)
-            ui.preview_entry { buf = buf, id = id }
+            ui.preview_entry({ buf = buf, id = id })
             local win = vim.api.nvim_get_current_win()
             ut.wo(win, Config.options.entry.wo)
             ut.bo(buf, Config.options.entry.bo)
          end,
          choose = function(id)
-            vim.cmd "q"
-            ui.show_entry { id = id }
+            vim.cmd("q")
+            ui.show_entry({ id = id })
          end,
       },
-   }
+   })
 end
 
 local function feed_grep()
@@ -75,5 +75,5 @@ end
 
 return {
    feed_search = feed_search,
-   feed_grep = feed_grep
+   feed_grep = feed_grep,
 }
