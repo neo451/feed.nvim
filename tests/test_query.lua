@@ -19,6 +19,11 @@ T["regex"] = function()
    vim.o.ignorecase = false -- vim ~= Vim
    local regex_not_vim2 = M._build_regex("!vim")
    eq(true, regex_not_vim2:match_str("Vim") ~= nil)
+
+   local maybe_nvim = M._build_regex("^n\\=vim")
+   eq(true, maybe_nvim:match_str("vim") ~= nil)
+   eq(true, maybe_nvim:match_str("nvim") ~= nil)
+   eq(false, maybe_nvim:match_str("neovim") ~= nil)
 end
 
 T["parse"]["splits query into parts"] = function()

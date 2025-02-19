@@ -283,7 +283,7 @@ function M:filter(str)
             return false
          end
          for _, reg in ipairs(q.re) do
-            if not reg:match_str(entry.title) then
+            if not reg:match_str(entry.title) or not reg:match(entry.link) then
                return false
             end
          end
