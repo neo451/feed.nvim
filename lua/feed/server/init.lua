@@ -51,7 +51,6 @@ end
 ---@param name string
 ---@param temp string
 function Router:template(name, temp)
-   print(name, #temp)
    self.templates[name] = temp
 end
 
@@ -79,7 +78,6 @@ local function handle_request(self, req, res)
       if ok then
          res:send(body)
       else
-         print(body)
          res:status(500):send("Internal Server Error")
       end
    else

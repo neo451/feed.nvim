@@ -89,10 +89,11 @@ function M.update_all()
          local ok = M.update_feed_co(url, { force = false })
          local name = ut.url2name(url, feeds)
          c = c + 1
-         print(name, ok and "success" or "failed", "\n")
+         print(name, ok and "success" or "failed")
          if c == n then
             os.exit()
          end
+         print("\n")
       end)
    end
 end
