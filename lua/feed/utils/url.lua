@@ -43,12 +43,12 @@ M.get_urls = function(src, cur_link)
    if q then
       for _, match, metadata in q:iter_matches(tree, src) do
          for id, nodes in pairs(match) do
-            nodes = type(nodes) == "userdata" and { nodes } or nodes
+            nodes = vim._ensure_list(nodes)
             for _, node in ipairs(nodes) do
                local url = metadata[id] and metadata[id].url
                if url and match[url] then
                   for _, n in
-                     ipairs(match[url] --[[@as TSNode[] ]])
+                     ipairs(vim._ensure_list(match[url] --[[@as TSNode[] ]]))
                   do
                      local link = vim.treesitter.get_node_text(n, src, { metadata = metadata[url] })
                      if node:type() == "inline_link" and node:child(1):type() == "link_text" then

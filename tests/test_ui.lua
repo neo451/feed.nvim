@@ -1,9 +1,7 @@
 local config = require("feed.config")
 config.db_dir = "~/.feed.nvim.test/"
-local db = require("feed.db")
-local M = require("feed.ui")
 local get_urls = require("feed.utils").get_urls
-local remove_links = require("feed.utils").remove_links
+local remove_urls = require("feed.utils").remove_urls
 local eq = MiniTest.expect.equality
 
 local T = MiniTest.new_set()
@@ -30,7 +28,7 @@ T.remove_links = function()
    local expected = [[1. autolink: <https://neovim.io/news>
 2. link: [neovim]()
 3. img: ![Image 1](https://neovim.io/image1)]]
-   eq(remove_links(str, ""), expected)
+   eq(remove_urls(str, ""), expected)
 end
 
 -- T["ui"] = MiniTest.new_set {
