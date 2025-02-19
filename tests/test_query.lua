@@ -5,6 +5,22 @@ local T = MiniTest.new_set()
 
 T["parse"] = MiniTest.new_set()
 
+T["regex"] = function()
+   vim.o.ignorecase = true -- vim == Vim
+   local regex_vim = M._build_regex("vim")
+   eq(true, regex_vim:match_str("Vim") ~= nil)
+   vim.o.ignorecase = false -- vim ~= Vim
+   local regex_vim2 = M._build_regex("vim")
+   eq(false, regex_vim2:match_str("Vim") ~= nil)
+
+   vim.o.ignorecase = true -- vim == Vim
+   local regex_not_vim = M._build_regex("!vim")
+   eq(false, regex_not_vim:match_str("Vim") ~= nil)
+   vim.o.ignorecase = false -- vim ~= Vim
+   local regex_not_vim2 = M._build_regex("!vim")
+   eq(true, regex_not_vim2:match_str("Vim") ~= nil)
+end
+
 T["parse"]["splits query into parts"] = function()
    local query = M.parse_query("+read -star @5-days-ago linu[xs] =vim ~emacs")
    eq("read", query.must_have[1])

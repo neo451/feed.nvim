@@ -12,13 +12,24 @@ local M = {}
 ---@field limit? number ##
 ---@field re? vim.regex[]
 
+---wrapper arround vim.regex, ! is inverse, respects vim.o.ignorecase
+---@param str string
 local function build_regex(str)
-   -- local rev = str:sub(0, 1) == "!"
-   -- if rev then
-   --    str = str:sub(2)
-   -- end
-   return vim.regex(str .. "\\c")
+   local pattern
+   if str:sub(0, 1) == "!" then
+      pattern = [[^\(.*]] .. vim.fn.escape(str:sub(2), "\\") .. [[.*\)\@!.*]]
+   else
+      pattern = str
+   end
+   if vim.o.ignorecase then
+      pattern = pattern .. "\\c"
+   else
+      pattern = pattern .. "\\C"
+   end
+   return vim.regex(pattern)
 end
+
+M._build_regex = build_regex
 
 ---@param str string
 ---@return feed.query
