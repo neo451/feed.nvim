@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/neo451/feed.nvim/compare/v2.1.0...v2.2.0) (2025-02-20)
+
+
+### Features
+
+* entries inherit tags from feed ([d84d31b](https://github.com/neo451/feed.nvim/commit/d84d31b742e69146e2253eb12bd8366f1f800c68))
+
+
+### Bug Fixes
+
+* remove check for pathlib ([b2c700e](https://github.com/neo451/feed.nvim/commit/b2c700e76075bdc8ba34f958d0c16552355e5d6d))
+
 ## [2.1.0](https://github.com/neo451/feed.nvim/compare/v2.0.2...v2.1.0) (2025-02-19)
 
 
