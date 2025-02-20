@@ -76,7 +76,6 @@ M.choose_backend = function(choices)
    local alias = {
       ["mini.pick"] = "pick",
       ["mini.notify"] = "mini",
-      ["nvim-notify"] = "notify",
    }
    if type(choices) == "string" then
       return alias[choices] or choices
