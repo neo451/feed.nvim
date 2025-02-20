@@ -18,7 +18,6 @@ local M = {}
 local function build_regex(str)
    local pattern
    if str:sub(0, 1) == "!" then
-      -- pattern = [[^\(.*]] .. vim.fn.escape(str:sub(2), "\\") .. [[.*\)\@!.*]]
       pattern = str:sub(2)
    else
       pattern = str
