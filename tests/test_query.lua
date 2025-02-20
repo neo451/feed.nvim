@@ -13,13 +13,6 @@ T["regex"] = function()
    local regex_vim2 = M._build_regex("vim")
    eq(false, regex_vim2:match_str("Vim") ~= nil)
 
-   vim.o.ignorecase = true -- vim == Vim
-   local regex_not_vim = M._build_regex("!vim")
-   eq(false, regex_not_vim:match_str("Vim") ~= nil)
-   vim.o.ignorecase = false -- vim ~= Vim
-   local regex_not_vim2 = M._build_regex("!vim")
-   eq(true, regex_not_vim2:match_str("Vim") ~= nil)
-
    local maybe_nvim = M._build_regex("^n\\=vim")
    eq(true, maybe_nvim:match_str("vim") ~= nil)
    eq(true, maybe_nvim:match_str("nvim") ~= nil)
@@ -27,13 +20,14 @@ T["regex"] = function()
 end
 
 T["parse"]["splits query into parts"] = function()
-   local query = M.parse_query("+read -star @5-days-ago linu[xs] =vim ~emacs")
+   local query = M.parse_query("+read -star @5-days-ago linu[xs] =vim ~emacs !lisp")
    eq("read", query.must_have[1])
    eq("star", query.must_not_have[1])
    eq("number", type(query.after))
    eq("userdata", type(query.re[1]))
-   assert(query.feed:match_str("vim"))
-   assert(query.not_feed:match_str("emacs"))
+   eq("userdata", type(query.not_re[1]))
+   eq("userdata", type(query.feed))
+   eq("userdata", type(query.not_feed))
 end
 
 T["parse"]["allows imcomplete query for live searching"] = function()

@@ -85,7 +85,7 @@ local function image_attach(buf)
       return
    end
    pcall(function()
-      local ok, f = Snacks.image.doc.inline(buf)
+      local ok, f = pcall(Snacks.image.doc.inline, buf)
       return ok and f and f()
    end)
 end
@@ -251,8 +251,6 @@ local function show_entry(ctx)
             BufLeave = function(self)
                vim.o.cmdheight = og.cmdheight
                set_colorscheme(og.colorscheme)
-               self:close()
-               state.entry = nil
             end,
          },
       })
@@ -290,8 +288,10 @@ end
 M.quit = function()
    if ut.in_index() then
       state.index:close()
+      state.index = nil
    elseif ut.in_entry() then
       state.entry:close()
+      state.entry = nil
    end
 end
 
