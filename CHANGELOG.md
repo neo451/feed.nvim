@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/neo451/feed.nvim/compare/v2.2.0...v2.3.0) (2025-02-20)
+
+
+### Features
+
+* **ui:** implement undo/redo in index for tag/untag/search ([227abe1](https://github.com/neo451/feed.nvim/commit/227abe189ab72cd8389dbbb9a9e532b8acafd04b))
+
+
+### Bug Fixes
+
+* **db:** proper AND/OR logic for multiple regex ([6e92a96](https://github.com/neo451/feed.nvim/commit/6e92a964474b05ff2bce405fe72b8826e93f0e6b))
+* properly namespace highlights, greys out just read entries ([105a1a1](https://github.com/neo451/feed.nvim/commit/105a1a155baa024336c1fd10e0f3240cb5f9b230))
+* **ui:** make it ok to press &lt;esc&gt; in ui.input ([227abe1](https://github.com/neo451/feed.nvim/commit/227abe189ab72cd8389dbbb9a9e532b8acafd04b))
+* **web:** web port config ([9f4c8b6](https://github.com/neo451/feed.nvim/commit/9f4c8b659bbba0684e1592b653c6683994a1c2df))
+
 ## [2.2.0](https://github.com/neo451/feed.nvim/compare/v2.1.0...v2.2.0) (2025-02-20)
 
 
