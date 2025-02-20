@@ -11,7 +11,7 @@ local uv = vim.uv
 ---@field tags table<string, table<string, boolean>>
 ---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
 ---@field rm fun(db: feed.db, id: string)
----@field iter fun(db: feed.db, sort: boolean): Iter
+---@field iter fun(db: feed.db, sort: boolean?): Iter
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field save_entry fun(db: feed.db, id: string): boolean
 ---@field save_feeds fun(db: feed.db): boolean
@@ -203,7 +203,7 @@ function M:rm(id)
    rawset(mem, id, nil)
 end
 
----@param sort any
+---@param sort boolean?
 ---@return Iter
 function M:iter(sort)
    if sort then
