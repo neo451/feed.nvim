@@ -222,6 +222,7 @@ function M:filter(str)
    if str == "" then
       return {}
    end
+   self:update()
    local q = query.parse_query(str)
    local iter
 

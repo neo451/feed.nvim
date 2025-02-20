@@ -1,9 +1,11 @@
 local fzf = require("fzf-lua")
 local ui = require("feed.ui")
-local DB = require("feed.db")
+local ut = require("feed.utils")
+local db = require("feed.db")
 local Format = require("feed.ui.format")
-local builtin = require("fzf-lua.previewer.builtin")
+local Config = require("feed.config")
 
+local builtin = require("fzf-lua.previewer.builtin")
 local MyPreviewer = builtin.base:extend()
 
 function MyPreviewer:new(o, opts, fzf_win)
@@ -17,26 +19,19 @@ function MyPreviewer:populate_preview_buf(entry_str)
    self:set_preview_buf(tmpbuf)
    local id = entry_str:sub(-64, -1)
    ui.preview_entry({ buf = tmpbuf, id = id })
+   ut.bo(tmpbuf, Config.options.entry.bo)
    vim.treesitter.start(tmpbuf, "markdown")
 end
 
--- Disable line numbering and word wrap
 function MyPreviewer:gen_winopts()
-   local new_winopts = {
-      wrap = true,
-      number = false,
-      conceallevel = 3,
-      spell = false,
-   }
-   return vim.tbl_extend("force", self.winopts, new_winopts)
+   return vim.tbl_extend("force", self.winopts, Config.options.entry.wo)
 end
 
 -- TODO: overide the default .. s
--- TODO: grep
 
 local function feed_search()
    fzf.fzf_live(function(str)
-      local on_display = ui.refresh({ query = str, show = false })
+      local on_display = db:filter(str)
       local ret = {}
       for i, id in ipairs(on_display) do
          ret[i] = Format.entry(id) .. (" "):rep(100) .. id
@@ -72,7 +67,7 @@ local function feed_grep(opts)
       -- return Format.entry(id)
       return fzf_lua.make_entry.file(x, opts)
    end
-   opts.cwd = tostring(DB.dir / "data")
+   opts.cwd = tostring(db.dir / "data")
    -- we only need 'fn_preprocess' in order to display 'git_icons'
    -- it runs once before the actual command to get modified files
    -- 'make_entry.file' uses 'opts.diff_files' to detect modified files

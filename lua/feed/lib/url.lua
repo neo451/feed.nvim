@@ -96,12 +96,14 @@ local function decode(str)
 end
 
 local function encode(str, legal)
-   return (str:gsub("([^%w])", function(v)
-      if legal[v] then
-         return v
-      end
-      return string.upper(string.format("%%%02x", string.byte(v)))
-   end))
+   return (
+      str:gsub("([^%w])", function(v)
+         if legal[v] then
+            return v
+         end
+         return string.upper(string.format("%%%02x", string.byte(v)))
+      end)
+   )
 end
 
 -- for query values, + can mean space if configured as such
@@ -316,7 +318,7 @@ function M:setAuthority(authority)
 
    local function getIP(str)
       -- ipv4
-      local chunks = { str:match "^(%d+)%.(%d+)%.(%d+)%.(%d+)$" }
+      local chunks = { str:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$") }
       if #chunks == 4 then
          for _, v in pairs(chunks) do
             if tonumber(v) > 255 then
@@ -327,7 +329,7 @@ function M:setAuthority(authority)
       end
       -- ipv6
       local chunks = { str:match("^%[" .. (("([a-fA-F0-9]*):"):rep(8):gsub(":$", "%%]$"))) }
-      if #chunks == 8 or #chunks < 8 and str:match "::" and not str:gsub("::", "", 1):match "::" then
+      if #chunks == 8 or #chunks < 8 and str:match("::") and not str:gsub("::", "", 1):match("::") then
          for _, v in pairs(chunks) do
             if #v > 0 and tonumber(v, 16) > 65535 then
                return false
@@ -345,7 +347,12 @@ function M:setAuthority(authority)
       -- domain
       if authority ~= "" and not self.host then
          local host = authority:lower()
-         if string.match(host, "^[%d%a%-%.]+$") ~= nil and string.sub(host, 0, 1) ~= "." and string.sub(host, -1) ~= "." and string.find(host, "%.%.") == nil then
+         if
+            string.match(host, "^[%d%a%-%.]+$") ~= nil
+            and string.sub(host, 0, 1) ~= "."
+            and string.sub(host, -1) ~= "."
+            and string.find(host, "%.%.") == nil
+         then
             self.host = host
          end
       end

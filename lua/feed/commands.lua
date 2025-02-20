@@ -266,7 +266,7 @@ function M._load_command(args)
       local item = M[cmd]
       item.impl(unpack(args))
    else
-      ui.refresh({ query = table.concat(args, " ") })
+      ui.refresh(table.concat(args, " "))
    end
 end
 

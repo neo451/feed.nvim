@@ -22,7 +22,7 @@ local function feed_search()
          return {}
       end
       query = table.concat(query)
-      local on_display = ui.refresh({ query = query, show = false })
+      local on_display = db:filter(query)
       local ret = {}
       for _, v in ipairs(on_display) do
          if lookup[v] then
