@@ -1,7 +1,6 @@
 local date = require("feed.parser.date")
 local eq = MiniTest.expect.equality
 local sha = vim.fn.sha256
-local coop = require("coop")
 local db = require("feed.db")
 db = db.new("~/.feed.nvim.test/")
 
