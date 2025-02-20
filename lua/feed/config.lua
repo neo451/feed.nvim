@@ -117,8 +117,9 @@ local default = {
    keys = {
       index = {
          hints = "?",
-         _dot = ".",
-         _undo = "u",
+         dot = ".",
+         undo = "u",
+         redo = "<C-r>",
          entry = "<CR>",
          split = "<M-CR>",
          browser = "b",
@@ -186,6 +187,9 @@ local default = {
             modifiable = false,
          },
       },
+   },
+   web = {
+      port = 9876,
    },
 }
 

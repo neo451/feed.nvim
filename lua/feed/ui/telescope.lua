@@ -5,6 +5,7 @@ local action_state = require("telescope.actions.state")
 local previewers = require("telescope.previewers")
 local db = require("feed.db")
 local ui = require("feed.ui")
+local ut = require("feed.utils")
 local format = require("feed.ui.format")
 local config = require("feed.config")
 local sorters = require("telescope.sorters")
@@ -20,20 +21,19 @@ local function feed_search()
             define_preview = function(self, entry, _)
                vim.schedule(function()
                   ui.preview_entry({ buf = self.state.bufnr, id = entry.value })
-                  local winid = self.state.winid
-                  vim.wo[winid].spell = false
-                  vim.wo[winid].conceallevel = 3
-                  vim.wo[winid].wrap = true
-                  vim.treesitter.start(self.state.bufnr, "markdown")
+                  local win, buf = self.state.winid, self.state.bufnr
+                  ut.bo(buf, config.options.entry.bo)
+                  ut.wo(win, config.options.entry.wo)
+                  vim.treesitter.start(buf, "markdown")
                end)
             end,
          }),
          finder = finders.new_dynamic({
             fn = function(query)
-               if query == "" or not query then -- TODO: move to query.lua
+               if query == "" or not query then
                   return {}
                end
-               return ui.refresh({ query = query, show = false })
+               return db:filter(query)
             end,
             entry_maker = function(line)
                return {

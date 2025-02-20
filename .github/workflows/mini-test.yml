@@ -2,11 +2,11 @@ name: Run tests
 
 on:
   push:
-    branches-ignore: [ sync, stable ]
-    paths: [ 'colors/**', 'lua/**', 'tests/**' ]
+    branches-ignore: [sync, stable]
+    paths: ["colors/**", "lua/**", "tests/**"]
   pull_request:
-    branches-ignore: [ sync, stable ]
-    paths: [ 'colors/**', 'lua/**', 'tests/**' ]
+    branches-ignore: [sync, stable]
+    paths: ["colors/**", "lua/**", "tests/**"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
@@ -20,12 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        neovim_version: ['v0.10.2', 'nightly']
+        neovim_version: "nightly"
         include:
-        - os: macos-latest
-          neovim_version: v0.10.1
-        # - os: windows-latest
-        #   neovim_version: v0.10.1
+          - os: macos-latest
+            neovim_version: "nightly"
+          # - os: windows-latest
+          #   neovim_version: v0.10.4
     runs-on: ${{ matrix.os }}
 
     steps:

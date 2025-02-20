@@ -9,8 +9,10 @@ local M = {}
 M.server = {
    doc = "opens server",
    impl = function(port)
+      -- FIXME:
+      port = port or Config.web.port
       require("feed.server").open(port)
-      vim.ui.open("http://0.0.0.0:8080")
+      vim.ui.open("http://0.0.0.0:" .. port)
    end,
    context = { all = true },
 }
@@ -131,12 +133,20 @@ M.yank_url = {
    context = { index = true, entry = true },
 }
 
-M._undo = {
+M.undo = {
+   doc = "undo",
    impl = ui.undo,
    context = { index = true },
 }
 
-M._dot = {
+M.redo = {
+   doc = "redo",
+   impl = ui.redo,
+   context = { index = true },
+}
+
+M.dot = {
+   doc = "dot repeat",
    impl = function()
       ui.dot()
    end,
@@ -241,7 +251,7 @@ M.prune_feed = {
 
 function M._list_commands()
    local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
-      return v:sub(0, 1) ~= "_"
+      return v:sub(0, 1) ~= "_" and not vim.list_contains({ "dot", "redo", "undo" }, v)
    end)
    if ut.in_entry() then
       choices = choices:filter(function(v)
@@ -266,7 +276,7 @@ function M._load_command(args)
       local item = M[cmd]
       item.impl(unpack(args))
    else
-      ui.refresh({ query = table.concat(args, " ") })
+      ui.refresh(table.concat(args, " "))
    end
 end
 

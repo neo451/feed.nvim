@@ -115,6 +115,13 @@ function M.split(opts, percentage, lines)
    return win
 end
 
-M.input = vim.ui.input
+M.input = function(opts, on_confirm)
+   vim.ui.input(opts, function(input)
+      if not input or vim.trim(input) == "" then
+         return
+      end
+      on_confirm(input)
+   end)
+end
 
 return M

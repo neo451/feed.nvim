@@ -15,11 +15,6 @@ local dependencies = {
 
 local plugins = {
    { lib = "coop", optional = false, info = "required for concurrency" },
-   {
-      lib = "nvim-treesitter",
-      optional = true,
-      info = "required for installing TS parsers if you don't use rocks.nvim",
-   },
 }
 
 local parsers = {
@@ -77,7 +72,7 @@ end
 M.check_binary_installed = check_binary_installed
 
 M.check = function()
-   vim.health.start("feed report")
+   vim.health.start("feed.nvim report")
    for _, binary in ipairs(dependencies) do
       check_binary_installed(binary)
    end

@@ -1,19 +1,8 @@
 local M = {}
 
-for k, v in pairs(require("feed.utils.shared")) do
-   M[k] = v
-end
-
-for k, v in pairs(require("feed.utils.url")) do
-   M[k] = v
-end
-
-for k, v in pairs(require("feed.utils.treesitter")) do
-   M[k] = v
-end
-
-for k, v in pairs(require("feed.utils.strings")) do
-   M[k] = v
-end
+M = vim.tbl_extend("keep", M, require("feed.utils.shared"))
+M = vim.tbl_extend("keep", M, require("feed.utils.url"))
+M = vim.tbl_extend("keep", M, require("feed.utils.treesitter"))
+M = vim.tbl_extend("keep", M, require("feed.utils.strings"))
 
 return M

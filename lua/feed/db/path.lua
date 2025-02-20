@@ -31,9 +31,8 @@ Path.new = function(path)
    })
 end
 
----@param dir
+---@param dir string
 local function rmdir(dir)
-   dir = type(dir) == "table" and tostring(dir) or dir
    for name, t in vim.fs.dir(dir) do
       name = dir .. "/" .. name
       local ok = (t == "directory") and uv.fs_rmdir(name) or uv.fs_unlink(name)

@@ -5,24 +5,25 @@ local ut = require("feed.utils")
 local uv = vim.uv
 
 ---@class feed.db
----@field dir string
+---@field dir feed.path
 ---@field feeds feed.opml
 ---@field index table
 ---@field tags table<string, table<string, boolean>>
 ---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
 ---@field rm fun(db: feed.db, id: string)
----@field iter fun(db: feed.db, sort: boolean): Iter
+---@field iter fun(db: feed.db, sort: boolean?): Iter
 ---@field filter fun(db: feed.db, query: string) : string[]
----@field save_entry fun(db: feed.db, id: string): boolean
----@field save_feeds fun(db: feed.db): boolean
+---@field save_feeds fun(db: feed.db)
+---@field save_index fun(db: feed.db)
+---@field save_tags fun(db: feed.db)
 ---@field tag fun(db: feed.db, id: string, tag: string | string[])
 ---@field untag fun(db: feed.db, id: string, tag: string | string[])
 ---@field blowup fun(db: feed.db)
 ---@field update fun(db: feed.db)
----@field lastUpdated fun(db: feed.db)
+---@field lastUpdated fun(db: feed.db): string
 local M = {}
 
----@param fp string
+---@param fp feed.path
 ---@param t any
 local ensure_exists = function(fp, t)
    if not uv.fs_stat(tostring(fp)) then
@@ -101,6 +102,19 @@ function M:__index(k)
    return r
 end
 
+---@param id string
+---@param entry feed.entry
+function M:__newindex(id, entry)
+   if not id or if_path(id, self.dir) then
+      return
+   end
+   mem[id] = entry
+   local time = entry.time
+   table.insert(self.index, { id, time })
+   Path.append(self.dir / "index", time .. " " .. id .. "\n")
+   Path.save(self.dir / "object" / id, entry)
+end
+
 function M:update()
    local feeds = Path.load(self.dir / "feeds.lua")
    rawset(self, "feeds", feeds)
@@ -120,25 +134,11 @@ function M:lastUpdated()
    return os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
 end
 
----@param id string
----@param entry feed.entry
-function M:__newindex(id, entry)
-   if not id or if_path(id, self.dir) then
-      return
-   end
-   mem[id] = entry
-   local time = entry.time
-   table.insert(self.index, { id, time })
-   Path.append(self.dir / "index", time .. " " .. id .. "\n")
-   Path.save(self.dir / "object" / id, entry)
-end
-
 ---@param id string | string[]
 ---@param tag string
 function M:tag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = true
-      self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
@@ -153,28 +153,29 @@ function M:tag(id, tag)
          tag_one(v)
       end
    end
+   self:save_tags()
 end
 
 ---@param id string | string[]
 ---@param tag string
 function M:untag(id, tag)
-   local function tag_one(t)
+   local function untag_one(t)
       self.tags[t][id] = nil
-      self:save_tags()
    end
    if type(tag) == "string" then
       if tag:find(",") then
          for t in ut.split(tag, ",") do
-            tag_one(t)
+            untag_one(t)
          end
       else
-         tag_one(tag)
+         untag_one(tag)
       end
    elseif type(tag) == "table" then
       for _, v in ipairs(tag) do
-         tag_one(v)
+         untag_one(v)
       end
    end
+   self:save_tags()
 end
 
 function M:sort()
@@ -203,7 +204,7 @@ function M:rm(id)
    rawset(mem, id, nil)
 end
 
----@param sort any
+---@param sort boolean?
 ---@return Iter
 function M:iter(sort)
    if sort then
@@ -222,6 +223,7 @@ function M:filter(str)
    if str == "" then
       return {}
    end
+   self:update()
    local q = query.parse_query(str)
    local iter
 
@@ -284,7 +286,22 @@ function M:filter(str)
             return false
          end
          for _, reg in ipairs(q.re) do
-            if not reg:match_str(entry.title) or not reg:match_str(entry.link) then
+            if reg:match_str(entry.title) or reg:match_str(entry.link) then
+               return true
+            end
+         end
+         return false
+      end)
+   end
+
+   if q.not_re then
+      iter = iter:filter(function(id)
+         local entry = self[id]
+         if not entry or not entry.title then
+            return false
+         end
+         for _, reg in ipairs(q.not_re) do
+            if reg:match_str(entry.title) or reg:match_str(entry.link) then
                return false
             end
          end

@@ -112,6 +112,7 @@ function Router:listen(port)
    self.handle = handle
    handle:listen(128, function(err)
       local client = uv.new_tcp()
+      assert(client)
       handle:accept(client)
 
       client:read_start(function(err, chunk)
@@ -152,78 +153,81 @@ function Router:listen(port)
    })
 end
 
-local router = Router.new()
-
-router:use(function(req, res)
-   -- print(req.method .. " " .. req.path)
-   return true
-end)
-
-local templates = vim.api.nvim_get_runtime_file("templates/*.html", true)
-
-for _, f in ipairs(templates) do
-   local name = vim.fs.basename(f):sub(0, -6)
-   router:template(name, ut.read_file(f))
-end
-
-local db = require("feed.db")
-local state = require("feed.ui.state")
-local Config = require("feed.config")
-
-router:get("/", function(req, res)
-   local docs_html = ""
-   for _, id in ipairs(db:filter(state.query)) do
-      docs_html = docs_html .. router:render("entry", {
-         id = id,
-         title = db[id].title,
-      })
-   end
-   return router:render("layout", {
-      content = router:render("list", {
-         query = vim.trim(state.query),
-         docs = docs_html,
-         toggle = router:render("toggle"),
-      }),
-   })
-end)
-
-router:get("/documents/(%S+)", function(req, res)
-   local id = req.params[1]
-   local entry = db[id]
-
-   local path = tostring(db.dir / "data" / id)
-   local content = ut.read_file(path)
-
-   content = vim.trim(ut.unescape(content:gsub("\n", "")))
-
-   if not content then
-      return res:status(404):send("Non-exist Entry")
-   end
-
-   local feedUrl = entry.feed
-   local feed = db.feeds[feedUrl]
-
-   if feed then
-      feed = ([[<a href="%s">%s</a>]]):format(feed.htmlUrl, feed.title)
-   else
-      feed = feedUrl
-   end
-
-   return router:render("layout", {
-      content = router:render("document", {
-         title = entry.title,
-         author = entry.author,
-         date = os.date(Config.date_format.long, entry.time),
-         content = content,
-         link = entry.link,
-         feed = feed,
-         toggle = router:render("toggle"),
-      }),
-   })
-end)
-
 return {
    open = function(port)
-      router:listen(port or 8080)
+      local router = Router.new()
+
+      router:use(function(req, res)
+         print(req.method .. " " .. req.path)
+         return true
+      end)
+
+      local templates = vim.api.nvim_get_runtime_file("templates/*.html", true)
+
+      for _, f in ipairs(templates) do
+         local name = vim.fs.basename(f):sub(0, -6)
+         router:template(name, ut.read_file(f))
+      end
+
+      local db = require("feed.db")
+      local state = require("feed.ui.state")
+      local Config = require("feed.config")
+
+      local entries = db:filter(state.query)
+
+      router:get("/", function(req, res)
+         local acc = {}
+         for _, id in ipairs(entries) do
+            acc[#acc + 1] = router:render("entry", {
+               id = id,
+               title = db[id].title,
+            })
+         end
+
+         return router:render("layout", {
+            content = router:render("list", {
+               query = vim.trim(state.query),
+               docs = table.concat(acc),
+               toggle = router:render("toggle"),
+            }),
+         })
+      end)
+
+      router:get("/documents/(%S+)", function(req, res)
+         local id = req.params[1]
+         local entry = db[id]
+
+         local path = tostring(db.dir / "data" / id)
+         local content = ut.read_file(path)
+
+         content = vim.trim(ut.unescape(content:gsub("\n", "")))
+
+         if not content then
+            return res:status(404):send("Non-exist Entry")
+         end
+
+         local feedUrl = entry.feed
+         local feed = db.feeds[feedUrl]
+
+         if feed then
+            feed = ([[<a href="%s">%s</a>]]):format(feed.htmlUrl, feed.title)
+         else
+            feed = feedUrl
+         end
+
+         return router:render("layout", {
+            content = router:render("document", {
+               title = entry.title,
+               author = entry.author,
+               date = os.date(Config.date_format.long, entry.time),
+               content = content,
+               link = entry.link,
+               feed = feed,
+               toggle = router:render("toggle"),
+            }),
+         })
+      end)
+
+      router:listen(port)
    end,
 }
