@@ -19,21 +19,18 @@ end
 ---@return string
 function M.tags(id, db)
    db = db or require("feed.db")
-   local taglist = vim.iter(db.tags):fold({}, function(acc, tag, v)
-      if type(v) == "table" and v[id] then
-         if icons.enabled then
-            acc[#acc + 1] = icons[tag] or tag
-         else
-            acc[#acc + 1] = tag
-         end
-      end
-      return acc
-   end)
-   if vim.tbl_isempty(taglist) then
-      if icons.enabled then
-         taglist = { icons.unread }
-      else
-         taglist = { "unread" }
+
+   local acc = {}
+
+   -- 1. auto tag no [read] as [unread]
+   if not (db.tags.read and db.tags.read[id]) then
+      acc = { "unread" }
+   end
+
+   -- 2. get tags from tags.lua
+   for tag, tagees in pairs(db.tags) do
+      if tagees[id] then
+         acc[#acc + 1] = tag
       end
    end
 
@@ -45,7 +42,7 @@ function M.tags(id, db)
       end
    end
 
-   return "[" .. ut.truncate(table.concat(taglist, ", "), tags_len) .. "]"
+   return "[" .. ut.truncate(table.concat(acc, ", "), tags_len) .. "]"
 end
 
 ---@param id string
@@ -116,7 +113,7 @@ M.entry = function(id, comps, db)
    comps = comps
       or {
          { "feed", width = 20 },
-         { "tags", width = 15 },
+         { "tags", width = 20 },
          { "title", width = math.huge },
       }
    local acc = 0

@@ -296,9 +296,17 @@ function M._sync_feedlist()
          feeds[url] = {}
       elseif type(feeds[url]) == "table" then
          feeds[url].title = title or feeds[url].title
-         feeds[url].tags = tags or feeds[url].tags
+         if tags and (tags ~= feeds[url].tags) then
+            for id, entry in db:iter() do
+               if entry.feed == url then
+                  db:tag(id, tags)
+               end
+            end
+            feeds[url].tags = tags or feeds[url].tags
+         end
       end
    end
+   db:save_feeds()
 end
 
 return M

@@ -46,7 +46,7 @@ local default = {
       },
       {
          "tags",
-         width = 15,
+         width = 25,
          color = "FeedTags",
       },
       {
