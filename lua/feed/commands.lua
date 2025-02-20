@@ -9,7 +9,6 @@ local M = {}
 M.server = {
    doc = "opens server",
    impl = function(port)
-      -- FIXME:
       port = port or Config.web.port
       require("feed.server").open(port)
       vim.ui.open("http://0.0.0.0:" .. port)
@@ -228,8 +227,21 @@ M.update_feed = {
    context = { all = true },
 }
 
--- TODO:
-M.sync = {}
+M["sync!"] = {
+   doc = "remove any unlisted feed and its entries",
+   impl = function()
+      db:hard_sync()
+   end,
+   context = { all = true },
+}
+
+M.sync = {
+   doc = "remove any unlisted feed but not its entries",
+   impl = function()
+      db:soft_sync()
+   end,
+   context = { all = true },
+}
 
 function M._list_commands()
    local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)

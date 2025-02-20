@@ -364,27 +364,8 @@ function M:save_index()
    Path.save(self.dir / "index", table.concat(buf, "\n"))
 end
 
----@return table<string, boolean>
-function M:find_unlisted_feeds()
-   local config_urls = {}
-   local ret = {}
-
-   for _, v in ipairs(Config.feeds) do
-      local url = type(v) == "table" and v[1] or v
-      config_urls[url] = true
-   end
-
-   for url in pairs(self.feeds) do
-      if not config_urls[url] then
-         ret[url] = true
-      end
-   end
-
-   return ret
-end
-
 ---adds missing feed from config to db, rename and tag everything
-function M:soft_sync()
+function M:setup_sync()
    local feeds = self.feeds
    for _, v in ipairs(Config.feeds) do
       local url = type(v) == "table" and v[1] or v
@@ -407,17 +388,51 @@ function M:soft_sync()
    self:save_feeds()
 end
 
+---find any unlisted feed in the db
+---@return table<string, boolean>
+local function find_unlisted_feeds(self)
+   local config_urls = {}
+   local ret = {}
+
+   for _, v in ipairs(Config.feeds) do
+      local url = type(v) == "table" and v[1] or v
+      config_urls[url] = true
+   end
+
+   for url in pairs(self.feeds) do
+      if not config_urls[url] then
+         ret[url] = true
+      end
+   end
+
+   for _, entry in self:iter() do
+      local feedurl = entry.feed
+      if feedurl and not config_urls[feedurl] then
+         ret[feedurl] = true
+      end
+   end
+
+   return ret
+end
+
 ---Treat config's feeds as the source of truth
----removes any unlisted feed and all the entries
-function M:hard_sync()
-   local unlisted = self:find_unlisted_feeds()
+---removes any unlisted feed but not the entries
+function M:soft_sync()
+   local unlisted = find_unlisted_feeds(self)
 
    for url in pairs(unlisted) do
       self.feeds[url] = nil
    end
    self:save_feeds()
+end
 
-   for id, entry in db:iter() do
+---Treat config's feeds as the source of truth
+---removes any unlisted feed and all the entries
+function M:hard_sync()
+   local unlisted = find_unlisted_feeds(self)
+   self:soft_sync()
+
+   for id, entry in self:iter() do
       if unlisted[entry.feed] then
          self:rm(id)
       end
