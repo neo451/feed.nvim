@@ -4,10 +4,8 @@ local M = {}
 
 ---@param usr_config feed.config
 M.setup = function(usr_config)
-   local Config = require("feed.config")
-   Config.resolve(usr_config)
-   local cmds = require("feed.commands")
-   cmds._sync_feedlist()
+   require("feed.config").resolve(usr_config)
+   require("feed.db"):setup_sync()
 
    for k, v in pairs(require("feed.commands")) do
       if not vim.startswith(k, "_") then
