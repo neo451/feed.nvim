@@ -8,10 +8,11 @@ local Win = require("feed.ui.window")
 local db = require("feed.db")
 local ut = require("feed.utils")
 local state = require("feed.ui.state")
-local history = state.history
+local undo_history = state.undo_history
+local redo_history = state.redo_history
 
 local hl = vim.hl or vim.highlight
-local api, fn = vim.api, vim.fn
+local api, fn, fs = vim.api, vim.fn, vim.fs
 local feeds = db.feeds
 
 local og = {}
@@ -85,7 +86,7 @@ local function image_attach(buf)
    end
    pcall(function()
       local ok, f = Snacks.image.doc.inline(buf)
-      return ok and f()
+      return ok and f and f()
    end)
 end
 
@@ -104,7 +105,6 @@ local function render_entry(buf, body, id)
    end
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
-   local entry_ns = api.nvim_create_namespace("feed_entry")
 
    local header = {}
    for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
@@ -114,6 +114,10 @@ local function render_entry(buf, body, id)
    local ok, urls = pcall(ut.get_urls, body, db[id].link)
    if ok then
       state.urls = urls
+   else
+      if vim.g.feed_debug then
+         vim.notify("get_urls failed for string: " .. body)
+      end
    end
 
    for _, f in ipairs(body_transforms) do
@@ -173,7 +177,7 @@ M.show_index = function()
 
    local lines = {}
    for i, id in ipairs(state.entries) do
-      lines[i] = Format.entry(id, Config.layout)
+      lines[i] = Format.entry(id, Config.layout, db)
    end
    api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
@@ -281,13 +285,6 @@ local function show_entry(ctx)
    api.nvim_buf_set_name(buf, "FeedEntry")
    -- TODO: restore cursor and scroll pos
    api.nvim_win_set_cursor(win, { 1, 0 })
-end
-
----@param query string?
-M.refresh = function(query)
-   state.query = query or state.query
-   state.entries = db:filter(state.query)
-   M.show_index()
 end
 
 M.quit = function()
@@ -398,6 +395,7 @@ end
 ---@param percentage any
 M.show_split = function(percentage)
    local _, id = get_entry()
+   assert(id)
    local split = M.split({}, percentage or "50%")
    M.preview_entry({ buf = split.buf, id = id, read = true })
    ut.wo(split.win, Config.options.entry.wo)
@@ -455,26 +453,26 @@ M.load_opml = function(path)
    if ut.looks_like_url(path) then
       str = Curl.get(path, {}).stdout -- FIXME:
    else
-      path = fn.expand(path)
+      path = fs.normalize(path)
       str = ut.read_file(path)
    end
-   if str then
-      local outlines = Opml.import(str)
-      if outlines then
-         for k, v in pairs(outlines) do
-            feeds[k] = v
-         end
-      else
-         vim.notify("failed to parse your opml file")
-      end
-      db:save_feeds()
-   else
+   if not str then
       vim.notify("failed to open your opml file")
    end
+
+   local outlines = Opml.import(str)
+   if outlines then
+      for k, v in pairs(outlines) do
+         feeds[k] = v
+      end
+   else
+      vim.notify("failed to parse your opml file")
+   end
+   db:save_feeds()
 end
 
 M.export_opml = function(fp)
-   fp = fn.expand(fp)
+   fp = fs.normalize(fp)
    local str = Opml.export(feeds)
    local ok = ut.save_file(fp, str)
    if not ok then
@@ -482,21 +480,44 @@ M.export_opml = function(fp)
    end
 end
 
+--- FIXME
 M.dot = function() end
 
 M.undo = function()
-   local act = table.remove(history, #history)
+   local act = table.remove(undo_history, #undo_history)
    if not act then
+      vim.notify("Already at the oldest change")
       return
    end
    if act.type == "tag" then
-      M.untag(act.tag, act.id)
+      M.untag(act.tag, act.id, false)
+      table.insert(redo_history, act)
    elseif act.type == "untag" then
-      M.tag(act.tag, act.id)
+      M.tag(act.tag, act.id, false)
+      table.insert(redo_history, act)
+   elseif act.type == "search" then
+      table.insert(redo_history, { type = "search", query = state.query })
+      M.refresh(act.query, false)
    end
 end
 
-M.tag = function(t, id)
+M.redo = function()
+   local act = table.remove(redo_history, #redo_history)
+   if not act then
+      vim.notify("Already at the newst change")
+      return
+   end
+   if act.type == "untag" then
+      M.untag(act.tag, act.id)
+   elseif act.type == "tag" then
+      M.tag(act.tag, act.id)
+   elseif act.type == "search" then
+      M.refresh(act.query)
+   end
+end
+
+M.tag = function(t, id, save)
+   save = vim.F.if_nil(save, true)
    id = id or select(2, get_entry())
    if not t or not id then
       return
@@ -508,10 +529,13 @@ M.tag = function(t, id)
    M.dot = function()
       M.tag(t)
    end
-   table.insert(history, { type = "tag", tag = t, id = id })
+   if save then
+      table.insert(undo_history, { type = "tag", tag = t, id = id })
+   end
 end
 
-M.untag = function(t, id)
+M.untag = function(t, id, save)
+   save = vim.F.if_nil(save, true)
    id = id or select(2, get_entry())
    if not t or not id then
       return
@@ -523,7 +547,20 @@ M.untag = function(t, id)
    M.dot = function()
       M.untag(t)
    end
-   table.insert(history, { type = "untag", tag = t, id = id })
+   if save then
+      table.insert(undo_history, { type = "untag", tag = t, id = id })
+   end
+end
+
+---@param query string?
+M.refresh = function(query, save)
+   save = vim.F.if_nil(save, true)
+   if query and save then
+      table.insert(undo_history, { type = "search", query = state.query })
+   end
+   state.query = query or state.query
+   state.entries = db:filter(state.query)
+   M.show_index()
 end
 
 ---In Index: prompt for input and refresh
