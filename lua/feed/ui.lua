@@ -13,7 +13,6 @@ local redo_history = state.redo_history
 
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
-local feeds = db.feeds
 
 local og = {}
 
@@ -431,11 +430,14 @@ M.show_feeds = function(percentage)
 
    local lines = {}
 
-   for url, feed in pairs(feeds) do
+   db:update()
+   for url, feed in pairs(db.feeds) do
       if type(feed) == "table" then
          lines = vim.list_extend(lines, node_to_md(feed.title or url, url, feed))
       end
    end
+
+   api.nvim_buf_set_lines(split.buf, 0, -1, false, lines)
 
    vim.wo[split.win].foldmethod = "expr"
    vim.wo[split.win].foldlevel = 0
@@ -444,8 +446,7 @@ M.show_feeds = function(percentage)
    vim.wo[split.win].fillchars = "foldopen:,foldclose:,fold: ,foldsep: "
 
    vim.keymap.set("n", "za", "zA", { buffer = split.buf })
-
-   api.nvim_buf_set_lines(split.buf, 0, -1, false, lines)
+   vim.bo[split.buf].modifiable = false
 end
 
 M.load_opml = function(path)
@@ -463,7 +464,7 @@ M.load_opml = function(path)
    local outlines = Opml.import(str)
    if outlines then
       for k, v in pairs(outlines) do
-         feeds[k] = v
+         db.feeds[k] = v
       end
    else
       vim.notify("failed to parse your opml file")
@@ -473,7 +474,7 @@ end
 
 M.export_opml = function(fp)
    fp = fs.normalize(fp)
-   local str = Opml.export(feeds)
+   local str = Opml.export(db.feeds)
    local ok = ut.save_file(fp, str)
    if not ok then
       vim.notify("failed to export your opml file")
@@ -604,23 +605,9 @@ M.update_feed = function(url)
    Coop.spawn(function()
       local ok, res = copcall(Fetch.update_feed_co, url, { force = true })
       if not ok then
-         vim.notify(ut.url2name(url, feeds) .. (ok and " success" or " failed") .. ": " .. res)
+         vim.notify(ut.url2name(url, db.feeds) .. (ok and " success" or " failed") .. ": " .. res)
       end
    end)
-end
-
----@param url string
-M.prune_feed = function(url)
-   if not url or not ut.looks_like_url(url) then
-      return
-   end
-   for id, entry in db:iter() do
-      if entry.feed == url then
-         db:rm(id)
-      end
-   end
-   feeds[url] = false
-   db:save_feeds()
 end
 
 M.show_entry = show_entry

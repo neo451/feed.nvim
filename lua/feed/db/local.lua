@@ -116,10 +116,8 @@ function M:__newindex(id, entry)
 end
 
 function M:update()
-   local feeds = Path.load(self.dir / "feeds.lua")
-   rawset(self, "feeds", feeds)
-   local index = load_index(self.dir / "index")
-   rawset(self, "index", index)
+   rawset(self, "feeds", Path.load(self.dir / "feeds.lua"))
+   rawset(self, "index", load_index(self.dir / "index"))
    local tags = Path.load(self.dir / "tags.lua")
    setmetatable(tags, {
       __index = function(t, tag)
@@ -364,6 +362,66 @@ function M:save_index()
       buf[i] = tostring(v[2]) .. " " .. v[1]
    end
    Path.save(self.dir / "index", table.concat(buf, "\n"))
+end
+
+---@return table<string, boolean>
+function M:find_unlisted_feeds()
+   local config_urls = {}
+   local ret = {}
+
+   for _, v in ipairs(Config.feeds) do
+      local url = type(v) == "table" and v[1] or v
+      config_urls[url] = true
+   end
+
+   for url in pairs(self.feeds) do
+      if not config_urls[url] then
+         ret[url] = true
+      end
+   end
+
+   return ret
+end
+
+---adds missing feed from config to db, rename and tag everything
+function M:soft_sync()
+   local feeds = self.feeds
+   for _, v in ipairs(Config.feeds) do
+      local url = type(v) == "table" and v[1] or v
+      local title = type(v) == "table" and v.name or nil
+      local tags = type(v) == "table" and v.tags or nil
+      if feeds[url] == nil then
+         feeds[url] = {}
+      elseif type(feeds[url]) == "table" then
+         feeds[url].title = title or feeds[url].title
+         if tags and (tags ~= feeds[url].tags) then
+            for id, entry in self:iter() do
+               if entry.feed == url then
+                  self:tag(id, tags)
+               end
+            end
+            feeds[url].tags = tags or feeds[url].tags
+         end
+      end
+   end
+   self:save_feeds()
+end
+
+---Treat config's feeds as the source of truth
+---removes any unlisted feed and all the entries
+function M:hard_sync()
+   local unlisted = self:find_unlisted_feeds()
+
+   for url in pairs(unlisted) do
+      self.feeds[url] = nil
+   end
+   self:save_feeds()
+
+   for id, entry in db:iter() do
+      if unlisted[entry.feed] then
+         self:rm(id)
+      end
+   end
 end
 
 function M:blowup()

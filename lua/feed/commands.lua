@@ -228,26 +228,8 @@ M.update_feed = {
    context = { all = true },
 }
 
-M.prune_feed = {
-   doc = "remove a feed and its entries",
-   impl = function(url)
-      if url then
-         ui.prune_feed(url)
-      else
-         ui.select(feedlist(db.feeds, true), {
-            prompt = "Feed to prune",
-            format_item = function(item)
-               local feed = db.feeds[item]
-               return type(feed) == "table" and db.feeds[item].title or item
-            end,
-         }, ui.prune_feed)
-      end
-   end,
-   complete = function()
-      return feedlist(db.feeds, true)
-   end,
-   context = { all = true },
-}
+-- TODO:
+M.sync = {}
 
 function M._list_commands()
    local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
@@ -294,29 +276,6 @@ function M._menu()
       local item = M[choice]
       item.impl()
    end)
-end
-
-function M._sync_feedlist()
-   local feeds = db.feeds
-   for _, v in ipairs(Config.feeds) do
-      local url = type(v) == "table" and v[1] or v
-      local title = type(v) == "table" and v.name or nil
-      local tags = type(v) == "table" and v.tags or nil
-      if feeds[url] == nil then
-         feeds[url] = {}
-      elseif type(feeds[url]) == "table" then
-         feeds[url].title = title or feeds[url].title
-         if tags and (tags ~= feeds[url].tags) then
-            for id, entry in db:iter() do
-               if entry.feed == url then
-                  db:tag(id, tags)
-               end
-            end
-            feeds[url].tags = tags or feeds[url].tags
-         end
-      end
-   end
-   db:save_feeds()
 end
 
 return M
