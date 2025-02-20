@@ -37,34 +37,36 @@ local function telescope_select(items, opts, on_choice)
       :find()
 end
 
+local function fzf_ui_select(items, opts, on_choice)
+   local prompt = " " .. opts.prompt .. " "
+   opts.prompt = "> "
+   local ui_select = require("fzf-lua.providers.ui_select")
+   if ui_select.is_registered() then
+      ui_select.deregister()
+   end
+   require("fzf-lua").register_ui_select(function(_, i)
+      local min_h, max_h = 0.15, 0.70
+      local h = (#i + 4) / vim.o.lines
+      if h < min_h then
+         h = min_h
+      elseif h > max_h then
+         h = max_h
+      end
+      return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
+   end)
+   require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
+end
+
 function M.select(items, opts, on_choice)
    local backend = ut.choose_backend(Config.search.backend)
    if backend == "fzf-lua" then
-      local prompt = " " .. opts.prompt .. " "
-      opts.prompt = "> "
-      local ui_select = require("fzf-lua.providers.ui_select")
-      if ui_select.is_registered() then
-         ui_select.deregister()
-      end
-      require("fzf-lua").register_ui_select(function(_, i)
-         local min_h, max_h = 0.15, 0.70
-         local h = (#i + 4) / vim.o.lines
-         if h < min_h then
-            h = min_h
-         elseif h > max_h then
-            h = max_h
-         end
-         return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
-      end)
-      require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
+      fzf_ui_select(items, opts, on_choice)
+   elseif backend == "pick" then
+      require("mini.pick").ui_select(items, opts, on_choice)
+   elseif backend == "telescope" then
+      telescope_select(items, opts, on_choice)
    else
-      if backend == "pick" then
-         MiniPick.ui_select(items, opts, on_choice)
-      elseif backend == "telescope" then
-         telescope_select(items, opts, on_choice)
-      else
-         vim.ui.select(items, opts, on_choice)
-      end
+      vim.ui.select(items, opts, on_choice)
    end
 end
 

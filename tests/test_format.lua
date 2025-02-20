@@ -14,16 +14,21 @@ local db = {
    feeds = {
       ["https://neovim.io/news.xml"] = {
          title = "neovim",
+         tags = { "nvim" },
       },
    },
-   tags = {},
+   tags = {
+      star = {
+         ["1"] = true,
+      },
+   },
 }
 
 T["format"] = MiniTest.new_set({})
 
 T.format["tags"] = function()
    local id = "1"
-   eq("[unread]", M.tags(id, db))
+   eq("[unread, star]", M.tags(id, db))
 end
 
 T.format["title"] = function()
@@ -43,7 +48,7 @@ end
 
 T.format["entry"] = function()
    local id = "1"
-   local expect = "neovim               [unread]        title "
+   local expect = "neovim               [unread, star]       title "
    eq(expect, M.entry(id, nil, db))
 end
 

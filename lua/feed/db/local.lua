@@ -226,11 +226,12 @@ function M:filter(str)
    local iter
 
    if q.must_have then
-      local must_have = q.must_have[1]
       local ids = {}
-      for k, t in pairs(self.tags) do
-         if must_have == k then
-            vim.list_extend(ids, vim.tbl_keys(t))
+      for _, must in ipairs(q.must_have) do
+         for k, t in pairs(self.tags) do
+            if must == k then
+               vim.list_extend(ids, vim.tbl_keys(t))
+            end
          end
       end
       iter = vim.iter(ids):map(function(id)
@@ -283,7 +284,7 @@ function M:filter(str)
             return false
          end
          for _, reg in ipairs(q.re) do
-            if not reg:match_str(entry.title) or not reg:match(entry.link) then
+            if not reg:match_str(entry.title) or not reg:match_str(entry.link) then
                return false
             end
          end
