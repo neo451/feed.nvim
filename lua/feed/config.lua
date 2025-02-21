@@ -97,10 +97,6 @@ local default = {
    ---@type feed.feed[]
    feeds = {},
 
-   integrations = {
-      telescope = {},
-   },
-
    icons = {
       enabled = false,
       pod = "📻",
@@ -190,6 +186,9 @@ local default = {
    },
    web = {
       port = 9876,
+   },
+   zen = {
+      percentage = 0.7,
    },
 }
 

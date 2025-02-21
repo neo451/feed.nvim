@@ -1,8 +1,17 @@
 local ut = require("feed.utils")
 local Config = require("feed.config")
+local api = vim.api
 
-local Win = {}
-local id = 0
+---@class feed.win.Config: vim.api.keyset.win_config
+---@field text? string | string[]
+---@field wo? vim.wo|{} window options
+---@field bo? vim.bo|{} buffer options
+---@field b? table<string, any> buffer local variables
+---@field w? table<string, any> window local variables
+---@field ft? string
+---@field buf? integer
+---@field win? integer
+---@field backdrop? boolean
 
 ---@class feed.win
 ---@field opts feed.win.Config
@@ -13,25 +22,26 @@ local id = 0
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
 ---@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
+local M = {}
+local id = 0
 
----@class feed.win.Config: vim.api.keyset.win_config
----@field text? string | string[]
----@field wo? vim.wo|{} window options
----@field bo? vim.bo|{} buffer options
----@field b? table<string, any> buffer local variables
----@field w? table<string, any> window local variables
----@field ft? string
+---@class feed.win.Backdrop
+---@field bg? string
+---@field blend? number
+---@field transparent? boolean defaults to true
+---@field win? snacks.win.Config overrides the backdrop window config
 
 ---@param opts feed.win.Config | {}
 ---@param enter? boolean
 ---@return table
-function Win.new(opts, enter)
+function M.new(opts, enter)
+   local width = math.floor(vim.o.columns * Config.zen.percentage)
    opts = vim.tbl_deep_extend("force", {
       relative = "editor",
       height = vim.o.lines - 1,
-      width = vim.o.columns,
+      width = width,
       row = 0,
-      col = 0,
+      col = (vim.o.columns - width) / 2,
       zindex = 5,
       wo = {
          winhighlight = "Normal:Normal,FloatBorder:Normal",
@@ -39,6 +49,7 @@ function Win.new(opts, enter)
       bo = {},
       w = {},
       b = {},
+      backdrop = true,
    }, opts)
 
    opts.enter = vim.F.if_nil(enter, true)
@@ -52,11 +63,9 @@ function Win.new(opts, enter)
    local self = setmetatable({
       opts = opts,
       id = id,
-   }, { __index = Win })
+   }, { __index = M })
 
-   if opts.show ~= false then
-      self:show()
-   end
+   self:show()
 
    return self
 end
@@ -84,7 +93,7 @@ local win_opts = {
    "zindex",
 }
 
-function Win:win_opts()
+function M:win_opts()
    local opts = {}
    for _, k in ipairs(win_opts) do
       opts[k] = self.opts[k]
@@ -92,24 +101,7 @@ function Win:win_opts()
    return opts
 end
 
-local split_minimal_wo = {
-   cursorcolumn = false,
-   cursorline = false,
-   cursorlineopt = "both",
-   fillchars = "eob: ,lastline:…",
-   list = false,
-   listchars = "extends:…,tab:  ",
-   number = false,
-   relativenumber = false,
-   signcolumn = "no",
-   spell = false,
-   winbar = "",
-   statuscolumn = "",
-   wrap = false,
-   sidescrolloff = 0,
-}
-
-function Win:show()
+function M:show()
    if self.opts.buf then
       self.buf = self.opts.buf
    else
@@ -127,18 +119,18 @@ function Win:show()
       end
    end
 
-   self.augroup = vim.api.nvim_create_augroup("feed_win_" .. self.id, { clear = true })
+   if self.opts.on_open then
+      api.nvim_create_autocmd("BufEnter", {
+         buffer = self.buf,
+         callback = self.opts.on_open,
+      })
+   end
 
-   if self.opts.autocmds then
-      for k, cb in pairs(self.opts.autocmds) do
-         vim.api.nvim_create_autocmd(k, {
-            -- group = self.augroup,
-            buffer = self.buf,
-            callback = function()
-               cb(self)
-            end,
-         })
-      end
+   if self.opts.on_leave then
+      api.nvim_create_autocmd("BufLeave", {
+         buffer = self.buf,
+         callback = self.opts.on_leave,
+      })
    end
 
    self.win = vim.api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
@@ -191,7 +183,7 @@ function Win:show()
    self:maps()
 end
 
-function Win:maps()
+function M:maps()
    if self.opts.keys == nil then
       return
    end
@@ -207,11 +199,10 @@ function Win:maps()
    end
 end
 
---- like vim.api.nvim_buf_set_keymap but with buffer set to self.buf
 ---@param mode string | string[]
 ---@param lhs string
 ---@param rhs string | function
-function Win:map(mode, lhs, rhs)
+function M:map(mode, lhs, rhs)
    local set = vim.keymap.set
    if type(lhs) == "table" then
       for _, l in ipairs(lhs) do
@@ -222,20 +213,20 @@ function Win:map(mode, lhs, rhs)
    end
 end
 
-function Win:update()
+function M:update()
    if self:valid() then
       ut.bo(self.buf, self.opts.bo)
       ut.wo(self.win, self.opts.wo)
       local opts = self:win_opts()
       opts.noautocmd = nil
       opts.height = vim.o.lines - 1
-      opts.width = vim.o.columns
+      opts.width = math.floor(vim.o.columns * Config.zen.percentage)
+      opts.col = (vim.o.columns - opts.width) / 2
       vim.api.nvim_win_set_config(self.win, opts)
    end
 end
 
-function Win:close(opts)
-   opts = opts or {}
+function M:close()
    local win = self.win
    local buf = self.buf
 
@@ -265,16 +256,16 @@ function Win:close(opts)
    vim.schedule(try_close)
 end
 
-function Win:buf_valid()
+function M:buf_valid()
    return self.buf and vim.api.nvim_buf_is_valid(self.buf)
 end
 
-function Win:win_valid()
+function M:win_valid()
    return self.win and vim.api.nvim_win_is_valid(self.win)
 end
 
-function Win:valid()
+function M:valid()
    return self:win_valid() and self:buf_valid() and vim.api.nvim_win_get_buf(self.win) == self.buf
 end
 
-return Win
+return M

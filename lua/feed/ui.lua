@@ -14,8 +14,6 @@ local redo_history = state.redo_history
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
-local og = {}
-
 local M = {
    state = state,
 }
@@ -27,11 +25,26 @@ local ns = api.nvim_create_namespace("feed_index")
 local ns_read = api.nvim_create_namespace("feed_index_read")
 local ns_entry = api.nvim_create_namespace("feed_entry")
 
+local og = {}
+
 ---@param colorscheme string
 local function set_colorscheme(colorscheme)
    if vim.g.colors_name ~= colorscheme then
       pcall(vim.cmd.colorscheme, colorscheme)
    end
+end
+
+local function save_og()
+   og.colorscheme = vim.g.colors_name
+   og.cmdheight = vim.o.cmdheight
+end
+local function set_color_n_height()
+   vim.o.cmdheight = 0
+   set_colorscheme(Config.colorscheme)
+end
+local function restore_color_n_height()
+   vim.o.cmdheight = og.cmdheight
+   set_colorscheme(og.colorscheme)
 end
 
 ---get entry base on current context, and update current_index
@@ -148,25 +161,17 @@ local function render_entry(buf, body, id)
 end
 
 M.show_index = function()
+   save_og()
    if not state.index or not state.index:valid() then
       state.index = Win.new({
          wo = Config.options.index.wo,
          bo = Config.options.index.bo,
          keys = Config.keys.index,
-         autocmds = {
-            BufEnter = function()
-               vim.o.cmdheight = 0
-               og.colorscheme = vim.g.colors_name
-               og.cmdheight = vim.o.cmdheight
-               set_colorscheme(Config.colorscheme)
-            end,
-            BufLeave = function()
-               vim.o.cmdheight = og.cmdheight
-               set_colorscheme(og.colorscheme)
-            end,
-         },
+         on_open = set_color_n_height,
+         on_leave = restore_color_n_height,
       })
    end
+
    local buf, win = state.index.buf, state.index.win
    vim.wo[win].winbar = M.show_winbar()
    api.nvim_buf_set_name(buf, "FeedIndex")
@@ -232,6 +237,10 @@ local function show_entry(ctx)
 
    Config.options.entry.wo.winbar = M.show_keyhints()
 
+   if vim.tbl_isempty(og) then
+      save_og()
+   end
+
    state.entry = state.entry
       or Win.new({
          prev_win = (state.index and state.index:valid()) and state.index.win or nil,
@@ -240,18 +249,8 @@ local function show_entry(ctx)
          bo = Config.options.entry.bo,
          keys = Config.keys.entry,
          ft = "markdown",
-         autocmds = {
-            BufEnter = function()
-               og.cmdheight = vim.o.cmdheight
-               og.colorscheme = vim.g.colors_name
-               vim.o.cmdheight = 0
-               set_colorscheme(Config.colorscheme)
-            end,
-            BufLeave = function(self)
-               vim.o.cmdheight = og.cmdheight
-               set_colorscheme(og.colorscheme)
-            end,
-         },
+         on_open = set_color_n_height,
+         on_leave = restore_color_n_height,
       })
 
    if ctx.link then
