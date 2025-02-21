@@ -14,6 +14,8 @@ local redo_history = state.redo_history
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
+local og = {}
+
 local M = {
    state = state,
 }
