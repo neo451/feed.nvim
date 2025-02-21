@@ -163,7 +163,9 @@ end
 local function hl_index(buf)
    for linenr = 1, #state.entries do
       local acc = 0
-      for _, sect in ipairs(Config.layout) do
+      local layout = Config.layout
+      for _, name in ipairs(layout.order) do
+         local sect = layout[name]
          local width = sect.width or 100
          local byte_start, byte_end = ut.display_to_byte_range(buf, linenr, acc, acc + width)
          hl.range(buf, ns, sect.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })

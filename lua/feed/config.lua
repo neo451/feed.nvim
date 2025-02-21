@@ -32,47 +32,38 @@ local default = {
    ---@type table[]
    layout = {
       padding = {
-         enabled = true,
+         enabled = false,
       },
-      {
-         "date",
+      order = { "date", "feed", "tags", "title" },
+      winbar_right = { "query", "last_updated" },
+      date = {
          width = 10,
          color = "FeedDate",
       },
-      {
-         "feed",
+      feed = {
          width = 25,
          color = "FeedTitle",
       },
-      {
-         "tags",
+      tags = {
          width = 20,
          color = "FeedTags",
       },
-      {
-         "title",
+      title = {
          color = "FeedTitle",
       },
-      {
-         "progress",
-         right = true,
+      progress = {
          color = "FeedDate",
       },
-      {
-         "query",
-         right = true,
+      query = {
          color = "FeedLabel",
       },
-      {
-         "last_updated",
-         right = true,
+      last_updated = {
          color = "FeedDate",
       },
    },
 
    search = {
       default_query = "@6-months-ago +unread ",
-      -- show_last = false,
       backend = {
          "mini.pick",
          "telescope",

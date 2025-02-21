@@ -31,13 +31,13 @@ function M.tags(id, db)
       end
    end
 
-   local len
+   local len = Config.layout.tags.width - 2
 
-   for _, v in ipairs(Config.layout) do
-      if v[1] == "tags" then
-         len = v.width - 2
-      end
-   end
+   -- for _, v in ipairs(Config.layout) do
+   --    if v[1] == "tags" then
+   --       len = v.width - 2
+   --    end
+   -- end
 
    return "[" .. ut.align(table.concat(acc, ", "), len) .. "]"
 end
@@ -107,20 +107,24 @@ M.entry = function(id, comps, db)
       return ""
    end
 
-   comps = comps
-      or {
-         { "feed", width = 20 },
-         { "tags", width = 20 },
-         { "title", width = math.huge },
-      }
+   -- comps = comps
+   --    or {
+   --       { "feed", width = 20 },
+   --       { "tags", width = 20 },
+   --       { "title", width = math.huge },
+   --    }
    local acc = 0
    local res = {}
 
-   for _, v in ipairs(comps) do
-      local text = entry[v[1]] or ""
-      if M[v[1]] then
-         text = M[v[1]](id, db)
-      end
+   local layout = Config.layout
+
+   for _, name in ipairs(layout.order) do
+      local v = layout[name]
+      local text = entry[name] or ""
+      local f = v.format or M[name]
+      -- if M[name] then
+      text = f(id, db)
+      -- end
       local width = v.width or #text
       text = ut.align(text, width, v.right_justify) .. " "
       res[#res + 1] = text
