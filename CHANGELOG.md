@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/neo451/feed.nvim/compare/v2.3.0...v2.4.0) (2025-02-21)
+
+
+### Features
+
+* `sync` and `sync!` command to manage feeds and entries ([d3fd355](https://github.com/neo451/feed.nvim/commit/d3fd35590a3e85a4b4f701a0d5a164ad0e54f74f))
+* simple zen mode ([318cc93](https://github.com/neo451/feed.nvim/commit/318cc93c0c4abc5de97169beecf95272dad7b26f))
+* zenmode properly dims the background ([973a871](https://github.com/neo451/feed.nvim/commit/973a871ddded8be46d40e472bced656748d4ca5e))
+
+
+### Bug Fixes
+
+* remove prune_feed ([4fd2211](https://github.com/neo451/feed.nvim/commit/4fd22113ab22c1062caf556f1236de5545b73082))
+
 ## [2.3.0](https://github.com/neo451/feed.nvim/compare/v2.2.0...v2.3.0) (2025-02-20)
 
 
