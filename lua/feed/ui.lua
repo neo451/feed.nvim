@@ -160,6 +160,18 @@ local function render_entry(buf, body, id)
    mark_read(id)
 end
 
+local function hl_index(buf)
+   for linenr = 1, #state.entries do
+      local acc = 0
+      for _, sect in ipairs(Config.layout) do
+         local width = sect.width or 100
+         local byte_start, byte_end = ut.display_to_byte_range(buf, linenr, acc, acc + width)
+         hl.range(buf, ns, sect.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })
+         acc = acc + width + 1
+      end
+   end
+end
+
 M.show_index = function()
    save_og()
    if not state.index or not state.index:valid() then
@@ -184,17 +196,9 @@ M.show_index = function()
    for i, id in ipairs(state.entries) do
       lines[i] = Format.entry(id, Config.layout, db)
    end
+   table.insert(lines, "")
    api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
-   for i = 1, #state.entries do
-      local acc = 0
-      for _, sect in ipairs(Config.layout) do
-         local width = sect.width or 100
-         hl.range(buf, ns, sect.color, { i - 1, acc }, { i - 1, acc + width })
-         acc = acc + width + 1
-      end
-   end
-   api.nvim_buf_set_lines(buf, #state.entries, #state.entries + 1, false, { "" })
+   hl_index(buf)
    vim.bo[buf].modifiable = false
 end
 
@@ -242,20 +246,19 @@ local function show_entry(ctx)
       save_og()
    end
 
-   state.entry = state.entry
-      or Win.new({
-         prev_win = (state.index and state.index:valid()) and state.index.win or nil,
-         buf = buf,
-         wo = Config.options.entry.wo,
-         bo = Config.options.entry.bo,
-         keys = Config.keys.entry,
-         ft = "markdown",
-         on_open = set_color_n_height,
-         on_leave = restore_color_n_height,
-         zen = true,
-         zindex = 8,
-         backdrop = state.index and state.index or { win = api.nvim_get_current_win() },
-      })
+   state.entry = Win.new({
+      prev_win = (state.index and state.index:valid()) and state.index.win or nil,
+      buf = buf,
+      wo = Config.options.entry.wo,
+      bo = Config.options.entry.bo,
+      keys = Config.keys.entry,
+      ft = "markdown",
+      on_open = set_color_n_height,
+      on_leave = restore_color_n_height,
+      zen = Config.zen.enabled,
+      zindex = 8,
+      backdrop = state.index and state.index or { win = api.nvim_get_current_win() },
+   })
 
    if ctx.link then
       Markdown.convert({

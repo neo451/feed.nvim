@@ -46,7 +46,7 @@ local default = {
       },
       {
          "tags",
-         width = 25,
+         width = 20,
          color = "FeedTags",
       },
       {
@@ -96,19 +96,6 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
-
-   icons = {
-      enabled = false,
-      pod = "📻",
-      unread = "👀",
-      read = "✅",
-      star = "🌟",
-      news = "📰",
-      tech = "🦾",
-      app = "📱",
-      blog = "📝",
-      email = "📧",
-   },
 
    keys = {
       index = {
@@ -188,6 +175,7 @@ local default = {
       port = 9876,
    },
    zen = {
+      enabled = true,
       width = 90,
    },
 }

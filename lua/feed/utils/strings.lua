@@ -52,6 +52,73 @@ M.truncate = function(str, len, dots, direction)
    end
 end
 
+---@param buf integer
+---@param linenr integer
+---@param display_start integer
+---@param display_end integer
+---@return number
+---@return number
+M.display_to_byte_range = function(buf, linenr, display_start, display_end)
+   local line = vim.api.nvim_buf_get_lines(buf, linenr - 1, linenr, false)[1]
+   if not line then
+      return 0, 0
+   end
+
+   local byte_start = 0
+   local byte_end = 0
+   local current_col = 0
+   local current_byte = 0
+   local len = #line
+
+   local found_start = false
+   local found_end = false
+
+   while current_byte < len and (not found_start or not found_end) do
+      local c = line:sub(current_byte + 1, current_byte + 1)
+      local cp = c:byte()
+
+      local bytes = 1
+      if cp >= 0x80 then
+         if cp >= 0xF0 then
+            bytes = 4
+         elseif cp >= 0xE0 then
+            bytes = 3
+         elseif cp >= 0xC0 then
+            bytes = 2
+         else
+            bytes = 1
+         end
+      end
+
+      bytes = math.min(bytes, len - current_byte)
+      local char = line:sub(current_byte + 1, current_byte + bytes)
+      local display_width = vim.fn.strdisplaywidth(char, current_col + 1)
+
+      if not found_start and current_col + display_width > display_start then
+         byte_start = current_byte
+         found_start = true
+      end
+
+      if not found_end and current_col + display_width >= display_end then
+         byte_end = current_byte + bytes
+         found_end = true
+      end
+
+      current_col = current_col + display_width
+      current_byte = current_byte + bytes
+   end
+
+   if not found_end then
+      byte_end = current_byte
+   end
+
+   if byte_end < byte_start then
+      byte_end = byte_start
+   end
+
+   return byte_start, byte_end
+end
+
 --- from plenary.nvim
 ---@param str string
 ---@param width integer

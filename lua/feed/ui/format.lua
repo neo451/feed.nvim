@@ -2,9 +2,6 @@ local M = {}
 local Config = require("feed.config")
 local ut = require("feed.utils")
 
-local align = ut.align
-local icons = Config.icons
-
 ---@param str string
 ---@return string
 local function cleanup(str)
@@ -34,15 +31,15 @@ function M.tags(id, db)
       end
    end
 
-   local tags_len
+   local len
 
    for _, v in ipairs(Config.layout) do
       if v[1] == "tags" then
-         tags_len = v.width - 2
+         len = v.width - 2
       end
    end
 
-   return "[" .. ut.truncate(table.concat(acc, ", "), tags_len) .. "]"
+   return "[" .. ut.align(table.concat(acc, ", "), len) .. "]"
 end
 
 ---@param id string
@@ -125,7 +122,7 @@ M.entry = function(id, comps, db)
          text = M[v[1]](id, db)
       end
       local width = v.width or #text
-      text = align(text, width, v.right_justify) .. " "
+      text = ut.align(text, width, v.right_justify) .. " "
       res[#res + 1] = text
       acc = acc + width
    end
