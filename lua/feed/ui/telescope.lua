@@ -11,7 +11,7 @@ local config = require("feed.config")
 local sorters = require("telescope.sorters")
 
 local function feed_search()
-   local opts = config.integrations.telescope
+   local opts = {}
 
    pickers
       .new(opts, {
@@ -33,7 +33,8 @@ local function feed_search()
                if query == "" or not query then
                   return {}
                end
-               return db:filter(query)
+               ui.state.entries = db:filter(query)
+               return ui.state.entries
             end,
             entry_maker = function(line)
                return {
@@ -115,7 +116,7 @@ local feed_grep = function(opts)
       sorter = sorters.get_fzy_sorter(),
       cwd = tostring(db.dir / "data"),
    }
-   opts = vim.tbl_extend("force", opts, config.integrations.telescope)
+
    require("telescope.builtin").live_grep(opts)
 end
 

@@ -97,10 +97,6 @@ local default = {
    ---@type feed.feed[]
    feeds = {},
 
-   integrations = {
-      telescope = {},
-   },
-
    icons = {
       enabled = false,
       pod = "📻",
@@ -178,7 +174,7 @@ local default = {
             statuscolumn = " ",
             spell = false,
             conceallevel = 3,
-            concealcursor = "n",
+            concealcursor = "nvc",
          },
          bo = {
             filetype = "markdown",
@@ -190,6 +186,9 @@ local default = {
    },
    web = {
       port = 9876,
+   },
+   zen = {
+      width = 90,
    },
 }
 
