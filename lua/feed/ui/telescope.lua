@@ -33,7 +33,8 @@ local function feed_search()
                if query == "" or not query then
                   return {}
                end
-               return db:filter(query)
+               ui.state.entries = db:filter(query)
+               return ui.state.entries
             end,
             entry_maker = function(line)
                return {

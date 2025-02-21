@@ -174,7 +174,7 @@ local default = {
             statuscolumn = " ",
             spell = false,
             conceallevel = 3,
-            concealcursor = "n",
+            concealcursor = "nvc",
          },
          bo = {
             filetype = "markdown",
@@ -188,7 +188,7 @@ local default = {
       port = 9876,
    },
    zen = {
-      percentage = 0.7,
+      width = 90,
    },
 }
 

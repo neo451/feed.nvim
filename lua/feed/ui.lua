@@ -29,7 +29,7 @@ local og = {}
 
 ---@param colorscheme string
 local function set_colorscheme(colorscheme)
-   if vim.g.colors_name ~= colorscheme then
+   if Config.colorscheme and vim.g.colors_name ~= colorscheme then
       pcall(vim.cmd.colorscheme, colorscheme)
    end
 end
@@ -48,8 +48,8 @@ local function restore_color_n_height()
 end
 
 ---get entry base on current context, and update current_index
----@return feed.entry?
----@return string?
+---@return feed.entry
+---@return string
 local function get_entry(ctx)
    ctx = ctx or {}
    local id
@@ -73,7 +73,7 @@ local function get_entry(ctx)
    elseif ut.in_entry() then
       id = state.entries[state.cur]
    else
-      vim.notify("no context to show entry")
+      error("no context to show entry")
    end
    if id then
       return db[id], id
@@ -167,6 +167,7 @@ M.show_index = function()
          wo = Config.options.index.wo,
          bo = Config.options.index.bo,
          keys = Config.keys.index,
+         zindex = 3,
          on_open = set_color_n_height,
          on_leave = restore_color_n_height,
       })
@@ -251,6 +252,9 @@ local function show_entry(ctx)
          ft = "markdown",
          on_open = set_color_n_height,
          on_leave = restore_color_n_height,
+         zen = true,
+         zindex = 8,
+         backdrop = state.index and state.index or { win = api.nvim_get_current_win() },
       })
 
    if ctx.link then

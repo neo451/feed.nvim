@@ -22,9 +22,9 @@ local function feed_search()
          return {}
       end
       query = table.concat(query)
-      local on_display = db:filter(query)
+      ui.state.entries = db:filter(query)
       local ret = {}
-      for _, v in ipairs(on_display) do
+      for _, v in ipairs(ui.state.entries) do
          if lookup[v] then
             table.insert(ret, lookup[v])
          end

@@ -31,9 +31,9 @@ end
 
 local function feed_search()
    fzf.fzf_live(function(str)
-      local on_display = db:filter(str)
+      ui.state.entries = db:filter(str)
       local ret = {}
-      for i, id in ipairs(on_display) do
+      for i, id in ipairs(ui.state.entries) do
          ret[i] = Format.entry(id) .. (" "):rep(100) .. id
       end
       return ret

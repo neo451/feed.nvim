@@ -11,7 +11,11 @@ local api = vim.api
 ---@field ft? string
 ---@field buf? integer
 ---@field win? integer
----@field backdrop? boolean
+---@field zen? boolean
+---@field on_open? function
+---@field on_leave? function
+---@field keys? table
+---@field enter boolean
 
 ---@class feed.win
 ---@field opts feed.win.Config
@@ -22,20 +26,21 @@ local api = vim.api
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
 ---@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
+---@field backdrop feed.win
 local M = {}
+M.__index = M
 local id = 0
 
----@class feed.win.Backdrop
----@field bg? string
----@field blend? number
----@field transparent? boolean defaults to true
----@field win? snacks.win.Config overrides the backdrop window config
+local og = {
+   wo = {},
+   bo = {},
+}
 
 ---@param opts feed.win.Config | {}
 ---@param enter? boolean
 ---@return table
 function M.new(opts, enter)
-   local width = math.floor(vim.o.columns * Config.zen.percentage)
+   local width = opts.zen and Config.zen.width or vim.o.columns
    opts = vim.tbl_deep_extend("force", {
       relative = "editor",
       height = vim.o.lines - 1,
@@ -49,9 +54,9 @@ function M.new(opts, enter)
       bo = {},
       w = {},
       b = {},
-      backdrop = true,
    }, opts)
 
+   opts.show = vim.F.if_nil(opts.show, true)
    opts.enter = vim.F.if_nil(enter, true)
 
    if Config.layout.padding.enabled then
@@ -63,11 +68,39 @@ function M.new(opts, enter)
    local self = setmetatable({
       opts = opts,
       id = id,
-   }, { __index = M })
+      backdrop = opts.backdrop or nil,
+   }, M)
 
-   self:show()
+   if opts.show then
+      self:show()
+      if self.opts.zen then
+         self:back()
+      end
+   end
 
    return self
+end
+
+function M:back()
+   if not self.backdrop then
+      return
+   end
+   local bg, winblend = "#000000", 60
+   local group = ("SnacksBackdrop_%s"):format(bg and bg:sub(2) or "T")
+   vim.api.nvim_set_hl(0, group, { bg = bg })
+
+   local wo = {
+      winhighlight = "Normal:" .. group,
+      winblend = winblend,
+      colorcolumn = "",
+      cursorline = false,
+   }
+
+   for k in pairs(wo) do
+      og.wo[k] = vim.api.nvim_get_option_value(k, { win = self.win })
+   end
+
+   ut.wo(self.backdrop.win, wo)
 end
 
 local win_opts = {
@@ -139,6 +172,7 @@ function M:show()
    ut.wo(self.win, self.opts.wo)
 
    -- FIX: handle popup windows hide self
+   self.augroup = vim.api.nvim_create_augroup("feed.win." .. self.id, { clear = true })
 
    -- update window size when resizing
    vim.api.nvim_create_autocmd("VimResized", {
@@ -220,37 +254,32 @@ function M:update()
       local opts = self:win_opts()
       opts.noautocmd = nil
       opts.height = vim.o.lines - 1
-      opts.width = math.floor(vim.o.columns * Config.zen.percentage)
+      opts.width = self.opts.zen and Config.zen.width or vim.o.columns
       opts.col = (vim.o.columns - opts.width) / 2
       vim.api.nvim_win_set_config(self.win, opts)
    end
 end
 
 function M:close()
-   local win = self.win
-   local buf = self.buf
-
-   self.win = nil
-   self.buf = nil
-
-   local close = function()
+   local close = function(win, buf)
       if win and vim.api.nvim_win_is_valid(win) then
          vim.api.nvim_win_close(win, true)
       end
       if buf and vim.api.nvim_buf_is_valid(buf) then
          vim.api.nvim_buf_delete(buf, { force = true })
       end
-      if self.augroup then
-         pcall(vim.api.nvim_del_augroup_by_id, self.augroup)
-         self.augroup = nil
-      end
-      vim.api.nvim_set_current_win(self.opts.prev_win or 0)
    end
    local try_close
    try_close = function()
-      local ok, err = pcall(close)
+      local ok, err = pcall(close, self.win, self.buf)
       if not ok and err and err:find("E565") then
          vim.defer_fn(try_close, 50)
+      else
+         self.win = nil
+         self.buf = nil
+      end
+      if self.backdrop then
+         ut.wo(self.backdrop.win, og.wo)
       end
    end
    vim.schedule(try_close)
