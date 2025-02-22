@@ -92,6 +92,25 @@ M.remove_urls = function(body, id)
    return body
 end
 
+---@param body string
+---@param id string
+---@return string
+M.resolve_urls = function(body, id)
+   local base = require("feed.db")[id].link
+   local text_n_links = M.get_urls(body)
+   for _, v in ipairs(text_n_links) do
+      local link = v[2]
+      local resolved = link
+      if not M.looks_like_url(link) then
+         resolved = M.url_resolve(base, link)
+      end
+      if resolved and M.looks_like_url(resolved) and resolved ~= base then
+         body = string.gsub(body, escape_pattern(link), "(" .. resolved .. ")")
+      end
+   end
+   return body
+end
+
 ---@param url string
 ---@param base string
 M.resolve_and_open = function(url, base)

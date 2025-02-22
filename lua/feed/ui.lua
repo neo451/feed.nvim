@@ -82,6 +82,7 @@ local function image_attach(buf)
 end
 
 local body_transforms = {
+   require("feed.utils").resolve_urls,
    require("feed.utils").remove_urls,
    -- TODO: get rid of html headers and stuff
    -- TODO: allow user
@@ -169,7 +170,7 @@ M.show_index = function()
          wo = Config.options.index.wo,
          bo = Config.options.index.bo,
          keys = Config.keys.index,
-         zindex = 8,
+         zindex = 3,
       })
    end
 
@@ -245,7 +246,7 @@ local function show_entry(ctx)
       keys = Config.keys.entry,
       ft = "markdown",
       zen = Config.zen.enabled,
-      zindex = 10,
+      zindex = 5,
    })
 
    if ctx.link then
