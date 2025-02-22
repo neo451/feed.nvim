@@ -15,6 +15,9 @@
   <a href="https://luarocks.org/modules/neo451/feed.nvim">
     <img alt="LuaRocks" src="https://img.shields.io/luarocks/v/neo451/feed.nvim?style=for-the-badge">
   </a>
+  <a href="https://discord.gg/N85Cd9P7w4">
+    <img alt="Discord" src="https://img.shields.io/discord/1342870878794551356?style=for-the-badge&logo=discord">
+  </a>
 </p>
 
 **feed.nvim** is a web feed reader in Neovim.
