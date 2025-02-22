@@ -12,8 +12,6 @@ local api = vim.api
 ---@field buf? integer
 ---@field win? integer
 ---@field zen? boolean
----@field on_open? function
----@field on_leave? function
 ---@field keys? table
 ---@field enter boolean
 
@@ -21,29 +19,25 @@ local api = vim.api
 ---@field opts feed.win.Config
 ---@field id number
 ---@field win integer
+---@field prev_win integer
 ---@field buf integer
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
 ---@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
----@field backdrop feed.win
 local M = {}
 M.__index = M
 local id = 0
-
-local og = {
-   wo = {},
-   bo = {},
-}
 
 ---@param opts feed.win.Config | {}
 ---@param enter? boolean
 ---@return table
 function M.new(opts, enter)
    local width = opts.zen and Config.zen.width or vim.o.columns
+   local height = opts.zen and vim.o.lines or vim.o.lines - (vim.o.cmdheight + 1)
    opts = vim.tbl_deep_extend("force", {
       relative = "editor",
-      height = vim.o.lines - 1,
+      height = height,
       width = width,
       row = 0,
       col = (vim.o.columns - width) / 2,
@@ -68,7 +62,6 @@ function M.new(opts, enter)
    local self = setmetatable({
       opts = opts,
       id = id,
-      backdrop = opts.backdrop or nil,
    }, M)
 
    if opts.show then
@@ -82,11 +75,9 @@ function M.new(opts, enter)
 end
 
 function M:back()
-   if not self.backdrop then
-      return
-   end
    local bg, winblend = "#000000", 60
-   local group = ("SnacksBackdrop_%s"):format(bg and bg:sub(2) or "T")
+   local group = ("FeedBackdrop_%s"):format(bg and bg:sub(2) or "T")
+
    vim.api.nvim_set_hl(0, group, { bg = bg })
 
    local wo = {
@@ -96,11 +87,18 @@ function M:back()
       cursorline = false,
    }
 
-   for k in pairs(wo) do
-      og.wo[k] = vim.api.nvim_get_option_value(k, { win = self.win })
-   end
-
-   ut.wo(self.backdrop.win, wo)
+   self.backdrop = M.new({
+      wo = wo,
+      enter = false,
+      zen = false,
+      zindex = self.opts.zindex - 1,
+      width = vim.o.columns,
+      height = vim.o.lines,
+      style = "minimal",
+      border = "none",
+      relative = "editor",
+      focusable = false,
+   }, false)
 end
 
 local win_opts = {
@@ -150,20 +148,6 @@ function M:show()
       for k, v in pairs(self.opts.b) do
          vim.api.nvim_buf_set_var(self.buf, k, v)
       end
-   end
-
-   if self.opts.on_open then
-      api.nvim_create_autocmd("BufEnter", {
-         buffer = self.buf,
-         callback = self.opts.on_open,
-      })
-   end
-
-   if self.opts.on_leave then
-      api.nvim_create_autocmd("BufLeave", {
-         buffer = self.buf,
-         callback = self.opts.on_leave,
-      })
    end
 
    self.win = vim.api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
@@ -225,11 +209,15 @@ function M:maps()
       local opts = {}
       opts.buffer = self.buf
       opts.nowait = true
-      opts.desc = "Feed " .. rhs
-      assert(type(rhs) == "string")
-      vim.keymap.set("n", lhs, function()
-         vim.cmd.Feed(rhs)
-      end, opts)
+      if type(rhs) == "string" then
+         opts.desc = "Feed " .. rhs
+         assert(type(rhs) == "string")
+         vim.keymap.set("n", lhs, function()
+            vim.cmd.Feed(rhs)
+         end, opts)
+      elseif type(rhs) == "function" then
+         vim.keymap.set("n", lhs, rhs, opts)
+      end
    end
 end
 
@@ -268,6 +256,7 @@ function M:close()
       if buf and vim.api.nvim_buf_is_valid(buf) then
          vim.api.nvim_buf_delete(buf, { force = true })
       end
+      vim.api.nvim_set_current_win(self.opts.prev_win)
    end
    local try_close
    try_close = function()
@@ -278,11 +267,11 @@ function M:close()
          self.win = nil
          self.buf = nil
       end
-      if self.backdrop then
-         ut.wo(self.backdrop.win, og.wo)
-      end
    end
    vim.schedule(try_close)
+   if self.backdrop then
+      self.backdrop:close()
+   end
 end
 
 function M:buf_valid()

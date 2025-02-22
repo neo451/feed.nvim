@@ -1,6 +1,5 @@
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
----@field colorscheme? string
 ---@field db_dir? string
 ---@field date_format? string
 ---@field curl_params? string[]
@@ -15,8 +14,6 @@
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath("data") .. "/feed",
-   ---@type string
-   colorscheme = nil,
    ---@type { long: string, short: string }
    date_format = {
       short = "%Y-%m-%d",
@@ -74,7 +71,6 @@ local default = {
    progress = {
       backend = {
          "fidget",
-         "nvim-notify",
          "mini.notify",
          "snacks",
          "native",
