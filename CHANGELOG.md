@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/neo451/feed.nvim/compare/v2.5.0...v2.5.1) (2025-02-22)
+
+
+### Bug Fixes
+
+* **ui:** resolve links earlier for images ([bd513db](https://github.com/neo451/feed.nvim/commit/bd513db30c5b021cbff16c3a038c499a11716585))
+
 ## [2.5.0](https://github.com/neo451/feed.nvim/compare/v2.4.0...v2.5.0) (2025-02-22)
 
 
