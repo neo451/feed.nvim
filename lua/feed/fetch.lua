@@ -57,8 +57,8 @@ function M.update_feed_co(url, opts)
       entry.content = nil
       local id = vim.fn.sha256(entry.link)
       local fp = tostring(db.dir / "data" / id)
-      ut.save_file(fp, content)
       db[id] = entry
+      ut.save_file(fp, content)
    end
 
    feeds[url] = feeds[url] or {}

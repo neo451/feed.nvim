@@ -173,11 +173,13 @@ return {
       local state = require("feed.ui.state")
       local Config = require("feed.config")
 
-      local entries = db:filter(state.query)
+      if not state.entries then
+         state.entries = db:filter(Config.search.default_query)
+      end
 
       router:get("/", function(req, res)
          local acc = {}
-         for _, id in ipairs(entries) do
+         for _, id in ipairs(state.entries) do
             acc[#acc + 1] = router:render("entry", {
                id = id,
                title = db[id].title,

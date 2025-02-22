@@ -90,16 +90,20 @@ end
 ---@param k any
 ---@return function | feed.entry
 function M:__index(k)
+   if not k then
+      return
+   end
    local ms = rawget(M, k)
    if ms then
       return ms
+   else
+      local r = mem[k]
+      if not r then
+         r = Path.load(self.dir / "object" / k)
+         mem[k] = r
+      end
+      return r
    end
-   local r = mem[k]
-   if not r then
-      r = Path.load(self.dir / "object" / k)
-      mem[k] = r
-   end
-   return r
 end
 
 ---@param id string
