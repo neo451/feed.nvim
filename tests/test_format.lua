@@ -28,7 +28,8 @@ T["format"] = MiniTest.new_set({})
 
 T.format["tags"] = function()
    local id = "1"
-   eq("[unread, star]", M.tags(id, db))
+   local expect = "[unread, star      ]"
+   eq(expect, M.tags(id, db))
 end
 
 T.format["title"] = function()
@@ -48,7 +49,7 @@ end
 
 T.format["entry"] = function()
    local id = "1"
-   local expect = "neovim               [unread, star]       title "
+   local expect = "2025-01-01 neovim                    [unread, star      ] title "
    eq(expect, M.entry(id, nil, db))
 end
 
