@@ -1,6 +1,5 @@
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
----@field colorscheme? string
 ---@field db_dir? string
 ---@field date_format? string
 ---@field curl_params? string[]
@@ -15,8 +14,6 @@
 local default = {
    ---@type string
    db_dir = vim.fn.stdpath("data") .. "/feed",
-   ---@type string
-   colorscheme = nil,
    ---@type { long: string, short: string }
    date_format = {
       short = "%Y-%m-%d",
@@ -32,47 +29,38 @@ local default = {
    ---@type table[]
    layout = {
       padding = {
-         enabled = true,
+         enabled = false,
       },
-      {
-         "date",
+      order = { "date", "feed", "tags", "title" },
+      winbar_right = { "query", "last_updated" },
+      date = {
          width = 10,
          color = "FeedDate",
       },
-      {
-         "feed",
+      feed = {
          width = 25,
          color = "FeedTitle",
       },
-      {
-         "tags",
-         width = 25,
+      tags = {
+         width = 20,
          color = "FeedTags",
       },
-      {
-         "title",
+      title = {
          color = "FeedTitle",
       },
-      {
-         "progress",
-         right = true,
+      progress = {
          color = "FeedDate",
       },
-      {
-         "query",
-         right = true,
+      query = {
          color = "FeedLabel",
       },
-      {
-         "last_updated",
-         right = true,
+      last_updated = {
          color = "FeedDate",
       },
    },
 
    search = {
       default_query = "@6-months-ago +unread ",
-      -- show_last = false,
       backend = {
          "mini.pick",
          "telescope",
@@ -83,7 +71,6 @@ local default = {
    progress = {
       backend = {
          "fidget",
-         "nvim-notify",
          "mini.notify",
          "snacks",
          "native",
@@ -96,19 +83,6 @@ local default = {
 
    ---@type feed.feed[]
    feeds = {},
-
-   icons = {
-      enabled = false,
-      pod = "📻",
-      unread = "👀",
-      read = "✅",
-      star = "🌟",
-      news = "📰",
-      tech = "🦾",
-      app = "📱",
-      blog = "📝",
-      email = "📧",
-   },
 
    keys = {
       index = {
@@ -188,6 +162,7 @@ local default = {
       port = 9876,
    },
    zen = {
+      enabled = true,
       width = 90,
    },
 }

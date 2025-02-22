@@ -27,31 +27,9 @@ local ns = api.nvim_create_namespace("feed_index")
 local ns_read = api.nvim_create_namespace("feed_index_read")
 local ns_entry = api.nvim_create_namespace("feed_entry")
 
-local og = {}
-
----@param colorscheme string
-local function set_colorscheme(colorscheme)
-   if Config.colorscheme and vim.g.colors_name ~= colorscheme then
-      pcall(vim.cmd.colorscheme, colorscheme)
-   end
-end
-
-local function save_og()
-   og.colorscheme = vim.g.colors_name
-   og.cmdheight = vim.o.cmdheight
-end
-local function set_color_n_height()
-   vim.o.cmdheight = 0
-   set_colorscheme(Config.colorscheme)
-end
-local function restore_color_n_height()
-   vim.o.cmdheight = og.cmdheight
-   set_colorscheme(og.colorscheme)
-end
-
 ---get entry base on current context, and update current_index
----@return feed.entry
----@return string
+---@return feed.entry?
+---@return string?
 local function get_entry(ctx)
    ctx = ctx or {}
    local id
@@ -96,12 +74,11 @@ end
 ---@param buf number
 local function image_attach(buf)
    if not Snacks then
+      vim.notify("Snacks is not available")
       return
    end
-   pcall(function()
-      local ok, f = pcall(Snacks.image.doc.inline, buf)
-      return ok and f and f()
-   end)
+   local ok, f = pcall(Snacks.image.doc.inline, buf)
+   return ok and f and pcall(f)
 end
 
 local body_transforms = {
@@ -160,18 +137,39 @@ local function render_entry(buf, body, id)
 
    image_attach(buf)
    mark_read(id)
+
+   api.nvim_buf_set_name(buf, "FeedEntry")
+
+   api.nvim_exec_autocmds("User", {
+      pattern = "FeedShowEntry",
+   })
+end
+
+local function hl_index(buf)
+   for linenr = 1, #state.entries do
+      local acc = 0
+      local layout = Config.layout
+      for _, name in ipairs(layout.order) do
+         local sect = layout[name]
+         local width = sect.width or 100
+         local byte_start, byte_end = ut.display_to_byte_range(buf, linenr, acc, acc + width)
+         hl.range(buf, ns, sect.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })
+         acc = acc + width + 1
+      end
+   end
 end
 
 M.show_index = function()
-   save_og()
-   if not state.index or not state.index:valid() then
+   local cursor_pos, scroll_pos
+   if state.index then
+      cursor_pos = api.nvim_win_get_cursor(state.index.win)
+      scroll_pos = fn.line("w0")
+   else
       state.index = Win.new({
          wo = Config.options.index.wo,
          bo = Config.options.index.bo,
          keys = Config.keys.index,
-         zindex = 3,
-         on_open = set_color_n_height,
-         on_leave = restore_color_n_height,
+         zindex = 8,
       })
    end
 
@@ -186,18 +184,19 @@ M.show_index = function()
    for i, id in ipairs(state.entries) do
       lines[i] = Format.entry(id, Config.layout, db)
    end
+   table.insert(lines, "")
    api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
-   for i = 1, #state.entries do
-      local acc = 0
-      for _, sect in ipairs(Config.layout) do
-         local width = sect.width or 100
-         hl.range(buf, ns, sect.color, { i - 1, acc }, { i - 1, acc + width })
-         acc = acc + width + 1
-      end
-   end
-   api.nvim_buf_set_lines(buf, #state.entries, #state.entries + 1, false, { "" })
+   hl_index(buf)
    vim.bo[buf].modifiable = false
+
+   if cursor_pos and scroll_pos then
+      pcall(api.nvim_win_set_cursor, win, cursor_pos)
+      fn.winrestview({ topline = scroll_pos })
+   end
+
+   api.nvim_exec_autocmds("User", {
+      pattern = "FeedShowIndex",
+   })
 end
 
 ---@param ctx? { row: integer, id: string, buf: integer, link: string, read: boolean }
@@ -238,26 +237,16 @@ local function show_entry(ctx)
       buf = api.nvim_create_buf(false, true)
    end
 
-   Config.options.entry.wo.winbar = M.show_keyhints()
-
-   if vim.tbl_isempty(og) then
-      save_og()
-   end
-
-   state.entry = state.entry
-      or Win.new({
-         prev_win = (state.index and state.index:valid()) and state.index.win or nil,
-         buf = buf,
-         wo = Config.options.entry.wo,
-         bo = Config.options.entry.bo,
-         keys = Config.keys.entry,
-         ft = "markdown",
-         on_open = set_color_n_height,
-         on_leave = restore_color_n_height,
-         zen = true,
-         zindex = 8,
-         backdrop = state.index and state.index or { win = api.nvim_get_current_win() },
-      })
+   state.entry = Win.new({
+      prev_win = state.index and state.index.win or nil,
+      buf = buf,
+      wo = Config.options.entry.wo,
+      bo = Config.options.entry.bo,
+      keys = Config.keys.entry,
+      ft = "markdown",
+      zen = Config.zen.enabled,
+      zindex = 10,
+   })
 
    if ctx.link then
       Markdown.convert({
@@ -281,21 +270,21 @@ local function show_entry(ctx)
          end,
       })
    end
-
-   local win = state.entry.win
-
-   api.nvim_buf_set_name(buf, "FeedEntry")
-   -- TODO: restore cursor and scroll pos
-   api.nvim_win_set_cursor(win, { 1, 0 })
 end
 
 M.quit = function()
    if ut.in_index() then
       state.index:close()
       state.index = nil
+      vim.api.nvim_exec_autocmds("User", {
+         pattern = "FeedQuitIndex",
+      })
    elseif ut.in_entry() then
       state.entry:close()
       state.entry = nil
+      vim.api.nvim_exec_autocmds("User", {
+         pattern = "FeedQuitEntry",
+      })
    end
 end
 
@@ -313,7 +302,7 @@ end
 M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur - 1, buf = state.entry.buf })
+      M.preview_entry({ row = state.cur - 1, buf = state.entry.buf })
       api.nvim_exec_autocmds("BufWritePost", {})
    end
 end
@@ -321,7 +310,7 @@ end
 M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur + 1, buf = state.entry.buf })
+      M.preview_entry({ row = state.cur + 1, buf = state.entry.buf })
       api.nvim_exec_autocmds("BufWritePost", {})
    end
 end
@@ -385,7 +374,9 @@ M.show_hints = function()
 
    local lines = {}
    for k, v in pairs(maps) do
-      lines[#lines + 1] = v .. " -> " .. k
+      if type(k) == "string" then
+         lines[#lines + 1] = v .. " -> " .. k
+      end
    end
 
    M.split({
@@ -487,7 +478,9 @@ M.export_opml = function(fp)
 end
 
 --- FIXME
-M.dot = function() end
+M.dot = function()
+   vim.notify("No operation defined for dot")
+end
 
 M.undo = function()
    local act = table.remove(undo_history, #undo_history)

@@ -20,7 +20,7 @@ local uv = vim.uv
 ---@field untag fun(db: feed.db, id: string, tag: string | string[])
 ---@field blowup fun(db: feed.db)
 ---@field update fun(db: feed.db)
----@field lastUpdated fun(db: feed.db): string
+---@field last_updated fun(db: feed.db): string
 local M = {}
 
 ---@param fp feed.path
@@ -128,7 +128,7 @@ function M:update()
    rawset(self, "tags", tags)
 end
 
-function M:lastUpdated()
+function M:last_updated()
    return os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
 end
 
