@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.5.0](https://github.com/neo451/feed.nvim/compare/v2.4.0...v2.5.0) (2025-02-22)
+
+
+### Features
+
+* allow passing format functions to layout components ([4810f53](https://github.com/neo451/feed.nvim/commit/4810f533eefcc5aa0f290c57d137f37c7ba73efe))
+* **ui:** properly handle multi-byte chars! ([e9870d1](https://github.com/neo451/feed.nvim/commit/e9870d17aa85e7c5e94c5c76f7185f5783c40727))
+* **ui:** simplify UI, move non-essential to recipes ([1cdcf37](https://github.com/neo451/feed.nvim/commit/1cdcf37661f469ded39a9692de5fc183438f3de5))
+* **zenmode:** proper backdrop ([1cdcf37](https://github.com/neo451/feed.nvim/commit/1cdcf37661f469ded39a9692de5fc183438f3de5))
+
+
+### Bug Fixes
+
+* config layouts and kv pair plus and order to avoid tbl_merge issue ([4810f53](https://github.com/neo451/feed.nvim/commit/4810f533eefcc5aa0f290c57d137f37c7ba73efe))
+* **config:** configuration option for zen mode ([e9870d1](https://github.com/neo451/feed.nvim/commit/e9870d17aa85e7c5e94c5c76f7185f5783c40727))
+* **config:** remove icons table, give it as a recipe later ([e9870d1](https://github.com/neo451/feed.nvim/commit/e9870d17aa85e7c5e94c5c76f7185f5783c40727))
+* **ui:** auto-calc window heght ([1cdcf37](https://github.com/neo451/feed.nvim/commit/1cdcf37661f469ded39a9692de5fc183438f3de5))
+
 ## [2.4.0](https://github.com/neo451/feed.nvim/compare/v2.3.0...v2.4.0) (2025-02-21)
 
 
