@@ -160,9 +160,9 @@ end
 
 T["filter"]["filter by date"] = function()
    simulate_db({
-      [1] = { time = date.literal("6-days-ago") },
-      [2] = { time = date.literal("7-days-ago") },
-      [3] = { time = date.literal("1-day-ago") },
+      [1] = { time = date._days_ago(6) },
+      [2] = { time = date._days_ago(7) },
+      [3] = { time = date._days_ago(1) },
       [4] = { time = os.time() },
    })
    eq({ sha("4"), sha("3") }, db:filter("@5-days-ago"))

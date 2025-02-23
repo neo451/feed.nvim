@@ -60,7 +60,7 @@ local default = {
    },
 
    search = {
-      default_query = "@6-months-ago +unread ",
+      default_query = "@2-weeks-ago +unread ",
       backend = {
          "mini.pick",
          "telescope",

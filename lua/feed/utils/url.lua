@@ -30,8 +30,8 @@ end
 
 --- Returns all URLs in markdown buffer, if any.
 ---@param src string
----@return string[][]
-M.get_urls = function(src, cur_link)
+---@return string[][]?
+M.get_urls = vim.F.nil_wrap(function(src, cur_link)
    local ret = {}
 
    if cur_link then
@@ -72,7 +72,7 @@ M.get_urls = function(src, cur_link)
       end
    end
    return ret
-end
+end)
 
 local function escape_pattern(text)
    return "%(" .. text:gsub("([%%%.%[%]%(%)%$%^%+%-%*%?])", "%%%1") .. "%)" -- Escape all magic characters in the pattern

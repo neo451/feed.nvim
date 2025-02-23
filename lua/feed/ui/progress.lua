@@ -7,6 +7,11 @@ local function format_message(idx, total, message)
    return ("[%d/%d] %s"):format(idx, total, message)
 end
 
+---@class feed.progress
+---@field total integer
+---@field count integer
+---@field t integer
+---@field update fun(self: feed.progress, message: string)
 local M = {}
 M.__index = M
 

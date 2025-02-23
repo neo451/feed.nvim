@@ -31,15 +31,7 @@ function M.tags(id, db)
       end
    end
 
-   local len = Config.layout.tags.width - 2
-
-   -- for _, v in ipairs(Config.layout) do
-   --    if v[1] == "tags" then
-   --       len = v.width - 2
-   --    end
-   -- end
-
-   return "[" .. ut.align(table.concat(acc, ", "), len) .. "]"
+   return "[" .. ut.align(table.concat(acc, ", "), Config.layout.tags.width - 2) .. "]"
 end
 
 ---@param id string
@@ -65,17 +57,15 @@ end
 ---@param id string
 ---@param db feed.db
 ---@return string
-M.author = function(id)
+M.author = function(id, db)
    db = db or require("feed.db")
    ---@type feed.entry
    local entry = db[id]
-   local text
-   if entry.author == "" then
-      text = entry.feed
+   if entry.author then
+      return cleanup(entry.author)
    else
-      text = entry.author
+      return M.feed(id, db)
    end
-   return cleanup(text)
 end
 
 ---@param id string

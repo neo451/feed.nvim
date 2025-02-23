@@ -39,20 +39,26 @@ T["parse"]["W3CDTF"] = function()
 end
 
 T["relative time"]["years ago"] = function()
-   local res = M._years_ago(5, { year = 2025, month = 1, day = 2 })
-   local expected = os.time { year = 2020, month = 1, day = 2 }
+   local res = M._years_ago(5, os.time({ year = 2025, month = 1, day = 2 }))
+   local expected = os.time({ year = 2020, month = 1, day = 2 })
+   date_eq(expected, res)
+end
+
+T["relative time"]["week ago"] = function()
+   local res = M._weeks_ago(2, os.time({ year = 2025, month = 1, day = 13 }))
+   local expected = os.time({ year = 2024, month = 12, day = 30 })
    date_eq(expected, res)
 end
 
 T["relative time"]["months ago"] = function()
-   local res = M._months_ago(5, { year = 2025, month = 1, day = 2 })
-   local expected = os.time { year = 2024, month = 8, day = 2 }
+   local res = M._months_ago(5, os.time({ year = 2025, month = 1, day = 2 }))
+   local expected = os.time({ year = 2024, month = 8, day = 2 })
    date_eq(expected, res)
 end
 
 T["relative time"]["days ago"] = function()
-   local res = M._days_ago(5, { year = 2025, month = 1, day = 2 })
-   local expected = os.time { year = 2024, month = 12, day = 28 }
+   local res = M._days_ago(5, os.time({ year = 2025, month = 1, day = 2 }))
+   local expected = os.time({ year = 2024, month = 12, day = 28 })
    date_eq(expected, res)
 end
 

@@ -14,6 +14,7 @@ T["import"]["simple opml"] = function()
 </body></opml>]])
    assert(opml)
    eq(opml.http.title, "hello")
+   eq(opml.http.tags, nil)
 end
 
 T["import"]["real big opml"] = function()

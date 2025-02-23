@@ -19,7 +19,6 @@ end
 
 local check_feed = function(ast)
    is_string(ast.title)
-   is_string(ast.desc)
    is_url(ast.link)
    is_table(ast.entries)
    for _, v in ipairs(ast.entries) do
@@ -29,7 +28,6 @@ local check_feed = function(ast)
       is_url(v.link)
       is_number(v.time)
       is_string(v.title)
-      is_string(v.author)
       is_string(v.feed)
    end
 end
@@ -149,9 +147,120 @@ T["url resolover"] = MiniTest.new_set({
    },
 })
 
-local function check(filename, checks)
+-- https://sample-feeds.rowanmanning.com/
+T["sample-feeds.com"] = MiniTest.new_set({
+   parametrize = {
+      {
+         "sample/apple_podcast.xml",
+         {
+            link = "https://www.apple.com/itunes/podcasts/",
+            author = "The Sunset Explorers",
+            --       desc = [[Love to get outdoors and discover nature&apos;s treasures? Hiking Treks is the
+            -- show for you. We review hikes and excursions, review outdoor gear and interview
+            -- a variety of naturalists and adventurers. Look for new episodes each week.]],
+            [1] = {
+               link = "http://example.com/podcasts/everything/AllAboutEverythingEpisode4.mp3",
+            },
+         },
+      },
+      {
+         "sample/atom.xml",
+         {
+            title = "Example Feed",
+            link = "http://example.org/",
+            author = "John Doe",
+            [1] = {
+               link = "http://example.org/2003/12/13/atom03",
+               title = "Atom-Powered Robots Run Amok",
+               content = "Some text.",
+            },
+         },
+      },
+      {
+         "sample/feedforall.xml",
+         {
+            title = "FeedForAll Sample Feed",
+            desc = "RSS is a fascinating technology. The uses for RSS are expanding daily. Take a closer look at how various industries are using the benefits of RSS in their businesses.",
+            link = "http://www.feedforall.com/industry-solutions.htm",
+            [1] = {
+               title = "RSS Solutions for Restaurants",
+               link = "http://www.feedforall.com/restaurant.htm",
+            },
+         },
+      },
+      --       {
+      --          "sample/youtube.xml",
+      --          {
+      --             title = "Critical Role",
+      --             author = "Critical Role",
+      --             link = "https://www.youtube.com/channel/UCpXBGqwsBkpvcYjsJBQ7LEQ",
+      --             [1] = {
+      --                title = "The Aurora Grows | Critical Role | Campaign 3, Episode 49",
+      --                linke = "https://www.youtube.com/watch?v=0_NVdZp8haA",
+      --                content = [[
+      -- This episode is sponsored by Thorum. Enjoy 20% off your Thorum ring with code Criticalrole at https://Thorum.com
+      --
+      -- Bells Hells travel the aurora-filled skies of the Hellcatch Valley, concocting plans and gathering allies as the days tick down to the apogee solstice...
+      --
+      -- CAPTION STATUS: CAPTIONED BY OUR EDITORS. The closed captions featured on this episode have been curated by our CR editors. For more information on the captioning process, check out: https://critrole.com/cr-transcript-closed-captions-update
+      --
+      -- Due to the improv nature of Critical Role and other RPG content on our channels, some themes and situations that occur in-game may be difficult for some to handle. If certain episodes or scenes become uncomfortable, we strongly suggest taking a break or skipping that particular episode.
+      -- Your health and well-being is important to us and Psycom has a great list of international mental health resources, in case it’s useful: http://bit.ly/PsycomResources
+      --
+      -- Watch Critical Role Campaign 3 live Thursdays at 7pm PT on https://twitch.tv/criticalrole and https://youtube.com/criticalrole. To join our live and moderated community chat, watch the broadcast on our Twitch channel.
+      --
+      -- Twitch subscribers gain instant access to VODs of our shows like Critical Role, Exandria Unlimited, and 4-Sided Dive. But don't worry: Twitch broadcasts will be uploaded to YouTube about 36 hours after airing live, with audio-only podcast versions of select shows on Spotify, Apple Podcasts &amp; Google Podcasts following a week after the initial air date. Twitch subscribers also gain access to our official custom emote set and subscriber badges and the ability to post links in Twitch chat!
+      --
+      -- &quot;It's Thursday Night (Critical Role Theme Song)&quot; by Peter Habib and Sam Riegel
+      -- Original Music by Omar Fadel and Hexany Audio
+      -- &quot;Welcome to Marquet&quot; Art Theme by Colm McGuinness
+      -- Additional Music by Universal Production Music, Epidemic Sounds, and 5 Alarm
+      -- Character Art by Hannah Friederichs
+      --
+      --
+      -- Follow us!
+      -- Website: https://www.critrole.com
+      -- Newsletter: https://critrole.com/newsletter
+      -- Facebook: https://www.facebook.com/criticalrole
+      -- Twitter: https://twitter.com/criticalrole
+      -- Instagram: https://instagram.com/critical_role
+      -- Twitch: https://www.twitch.tv/criticalrole
+      --
+      -- Shops:
+      -- US: https://shop.critrole.com
+      -- UK: https://shop.critrole.co.uk
+      -- EU: https://shop.critrole.eu
+      -- AU: https://shop.critrole.com.au
+      -- CA: https://canada.critrole.com
+      --
+      -- Follow Critical Role Foundation!
+      -- Learn More &amp; Donate: https://criticalrolefoundation.org
+      -- Twitter: https://twitter.com/CriticalRoleFDN
+      -- Facebook: https://facebook.com/CriticalRoleFDN
+      --
+      -- Want games? Follow Darrington Press
+      -- Newsletter: https://darringtonpress.com/newsletter
+      -- Twitter: https://twitter.com/DarringtonPress
+      -- Facebook: https://www.facebook.com/darringtonpress
+      --
+      -- Check out our animated series!
+      -- The Legend of Vox Machina is available now on Prime Video! Watch: https://amzn.to/3o4nBS5
+      -- Listen to The Legend of Vox Machina's official soundtrack here: https://lnk.to/voxmachina
+      --
+      -- #CriticalRole #BellsHells #DungeonsAndDragons
+      --                ]],
+      --             },
+      --          },
+      --       },
+   },
+})
+
+local function check(filename, checks, debug)
    local f = M.parse(readfile(filename), "http://placehoder.feed")
    assert(f)
+   if debug then
+      vim.print(f)
+   end
    for k, v in pairs(checks) do
       if type(v) == "table" then
          for kk, vv in pairs(v) do
@@ -173,6 +282,7 @@ T["rss"]["works"] = check
 T["atom"]["works"] = check
 T["json"]["works"] = check
 T["url resolover"]["works"] = check
+T["sample-feeds.com"]["works"] = check
 --
 --- TODO: parse the condition in the feed parser test suite, into a check table, and wemo check!!
 

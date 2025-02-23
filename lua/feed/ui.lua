@@ -103,8 +103,8 @@ local function render_entry(buf, body, id)
       header[i] = ut.capticalize(v) .. ": " .. Format[v](id)
    end
 
-   local ok, urls = pcall(ut.get_urls, body, db[id].link)
-   if ok then
+   local urls = ut.get_urls(body, db[id].link)
+   if urls then
       state.urls = urls
    else
       if vim.g.feed_debug then
@@ -112,8 +112,13 @@ local function render_entry(buf, body, id)
       end
    end
 
+   local ok, res
+
    for _, f in ipairs(body_transforms) do
-      body = f(body, id)
+      ok, res = pcall(f, body, id)
+      if ok then
+         body = res
+      end
    end
 
    header[#header + 1] = ""

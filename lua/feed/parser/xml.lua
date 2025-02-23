@@ -234,7 +234,7 @@ end
 ---@param src string
 ---@param url string
 ---@return table?
-local function parse(src, url)
+local parse = vim.F.nil_wrap(function(src, url)
    ut.assert_parser("xml")
    src = sanitize(src)
    local root = get_root(src, "xml")
@@ -249,7 +249,7 @@ local function parse(src, url)
       collected[2].encoding = collected[1].encoding
    end
    return #collected == 2 and collected[2] or collected[1]
-end
+end)
 
 return {
    parse = parse,

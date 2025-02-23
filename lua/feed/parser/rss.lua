@@ -1,8 +1,14 @@
 local date = require("feed.parser.date")
 local ut = require("feed.utils")
-local p_ut = require("feed.parser.utils")
-local sensible = p_ut.sensible
-local decode = require("feed.lib.entities").decode
+local sensible = ut.sensible
+local decode = ut.decode
+
+---@param str string?
+---@return string?
+local clean = function(str)
+   str = decode(str)
+   return str and vim.trim(str) or nil
+end
 
 local function handle_version(ast)
    local version
@@ -57,8 +63,11 @@ local function handle_link(node, base) -- TODO: base and rebase modified for rss
    return base
 end
 
-local function handle_author(node, fallback)
-   return sensible(node["author"] or node["dc:creator"] or node["itunes:author"], 1, fallback)
+local function handle_author(node)
+   local author_node = node["itunes:author"] or node["author"] or node["dc:creator"] or node["dc:author"]
+   if author_node then
+      return clean(author_node[1] or author_node.name)
+   end
 end
 
 local function handle_date(entry)
@@ -67,10 +76,9 @@ local function handle_date(entry)
 end
 
 local function handle_content(entry, fallback)
-   -- TODO: type of content not relevant?
-   local content = sensible(entry["content:encoded"] or entry.description, 1)
+   local content = sensible(entry["content:encoded"] or entry["description"], 1)
    if content then
-      return content
+      return clean(content)
    else
       return fallback
    end
@@ -81,33 +89,33 @@ local function handle_entry_title(entry, fallback)
 end
 
 local function handle_description(channel, fallback)
-   return sensible(channel.description or channel["dc:description"] or channel["itunes:subtitle"], 1, fallback)
+   return clean(sensible(channel.description or channel["dc:description"] or channel["itunes:subtitle"], 1, fallback))
 end
 
-local function handle_entry(entry, feed_url, feed_name, feed_author, url_id)
+local function handle_entry(entry, feed, url)
    local res = {}
-   res.link = handle_link(entry, feed_url)
+   res.link = handle_link(entry, feed.link)
    res.content = handle_content(entry, "")
    res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)
-   res.author = decode(handle_author(entry, feed_author or feed_name))
-   res.feed = url_id
+   res.author = handle_author(entry) or feed.author
+   res.feed = url
    return res
 end
 
-local function handle_rss(ast, url_id)
+local function handle_rss(ast, url)
    local res = {}
    res.version = handle_version(ast)
    local channel = ast.rss and ast.rss.channel or ast["rdf:RDF"].channel
-   res.link = handle_link(channel, url_id)
+   res.link = handle_link(channel, url)
    res.title = decode(handle_title(channel, res.link))
-   local feed_author = decode(handle_author(channel, res.title))
+   res.author = handle_author(channel)
    res.desc = decode(handle_description(channel, res.title))
    res.entries = {}
    res.type = "rss"
    if channel.item then
       for _, v in ipairs(ut.listify(channel.item)) do
-         res.entries[#res.entries + 1] = handle_entry(v, res.link, res.title, feed_author, url_id)
+         res.entries[#res.entries + 1] = handle_entry(v, res, url)
       end
    end
    return res
