@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.6.0](https://github.com/neo451/feed.nvim/compare/v2.5.1...v2.6.0) (2025-02-23)
+
+
+### Features
+
+* **date:** support weeks_ago ([89cfff3](https://github.com/neo451/feed.nvim/commit/89cfff32971ab95250ca0bbe1a2c57e3170ad368))
+
+
+### Bug Fixes
+
+* add health check for markdown parser ([c89d9cc](https://github.com/neo451/feed.nvim/commit/c89d9cc0a9d8a922759efeb39650d9f53c7510cb))
+* **parser:** author is optional at parsing, fallback at rendering ([89cfff3](https://github.com/neo451/feed.nvim/commit/89cfff32971ab95250ca0bbe1a2c57e3170ad368))
+* **parser:** missing author field ([89cfff3](https://github.com/neo451/feed.nvim/commit/89cfff32971ab95250ca0bbe1a2c57e3170ad368))
+
 ## [2.5.1](https://github.com/neo451/feed.nvim/compare/v2.5.0...v2.5.1) (2025-02-22)
 
 
