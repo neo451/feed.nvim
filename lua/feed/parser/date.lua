@@ -1,69 +1,65 @@
 local M = {}
 
----@class feed._date
----@field year integer
----@field month integer
----@field day integer
-
----@param date feed._date?
----@return integer
-local os_time = function(date)
-   return os.time(date)
-end
-
 ---@param n integer
----@param now feed._date?
+---@param now integer?
 ---@return integer
----@private
 local function days_ago(n, now)
-   now = os_time(now) or os.time()
+   now = now or os.time()
    local day = 24 * 60 * 60
    return now - day * n
 end
 
 ---@param n integer
----@param now? feed._date
+---@param now integer?
 ---@return integer
----@private
-local function years_ago(n, now)
-   now = now or os.date("*t")
-   return os.time { year = now.year - n, month = now.month, day = now.day }
+local function weeks_ago(n, now)
+   return days_ago(n * 7, now)
 end
 
 ---@param n integer
----@param now? feed._date
+---@param now integer?
+---@return integer
+local function years_ago(n, now)
+   local t = os.date("*t", now) or os.date("*t")
+   return os.time({ year = t.year - n, month = t.month, day = t.day })
+end
+
+---@param n integer
+---@param now integer?
 ---@return integer
 local function months_ago(n, now)
-   now = now or os.date("*t")
-   now.month = now.month - n
+   local t = os.date("*t", now) or os.date("*t")
 
-   while now.month < 1 do
-      now.month = now.month + 12
-      now.year = now.year - 1
+   t.month = t.month - n
+
+   while t.month < 1 do
+      t.month = t.month + 12
+      t.year = t.year - 1
    end
 
    local last_day = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
 
-   if now.year % 4 == 0 and (now.year % 100 ~= 0 or now.year % 400 == 0) then -- Check for leap year
+   if t.year % 4 == 0 and (t.year % 100 ~= 0 or t.year % 400 == 0) then -- Check for leap year
       last_day[2] = 29
    end
 
    -- Adjust the day if it exceeds the number of days in the new month
-   if now.day > last_day[now.month] then
-      now.day = last_day[now.month]
+   if t.day > last_day[t.month] then
+      t.day = last_day[t.month]
    end
 
    ---@diagnostic disable-next-line: param-type-mismatch
-   return os.time(now)
+   return os.time(t)
 end
 
 M._days_ago = days_ago
 M._years_ago = years_ago
+M._weeks_ago = weeks_ago
 M._months_ago = months_ago
 
 local patterns = {}
 local months =
-{ Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
+   { Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 }
 local weekdays = { Sun = 1, Mon = 2, Tue = 3, Wed = 4, Thu = 5, Fri = 6, Sat = 7 }
 
 do
@@ -79,34 +75,33 @@ do
    local zone = (S("+-") * digit) + C(R("AZ") ^ 1)
    local min_and_sec = L.digit ^ 2 * P(":") * L.digit ^ 2 * P("-")
    patterns.RFC2822 = alpha
-       * P(", ")
-       * digit
-       * ws
-       * alpha
-       * ws
-       * digit
-       * ws
-       * digit
-       * col
-       * digit
-       * col
-       * digit
-       * ws
-       * zone
+      * P(", ")
+      * digit
+      * ws
+      * alpha
+      * ws
+      * digit
+      * ws
+      * digit
+      * col
+      * digit
+      * col
+      * digit
+      * ws
+      * zone
    patterns.RFC3339 = digit
-       * P("-")
-       * digit
-       * P("-")
-       * digit
-       * S("Tt")
-       * digit
-       * (P(":") * min_and_sec ^ -1)
-       * digit
-       * (P(":") ^ -1)
-       * (digit ^ -1)
-       * (R("AZ") ^ -1)
-   patterns.ASCTIME = alpha * ws * alpha * ws * digit * ws * digit * ws * digit * col * digit * col * digit *
-       ws -- TODO: zone
+      * P("-")
+      * digit
+      * P("-")
+      * digit
+      * S("Tt")
+      * digit
+      * (P(":") * min_and_sec ^ -1)
+      * digit
+      * (P(":") ^ -1)
+      * (digit ^ -1)
+      * (R("AZ") ^ -1)
+   patterns.ASCTIME = alpha * ws * alpha * ws * digit * ws * digit * ws * digit * col * digit * col * digit * ws -- TODO: zone
 end
 
 ---@param str string
@@ -178,12 +173,14 @@ M.parse = function(str, t)
    return os.time()
 end
 
-function M.literal(str)
+local function literal(str)
    local a, unit, ago = unpack(vim.split(str, "-"))
    local n = tonumber(a)
    if n and unit and ago then
       if unit:find("day") then
          return days_ago(n)
+      elseif unit:find("week") then
+         return weeks_ago(n)
       elseif unit:find("month") then
          return months_ago(n)
       elseif unit:find("year") then
@@ -196,15 +193,16 @@ end
 ---@return integer?
 local function numeral(str)
    local a, b, c = unpack(vim.split(str, "-"))
-   if a and b and c then
-      return os.time({ year = tonumber(a), month = tonumber(b), day = tonumber(c) })
+   local an, bn, cn = tonumber(a), tonumber(b), tonumber(c)
+   if an and bn and cn then
+      return os.time({ year = an, month = bn, day = cn })
    end
 end
 
 ---@param str string
 ---@return integer?
 local function filter_part(str)
-   for _, f in ipairs({ M.literal, numeral }) do
+   for _, f in ipairs({ literal, numeral }) do
       if f(str) then
          return f(str)
       end

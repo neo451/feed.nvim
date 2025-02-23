@@ -196,7 +196,7 @@ M.update = {
       local prog = Progress.new(#ut.feedlist(db.feeds, false))
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
-         stderr = function(_, data)
+         stdout = function(_, data)
             if data and vim.trim(data) ~= "" then
                prog:update(vim.trim(data))
             end

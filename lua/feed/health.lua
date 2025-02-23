@@ -15,6 +15,7 @@ local dependencies = {
 
 local plugins = {
    { lib = "coop", optional = false, info = "required for concurrency" },
+   { lib = "snacks", optional = true, info = "required for image rendering" },
 }
 
 local parsers = {

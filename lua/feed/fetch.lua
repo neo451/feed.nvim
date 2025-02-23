@@ -2,11 +2,9 @@ local Coop = require("coop")
 local Feedparser = require("feed.parser")
 local Curl = require("feed.curl")
 local Config = require("feed.config")
-local Markdown = require("feed.ui.markdown")
 local db = require("feed.db")
 local ut = require("feed.utils")
 local M = {}
-local as_completed = require("coop.control").as_completed
 
 local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
 local encoding_blacklist = ut.list2lookup({ "gb2312" })
@@ -83,17 +81,27 @@ function M.update_all()
    local list = ut.feedlist(feeds, false)
    local n = #list
 
+   local io_print = function(...)
+      local content = table.concat({ ... }, " ")
+      io.write(content)
+   end
+
+   if n == 0 then
+      io_print("Empty database\n")
+      os.exit()
+   end
+
    for i = 1, n do
       Coop.spawn(function()
          local url = list[i]
          local ok = M.update_feed_co(url, { force = false })
          local name = ut.url2name(url, feeds)
          c = c + 1
-         print(name, ok and "success" or "failed")
+         io_print(name, ok and "success" or "failed")
          if c == n then
             os.exit()
          end
-         print("\n")
+         io_print("\n")
       end)
    end
 end

@@ -3,11 +3,12 @@ local M = {}
 local looks_like_url = require("feed.utils").looks_like_url
 
 local dir = vim.uv.cwd()
-local data_dir = dir .. "/data/"
+local data_dir = dir .. "/data"
 
 function M.readfile(path, prefix)
    prefix = prefix or data_dir
-   local str = vim.fn.readfile(prefix .. path)
+   local fp = vim.fs.joinpath(prefix, path)
+   local str = vim.fn.readfile(fp)
    return table.concat(str)
 end
 
@@ -23,9 +24,9 @@ Expect:      not bozo and entries[0]['author_detail']['email'] == 'me@example.co
 ]]
 
 function M.extract_test(str)
-   local case = str:match "not bozo and (%C+)"
+   local case = str:match("not bozo and (%C+)")
    if case:sub(1, 4) == "feed" then
-      local k, v = case:match "feed%['(%w+)'%] == '(.+)'"
+      local k, v = case:match("feed%['(%w+)'%] == '(.+)'")
       return { [k] = v }
    elseif case:sub(1, 7) == "entries" then
       -- local k, v = case:match "entries%[0%]%['(%w+)'%] == '(.+)'"
