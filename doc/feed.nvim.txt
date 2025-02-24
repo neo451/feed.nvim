@@ -1,0 +1,251 @@
+*feed.nvim.txt*             For 0.11             Last change: 2025 February 24
+
+==============================================================================
+Table of Contents                                *feed.nvim-table-of-contents*
+
+1. Commands                                               |feed.nvim-commands|
+2. Keymaps                                                 |feed.nvim-keymaps|
+  - Index buffer                              |feed.nvim-keymaps-index-buffer|
+  - Entry buffer                              |feed.nvim-keymaps-entry-buffer|
+3. Manage                                                   |feed.nvim-manage|
+  - From lua                                       |feed.nvim-manage-from-lua|
+  - From OPML                                     |feed.nvim-manage-from-opml|
+  - Link formats                               |feed.nvim-manage-link-formats|
+4. Search                                                   |feed.nvim-search|
+  - Regex                                             |feed.nvim-search-regex|
+  - Tags                                               |feed.nvim-search-tags|
+  - Date                                               |feed.nvim-search-date|
+  - Limit                                             |feed.nvim-search-limit|
+  - Examples                                       |feed.nvim-search-examples|
+  - Grep                                               |feed.nvim-search-grep|
+5. Layout                                                   |feed.nvim-layout|
+6. Lua API                                                 |feed.nvim-lua-api|
+
+==============================================================================
+1. Commands                                               *feed.nvim-commands*
+
+To see actions available in the current context:
+
+- Either use `:Feed <Tab>` to see the completions
+- Or use `:Feed <Enter>` to see and select
+
+To give arguments to a command, for example `Feed update_feed` which requires
+one additional argument
+
+- Either do `:Feed update_feed neovim.io/news.xml`, you get tab completion if available
+- Or just type the `:Feed update_feed` alone, and either select or type in the
+    missing argument
+
+
+==============================================================================
+2. Keymaps                                                 *feed.nvim-keymaps*
+
+See press `?` in index or entry buffer.
+
+
+INDEX BUFFER                                  *feed.nvim-keymaps-index-buffer*
+
+  action       key
+  ------------ --------
+  hints        ?
+  dot_repeat   .
+  undo         u
+  entry        <CR>
+  split        <M-CR>
+  browser      b
+  refresh      r
+  update       R
+  search       s
+  yank_url     y
+  untag        -
+  tag          +
+  quit         q
+
+ENTRY BUFFER                                  *feed.nvim-keymaps-entry-buffer*
+
+  action     key
+  ---------- -----
+  hints      ?
+  browser    b
+  next       }
+  prev       {
+  full       f
+  search     s
+  untag      -
+  tag        +
+  urlview    r
+  yank_url   y
+  quit       q
+
+==============================================================================
+3. Manage                                                   *feed.nvim-manage*
+
+
+FROM LUA                                           *feed.nvim-manage-from-lua*
+
+Pass your feeds as list of links and tags in setup
+
+Use `Feed update` to update all or `Feed update_feed` to update one feed
+
+>lua
+    require("feed").setup({
+       feeds = {
+          -- These two styles both work
+          "https://neovim.io/news.xml",
+          {
+             "https://neovim.io/news.xml",
+             name = "Neovim News",
+             tags = { "tech", "news" }, -- tags given are inherited by all its entries
+          },
+    
+          -- three link formats:
+          "https://neovim.io/news.xml", -- Regular links
+          "rsshub://rsshub://apnews/topics/apf-topnews" -- RSSHub links
+          "neovim/neovim/releases" -- GitHub links
+       },
+    })
+<
+
+
+FROM OPML                                         *feed.nvim-manage-from-opml*
+
+Use `Feed load_opml` to import your OPML file
+
+Use `Feed export_opml` to export your OPML file to load in other readers
+
+
+LINK FORMATS                                   *feed.nvim-manage-link-formats*
+
+
+REGULAR LINKS ~
+
+Must start with `http` or `https`
+
+
+RSSHUB LINKS ~
+
+RSSHub links are first class citizens, format is `rsshub://{route}`
+
+`rsshub://{route}` will be resolved when fetching according to your config
+
+Discover available `{route}` in RSSHub documentation
+<https://docs.rsshub.app/routes/popular> `rsshub://apnews/topics/apf-topnews`
+will be resolved to `https://rsshub.app/apnews/topics/apf-topnews` by default
+control the instance used with:
+
+>lua
+    require("feed").setup({
+       rsshub = {
+          instance = "127.0.0.1:1200",
+          export = "https://rsshub.app", -- will be used in export_opml
+       },
+    })
+<
+
+
+GITHUB LINKS ~
+
+GitHub user/repo links are also first class citizens,format is
+`[github://]{user/repo}[{/releases|/commits}]`, so following four all work:
+
+- `neo451/feed.nvim`
+- `github://neo451/feed.nvim`
+- `neo451/feed.nvim/releases`
+- `github://neo451/feed.nvim/releases`
+
+For now it defaults to subscribing to the commits
+
+So first two is resolved into
+<https://github.com/neo451/feed.nvim/commits.atom>
+
+Latter two is resolved into <https://github.com/neo451/feed.nvim/releases.atom>
+
+
+==============================================================================
+4. Search                                                   *feed.nvim-search*
+
+- use `Feed search` to filter your feeds
+- you can also pass the query like `Feed =neovim +read`
+- the default query when you open up the index buffer is `+unread @2-weeks-ago`
+
+
+REGEX                                                 *feed.nvim-search-regex*
+
+- no modifier matches entry title or entry url
+- `!` is negative match with entry title or url
+- `=` is matching feed name and feed url
+- `~` is not matching feed name and feed url
+- these all respect your `ignorecase` option
+
+
+TAGS                                                   *feed.nvim-search-tags*
+
+- `+` means `must_have`, searches entries’ tags
+- `-` means `must_not_have`, searches entries’ tags
+
+
+DATE                                                   *feed.nvim-search-date*
+
+- `@` means `date`, searches entries’ date
+- `2015-8-10` searches only entries after the date
+- `2-months-ago` searches only entries within two months from now
+- `1-year-ago--6-months-ago` means entries in the period
+
+
+LIMIT                                                 *feed.nvim-search-limit*
+
+- `#` means `limit`, limits the number of entries
+
+
+EXAMPLES                                           *feed.nvim-search-examples*
+
+- `+blog +unread -star @6-months-ago #10 zig !rust`
+
+Only Shows 10 entries with tags blog and unread, without tag star, and are
+published within 6 month, making sure they have zig but not rust in the title.
+
+- `@6-months-ago +unread`
+
+Only show unread entries of the last six months. This is the default filter.
+
+- `linu[xs] @1-year-old`
+
+Only show entries about Linux or Linus from the last year.
+
+- `-unread +youtube #10`
+
+Only show the most recent 10 previously-read entries tagged as youtube.
+
+- `+unread !n\=vim`
+
+Only show unread entries not having vim or nvim in the title or link.
+
+- `+emacs =http://example.org/feed/`
+
+Only show entries tagged as emacs from a specific feed.
+
+
+GREP                                                   *feed.nvim-search-grep*
+
+Use `Feed grep` to live grep all entries in your database, requires `rg` and
+one of the search backends:
+
+- `telescope`
+- `fzf-lua`
+- `mini.pick`
+
+
+==============================================================================
+5. Layout                                                   *feed.nvim-layout*
+
+:TODO:
+
+
+==============================================================================
+6. Lua API                                                 *feed.nvim-lua-api*
+
+:TODO:
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:

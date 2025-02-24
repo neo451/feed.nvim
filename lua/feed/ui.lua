@@ -80,7 +80,6 @@ local function image_attach(buf)
 end
 
 local body_transforms = {
-   require("feed.utils").resolve_urls,
    require("feed.utils").remove_urls,
    -- TODO: get rid of html headers and stuff
    -- TODO: allow user
@@ -320,7 +319,6 @@ M.show_next = function()
 end
 
 M.show_urls = function()
-   local base = get_entry().link
    M.select(state.urls, {
       prompt = "urlview",
       format_item = function(item)
@@ -328,27 +326,9 @@ M.show_urls = function()
       end,
    }, function(item)
       if item then
-         ut.resolve_and_open(item[2], base)
+         vim.ui.open(item[2])
       end
    end)
-end
-
-M.open_url = function()
-   local base = get_entry().link
-   local text = fn.expand("<cfile>")
-   if ut.looks_like_url(text) then
-      ut.resolve_and_open(text, base)
-   elseif not vim.tbl_isempty(vim.ui._get_urls()) then
-      ut.resolve_and_open(vim.ui._get_urls()[1], base)
-   else
-      local item = vim.iter(state.urls):find(function(v)
-         return v[1] == text
-      end)
-      if item then
-         ut.resolve_and_open(item[2], base)
-      end
-   end
-   vim.bo.modifiable = false
 end
 
 M.show_browser = function()
@@ -405,7 +385,7 @@ M.show_feeds = function(percentage)
    local split = M.split({
       wo = {
          spell = false,
-         winbar = "%#Title# Feedlist: <za> to toggle fold",
+         winbar = "%#Title# Feedlist: <cr> to toggle fold",
       },
       bo = {
          filetype = "markdown",
@@ -445,7 +425,7 @@ M.show_feeds = function(percentage)
    vim.wo[split.win].foldtext = ""
    vim.wo[split.win].fillchars = "foldopen:,foldclose:,fold: ,foldsep: "
 
-   vim.keymap.set("n", "za", "zA", { buffer = split.buf })
+   vim.keymap.set("n", "<cr>", "zA", { buffer = split.buf })
    vim.bo[split.buf].modifiable = false
 end
 

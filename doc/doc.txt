@@ -1,0 +1,225 @@
+*doc.txt*                For 0.11                Last change: 2025 February 24
+
+==============================================================================
+Table of Contents                                      *doc-table-of-contents*
+
+1. feed.nvim                                                   |doc-feed.nvim|
+  - Basic Usage                                    |doc-feed.nvim-basic-usage|
+  - Management                                      |doc-feed.nvim-management|
+2. Feed Searching                                         |doc-feed-searching|
+  - DSL query                                   |doc-feed-searching-dsl-query|
+  - Live grep                                   |doc-feed-searching-live-grep|
+3. Layout Configuration                             |doc-layout-configuration|
+
+==============================================================================
+1. feed.nvim                                                   *doc-feed.nvim*
+
+
+BASIC USAGE                                        *doc-feed.nvim-basic-usage*
+
+- To see actions available in the current context:
+    - Either use `:Feed <Tab>` to see the completions
+    - Or use `:Feed <Enter>` to see and select
+- To give arguments to a command, for example `Feed update_feed` which is a
+    requires one additional argument
+    - Either do `:Feed update_feed neovim.io/news.xml`, you get tab completion if available
+    - Or just type the `:Feed update_feed` alone, and either select or type in the missing argument
+- Keymaps
+    - this plugins does not create any keymaps outside of the buffers managed by itself, but following commands are worth binding to global keymaps
+    >lua
+        vim.keymap.set("n", "<leader>fu", "<cmd>Feed update<cr>", { desc = "Feed update" }
+        vim.keymap.set("n", "<leader>fi", "<cmd>Feed index<cr>", { desc = "Feed index" }
+        vim.keymap.set("n", "<leader>ff", "<cmd>Feed<cr>", { desc = "Feed menu" }
+        vim.keymap.set("n", "<leader>fg", "<cmd>Feed search<cr>", { desc = "Feed search" }
+    <
+    - All the keymaps
+        - see press `?` in index or entry buffer.
+        - Index buffer
+              action       key
+              ------------ --------
+              hints        ?
+              dot_repeat   .
+              undo         u
+              entry        <CR>
+              split        <M-CR>
+              browser      b
+              refresh      r
+              update       R
+              search       s
+              yank_url     y
+              untag        -
+              tag          +
+              quit         q
+        - Entry buffer
+              action     key
+              ---------- -----
+              hints      ?
+              browser    b
+              next       }
+              prev       {
+              full       f
+              search     s
+              untag      -
+              tag        +
+              quit       q
+              urlview    r
+              yank_url   y
+
+
+MANAGEMENT                                          *doc-feed.nvim-management*
+
+
+FROM LUA ~
+
+Pass your feeds as list of url and tags in setup
+
+Use `Feed update` to update all or `Feed update_feed` to update one feed
+
+>lua
+    require"feed".setup{
+      feeds = {
+         -- These two styles both work
+         "https://neovim.io/news.xml",
+         -- tags given to a feed to be tagged to all its entries
+         { "https://neovim.io/news.xml", name = "Neovim News", tags = { "tech", "news" } },
+       }
+     }
+<
+
+
+FROM OPML ~
+
+Use `Feed load_opml` to import your OPML file
+
+Use `Feed export_opml` to export your OPML file to load in other readers
+
+
+LINK FORMATS ~
+
+
+REGULAR LINKS ~
+
+Must start with `http` or `https`
+
+
+RSSHUB LINKS RSSHUB://{ROUTE} ~
+
+RSSHub links are first class citizens
+
+`rsshub://{route}` will be resolved when fetching according to your config
+
+Discover available `{route}` in RSSHub documentation
+<https://docs.rsshub.app/routes/popular> `rsshub://apnews/topics/apf-topnews`
+will be resolved to `https://rsshub.app/apnews/topics/apf-topnews` by default
+control the instance used with:
+
+>lua
+    require"feed".setup{
+      rsshub = {
+        instance = "127.0.0.1:1200",
+        export = "https://rsshub.app", -- will be used in export_opml
+      }
+    }
+<
+
+
+GITHUB LINKS [GITHUB://]{USER/REPO}[{/RELEASES|/COMMITS}] ~
+
+GitHub user/repo links are also first class citizens, these four all work:
+
+- `neo451/feed.nvim`
+- `github://neo451/feed.nvim`
+- `neo451/feed.nvim/releases`
+- `github://neo451/feed.nvim/releases`
+
+For now it defaults to subscribing to the commits
+
+So first two is resolved into
+<https://github.com/neo451/feed.nvim/commits.atom>,
+
+Latter two is resolved into <https://github.com/neo451/feed.nvim/releases.atom>
+
+
+==============================================================================
+2. Feed Searching                                         *doc-feed-searching*
+
+
+DSL QUERY                                       *doc-feed-searching-dsl-query*
+
+- use `Feed search` to filter your feeds
+- you can also pass the query like `Feed =neovim +read`
+- the default query when you open up the index buffer is `+unread @6-months-ago`
+- Grammar is as follows:
+
+
+REGEX AGAINST TITLE OR ENTRY’S URL ~
+
+- no modifier means feeds with the string
+- `!` means feeds without
+- this match respects your `ignorecase` option
+
+
+REGEX AGAINST FEED AND FEED’S URL ~
+
+- `=` is matching
+- `~` is not matching
+
+
+TAGS ~
+
+- `+` means `must_have`, searches entries’ tags
+- `-` means `must_not_have`, searches entries’ tags
+
+
+DATE ~
+
+- `@` means `date`, searches entries’ date
+- `2015-8-10` searches only entries after the date
+- `2-months-ago` searches only entries within two months from now
+- `1-year-ago--6-months-ago` means entries in the period
+
+
+LIMIT ~
+
+- `#` means `limit`, limits the number of entries
+
+
+EXAMPLES ~
+
+- `+blog +unread -star @6-months-ago #10 zig !rust` shows 10 entries with tags
+    blog and unread, without tag star, and are published within 6 month, making
+    sure they have zig and not rust in the title.
+- `@6-months-ago +unread`
+
+Only show unread entries of the last six months. This is the default filter.
+
+- `linu[xs] @1-year-old`
+
+Only show entries about Linux or Linus from the last year.
+
+- `-unread +youtube #10`
+
+Only show the most recent 10 previously-read entries tagged as youtube.
+
+- `+unread !n\=vim`
+
+Only show unread entries not having vim or nvim in the title or link.
+
+- `+emacs =http://example.org/feed/`
+
+Only show entries tagged as emacs from a specific feed.
+
+
+LIVE GREP                                       *doc-feed-searching-live-grep*
+
+- use `Feed grep` to grep entries, requires `rg`
+
+
+==============================================================================
+3. Layout Configuration                             *doc-layout-configuration*
+
+:TODO:
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:

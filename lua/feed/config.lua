@@ -110,10 +110,9 @@ local default = {
          search = "s",
          untag = "-",
          tag = "+",
-         quit = "q",
          urlview = "r",
          yank_url = "y",
-         open_url = "gx",
+         quit = "q",
       },
    },
    options = {
