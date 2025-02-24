@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.2](https://github.com/neo451/feed.nvim/compare/v2.7.1...v2.7.2) (2025-02-24)
+
+
+### Bug Fixes
+
+* **db:** ensure field exist before regex matching ([2952662](https://github.com/neo451/feed.nvim/commit/29526622c1c513de98a2d50134df02e7261e34f0))
+* **ui:** refresh after every feed update ([1ceb641](https://github.com/neo451/feed.nvim/commit/1ceb641f739d7f0a75f48eb6e25f3bf8ee8571d1))
+
 ## [2.7.1](https://github.com/neo451/feed.nvim/compare/v2.7.0...v2.7.1) (2025-02-24)
 
 
