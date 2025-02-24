@@ -192,8 +192,8 @@ M.list = {
 M.update = {
    doc = "update all feeds",
    impl = function()
-      local Progress = require("feed.ui.progress")
-      local prog = Progress.new(#ut.feedlist(db.feeds, false))
+      local n = #ut.feedlist(db.feeds, false)
+      local prog = require("feed.ui.progress").new(n)
       vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
          text = true,
          stdout = function(_, data)

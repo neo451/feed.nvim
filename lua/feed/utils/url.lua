@@ -30,7 +30,7 @@ end
 
 --- Returns all URLs in markdown buffer, if any.
 ---@param src string
----@return string[][]?
+---@return string[][] | nil
 M.get_urls = vim.F.nil_wrap(function(src, cur_link)
    local ret = {}
 
@@ -80,9 +80,12 @@ end
 
 ---@param body string
 ---@param id string
----@return string
+---@return string?
 M.remove_urls = function(body, id)
    local text_n_links = M.get_urls(body, require("feed.db")[id].link)
+   if not text_n_links then
+      return
+   end
    for _, v in ipairs(text_n_links) do
       if not v[1]:find("^Image") then
          local link = escape_pattern(v[2])
@@ -90,38 +93,6 @@ M.remove_urls = function(body, id)
       end
    end
    return body
-end
-
----@param body string
----@param id string
----@return string
-M.resolve_urls = function(body, id)
-   local base = require("feed.db")[id].link
-   local text_n_links = M.get_urls(body)
-   for _, v in ipairs(text_n_links) do
-      local link = v[2]
-      local resolved = link
-      if not M.looks_like_url(link) then
-         resolved = M.url_resolve(base, link)
-      end
-      if resolved and M.looks_like_url(resolved) and resolved ~= base then
-         body = string.gsub(body, escape_pattern(link), "(" .. resolved .. ")")
-      end
-   end
-   return body
-end
-
----@param url string
----@param base string
-M.resolve_and_open = function(url, base)
-   if not M.looks_like_url(url) then
-      local link = M.url_resolve(base, url)
-      if link then
-         vim.ui.open(link)
-      end
-   else
-      vim.ui.open(url)
-   end
 end
 
 M.looks_like_url = function(str)

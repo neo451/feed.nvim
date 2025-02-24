@@ -2,6 +2,7 @@ local date = require("feed.parser.date")
 local ut = require("feed.utils")
 local sensible = ut.sensible
 local decode = ut.decode
+local resolve = require("feed.parser.html").resolve
 
 ---@param str string?
 ---@return string?
@@ -75,10 +76,10 @@ local function handle_date(entry)
    return date.parse(time, "rss")
 end
 
-local function handle_content(entry, fallback)
+local function handle_content(entry, fallback, url)
    local content = sensible(entry["content:encoded"] or entry["description"], 1)
    if content then
-      return clean(content)
+      return resolve(clean(content), url)
    else
       return fallback
    end
@@ -95,7 +96,7 @@ end
 local function handle_entry(entry, feed, url)
    local res = {}
    res.link = handle_link(entry, feed.link)
-   res.content = handle_content(entry, "")
+   res.content = handle_content(entry, "", url)
    res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)
    res.author = handle_author(entry) or feed.author

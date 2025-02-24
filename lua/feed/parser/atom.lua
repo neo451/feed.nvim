@@ -2,6 +2,7 @@ local date = require("feed.parser.date")
 local ut = require("feed.utils")
 local sensible = ut.sensible
 local decode = ut.decode
+local resolve = require("feed.parser.html").resolve
 
 ---@param str string?
 ---@return string?
@@ -58,12 +59,12 @@ local function handle_title(entry, fallback)
    return handle(entry.title or fallback)
 end
 
-local function handle_content(entry, fallback)
+local function handle_content(entry, fallback, url)
    local content = entry["content"] or entry["summary"]
    if not content then
       return fallback
    end
-   return clean(content[1])
+   return resolve(clean(content[1]), url)
 end
 
 local function handle_date(entry)
@@ -76,12 +77,16 @@ local function handle_feed_title(ast, url)
 end
 
 ---@return string?
-local function handle_author(node)
+local function handle_author(node, fallback)
    local author_node = node.author or node["itunes:author"]
-   if not author_node then
-      return
+   if author_node then
+      local name = clean(author_node.name[1])
+      if name then
+         return name
+      end
+   else
+      return fallback
    end
-   return clean(author_node.name[1])
 end
 
 local function handle_description(feed)
@@ -102,7 +107,7 @@ local handle_entry = function(entry, feed, base, url)
    res.time = handle_date(entry)
    res.title = handle_title(entry, "no title")
    res.author = handle_author(entry)
-   res.content = handle_content(entry, "")
+   res.content = handle_content(entry, "", url)
    res.feed = url
    return res
 end

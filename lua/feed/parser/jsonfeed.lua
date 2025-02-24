@@ -2,6 +2,7 @@ local date = require("feed.parser.date")
 local ut = require("feed.utils")
 local sensible = ut.sensible
 local decode = ut.decode
+local resolve = require("feed.parser.html").resolve
 
 local function handle_title(node)
    if not node.title then
@@ -20,7 +21,7 @@ end
 local handle_entry = function(entry, feed, url)
    local res = {}
    res.link = entry.url
-   res.content = entry.content_html or ""
+   res.content = resolve(entry.content_html or "", url)
    res.time = date.parse(entry.date_published, "json")
    res.title = handle_title(entry)
    res.author = decode(feed.author)
