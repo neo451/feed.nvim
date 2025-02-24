@@ -199,6 +199,11 @@ M.update = {
          stdout = function(_, data)
             if data and vim.trim(data) ~= "" then
                prog:update(vim.trim(data))
+               vim.schedule(function()
+                  if ut.in_index() then
+                     ui.refresh()
+                  end
+               end)
             end
          end,
       })
