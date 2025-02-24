@@ -11,6 +11,5 @@ deps/mini.nvim:
 	@mkdir -p deps
 	git clone --filter=blob:none https://github.com/echasnovski/mini.nvim $@
 
-doc: doc/feed.nvim.txt
-	rm doc/feed.nvim.txt
-	./panvimdoc.sh --project-name feed.nvim --input-file wiki/Usage-Guide.md --vim-version 0.11 --toc true --shift-heading-level-by -1
+gen_doc:
+	./panvimdoc.sh --project-name feed --input-file wiki/Usage-Guide.md --vim-version 0.11 --toc true --shift-heading-level-by -1
