@@ -88,7 +88,7 @@ function M.new(dir)
 end
 
 ---@param k any
----@return function | feed.entry
+---@return function | feed.entry | nil
 function M:__index(k)
    if not k then
       return
@@ -133,11 +133,11 @@ function M:update()
 end
 
 function M:last_updated()
-   return os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
+   local date_str = os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
+   ---@cast date_str -osdate
+   return date_str
 end
 
----@param id string | string[]
----@param tag string
 function M:tag(id, tag)
    local function tag_one(t)
       self.tags[t][id] = true
@@ -158,8 +158,6 @@ function M:tag(id, tag)
    self:save_tags()
 end
 
----@param id string | string[]
----@param tag string
 function M:untag(id, tag)
    local function untag_one(t)
       self.tags[t][id] = nil
@@ -186,7 +184,6 @@ function M:sort()
    end)
 end
 
----@param id string
 function M:rm(id)
    for i, v in ipairs(self.index) do
       if v[1] == id then
@@ -206,8 +203,6 @@ function M:rm(id)
    rawset(mem, id, nil)
 end
 
----@param sort boolean?
----@return Iter
 function M:iter(sort)
    if sort then
       self:sort()
@@ -219,8 +214,6 @@ function M:iter(sort)
 end
 
 ---return a list of db ids base on query
----@param str string
----@return string[]
 function M:filter(str)
    if str == "" then
       return {}
@@ -284,11 +277,13 @@ function M:filter(str)
    if q.re then
       iter = iter:filter(function(id)
          local entry = self[id]
-         if not entry or not entry.title then
+         if not entry then
             return false
          end
          for _, reg in ipairs(q.re) do
-            if reg:match_str(entry.title) or reg:match_str(entry.link) then
+            if entry.title and reg:match_str(entry.title) then
+               return true
+            elseif entry.link and reg:match_str(entry.link) then
                return true
             end
          end
@@ -299,11 +294,13 @@ function M:filter(str)
    if q.not_re then
       iter = iter:filter(function(id)
          local entry = self[id]
-         if not entry or not entry.title then
+         if not entry then
             return false
          end
          for _, reg in ipairs(q.not_re) do
-            if reg:match_str(entry.title) or reg:match_str(entry.link) then
+            if entry.title and reg:match_str(entry.title) then
+               return false
+            elseif entry.link and reg:match_str(entry.link) then
                return false
             end
          end
@@ -313,23 +310,25 @@ function M:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         local url = self[id].feed
-         local feed_name = self.feeds[url] and self.feeds[url].title
-         if q.feed:match_str(url) or (feed_name and q.feed:match_str(feed_name)) then
+         local feed_url = self[id].feed
+         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
+         if q.feed:match_str(feed_url) or (feed_name and q.feed:match_str(feed_name)) then
             return true
+         else
+            return false
          end
-         return false
       end)
    end
 
    if q.not_feed then
       iter = iter:filter(function(id)
-         local url = self[id].feed
-         local feed_name = self.feeds[url] and self.feeds[url].title
-         if q.not_feed:match_str(url) or (feed_name and q.not_feed:match_str(feed_name)) then
+         local feed_url = self[id].feed
+         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
+         if q.not_feed:match_str(feed_url) or (feed_name and q.not_feed:match_str(feed_name)) then
             return false
+         else
+            return true
          end
-         return true
       end)
    end
 
