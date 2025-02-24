@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/neo451/feed.nvim/compare/v2.7.0...v2.7.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* **doc:** makefile for gen doc ([dc8333c](https://github.com/neo451/feed.nvim/commit/dc8333c38ffcb4633e9c66432b69de458c583246))
+
 ## [2.7.0](https://github.com/neo451/feed.nvim/compare/v2.6.0...v2.7.0) (2025-02-24)
 
 
