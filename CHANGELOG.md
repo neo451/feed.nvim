@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.7.0](https://github.com/neo451/feed.nvim/compare/v2.6.0...v2.7.0) (2025-02-24)
+
+
+### Features
+
+* **parser:** use ts-html to resolve links ([ab4c4a3](https://github.com/neo451/feed.nvim/commit/ab4c4a3986c1e27151ba804ff59c0035683a0fc4))
+
+
+### Bug Fixes
+
+* add parser requirements ([8c6fb0e](https://github.com/neo451/feed.nvim/commit/8c6fb0ebbef4ea780fe76271576b5f85c54ce4e3))
+* **ui:** remove open_url action, no longer needed ([ab4c4a3](https://github.com/neo451/feed.nvim/commit/ab4c4a3986c1e27151ba804ff59c0035683a0fc4))
+
 ## [2.6.0](https://github.com/neo451/feed.nvim/compare/v2.5.1...v2.6.0) (2025-02-23)
 
 
