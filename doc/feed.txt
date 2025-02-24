@@ -4,6 +4,7 @@
 Table of Contents                                     *feed-table-of-contents*
 
 1. Commands                                                    |feed-commands|
+  - Sub commands and arguments      |feed-commands-sub-commands-and-arguments|
 2. Keymaps                                                      |feed-keymaps|
   - Index buffer                                   |feed-keymaps-index-buffer|
   - Entry buffer                                   |feed-keymaps-entry-buffer|
@@ -25,23 +26,21 @@ Table of Contents                                     *feed-table-of-contents*
 ==============================================================================
 1. Commands                                                    *feed-commands*
 
-To see actions available in the current context:
 
-- Either use `:Feed <Tab>` to see the completions
-- Or use `:Feed <Enter>` to see and select
+SUB COMMANDS AND ARGUMENTS          *feed-commands-sub-commands-and-arguments*
 
-To give arguments to a command, for example `Feed update_feed` which requires
-one additional argument
+To execute actions available in the current context, or give arguments to the
+command, use the following syntax:
 
-- Either do `:Feed update_feed neovim.io/news.xml`, you get tab completion if available
-- Or just type the `:Feed update_feed` alone, and either select or type in the
-    missing argument
+Use `:Feed <Tab>`, `:Feed update_feed <Tab>` to get the completion
+
+Use `:Feed<Enter>`, `:Feed update_feed<Enter>` to open menu and select
 
 
 ==============================================================================
 2. Keymaps                                                      *feed-keymaps*
 
-See press `?` in index or entry buffer.
+Press `?` in to get hints.
 
 
 INDEX BUFFER                                       *feed-keymaps-index-buffer*
@@ -86,7 +85,9 @@ FROM LUA                                                *feed-manage-from-lua*
 
 Pass your feeds as list of links and tags in setup
 
-Use `Feed update` to update all or `Feed update_feed` to update one feed
+Use `Feed update` to update all
+
+Use `Feed update_feed` to update one feed
 
 >lua
     require("feed").setup({
@@ -132,13 +133,14 @@ RSSHub links are first class citizens, format is `rsshub://{route}`
 Discover available `{route}` in RSSHub documentation
 <https://docs.rsshub.app/routes/popular> `rsshub://apnews/topics/apf-topnews`
 will be resolved to `https://rsshub.app/apnews/topics/apf-topnews` by default
-control the instance used with:
+
+Config example:
 
 >lua
     require("feed").setup({
        rsshub = {
-          instance = "127.0.0.1:1200",
-          export = "https://rsshub.app", -- will be used in export_opml
+          instance = "127.0.0.1:1200", -- or any public instance listed here https://rsshub.netlify.app/instances
+          export = "https://rsshub.app", -- used in export_opml
        },
     })
 <

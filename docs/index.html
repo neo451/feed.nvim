@@ -20,7 +20,10 @@
     <strong>Contents</strong><label for="contents">⊕</label>
   <input type="checkbox" id="contents">
   <ul>
-  <li><a href="#commands" id="toc-commands">Commands</a></li>
+  <li><a href="#commands" id="toc-commands">Commands</a>
+  <ul>
+  <li><a href="#sub-commands-and-arguments" id="toc-sub-commands-and-arguments">Sub commands and arguments</a></li>
+  </ul></li>
   <li><a href="#keymaps" id="toc-keymaps">Keymaps</a>
   <ul>
   <li><a href="#index-buffer" id="toc-index-buffer">Index buffer</a></li>
@@ -54,18 +57,12 @@
 
 <main>
 <h1 id="commands">Commands</h1>
-<p>To see actions available in the current context:</p>
-<ul>
-<li>Either use <code>:Feed &lt;Tab&gt;</code> to see the completions</li>
-<li>Or use <code>:Feed &lt;Enter&gt;</code> to see and select</li>
-</ul>
-<p>To give arguments to a command, for example <code>Feed update_feed</code> which requires one additional argument</p>
-<ul>
-<li>Either do <code>:Feed update_feed neovim.io/news.xml</code>, you get tab completion if available</li>
-<li>Or just type the <code>:Feed update_feed</code> alone, and either select or type in the missing argument</li>
-</ul>
+<h2 id="sub-commands-and-arguments">Sub commands and arguments</h2>
+<p>To execute actions available in the current context, or give arguments to the command, use the following syntax:</p>
+<p>Use <code>:Feed &lt;Tab&gt;</code>, <code>:Feed update_feed &lt;Tab&gt;</code> to get the completion</p>
+<p>Use <code>:Feed&lt;Enter&gt;</code>, <code>:Feed update_feed&lt;Enter&gt;</code> to open menu and select</p>
 <h1 id="keymaps">Keymaps</h1>
-<p>See press <code>?</code> in index or entry buffer.</p>
+<p>Press <code>?</code> in to get hints.</p>
 <h2 id="index-buffer">Index buffer</h2>
 <table>
 <thead>
@@ -187,7 +184,8 @@
 <h1 id="manage">Manage</h1>
 <h2 id="from-lua">From lua</h2>
 <p>Pass your feeds as list of links and tags in setup</p>
-<p>Use <code>Feed update</code> to update all or <code>Feed update_feed</code> to update one feed</p>
+<p>Use <code>Feed update</code> to update all</p>
+<p>Use <code>Feed update_feed</code> to update one feed</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span><span class="op">(</span><span class="st">&quot;feed&quot;</span><span class="op">).</span>setup<span class="op">({</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="va">feeds</span> <span class="op">=</span> <span class="op">{</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>      <span class="co">-- These two styles both work</span></span>
@@ -213,11 +211,12 @@
 <h3 id="rsshub-links">RSSHub links</h3>
 <p>RSSHub links are first class citizens, format is <code>rsshub://{route}</code></p>
 <p><code>rsshub://{route}</code> will be resolved when fetching according to your config</p>
-<p>Discover available <code>{route}</code> in <a href="https://docs.rsshub.app/routes/popular">RSSHub documentation</a> <code>rsshub://apnews/topics/apf-topnews</code> will be resolved to <code>https://rsshub.app/apnews/topics/apf-topnews</code> by default control the instance used with:</p>
+<p>Discover available <code>{route}</code> in <a href="https://docs.rsshub.app/routes/popular">RSSHub documentation</a> <code>rsshub://apnews/topics/apf-topnews</code> will be resolved to <code>https://rsshub.app/apnews/topics/apf-topnews</code> by default</p>
+<p>Config example:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span><span class="op">(</span><span class="st">&quot;feed&quot;</span><span class="op">).</span>setup<span class="op">({</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="va">rsshub</span> <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      <span class="va">instance</span> <span class="op">=</span> <span class="st">&quot;127.0.0.1:1200&quot;</span><span class="op">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="va">export</span> <span class="op">=</span> <span class="st">&quot;https://rsshub.app&quot;</span><span class="op">,</span> <span class="co">-- will be used in export_opml</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      <span class="va">instance</span> <span class="op">=</span> <span class="st">&quot;127.0.0.1:1200&quot;</span><span class="op">,</span> <span class="co">-- or any public instance listed here https://rsshub.netlify.app/instances</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="va">export</span> <span class="op">=</span> <span class="st">&quot;https://rsshub.app&quot;</span><span class="op">,</span> <span class="co">-- used in export_opml</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">},</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
 <h3 id="github-links">GitHub links</h3>
