@@ -56,6 +56,7 @@ jobs:
       - name: deps
         run: |
           luarocks install tree-sitter-xml --lua-version 5.1 --local
+          luarocks install tree-sitter-html --lua-version 5.1 --local
 
       - name: Run tests
         run: make test
