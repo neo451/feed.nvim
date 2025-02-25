@@ -16,22 +16,8 @@ end
 ---@return string
 function M.tags(id, db)
    db = db or require("feed.db")
-
-   local acc = {}
-
-   -- 1. auto tag no [read] as [unread]
-   if not (db.tags.read and db.tags.read[id]) then
-      acc = { "unread" }
-   end
-
-   -- 2. get tags from tags.lua
-   for tag, tagees in pairs(db.tags) do
-      if tagees[id] then
-         acc[#acc + 1] = tag
-      end
-   end
-
-   return "[" .. ut.align(table.concat(acc, ", "), Config.layout.tags.width - 2) .. "]"
+   local tags = db:get_tags(id)
+   return "[" .. table.concat(tags, ", ") .. "]"
 end
 
 ---@param id string
@@ -112,9 +98,7 @@ M.entry = function(id, comps, db)
       local v = layout[name]
       local text = entry[name] or ""
       local f = v.format or M[name]
-      -- if M[name] then
       text = f(id, db)
-      -- end
       local width = v.width or #text
       text = ut.align(text, width, v.right_justify) .. " "
       res[#res + 1] = text
