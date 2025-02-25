@@ -21,7 +21,7 @@ end
 local handle_entry = function(entry, feed, url)
    local res = {}
    res.link = entry.url
-   res.content = resolve(entry.content_html or "", url)
+   res.content = resolve(entry.content_html or "", feed.link)
    res.time = date.parse(entry.date_published, "json")
    res.title = handle_title(entry)
    res.author = decode(feed.author)

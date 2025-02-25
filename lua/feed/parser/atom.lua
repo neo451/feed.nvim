@@ -107,7 +107,7 @@ local handle_entry = function(entry, feed, base, url)
    res.time = handle_date(entry)
    res.title = handle_title(entry, "no title")
    res.author = handle_author(entry)
-   res.content = handle_content(entry, "", url)
+   res.content = handle_content(entry, "", feed.link)
    res.feed = url
    return res
 end

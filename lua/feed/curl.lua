@@ -79,9 +79,8 @@ function M.get(url, opts, cb)
       table.insert(cmds, "-d")
       table.insert(cmds, vim.json.encode(opts.data))
    end
-
-   return vim.system(cmds, { text = true }, function(obj)
-      cb = vim.schedule_wrap(cb)
+   local process = function(obj)
+      cb = cb and vim.schedule_wrap(cb)
       if obj.code == 0 then
          local headers = parse_header(dump_fp, url)
          obj.href = headers.location or url
@@ -92,14 +91,16 @@ function M.get(url, opts, cb)
          local content_type = headers.content_type
 
          if content_type and (not content_type:find("xml") and not content_type:find("json")) then
-            cb({ status = 404 })
+            obj = { status = 404 }
          end
-         cb(obj)
       else
-         cb(obj)
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
-   end)
+      return cb and cb(obj) or obj
+   end
+
+   return cb and vim.system(cmds, { text = true }, cb and process or nil)
+      or process(vim.system(cmds, { text = true }):wait())
 end
 
 local task_utils = require("coop.task-utils")
