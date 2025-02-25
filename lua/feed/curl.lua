@@ -55,33 +55,36 @@ local function build_header(t)
 end
 
 ---@param url string
----@param opts table
+---@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
 ---@param cb? any
 function M.get(url, opts, cb)
    opts = opts or {}
-   local additional = build_header({
+   opts.timeout = vim.F.if_nil(opts.timeout, "10")
+   opts.api = vim.F.if_nil(opts.api, false)
+   local req_header = build_header(vim.tbl_extend("keep", {
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
-   })
+   }, opts.headers or {}))
    local dump_fp = vim.fn.tempname()
-   local cmds = {
+   local cmds = vim.tbl_flatten({
       "curl",
+      req_header,
       "-sSL",
       "-D",
       dump_fp,
-      "--connect-timeout",
-      opts.timeout or "10",
+      opts.cmds,
+      opts.timeout and { "--connect-timeout", opts.timeout or "10" },
       rsshub(github(url)),
-   }
-   cmds = vim.list_extend(cmds, additional)
-   cmds = vim.list_extend(cmds, opts.cmds or {})
+   })
    if opts.data then
       table.insert(cmds, "-d")
-      table.insert(cmds, vim.json.encode(opts.data))
+      if type(opts.data) == "table" then
+         opts.data = vim.json.encode(opts.data)
+      end
+      table.insert(cmds, opts.data)
    end
-
-   return vim.system(cmds, { text = true }, function(obj)
-      cb = vim.schedule_wrap(cb)
+   local process = function(obj)
+      cb = cb and vim.schedule_wrap(cb)
       if obj.code == 0 then
          local headers = parse_header(dump_fp, url)
          obj.href = headers.location or url
@@ -91,15 +94,17 @@ function M.get(url, opts, cb)
          obj.headers = headers
          local content_type = headers.content_type
 
-         if content_type and (not content_type:find("xml") and not content_type:find("json")) then
-            cb({ status = 404 })
+         if not opts.api and content_type and (not content_type:find("xml") and not content_type:find("json")) then
+            obj = { status = 404 }
          end
-         cb(obj)
       else
-         cb(obj)
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
-   end)
+      return cb and cb(obj) or obj
+   end
+
+   return cb and vim.system(cmds, { text = true }, cb and process or nil)
+      or process(vim.system(cmds, { text = true }):wait())
 end
 
 local task_utils = require("coop.task-utils")

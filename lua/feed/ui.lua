@@ -402,8 +402,13 @@ M.show_feeds = function(percentage)
    local function node_to_md(heading, url, items)
       local res = {}
       res[#res + 1] = "# " .. heading
+      if items.desc then
+         res[#res + 1] = string.gsub(items.desc, "\n", "")
+      end
+      items.desc = nil
+      items.title = nil
       for k, v in pairs(items) do
-         res[#res + 1] = ("- %s: `%s`"):format(k, (type(v) == "table" and vim.inspect(v) or v))
+         res[#res + 1] = ("- %s: `%s`"):format(k, string.gsub((type(v) == "table" and vim.inspect(v) or v), "\n", ""))
       end
       res[#res + 1] = ("- xmlUrl: `%s`"):format(url)
       res[#res + 1] = ""

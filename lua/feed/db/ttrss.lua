@@ -1,3 +1,4 @@
+---https://tt-rss.org/ApiReference/
 ---@diagnostic disable: inject-field
 ---@class ttrss.feed
 ---@field cat_id integer
@@ -103,14 +104,11 @@
 ---@field getCounters fun(self: ttrssApi): table
 ---@field setArticleLabel fun(self: ttrssApi, param: { article_ids: string, label_id: integer, assign: boolean })
 ---@field updateArticle fun(self: ttrssApi, param: { article_ids: string, mode: integer, field: integer, data: string })
-
 local api = {}
-local Curl = require "feed.curl"
-local Config = require "feed.config"
+local Curl = require("feed.curl")
+local Config = require("feed.config")
 
 api.__index = api
-
-local url = Config.integrations.ttrss.url
 
 ---@param obj vim.SystemCompleted?
 local function decode_check(obj, method) --- TODO: assert decode gets the method
@@ -125,9 +123,9 @@ end
 function api.new()
    return setmetatable({
       sid = api:login({
-         user = Config.integrations.ttrss.user,
-         password = Config.integrations.ttrss.password
-      })
+         user = Config.protocol.ttrss.user,
+         password = Config.protocol.ttrss.password,
+      }),
    }, api)
 end
 
@@ -150,6 +148,7 @@ local methods = {
 
 for k, v in pairs(methods) do
    api[k] = function(self, data)
+      local url = require("feed.config").protocol.ttrss.url
       data = data or {}
       data.sid = self.sid
       data.op = k
@@ -193,8 +192,7 @@ end
 local TT = {}
 TT.__index = TT
 
-local query = require "feed.db.query"
-
+local query = require("feed.db.query")
 
 ---@return feed.db
 function TT.new()
@@ -204,7 +202,7 @@ function TT.new()
       feeds[feed.id] = {
          id = feed.id,
          url = feed.feed_url,
-         title = feed.title
+         title = feed.title,
       }
    end
    -- for _, v in ipairs(ttrss:getLabels()) do
@@ -214,11 +212,11 @@ function TT.new()
       api = ttrss,
       feeds = feeds,
       tags = vim.defaulttable(),
-      last = os.time()
+      last = os.time(),
    }, TT)
 end
 
-function TT:lastUpdated()
+function TT:last_updated()
    return os.date("%c", self.last)
 end
 
@@ -232,7 +230,7 @@ function TT:filter(str)
 
    local tt_query = {
       feed_id = -4, -- all feeds
-      search_mode = "all_feeds"
+      search_mode = "all_feeds",
    }
    local buf = {}
 
@@ -245,7 +243,7 @@ function TT:filter(str)
       end
    elseif q.must_have then
       for _, v in ipairs(q.must_have) do
-         if v == 'read' then
+         if v == "read" then
             buf[#buf + 1] = "unread:false"
          elseif v == "star" then
             buf[#buf + 1] = "star:true"
@@ -255,7 +253,7 @@ function TT:filter(str)
       end
    elseif q.must_not_have then
       for _, v in ipairs(q.must_not_have) do
-         if v == 'read' then
+         if v == "read" then
             buf[#buf + 1] = "unread:true"
          elseif v == "star" then
             buf[#buf + 1] = "star:false"
@@ -279,7 +277,7 @@ function TT:filter(str)
          tags = {},
          content = function()
             return self.api:getArticle({ article_id = v.id })[1].content
-         end
+         end,
       }
    end
    return ret
@@ -313,7 +311,9 @@ end
 
 --- TODO:
 function TT:save_feeds() end
-
 function TT:update() end
+function TT:setup_sync() end
+function TT:hard_sync() end
+function TT:soft_sync() end
 
 return TT.new()

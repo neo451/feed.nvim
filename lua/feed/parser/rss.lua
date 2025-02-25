@@ -96,7 +96,7 @@ end
 local function handle_entry(entry, feed, url)
    local res = {}
    res.link = handle_link(entry, feed.link)
-   res.content = handle_content(entry, "", url)
+   res.content = handle_content(entry, "", feed.link)
    res.title = decode(handle_entry_title(entry, "no title"))
    res.time = handle_date(entry)
    res.author = handle_author(entry) or feed.author

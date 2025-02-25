@@ -77,8 +77,13 @@ local default = {
       },
    },
 
-   data = {
+   protocol = {
       backend = "local",
+      ttrss = {
+         url = nil,
+         user = nil,
+         password = nil,
+      },
    },
 
    ---@type feed.feed[]

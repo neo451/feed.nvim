@@ -1,6 +1,6 @@
 local ut = require("feed.utils")
-
 local treesitter = vim.treesitter
+local rsshub = require("feed.integrations.rsshub")
 
 local function escape_pattern(text)
    return '"' .. text:gsub("([%%%.%[%]%(%)%$%^%+%-%*%?])", "%%%1") .. '"' -- Escape all magic characters in the pattern
@@ -9,6 +9,7 @@ end
 ---@param src string?
 ---@return string
 local function resolve(src, url)
+   url = rsshub(url)
    if not src then
       return ""
    end

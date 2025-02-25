@@ -33,12 +33,7 @@
   <ul>
   <li><a href="#from-lua" id="toc-from-lua">From lua</a></li>
   <li><a href="#from-opml" id="toc-from-opml">From OPML</a></li>
-  <li><a href="#link-formats" id="toc-link-formats">Link formats</a>
-  <ul>
-  <li><a href="#regular-links" id="toc-regular-links">Regular links</a></li>
-  <li><a href="#rsshub-links" id="toc-rsshub-links">RSSHub links</a></li>
-  <li><a href="#github-links" id="toc-github-links">GitHub links</a></li>
-  </ul></li>
+  <li><a href="#link-formats" id="toc-link-formats">Link formats</a></li>
   </ul></li>
   <li><a href="#search" id="toc-search">Search</a>
   <ul>
@@ -56,14 +51,20 @@
 </nav>
 
 <main>
-<h1 id="commands">Commands</h1>
-<h2 id="sub-commands-and-arguments">Sub commands and arguments</h2>
+<figure>
+
+</figure>
+<figure>
+
+</figure>
+<h2 id="commands">Commands</h2>
+<h3 id="sub-commands-and-arguments">Sub commands and arguments</h3>
 <p>To execute actions available in the current context, or give arguments to the command, use the following syntax:</p>
 <p>Use <code>:Feed &lt;Tab&gt;</code>, <code>:Feed update_feed &lt;Tab&gt;</code> to get the completion</p>
 <p>Use <code>:Feed&lt;Enter&gt;</code>, <code>:Feed update_feed&lt;Enter&gt;</code> to open menu and select</p>
-<h1 id="keymaps">Keymaps</h1>
+<h2 id="keymaps">Keymaps</h2>
 <p>Press <code>?</code> in to get hints.</p>
-<h2 id="index-buffer">Index buffer</h2>
+<h3 id="index-buffer">Index buffer</h3>
 <table>
 <thead>
 <tr class="header">
@@ -126,7 +127,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="entry-buffer">Entry buffer</h2>
+<h3 id="entry-buffer">Entry buffer</h3>
 <table>
 <thead>
 <tr class="header">
@@ -181,8 +182,8 @@
 </tr>
 </tbody>
 </table>
-<h1 id="manage">Manage</h1>
-<h2 id="from-lua">From lua</h2>
+<h2 id="manage">Manage</h2>
+<h3 id="from-lua">From lua</h3>
 <p>Pass your feeds as list of links and tags in setup</p>
 <p>Use <code>Feed update</code> to update all</p>
 <p>Use <code>Feed update_feed</code> to update one feed</p>
@@ -202,13 +203,13 @@
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;neovim/neovim/releases&quot;</span> <span class="co">-- GitHub links</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>   <span class="op">},</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
-<h2 id="from-opml">From OPML</h2>
+<h3 id="from-opml">From OPML</h3>
 <p>Use <code>Feed load_opml</code> to import your OPML file</p>
 <p>Use <code>Feed export_opml</code> to export your OPML file to load in other readers</p>
-<h2 id="link-formats">Link formats</h2>
-<h3 id="regular-links">Regular links</h3>
+<h3 id="link-formats">Link formats</h3>
+<h4 id="regular-links">Regular links</h4>
 <p>Must start with <code>http</code> or <code>https</code></p>
-<h3 id="rsshub-links">RSSHub links</h3>
+<h4 id="rsshub-links">RSSHub links</h4>
 <p>RSSHub links are first class citizens, format is <code>rsshub://{route}</code></p>
 <p><code>rsshub://{route}</code> will be resolved when fetching according to your config</p>
 <p>Discover available <code>{route}</code> in <a href="https://docs.rsshub.app/routes/popular">RSSHub documentation</a> <code>rsshub://apnews/topics/apf-topnews</code> will be resolved to <code>https://rsshub.app/apnews/topics/apf-topnews</code> by default</p>
@@ -219,7 +220,7 @@
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="va">export</span> <span class="op">=</span> <span class="st">&quot;https://rsshub.app&quot;</span><span class="op">,</span> <span class="co">-- used in export_opml</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">},</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
-<h3 id="github-links">GitHub links</h3>
+<h4 id="github-links">GitHub links</h4>
 <p>GitHub user/repo links are also first class citizens,format is <code>[github://]{user/repo}[{/releases|/commits}]</code>, so following four all work:</p>
 <ul>
 <li><code>neo451/feed.nvim</code></li>
@@ -230,13 +231,13 @@
 <p>For now it defaults to subscribing to the commits</p>
 <p>So first two is resolved into <a href="https://github.com/neo451/feed.nvim/commits.atom" class="uri">https://github.com/neo451/feed.nvim/commits.atom</a></p>
 <p>Latter two is resolved into <a href="https://github.com/neo451/feed.nvim/releases.atom" class="uri">https://github.com/neo451/feed.nvim/releases.atom</a></p>
-<h1 id="search">Search</h1>
+<h2 id="search">Search</h2>
 <ul>
 <li>use <code>Feed search</code> to filter your feeds</li>
 <li>you can also pass the query like <code>Feed =neovim +read</code></li>
 <li>the default query when you open up the index buffer is <code>+unread @2-weeks-ago</code></li>
 </ul>
-<h2 id="regex">Regex</h2>
+<h3 id="regex">Regex</h3>
 <ul>
 <li>no modifier matches entry title or entry url</li>
 <li><code>!</code> is negative match with entry title or url</li>
@@ -244,25 +245,25 @@
 <li><code>~</code> is not matching feed name and feed url</li>
 <li>these all respect your <code>ignorecase</code> option</li>
 </ul>
-<h2 id="tags">Tags</h2>
+<h3 id="tags">Tags</h3>
 <ul>
 <li><code>+</code> means <code>must_have</code>, searches entries’ tags</li>
 <li><code>-</code> means <code>must_not_have</code>, searches entries’ tags</li>
 </ul>
-<h2 id="date">Date</h2>
+<h3 id="date">Date</h3>
 <ul>
 <li><code>@</code> means <code>date</code>, searches entries’ date</li>
 <li><code>2015-8-10</code> searches only entries after the date</li>
 <li><code>2-months-ago</code> searches only entries within two months from now</li>
 <li><code>1-year-ago--6-months-ago</code> means entries in the period</li>
 </ul>
-<h2 id="limit">Limit</h2>
+<h3 id="limit">Limit</h3>
 <ul>
-<li><code>#</code> means <code>limit</code>, limits the number of entries</li>
+<li><code>##</code> means <code>limit</code>, limits the number of entries</li>
 </ul>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <ul>
-<li><code>+blog +unread -star @6-months-ago #10 zig !rust</code></li>
+<li><code>+blog +unread -star @6-months-ago ##10 zig !rust</code></li>
 </ul>
 <p>Only Shows 10 entries with tags blog and unread, without tag star, and are published within 6 month, making sure they have zig but not rust in the title.</p>
 <ul>
@@ -274,7 +275,7 @@
 </ul>
 <p>Only show entries about Linux or Linus from the last year.</p>
 <ul>
-<li><code>-unread +youtube #10</code></li>
+<li><code>-unread +youtube ##10</code></li>
 </ul>
 <p>Only show the most recent 10 previously-read entries tagged as youtube.</p>
 <ul>
@@ -285,18 +286,18 @@
 <li><code>+emacs =http://example.org/feed/</code></li>
 </ul>
 <p>Only show entries tagged as emacs from a specific feed.</p>
-<h2 id="grep">Grep</h2>
+<h3 id="grep">Grep</h3>
 <p>Use <code>Feed grep</code> to live grep all entries in your database, requires <code>rg</code> and one of the search backends:</p>
 <ul>
 <li><code>telescope</code></li>
 <li><code>fzf-lua</code></li>
 <li><code>mini.pick</code></li>
 </ul>
-<h1 id="layout">Layout</h1>
+<h2 id="layout">Layout</h2>
 <p>:TODO:</p>
-<h1 id="lua-api">Lua API</h1>
+<h2 id="lua-api">Lua API</h2>
 <p>:TODO:</p>
-<h1 id="custom-action">Custom Action</h1>
+<h2 id="custom-action">Custom Action</h2>
 <p>:TODO:</p>
 </main>
 
