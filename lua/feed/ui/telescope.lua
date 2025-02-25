@@ -39,10 +39,10 @@ local function feed_search()
             entry_maker = function(line)
                return {
                   value = line,
-                  text = format.entry(line),
+                  text = format.entry(line, config.picker, db),
                   filename = tostring(db.dir / "data" / line),
                   display = function(entry)
-                     return format.entry(entry.value)
+                     return format.entry(entry.value, config.picker, db)
                   end,
                   ordinal = line,
                }

@@ -178,6 +178,22 @@ function M:untag(id, tag)
    self:save_tags()
 end
 
+function M:get_tags(id)
+   local ret = {}
+   -- 1. auto tag no [read] as [unread]
+   if not (self.tags.read and self.tags.read[id]) then
+      ret = { "unread" }
+   end
+
+   -- 2. get tags from tags.lua
+   for tag, tagees in pairs(self.tags) do
+      if tagees[id] then
+         ret[#ret + 1] = tag
+      end
+   end
+   return ret
+end
+
 function M:sort()
    table.sort(self.index, function(a, b)
       return a[2] > b[2]
