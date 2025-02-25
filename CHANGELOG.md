@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.7.3](https://github.com/neo451/feed.nvim/compare/v2.7.2...v2.7.3) (2025-02-25)
+
+
+### Bug Fixes
+
+* **db:** keep ttrss interface up to date ([e66877c](https://github.com/neo451/feed.nvim/commit/e66877c6b366fa75308970113959af5be534e5aa))
+* **parser:** resolve links base on htmlUrl ([e66877c](https://github.com/neo451/feed.nvim/commit/e66877c6b366fa75308970113959af5be534e5aa))
+* **ui:** well format `Feed list` ([4c02423](https://github.com/neo451/feed.nvim/commit/4c02423bd7d12604357fbb0155a4aafc3ca7d001))
+
 ## [2.7.2](https://github.com/neo451/feed.nvim/compare/v2.7.1...v2.7.2) (2025-02-24)
 
 
