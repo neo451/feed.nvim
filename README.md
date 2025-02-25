@@ -1,3 +1,4 @@
+<!-- panvimdoc-ignore-start -->
 <h1 align="center"> 📻 feed.nvim </h1>
 <p align="center">
   <a href="https://github.com/neovim/neovim">
@@ -26,29 +27,29 @@
 
 ![image](https://github.com/user-attachments/assets/e8f9c546-48f6-48d8-8cd6-a9b154df0625)
 
-
 > [!WARNING]
 > This project is young, expect breaking changes, and for now there's a nasty bug if you are on neovim stable [#125](https://github.com/neo451/feed.nvim/issues/125#issuecomment-2612966517), recommand to use nightly or wait for the coming release of 0.11
-> 
-> other than that usage should be fun and smooth, go ahead and enjoy! 
+>
+> other than that usage should be fun and smooth, go ahead and enjoy!
 >
 > see [Roadmap](https://github.com/neo451/feed.nvim/wiki/Roadmap) for where this project goes.
 
 ## 🌟 Features
 
-- 🌲 Fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](https://en.wikipedia.org/wiki/Atom_(web_standard))/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- 🌲 Fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](<https://en.wikipedia.org/wiki/Atom_(web_standard)>)/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - 📝 View entries as beautiful markdown powered by [pandoc](https://pandoc.org)
 - 🏪 Lua database with no extra dependency
 - 📚 Powerful entry searching by date, tag, feed, regex, and fulltext
 - 📂 OPML support to import and export all your feeds and podcasts
-- 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track *everything*
+- 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track _everything_
 - :octocat: Github integration to subscrbe to the new commits/release of your favorite repo/plugin
-- 📶 Work as a feed server with a web interface
-- [ ] Work as a feed client with support for services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
+- 📶 libuv powered feed server with a web interface
+- 📡 support for popular feed sync services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
 ## 🚀 Installation
 
 ### Requirements
+
 - neovim 0.10+
 - curl
 - [pandoc](https://www.pandoc.org)
@@ -58,7 +59,7 @@
 
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
-```
+```vim
 Rocks install feed.nvim
 ```
 
@@ -72,13 +73,211 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 - run `:checkhealth feed` to see your installation status
 
+<!-- panvimdoc-ignore-end -->
 
-## 🔖 Usage
+## Commands
 
-- [Optional Integrations](https://github.com/neo451/feed.nvim/wiki/Integrations)
-- [Usage Guide](https://github.com/neo451/feed.nvim/wiki/Usage-Guide)
-- [Default Configs](https://github.com/neo451/feed.nvim/blob/5382d972e8ed9c2dc2b010fc86b32ddd54e75fde/lua/feed/config.lua#L15)
-- [Recipes](https://github.com/neo451/feed.nvim/wiki/Recipes)
+### Sub commands and arguments
+
+To execute actions available in the current context,
+or give arguments to the command, use the following syntax:
+
+Use `:Feed <Tab>`, `:Feed update_feed <Tab>` to get the completion
+
+Use `:Feed<Enter>`, `:Feed update_feed<Enter>` to open menu and select
+
+## Keymaps
+
+Press `?` in to get hints.
+
+### Index buffer
+
+| action     | key      |
+| ---------- | -------- |
+| hints      | `?`      |
+| dot_repeat | `.`      |
+| undo       | `u`      |
+| entry      | `<CR>`   |
+| split      | `<M-CR>` |
+| browser    | `b`      |
+| refresh    | `r`      |
+| update     | `R`      |
+| search     | `s`      |
+| yank_url   | `y`      |
+| untag      | `-`      |
+| tag        | `+`      |
+| quit       | `q`      |
+
+### Entry buffer
+
+| action   | key |
+| -------- | --- |
+| hints    | `?` |
+| browser  | `b` |
+| next     | `}` |
+| prev     | `{` |
+| full     | `f` |
+| search   | `s` |
+| untag    | `-` |
+| tag      | `+` |
+| urlview  | `r` |
+| yank_url | `y` |
+| quit     | `q` |
+
+## Manage
+
+### From lua
+
+Pass your feeds as list of links and tags in setup
+
+Use `Feed update` to update all
+
+Use `Feed update_feed` to update one feed
+
+```lua
+require("feed").setup({
+   feeds = {
+      -- These two styles both work
+      "https://neovim.io/news.xml",
+      {
+         "https://neovim.io/news.xml",
+         name = "Neovim News",
+         tags = { "tech", "news" }, -- tags given are inherited by all its entries
+      },
+
+      -- three link formats:
+      "https://neovim.io/news.xml", -- Regular links
+      "rsshub://rsshub://apnews/topics/apf-topnews" -- RSSHub links
+      "neovim/neovim/releases" -- GitHub links
+   },
+})
+```
+
+### From OPML
+
+Use `Feed load_opml` to import your OPML file
+
+Use `Feed export_opml` to export your OPML file to load in other readers
+
+### Link formats
+
+#### Regular links
+
+Must start with `http` or `https`
+
+#### RSSHub links
+
+RSSHub links are first class citizens, format is `rsshub://{route}`
+
+`rsshub://{route}` will be resolved when fetching according to your config
+
+Discover available `{route}` in [RSSHub documentation](https://docs.rsshub.app/routes/popular)
+`rsshub://apnews/topics/apf-topnews` will be resolved to `https://rsshub.app/apnews/topics/apf-topnews` by default
+
+Config example:
+
+```lua
+require("feed").setup({
+   rsshub = {
+      instance = "127.0.0.1:1200", -- or any public instance listed here https://rsshub.netlify.app/instances
+      export = "https://rsshub.app", -- used in export_opml
+   },
+})
+```
+
+#### GitHub links
+
+GitHub user/repo links are also first class citizens,format is `[github://]{user/repo}[{/releases|/commits}]`, so following four all work:
+
+- `neo451/feed.nvim`
+- `github://neo451/feed.nvim`
+- `neo451/feed.nvim/releases`
+- `github://neo451/feed.nvim/releases`
+
+For now it defaults to subscribing to the commits
+
+So first two is resolved into <https://github.com/neo451/feed.nvim/commits.atom>
+
+Latter two is resolved into <https://github.com/neo451/feed.nvim/releases.atom>
+
+## Search
+
+- use `Feed search` to filter your feeds
+- you can also pass the query like `Feed =neovim +read`
+- the default query when you open up the index buffer is `+unread @2-weeks-ago`
+
+### Regex
+
+- no modifier matches entry title or entry url
+- `!` is negative match with entry title or url
+- `=` is matching feed name and feed url
+- `~` is not matching feed name and feed url
+- these all respect your `ignorecase` option
+
+### Tags
+
+- `+` means `must_have`, searches entries' tags
+- `-` means `must_not_have`, searches entries' tags
+
+### Date
+
+- `@` means `date`, searches entries' date
+- `2015-8-10` searches only entries after the date
+- `2-months-ago` searches only entries within two months from now
+- `1-year-ago--6-months-ago` means entries in the period
+
+### Limit
+
+- `##` means `limit`, limits the number of entries
+
+### Examples
+
+- `+blog +unread -star @6-months-ago ##10 zig !rust`
+
+Only Shows 10 entries with tags blog and unread, without tag star, and are published within 6 month, making sure they have zig but not rust in the title.
+
+- `@6-months-ago +unread`
+
+Only show unread entries of the last six months. This is the default filter.
+
+- `linu[xs] @1-year-old`
+
+Only show entries about Linux or Linus from the last year.
+
+- `-unread +youtube ##10`
+
+Only show the most recent 10 previously-read entries tagged as youtube.
+
+- `+unread !n\=vim`
+
+Only show unread entries not having vim or nvim in the title or link.
+
+- `+emacs =http://example.org/feed/`
+
+Only show entries tagged as emacs from a specific feed.
+
+### Grep
+
+Use `Feed grep` to live grep all entries in your database,
+requires `rg` and one of the search backends:
+
+- `telescope`
+- `fzf-lua`
+- `mini.pick`
+
+## Layout
+
+:TODO:
+
+## Lua API
+
+:TODO:
+
+## Custom Action
+
+:TODO:
+
+<!-- panvimdoc-ignore-start -->
 
 ## ❤️ Related Projects
 
@@ -86,3 +285,4 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 - [nvim-rss](https://github.com/EMPAT94/nvim-rss)
 - [vnews](https://github.com/danchoi/vnews)
 - [lua-feedparser](https://github.com/slact/lua-feedparser)
+<!-- panvimdoc-ignore-start -->

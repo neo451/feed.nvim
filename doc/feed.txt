@@ -1,4 +1,4 @@
-*feed.txt*                For 0.11               Last change: 2025 February 24
+*feed.txt*                For 0.11               Last change: 2025 February 25
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*
@@ -197,12 +197,12 @@ DATE                                                        *feed-search-date*
 
 LIMIT                                                      *feed-search-limit*
 
-- `#` means `limit`, limits the number of entries
+- `##` means `limit`, limits the number of entries
 
 
 EXAMPLES                                                *feed-search-examples*
 
-- `+blog +unread -star @6-months-ago #10 zig !rust`
+- `+blog +unread -star @6-months-ago ##10 zig !rust`
 
 Only Shows 10 entries with tags blog and unread, without tag star, and are
 published within 6 month, making sure they have zig but not rust in the title.
@@ -215,7 +215,7 @@ Only show unread entries of the last six months. This is the default filter.
 
 Only show entries about Linux or Linus from the last year.
 
-- `-unread +youtube #10`
+- `-unread +youtube ##10`
 
 Only show the most recent 10 previously-read entries tagged as youtube.
 
