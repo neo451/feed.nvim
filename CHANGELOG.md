@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/neo451/feed.nvim/compare/v2.7.3...v2.8.0) (2025-02-25)
+
+
+### Features
+
+* **format:** more customizable format functions ([757b1e6](https://github.com/neo451/feed.nvim/commit/757b1e60416c3f2d91786153dfffd6b26767c948))
+
+
+### Bug Fixes
+
+* seperate picker layout config ([86ea61d](https://github.com/neo451/feed.nvim/commit/86ea61dfc796421fea0311253a4bdcfc934d07ec))
+
 ## [2.7.3](https://github.com/neo451/feed.nvim/compare/v2.7.2...v2.7.3) (2025-02-25)
 
 
