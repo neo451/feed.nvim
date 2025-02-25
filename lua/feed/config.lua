@@ -59,6 +59,23 @@ local default = {
       },
    },
 
+   picker = {
+      order = { "feed", "tags", "title" },
+      feed = {
+         width = 15,
+         color = "FeedTitle",
+      },
+      tags = {
+         width = 15,
+         color = "FeedTags",
+      },
+      title = {
+         color = "FeedTitle",
+      },
+   },
+
+   -- TODO: layout for winbar
+
    search = {
       default_query = "@2-weeks-ago +unread ",
       backend = {

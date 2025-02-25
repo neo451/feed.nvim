@@ -99,7 +99,7 @@ local function render_entry(buf, body, id)
 
    local header = {}
    for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      header[i] = ut.capticalize(v) .. ": " .. Format[v](id)
+      header[i] = ut.capticalize(v) .. ": " .. Format[v](id, db)
    end
 
    local urls = ut.get_urls(body, db[id].link)

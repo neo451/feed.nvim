@@ -15,7 +15,6 @@ end
 ---@param db feed.db
 ---@return string
 function M.tags(id, db)
-   db = db or require("feed.db")
    local tags = db:get_tags(id)
    return "[" .. table.concat(tags, ", ") .. "]"
 end
@@ -24,7 +23,6 @@ end
 ---@param db feed.db
 ---@return string
 M.title = function(id, db)
-   db = db or require("feed.db")
    local entry = db[id]
    return cleanup(entry.title)
 end
@@ -33,7 +31,6 @@ end
 ---@param db feed.db
 ---@return string
 M.feed = function(id, db)
-   db = db or require("feed.db")
    local feeds = db.feeds
    local entry = db[id]
    local feed = feeds[entry.feed] and feeds[entry.feed].title or entry.feed
@@ -44,7 +41,6 @@ end
 ---@param db feed.db
 ---@return string
 M.author = function(id, db)
-   db = db or require("feed.db")
    ---@type feed.entry
    local entry = db[id]
    if entry.author then
@@ -58,7 +54,6 @@ end
 ---@param db feed.db
 ---@return string
 M.link = function(id, db)
-   db = db or require("feed.db")
    return db[id].link
 end
 
@@ -66,33 +61,22 @@ end
 ---@param db feed.db
 ---@return string
 M.date = function(id, db)
-   db = db or require("feed.db")
    ---@diagnostic disable-next-line: return-type-mismatch
    return os.date(Config.date_format.short, db[id].time)
 end
 
 ---return a formated line for an entry base on user config
 ---@param id string
----@param comps table
+---@param layout table
 ---@param db feed.db
 ---@return string
-M.entry = function(id, comps, db)
-   db = db or require("feed.db")
+M.entry = function(id, layout, db)
    local entry = db[id]
    if not entry then
       return ""
    end
 
-   -- comps = comps
-   --    or {
-   --       { "feed", width = 20 },
-   --       { "tags", width = 20 },
-   --       { "title", width = math.huge },
-   --    }
-   local acc = 0
-   local res = {}
-
-   local layout = Config.layout
+   local c, res = 0, {}
 
    for _, name in ipairs(layout.order) do
       local v = layout[name]
@@ -102,7 +86,7 @@ M.entry = function(id, comps, db)
       local width = v.width or #text
       text = ut.align(text, width, v.right_justify) .. " "
       res[#res + 1] = text
-      acc = acc + width
+      c = c + width
    end
    return table.concat(res)
 end

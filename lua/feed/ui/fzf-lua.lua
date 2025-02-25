@@ -34,7 +34,7 @@ local function feed_search()
       ui.state.entries = db:filter(str)
       local ret = {}
       for i, id in ipairs(ui.state.entries) do
-         ret[i] = Format.entry(id) .. (" "):rep(100) .. id
+         ret[i] = Format.entry(id, Config.picker, db) .. (" "):rep(100) .. id
       end
       return ret
    end, {
@@ -64,7 +64,6 @@ local function feed_grep(opts)
    opts.previewer = "builtin"
    opts.fn_transform = function(x)
       local id = x:sub(10, 10 + 63)
-      -- return Format.entry(id)
       return fzf_lua.make_entry.file(x, opts)
    end
    opts.cwd = tostring(db.dir / "data")
