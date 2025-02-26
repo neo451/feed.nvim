@@ -229,11 +229,11 @@ Latter two is resolved into <https://github.com/neo451/feed.nvim/releases.atom>
 
 ### Limit
 
-- `##` means `limit`, limits the number of entries
+- `#` means `limit`, limits the number of entries
 
 ### Examples
 
-- `+blog +unread -star @6-months-ago ##10 zig !rust`
+- `+blog +unread -star @6-months-ago #10 zig !rust`
 
 Only Shows 10 entries with tags blog and unread, without tag star, and are published within 6 month, making sure they have zig but not rust in the title.
 

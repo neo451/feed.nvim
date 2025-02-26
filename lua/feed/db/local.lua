@@ -196,7 +196,11 @@ end
 
 function M:sort()
    table.sort(self.index, function(a, b)
-      return a[2] > b[2]
+      if Config.search.sort_order == "ascending" then
+         return a[2] < b[2]
+      else
+         return a[2] > b[2]
+      end
    end)
 end
 
@@ -213,8 +217,8 @@ function M:rm(id)
    end
    self:save_feeds()
    self:save_index()
-   pcall(Path.rm, self.dir / "data" / id)
-   pcall(Path.rm, self.dir / "object" / id)
+   Path.rm(self.dir / "data" / id)
+   Path.rm(self.dir / "object" / id)
    rawset(self, id, nil)
    rawset(mem, id, nil)
 end
@@ -349,16 +353,17 @@ function M:filter(str)
    end
 
    local ret = iter:fold({}, function(acc, id)
-      if not mem[id] then
-         mem[id] = Path.load(self.dir / "object" / id)
-      end
       acc[#acc + 1] = id
       return acc
    end)
 
    if q.must_have then
       table.sort(ret, function(a, b)
-         return self[a].time > self[b].time
+         if Config.search.sort_order == "ascending" then
+            return self[a].time < self[b].time
+         else
+            return self[a].time > self[b].time
+         end
       end)
    end
 
