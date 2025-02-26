@@ -6,8 +6,8 @@ local feedlist = ut.feedlist
 
 local M = {}
 
-M.server = {
-   doc = "opens server",
+M.web = {
+   doc = "opens server and web interface",
    impl = function(port)
       port = port or Config.web.port
       require("feed.server").open(port)
