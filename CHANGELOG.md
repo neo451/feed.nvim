@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.9.0](https://github.com/neo451/feed.nvim/compare/v2.8.0...v2.9.0) (2025-02-26)
+
+
+### Features
+
+* add config field for asc/desc sort order ([e53b2ad](https://github.com/neo451/feed.nvim/commit/e53b2ad9d0f607b8e75239c5f38f23a79d0aca4d))
+
+
+### Bug Fixes
+
+* **commands:** rename server to web ([b642e64](https://github.com/neo451/feed.nvim/commit/b642e64f132f30491bd27aae6be021fa26b75b35))
+* ensure commands order, show less sub commands ([492c4ef](https://github.com/neo451/feed.nvim/commit/492c4ef30726def8aa56676cebf16cbec1c40f6f))
+* **ui:** map yank_url to Y to allow for normal yanking ([b21ed61](https://github.com/neo451/feed.nvim/commit/b21ed614519ce35c87594a58c4e70f92a9a351fe))
+* **ui:** winbar has its own config field ([b21ed61](https://github.com/neo451/feed.nvim/commit/b21ed614519ce35c87594a58c4e70f92a9a351fe))
+
 ## [2.8.0](https://github.com/neo451/feed.nvim/compare/v2.7.3...v2.8.0) (2025-02-25)
 
 
