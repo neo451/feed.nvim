@@ -6,11 +6,11 @@ local log = require("feed.lib.log")
 ---@alias feed.version "rss20" | "rss091" | "rss092" | "rss" | "atom10" | "atom03" | "json1"
 
 ---@class feed.feed
----@field title? string
+---@field link string
+---@field title string
 ---@field entries? feed.entry[] -> nil
----@field desc? string -> title?
+---@field desc? string
 ---@field htmlUrl? string
----@field link? string
 ---@field type? feed.type
 ---@field tags? string[]
 ---@field last_modified? string

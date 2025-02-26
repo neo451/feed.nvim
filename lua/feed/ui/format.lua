@@ -2,15 +2,6 @@ local M = {}
 local Config = require("feed.config")
 local ut = require("feed.utils")
 
----@param str string
----@return string
-local function cleanup(str)
-   if not str then
-      return ""
-   end
-   return vim.trim(str:gsub("\n", ""))
-end
-
 ---@param id string
 ---@param db feed.db
 ---@return string
@@ -23,8 +14,7 @@ end
 ---@param db feed.db
 ---@return string
 M.title = function(id, db)
-   local entry = db[id]
-   return cleanup(entry.title)
+   return db[id].title
 end
 
 ---@param id string
@@ -33,21 +23,15 @@ end
 M.feed = function(id, db)
    local feeds = db.feeds
    local entry = db[id]
-   local feed = feeds[entry.feed] and feeds[entry.feed].title or entry.feed
-   return cleanup(feed) -- FIX: for ttrss
+   return feeds[entry.feed] and feeds[entry.feed].title or entry.feed
 end
 
 ---@param id string
 ---@param db feed.db
 ---@return string
 M.author = function(id, db)
-   ---@type feed.entry
    local entry = db[id]
-   if entry.author then
-      return cleanup(entry.author)
-   else
-      return M.feed(id, db)
-   end
+   return entry.author and entry.author or M.feed(id, db)
 end
 
 ---@param id string

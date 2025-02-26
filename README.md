@@ -410,10 +410,6 @@ vim.api.nvim_create_autocmd("User", {
 
 :TODO:
 
-## Custom Action
-
-:TODO:
-
 <!-- panvimdoc-ignore-start -->
 
 ## ❤️ Related Projects
@@ -423,7 +419,3 @@ vim.api.nvim_create_autocmd("User", {
 - [vnews](https://github.com/danchoi/vnews)
 - [lua-feedparser](https://github.com/slact/lua-feedparser)
 <!-- panvimdoc-ignore-start -->
-
-```
-
-```

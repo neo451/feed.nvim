@@ -1,30 +1,22 @@
 local date = require("feed.parser.date")
-local ut = require("feed.utils")
-local sensible = ut.sensible
-local decode = ut.decode
 local resolve = require("feed.parser.html").resolve
+local ut = require("feed.utils")
+local clean = ut.clean
 
----@param str string?
----@return string?
-local clean = function(str)
-   str = decode(str)
-   return str and vim.trim(str) or nil
-end
-
-local function handle_version(ast)
-   if ast.feed.version == "1.0" or not ast.feed.version then
+local function handle_version(node)
+   if node.version == "1.0" or not node.version then
       return "atom10"
-   elseif ast.feed.version == "0.3" then
+   elseif node.version == "0.3" then
       return "atom03"
    end
 end
 
 ---@return string?
-local function handle_link(ast, base)
-   local T = type(ast.link)
-   base = ut.url_rebase(ast, base)
+local function handle_link(node, base)
+   local T = type(node.link)
+   base = ut.url_rebase(node, base)
    if T == "table" then
-      local list = ut.listify(ast.link)
+      local list = ut.listify(node.link)
       for _, v in ipairs(list) do
          if v.rel == "alternate" then
             if not ut.looks_like_url(v.href) then
@@ -36,7 +28,7 @@ local function handle_link(ast, base)
       end
       return ut.url_resolve(list[1].href)
    elseif T == "string" then
-      return ast.link
+      return node.link
    end
 end
 
@@ -59,21 +51,25 @@ local function handle_title(entry, fallback)
    return handle(entry.title or fallback)
 end
 
+local function handle_feed_title(ast, url)
+   if not ast.title then
+      return url
+   end
+   return clean(ast.title[1])
+end
+
 local function handle_content(entry, fallback, url)
-   local content = entry["content"] or entry["summary"]
-   if not content then
+   local content_node = entry["content"] or entry["summary"]
+   if not content_node then
       return fallback
    end
-   return resolve(clean(content[1]), url)
+   local content = clean(content_node[1])
+   return resolve(content, url)
 end
 
 local function handle_date(entry)
-   local time = sensible(entry["published"] or entry["updated"], 1)
-   return date.parse(time, "atom")
-end
-
-local function handle_feed_title(ast, url)
-   return decode(sensible(ast.title, 1, url))
+   local time_node = entry["published"] or entry["updated"]
+   return date.parse(time_node and time_node[1], "atom")
 end
 
 ---@return string?
@@ -93,7 +89,7 @@ local function handle_description(feed)
    if not feed.subtitle then
       return
    end
-   return decode(vim.trim(sensible(feed.subtitle, 1)))
+   return clean(feed.subtitle[1])
 end
 
 ---@param entry table
@@ -115,17 +111,16 @@ end
 local function handle_atom(ast, url)
    local res = {}
    local feed = ast.feed
-   res.version = handle_version(ast)
-   local root_base = ut.url_rebase(feed, url)
-   res.link = handle_link(feed, root_base)
+   local base = ut.url_rebase(feed, url)
+   res.version = handle_version(feed)
+   res.link = handle_link(feed, base)
    res.desc = handle_description(feed)
    res.title = handle_feed_title(feed, res.link)
    res.author = handle_author(feed)
    res.entries = {}
-   res.type = "atom"
    if feed.entry then
       for _, v in ipairs(ut.listify(feed.entry)) do
-         res.entries[#res.entries + 1] = handle_entry(v, res, root_base, url)
+         res.entries[#res.entries + 1] = handle_entry(v, res, base, url)
       end
    end
    return res

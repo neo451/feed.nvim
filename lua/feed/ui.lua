@@ -152,6 +152,57 @@ local function render_entry(buf, body, id)
    })
 end
 
+---@param buf integer
+---@param id string
+---@return fun(chunk: string)
+local function render_chunks(buf, id)
+   if not api.nvim_buf_is_valid(buf) then
+      return function() end
+   end
+   local col, row = 0, 0
+
+   vim.bo[buf].modifiable = true
+
+   return function(chunk)
+      local urls = ut.get_urls(chunk, db[id].link)
+      if urls then
+         state.urls = urls
+      else
+         if vim.g.feed_debug then
+            vim.notify("get_urls failed for string: " .. chunk)
+         end
+      end
+
+      local ok, res
+
+      for _, f in ipairs(body_transforms) do
+         ok, res = pcall(f, chunk, id)
+         if ok then
+            chunk = res
+         end
+      end
+
+      local lines = vim.split(chunk, "\n")
+
+      -- FIXME:
+      for i, v in ipairs(lines) do
+
+         -- api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
+      end
+
+      -- TODO: after finish
+      vim.bo[buf].modifiable = false
+      hl_entry(buf)
+      image_attach(buf)
+      mark_read(id)
+
+      api.nvim_buf_set_name(buf, "FeedEntry")
+      api.nvim_exec_autocmds("User", {
+         pattern = "FeedShowEntry",
+      })
+   end
+end
+
 local function hl_index(buf)
    for linenr = 1, #state.entries do
       local acc = 0
@@ -363,13 +414,16 @@ M.show_hints = function()
    local lines = {}
    for k, v in pairs(maps) do
       if type(k) == "string" then
-         lines[#lines + 1] = v .. " -> " .. k
+         lines[#lines + 1] = string.format("- `%s -> %s`", k, v)
       end
    end
 
    M.split({
       wo = {
-         winbar = "%#Title# Key Hints",
+         winbar = "%#Title#Key Hints",
+      },
+      bo = {
+         filetype = "markdown",
       },
    }, "50%", lines)
 end
