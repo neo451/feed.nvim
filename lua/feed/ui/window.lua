@@ -53,11 +53,7 @@ function M.new(opts, enter)
    opts.show = vim.F.if_nil(opts.show, true)
    opts.enter = vim.F.if_nil(enter, true)
 
-   if Config.layout.padding.enabled then
-      opts.wo.statuscolumn = " "
-   else
-      opts.wo.statuscolumn = ""
-   end
+   opts.wo.statuscolumn = ""
    id = id + 1
    local self = setmetatable({
       opts = opts,

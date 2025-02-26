@@ -1,48 +1,26 @@
-local M = require("feed.ui.format")
 local eq = MiniTest.expect.equality
-local db = require("feed.db")
 
 local T = MiniTest.new_set()
-local layout = require("feed.config").layout
+local layout = require("feed.config").ui
 
-local db = {
-   ["1"] = {
-      title = "title",
-      feed = "https://neovim.io/news.xml",
-      author = "author",
-      link = "link",
-      time = os.time({ year = 2025, month = 1, day = 1 }),
-   },
-   feeds = {
-      ["https://neovim.io/news.xml"] = {
-         title = "neovim",
-         tags = { "nvim" },
-      },
-   },
-   tags = {
-      star = {
-         ["1"] = true,
-      },
-   },
+local db = require("feed.db")
+db = db.new("~/.feed.nvim.test/")
+db.feeds["https://neovim.io/news.xml"] = {
+   title = "neovim",
+   tags = { "nvim" },
 }
 
-db.__index = db
+db.tags.star["1"] = true
 
-function db:get_tags(id)
-   local ret = {}
-   -- 1. auto tag no [read] as [unread]
-   if not (self.tags.read and self.tags.read[id]) then
-      ret = { "unread" }
-   end
+db["1"] = {
+   title = "title",
+   feed = "https://neovim.io/news.xml",
+   author = "author",
+   link = "link",
+   time = os.time({ year = 2025, month = 1, day = 1 }),
+}
 
-   -- 2. get tags from tags.lua
-   for tag, tagees in pairs(self.tags) do
-      if tagees[id] then
-         ret[#ret + 1] = tag
-      end
-   end
-   return ret
-end
+local M = require("feed.ui.format")
 
 T["format"] = MiniTest.new_set({})
 

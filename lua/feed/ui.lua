@@ -14,8 +14,6 @@ local redo_history = state.redo_history
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
-local og = {}
-
 local M = {
    state = state,
 }
@@ -87,6 +85,19 @@ local body_transforms = {
    -- TODO: allow user
 }
 
+local function hl_entry(buf)
+   for i, t in ipairs({
+      { 7, "FeedTitle" },
+      { 8, "FeedAuthor" },
+      { 6, "FeedFeed" },
+      { 6, "FeedLink" },
+      { 6, "FeedDate" },
+   }) do
+      local j, hi = t[1], t[2]
+      hl.range(buf, ns_entry, hi, { i - 1, j }, { i - 1, 200 })
+   end
+end
+
 ---@param buf integer
 ---@param body string
 ---@param id string
@@ -128,18 +139,9 @@ local function render_entry(buf, body, id)
       api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
    end
 
-   for i, t in ipairs({
-      { 7, "FeedTitle" },
-      { 8, "FeedAuthor" },
-      { 6, "FeedFeed" },
-      { 6, "FeedLink" },
-      { 6, "FeedDate" },
-   }) do
-      local j, hi = t[1], t[2]
-      hl.range(buf, ns_entry, hi, { i - 1, j }, { i - 1, 200 })
-   end
    vim.bo[buf].modifiable = false
 
+   hl_entry(buf)
    image_attach(buf)
    mark_read(id)
 
@@ -153,7 +155,7 @@ end
 local function hl_index(buf)
    for linenr = 1, #state.entries do
       local acc = 0
-      local layout = Config.layout
+      local layout = Config.ui
       for _, name in ipairs(layout.order) do
          local sect = layout[name]
          local width = sect.width or 100
@@ -187,7 +189,7 @@ M.show_index = function()
 
    local lines = {}
    for i, id in ipairs(state.entries) do
-      lines[i] = Format.entry(id, Config.layout, db)
+      lines[i] = Format.entry(id, Config.ui, db)
    end
    table.insert(lines, "")
    api.nvim_buf_set_lines(buf, 0, -1, false, lines)
