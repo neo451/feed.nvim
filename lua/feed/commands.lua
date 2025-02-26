@@ -164,7 +164,17 @@ M.update = {
    impl = function()
       local n = #ut.feedlist(db.feeds, false)
       local prog = require("feed.ui.progress").new(n)
-      vim.system({ "nvim", "--headless", "-c", 'lua require"feed.fetch".update_all()' }, {
+      local args = vim.v.argv
+      table.remove(args, 1)
+      table.remove(args, 1)
+      local cmds = vim.tbl_flatten({
+         "nvim",
+         args,
+         "--headless",
+         "-c",
+         'lua require"feed.fetch".update_all()',
+      })
+      vim.system(cmds, {
          text = true,
          stdout = function(_, data)
             if data and vim.trim(data) ~= "" then
@@ -214,12 +224,24 @@ M.sync = {
    end,
 }
 
+M.export = {
+   doc = "use pandoc to convert entry to any format",
+   impl = function(to, fp)
+      local entry, id = ui.get_entry()
+      require("feed.pandoc").convert({ id = id, to = to }, function(res)
+         ut.save_file(vim.fs.joinpath(fp, entry.title .. "." .. to), res)
+      end)
+   end,
+}
+
 local entry_cmds = {
    "urlview",
    "next",
    "prev",
    "full",
    "browser",
+   "export",
+   "quit",
 }
 
 local index_cmds = {

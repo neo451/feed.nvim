@@ -1,6 +1,7 @@
 local Config = require("feed.config")
 local Format = require("feed.ui.format")
-local Markdown = require("feed.ui.markdown")
+local Pandoc = require("feed.pandoc")
+local Stream = require("feed.ui.stream")
 local Curl = require("feed.curl")
 local Opml = require("feed.opml")
 local Fetch = require("feed.fetch")
@@ -152,57 +153,6 @@ local function render_entry(buf, body, id)
    })
 end
 
----@param buf integer
----@param id string
----@return fun(chunk: string)
-local function render_chunks(buf, id)
-   if not api.nvim_buf_is_valid(buf) then
-      return function() end
-   end
-   local col, row = 0, 0
-
-   vim.bo[buf].modifiable = true
-
-   return function(chunk)
-      local urls = ut.get_urls(chunk, db[id].link)
-      if urls then
-         state.urls = urls
-      else
-         if vim.g.feed_debug then
-            vim.notify("get_urls failed for string: " .. chunk)
-         end
-      end
-
-      local ok, res
-
-      for _, f in ipairs(body_transforms) do
-         ok, res = pcall(f, chunk, id)
-         if ok then
-            chunk = res
-         end
-      end
-
-      local lines = vim.split(chunk, "\n")
-
-      -- FIXME:
-      for i, v in ipairs(lines) do
-
-         -- api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
-      end
-
-      -- TODO: after finish
-      vim.bo[buf].modifiable = false
-      hl_entry(buf)
-      image_attach(buf)
-      mark_read(id)
-
-      api.nvim_buf_set_name(buf, "FeedEntry")
-      api.nvim_exec_autocmds("User", {
-         pattern = "FeedShowEntry",
-      })
-   end
-end
-
 local function hl_index(buf)
    for linenr = 1, #state.entries do
       local acc = 0
@@ -272,12 +222,7 @@ M.preview_entry = function(ctx)
       buf = api.nvim_create_buf(false, true)
    end
 
-   Markdown.convert({
-      fp = tostring(db.dir / "data" / id),
-      cb = function(body)
-         render_entry(buf, body, id)
-      end,
-   })
+   Pandoc.convert({ id = id }, Stream.new(buf))
 end
 
 ---@param ctx? { row: integer, id: string, buf: integer, link: string }
@@ -296,7 +241,7 @@ local function show_entry(ctx)
    end
 
    state.entry = Win.new({
-      prev_win = state.index and state.index.win or nil,
+      prev_win = state.index and state.index.win or api.nvim_get_current_win(),
       buf = buf,
       wo = Config.options.entry.wo,
       bo = Config.options.entry.bo,
@@ -306,28 +251,27 @@ local function show_entry(ctx)
       zindex = 5,
    })
 
+   local writer = Stream.new(buf)
    if ctx.link then
-      Markdown.convert({
-         link = ctx.link,
-         cb = function(body)
-            render_entry(buf, body, id)
-         end,
-      })
+      Pandoc.convert({ link = ctx.link }, writer)
    elseif entry.content then
-      Markdown.convert({
-         src = entry.content(),
-         cb = function(body)
-            render_entry(buf, body, id)
-         end,
-      })
+      Pandoc.convert({ src = entry.content() }, writer)
    else
-      Markdown.convert({
-         fp = tostring(db.dir / "data" / id),
-         cb = function(body)
-            render_entry(buf, body, id)
-         end,
-      })
+      Pandoc.convert({ id = id }, writer)
    end
+
+   hl_entry(buf)
+   image_attach(buf)
+   mark_read(id)
+
+   state.urls = ut.get_urls(ut.read_file(tostring(db.dir / "data" / id)), db[id].link)
+   vim.print(state.urls)
+
+   api.nvim_buf_set_name(buf, "FeedEntry")
+
+   api.nvim_exec_autocmds("User", {
+      pattern = "FeedShowEntry",
+   })
 end
 
 M.quit = function()
@@ -428,7 +372,6 @@ M.show_hints = function()
    }, "50%", lines)
 end
 
----Open split to show entry
 ---@param percentage any
 M.show_split = function(percentage)
    local _, id = get_entry()

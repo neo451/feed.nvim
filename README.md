@@ -58,7 +58,7 @@
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
 ```vim
-Rocks install feed.nvim
+:Rocks install feed.nvim
 ```
 
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
@@ -106,7 +106,7 @@ Use `:Feed<Enter>`, `:Feed update_feed<Enter>` to open menu and select
 
 ## Keymaps
 
-Press `?` in to get keymap hints.
+By default, feed.nvim will not set any keymaps for you, press `?` in to see buffer-local keymaps.
 
 ### Index buffer
 
