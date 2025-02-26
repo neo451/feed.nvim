@@ -13,7 +13,6 @@ M.web = {
       require("feed.server").open(port)
       vim.ui.open("http://0.0.0.0:" .. port)
    end,
-   context = { all = true },
 }
 
 M.load_opml = {
@@ -25,7 +24,6 @@ M.load_opml = {
          ui.input({ prompt = "path or url to your opml: ", completion = "file_in_path" }, ui.load_opml)
       end
    end,
-   context = { all = true },
 }
 
 M.export_opml = {
@@ -37,91 +35,71 @@ M.export_opml = {
          ui.input({ prompt = "export your opml to: ", completion = "file_in_path" }, ui.export_opml)
       end
    end,
-   context = { all = true },
 }
 
 M.search = {
    doc = "search the database by time, tags or regex",
    impl = ui.search,
-   context = { all = true },
 }
 
 M.grep = {
    doc = "full-text search through the entry contents",
    impl = ui.grep,
-   context = { all = true },
 }
 
 M.refresh = {
    doc = "refresh the index buffer",
    impl = ui.refresh,
-   context = { index = true },
 }
 
 M.log = {
    doc = "show log",
    impl = ui.show_log,
-   context = { all = true },
 }
 
 M.browser = {
    doc = "open entry link in browser with vim.ui.open",
    impl = ui.show_browser,
-   context = { index = true, entry = true },
 }
 
 M.full = {
    doc = "fetch the full text",
    impl = ui.show_full,
-   context = { entry = true },
 }
 
 M.split = {
    doc = "show entry in split",
    impl = ui.show_split,
-   context = { index = true },
 }
 
 M.entry = {
    doc = "show entry in new buffer",
    impl = ui.show_entry,
-   context = { index = true },
 }
 
 M.index = {
    doc = "show search results in new buffer",
    impl = ui.show_index,
-   context = { all = true },
 }
 
 M.next = {
    doc = "show next search result",
    impl = ui.show_next,
-   context = { entry = true },
 }
 
 M.prev = {
    doc = "show previous search result",
    impl = ui.show_prev,
-   context = { entry = true },
 }
 
 M.hints = {
    doc = "show keymap hints",
    impl = ui.show_hints,
-   context = { entry = true, index = true },
 }
 
 M.quit = {
    doc = "quit current view",
    impl = ui.quit,
-   context = { entry = true, index = true },
-}
-
-M.open_url = {
-   doc = "open url under cursor",
-   impl = ui.open_url,
-   context = { entry = true },
 }
 
 M.yank_url = {
@@ -129,19 +107,16 @@ M.yank_url = {
    impl = function()
       vim.fn.setreg("+", ui.get_entry().link)
    end,
-   context = { index = true, entry = true },
 }
 
 M.undo = {
    doc = "undo",
    impl = ui.undo,
-   context = { index = true },
 }
 
 M.redo = {
    doc = "redo",
    impl = ui.redo,
-   context = { index = true },
 }
 
 M.dot = {
@@ -149,7 +124,6 @@ M.dot = {
    impl = function()
       ui.dot()
    end,
-   context = { index = true },
 }
 
 M.tag = {
@@ -161,7 +135,6 @@ M.tag = {
          ui.input({ prompt = "Tag: " }, ui.tag)
       end
    end,
-   context = { index = true, entry = true },
 }
 
 --- TODO: make tag untag visual line mode
@@ -174,19 +147,16 @@ M.untag = {
          ui.input({ prompt = "Untag: " }, ui.untag)
       end
    end,
-   context = { index = true, entry = true },
 }
 
 M.urlview = {
    doc = "list all links in entry and open selected",
    impl = ui.show_urls,
-   context = { entry = true },
 }
 
 M.list = {
    doc = "list all feeds",
    impl = ui.show_feeds,
-   context = { all = true },
 }
 
 M.update = {
@@ -208,7 +178,6 @@ M.update = {
          end,
       })
    end,
-   context = { all = true },
 }
 
 M.update_feed = {
@@ -229,7 +198,6 @@ M.update_feed = {
    complete = function()
       return feedlist(db.feeds, true)
    end,
-   context = { all = true },
 }
 
 M["sync!"] = {
@@ -237,7 +205,6 @@ M["sync!"] = {
    impl = function()
       db:hard_sync()
    end,
-   context = { all = true },
 }
 
 M.sync = {
@@ -245,27 +212,60 @@ M.sync = {
    impl = function()
       db:soft_sync()
    end,
-   context = { all = true },
+}
+
+local entry_cmds = {
+   "urlview",
+   "next",
+   "prev",
+   "full",
+   "browser",
+}
+
+local index_cmds = {
+   "web",
+   "untag",
+   "load_opml",
+   "update",
+   "sync!",
+   "tag",
+   "index",
+   "update_feed",
+   "list",
+   "quit",
+   "grep",
+   "browser",
+   "export_opml",
+   "split",
+   "log",
+   "search",
+   "sync",
+}
+
+local general_cmds = {
+   "index",
+   "search",
+   "update",
+   "sync",
+   "sync!",
+   "update_feed",
+   "list",
+   "grep",
+   "web",
+   "browser",
+   "load_opml",
+   "export_opml",
+   "log",
 }
 
 function M._list_commands()
-   local choices = vim.iter(vim.tbl_keys(M)):filter(function(v)
-      return v:sub(0, 1) ~= "_" and not vim.list_contains({ "dot", "redo", "undo" }, v)
-   end)
    if ut.in_entry() then
-      choices = choices:filter(function(v)
-         return M[v].context.entry or M[v].context.all
-      end)
+      return entry_cmds
    elseif ut.in_index() then
-      choices = choices:filter(function(v)
-         return M[v].context.index or M[v].context.all
-      end)
+      return index_cmds
    else
-      choices = choices:filter(function(v)
-         return M[v].context.all
-      end)
+      return general_cmds
    end
-   return choices:totable()
 end
 
 function M._load_command(args)
