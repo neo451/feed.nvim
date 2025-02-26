@@ -1,4 +1,5 @@
 local date = require("feed.parser.date")
+local ut = require("feed.utils")
 local eq = MiniTest.expect.equality
 local sha = vim.fn.sha256
 local db = require("feed.db")
@@ -54,9 +55,12 @@ T["new"]["adds entries to db and in memory, with id as key/filename, and content
    }
    local key = sha(entry.link)
    db[key] = entry
+   local fp = tostring(db.dir / "data" / key)
+   ut.save_file(fp, "dataaaaaaa")
    eq(entry.time, db[key].time)
    eq(entry.link, db[key].link)
    eq(entry.title, db[key].title)
+   eq("dataaaaaaa", ut.read_file(fp))
 end
 
 T["new"]["rm all refs in the db"] = function()
@@ -66,6 +70,8 @@ T["new"]["rm all refs in the db"] = function()
       time = 1,
    }
    local id = sha(entry.link)
+   local fp = tostring(db.dir / "data" / id)
+   ut.save_file(fp, "to remove")
    db[id] = entry
    db:tag(id, { "star", "read" })
    db:rm(id)

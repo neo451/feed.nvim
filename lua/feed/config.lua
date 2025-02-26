@@ -27,12 +27,37 @@ local default = {
    ---@type string[]
    curl_params = {},
    ---@type table[]
-   layout = {
-      padding = {
-         enabled = false,
-      },
+   ui = {
       order = { "date", "feed", "tags", "title" },
       winbar_right = { "query", "last_updated" },
+      date = {
+         width = 10,
+         color = "FeedDate",
+      },
+      feed = {
+         width = 25,
+         color = "FeedTitle",
+      },
+      tags = {
+         width = 20,
+         color = "FeedTags",
+      },
+      title = {
+         color = "FeedTitle",
+      },
+      progress = {
+         color = "FeedDate",
+      },
+      query = {
+         color = "FeedLabel",
+      },
+      last_updated = {
+         color = "FeedDate",
+      },
+   },
+
+   winbar = {
+      order = { "date", "feed", "tags", "title", "%=%<", "query", "last_updated" },
       date = {
          width = 10,
          color = "FeedDate",
@@ -119,7 +144,7 @@ local default = {
          refresh = "r",
          update = "R",
          search = "s",
-         yank_url = "y",
+         yank_url = "Y",
          untag = "-",
          tag = "+",
          quit = "q",
@@ -134,7 +159,7 @@ local default = {
          untag = "-",
          tag = "+",
          urlview = "r",
-         yank_url = "y",
+         yank_url = "Y",
          quit = "q",
       },
    },

@@ -1,10 +1,11 @@
-*feed.txt*                For 0.11               Last change: 2025 February 25
+*feed.txt*                For 0.11               Last change: 2025 February 26
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*
 
 1. Commands                                                    |feed-commands|
   - Sub commands and arguments      |feed-commands-sub-commands-and-arguments|
+  - List of commands                          |feed-commands-list-of-commands|
 2. Keymaps                                                      |feed-keymaps|
   - Index buffer                                   |feed-keymaps-index-buffer|
   - Entry buffer                                   |feed-keymaps-entry-buffer|
@@ -19,7 +20,7 @@ Table of Contents                                     *feed-table-of-contents*
   - Limit                                                  |feed-search-limit|
   - Examples                                            |feed-search-examples|
   - Grep                                                    |feed-search-grep|
-5. Layout                                                        |feed-layout|
+5. Recipes                                                      |feed-recipes|
 6. Lua API                                                      |feed-lua-api|
 7. Custom Action                                          |feed-custom-action|
 
@@ -37,10 +38,52 @@ Use `:Feed <Tab>`, `:Feed update_feed <Tab>` to get the completion
 Use `:Feed<Enter>`, `:Feed update_feed<Enter>` to open menu and select
 
 
+LIST OF COMMANDS                              *feed-commands-list-of-commands*
+
+  ----------------------------------------------------------------------------------------
+  name                            desc                                              bang
+  ------------------------------- ------------------------------------------------- ------
+  Feed <query>                    opens a index buffer, a list view based on the    no
+                                  filter you passed in                              
+
+  Feed index                      opens a index buffer, a list view based on your   no
+                                  default filter                                    
+
+  Feed entry                      opens a entry buffer, a markdown view of the      no
+                                  entry content                                     
+
+  Feed update                     updates all feeds in the database                 no
+
+  Feed update_feed <feed_url>     update a single feed in the database              no
+
+  Feed sync                       sync the database with your config, removes feeds yes
+                                  and entries (if bang) not present                 
+
+  Feed search <query>             opens picker to live search your database         no
+
+  Feed grep                       opens picker to live grep your database           no
+                                  (experimental)                                    
+
+  Feed list                       opens a split to show info about all your feeds   no
+                                  in database                                       
+
+  Feed log                        opens a split to show log                         no
+
+  Feed load_opml <filepath/url>   import from an OPML file or url                   no
+
+  Feed export_opml <filepath>     export to an OPML file                            no
+
+  Feed web <port>                 opens a server on a port and opens the web        no
+                                  interface in browser                              
+
+  Feed urlview                    opens a select UI to picker urls in entry buffer, no
+                                  to open in browser                                
+  ----------------------------------------------------------------------------------------
+
 ==============================================================================
 2. Keymaps                                                      *feed-keymaps*
 
-Press `?` in to get hints.
+Press `?` in to get keymap hints.
 
 
 INDEX BUFFER                                       *feed-keymaps-index-buffer*
@@ -50,13 +93,14 @@ INDEX BUFFER                                       *feed-keymaps-index-buffer*
   hints        ?
   dot_repeat   .
   undo         u
+  redo         <C-r>
   entry        <CR>
   split        <M-CR>
   browser      b
   refresh      r
   update       R
   search       s
-  yank_url     y
+  yank_url     Y
   untag        -
   tag          +
   quit         q
@@ -74,7 +118,7 @@ ENTRY BUFFER                                       *feed-keymaps-entry-buffer*
   untag      -
   tag        +
   urlview    r
-  yank_url   y
+  yank_url   Y
   quit       q
 
 ==============================================================================
@@ -197,12 +241,12 @@ DATE                                                        *feed-search-date*
 
 LIMIT                                                      *feed-search-limit*
 
-- `##` means `limit`, limits the number of entries
+- `#` means `limit`, limits the number of entries
 
 
 EXAMPLES                                                *feed-search-examples*
 
-- `+blog +unread -star @6-months-ago ##10 zig !rust`
+- `+blog +unread -star @6-months-ago #10 zig !rust`
 
 Only Shows 10 entries with tags blog and unread, without tag star, and are
 published within 6 month, making sure they have zig but not rust in the title.
@@ -239,9 +283,121 @@ one of the search backends:
 
 
 ==============================================================================
-5. Layout                                                        *feed-layout*
+5. Recipes                                                      *feed-recipes*
 
-:TODO:
+Change the highlight of the tags section and use emojis and mini.icons for tags ~
+
+>lua
+    require("feed").setup({
+       layout = {
+          tags = {
+             color = "String",
+             format = function(id, db)
+                local icons = {
+                   news = "📰",
+                   tech = "💻",
+                   movies = "🎬",
+                   games = "🎮",
+                   music = "🎵",
+                   podcast = "🎧",
+                   books = "📚",
+                   unread = "🆕",
+                   read = "✅",
+                   junk = "🚮",
+                   star = "⭐",
+                }
+    
+                local get_icon = function(name)
+                   if icons[name] then
+                      return icons[name]
+                   end
+                   local has_mini, MiniIcons = pcall(require, "mini.icons")
+                   if has_mini then
+                      local icon = MiniIcons.get("filetype", name)
+                      if icon then
+                         return icon .. " "
+                      end
+                   end
+                   return name
+                end
+    
+                local tags = vim.tbl_map(get_icon, db:get_tags(id))
+    
+                return "[" .. table.concat(tags, ", ") .. "]"
+             end,
+          },
+       },
+    })
+<
+
+Custom function & keymap for podcast and w3m ~
+
+>lua
+    local function play_podcast()
+       local link = require("feed").get_entry().link
+       if link:find("mp3") then
+          vim.ui.open(link)
+       -- any other player like:
+       -- vim.system({ "vlc.exe", link })
+       else
+          vim.notify("not a podcast episode")
+       end
+    end
+    
+    local function show_in_w3m()
+       if not vim.fn.executable("w3m") then
+          vim.notify("w3m not installed")
+          return
+       end
+       local link = require("feed").get_entry().link
+       local w3m = require("feed.ui.window").new({
+          relative = "editor",
+          col = math.floor(vim.o.columns * 0.1),
+          row = math.floor(vim.o.lines * 0.1),
+          width = math.floor(vim.o.columns * 0.8),
+          height = math.floor(vim.o.lines * 0.8),
+          border = "rounded",
+          style = "minimal",
+          title = "Feed w3m",
+          zindex = 10,
+       })
+       vim.keymap.set({ "n", "t" }, "q", "<cmd>q<cr>", { silent = true, buffer = w3m.buf })
+       vim.fn.jobstart({ "w3m", link }, { term = true })
+       vim.cmd("startinsert")
+    end
+    
+    require("feed").setup({
+       keys = {
+          index = {
+             [play_podcast] = "p",
+             [show_in_w3m] = "w",
+          },
+       },
+    })
+<
+
+Custom colorscheme only set when viewing feeds ~
+
+>lua
+    local og_color
+    
+    vim.api.nvim_create_autocmd("User", {
+       pattern = "FeedShowIndex",
+       callback = function()
+          if not og_color then
+             og_color = vim.g.colors_name
+          end
+          vim.cmd.colorscheme("kanagawa-lotus")
+       end,
+    })
+    
+    vim.api.nvim_create_autocmd("User", {
+       pattern = "FeedQuitIndex",
+       callback = function()
+          vim.cmd.colorscheme(og_color)
+       end,
+    })
+<
 
 
 ==============================================================================

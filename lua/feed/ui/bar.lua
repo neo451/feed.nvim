@@ -10,7 +10,7 @@ function _G._feed_bar_component(name)
    return cmp[name]()
 end
 
-local layout = config.layout
+local layout = config.winbar
 local hi_pattern = "%%#%s#%s%%*"
 
 setmetatable(cmp, {
@@ -40,17 +40,13 @@ end
 ---@return string
 function M.show_winbar()
    local buf = {}
-
    for _, name in ipairs(layout.order) do
-      buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. name .. "')%}"
+      if not layout[name] then
+         buf[#buf + 1] = name
+      else
+         buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. name .. "')%}"
+      end
    end
-
-   buf[#buf + 1] = "%=%<"
-
-   for _, name in ipairs(layout.winbar_right) do
-      buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. name .. "')%}"
-   end
-
    return table.concat(buf, " ")
 end
 
