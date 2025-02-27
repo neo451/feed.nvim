@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.10.0](https://github.com/neo451/feed.nvim/compare/v2.9.0...v2.10.0) (2025-02-27)
+
+
+### Features
+
+* **commands:** export to any file format with pandoc ([0f92af0](https://github.com/neo451/feed.nvim/commit/0f92af0dc7b9c6e5bbcafed64dff7c5051c616d4))
+* **ui:** stream shell output to buffer for less freeze when render ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+
+
+### Bug Fixes
+
+* **picker:** picker adapt to stream rendering ([f57f929](https://github.com/neo451/feed.nvim/commit/f57f9295b49be5b42ebdc5476e1e1884053fbb0b))
+* **ui:** ensure tags order ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+* **ui:** use ts fold in entries ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+* **update:** child process use the current process args ([0f92af0](https://github.com/neo451/feed.nvim/commit/0f92af0dc7b9c6e5bbcafed64dff7c5051c616d4))
+
 ## [2.9.0](https://github.com/neo451/feed.nvim/compare/v2.8.0...v2.9.0) (2025-02-26)
 
 
