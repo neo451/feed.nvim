@@ -290,7 +290,7 @@ requires `rg` and one of the search backends:
 
 ```lua
 require("feed").setup({
-   layout = {
+   ui = {
       tags = {
          color = "String",
          format = function(id, db)
@@ -323,7 +323,7 @@ require("feed").setup({
             end
 
             local tags = vim.tbl_map(get_icon, db:get_tags(id))
-
+            table.sort(tags)
             return "[" .. table.concat(tags, ", ") .. "]"
          end,
       },

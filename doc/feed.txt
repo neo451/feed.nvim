@@ -1,4 +1,4 @@
-*feed.txt*                For 0.11               Last change: 2025 February 26
+*feed.txt*                For 0.11               Last change: 2025 February 27
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*
@@ -289,7 +289,7 @@ Change the highlight of the tags section and use emojis and mini.icons for tags 
 
 >lua
     require("feed").setup({
-       layout = {
+       ui = {
           tags = {
              color = "String",
              format = function(id, db)
@@ -322,7 +322,7 @@ Change the highlight of the tags section and use emojis and mini.icons for tags 
                 end
     
                 local tags = vim.tbl_map(get_icon, db:get_tags(id))
-    
+                table.sort(tags)
                 return "[" .. table.concat(tags, ", ") .. "]"
              end,
           },

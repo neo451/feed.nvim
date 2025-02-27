@@ -87,6 +87,9 @@ local body_transforms = {
 }
 
 local function hl_entry(buf)
+   if not api.nvim_buf_is_valid(buf) then
+      return
+   end
    for i, t in ipairs({
       { 7, "FeedTitle" },
       { 8, "FeedAuthor" },
@@ -99,71 +102,10 @@ local function hl_entry(buf)
    end
 end
 
----@param buf integer
----@param body string
----@param id string
-local function render_entry(buf, body, id)
-   if not api.nvim_buf_is_valid(buf) then
-      return
-   end
-   vim.bo[buf].modifiable = true
-   api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear buf lines
-
-   local header = {}
-   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
-      header[i] = ut.capticalize(v) .. ": " .. Format[v](id, db)
-   end
-
-   local urls = ut.get_urls(body, db[id].link)
-   if urls then
-      state.urls = urls
-   else
-      if vim.g.feed_debug then
-         vim.notify("get_urls failed for string: " .. body)
-      end
-   end
-
-   local ok, res
-
-   for _, f in ipairs(body_transforms) do
-      ok, res = pcall(f, body, id)
-      if ok then
-         body = res
-      end
-   end
-
-   header[#header + 1] = ""
-
-   local lines = vim.list_extend(header, vim.split(body, "\n"))
-
-   for i, v in ipairs(lines) do
-      api.nvim_buf_set_lines(buf, i - 1, i, false, { v })
-   end
-
-   vim.bo[buf].modifiable = false
-
-   hl_entry(buf)
-   image_attach(buf)
-   mark_read(id)
-
-   api.nvim_buf_set_name(buf, "FeedEntry")
-
-   api.nvim_exec_autocmds("User", {
-      pattern = "FeedShowEntry",
-   })
-end
-
-local function hl_index(buf)
-   for linenr = 1, #state.entries do
-      local acc = 0
-      local layout = Config.ui
-      for _, name in ipairs(layout.order) do
-         local sect = layout[name]
-         local width = sect.width or 100
-         local byte_start, byte_end = ut.display_to_byte_range(buf, linenr, acc, acc + width)
-         hl.range(buf, ns, sect.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })
-         acc = acc + width + 1
-      end
+local function hl_line(buf, line, coords, linenr)
+   for _, coord in ipairs(coords) do
+      local byte_start, byte_end = ut.display_to_byte_range(line, coord.start, coord.stop)
+      hl.range(buf, ns, coord.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })
    end
 end
 
@@ -186,15 +128,15 @@ M.show_index = function()
    api.nvim_buf_set_name(buf, "FeedIndex")
    state.entries = state.entries or db:filter(state.query)
    vim.bo[buf].modifiable = true
-   api.nvim_buf_set_lines(buf, 0, -1, false, {}) -- clear lines
+   api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
-   local lines = {}
    for i, id in ipairs(state.entries) do
-      lines[i] = Format.entry(id, Config.ui, db)
+      local line, coords = Format.entry(id, Config.ui, db)
+      api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
+      hl_line(buf, line, coords, i)
    end
-   table.insert(lines, "")
-   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-   hl_index(buf)
+
+   api.nvim_buf_set_lines(buf, -2, -1, false, { "" })
    vim.bo[buf].modifiable = false
 
    if cursor_pos and scroll_pos then
@@ -207,25 +149,7 @@ M.show_index = function()
    })
 end
 
----@param ctx? { row: integer, id: string, buf: integer, link: string, read: boolean }
-M.preview_entry = function(ctx)
-   ctx = ctx or {}
-   local entry, id = get_entry(ctx)
-   if not entry or not id then
-      return
-   end
-
-   local buf
-   if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
-      buf = ctx.buf
-   else
-      buf = api.nvim_create_buf(false, true)
-   end
-
-   Pandoc.convert({ id = id }, Stream.new(buf))
-end
-
----@param ctx? { row: integer, id: string, buf: integer, link: string }
+---@param ctx? { row: integer, id: string, buf: integer, link: string, preview: boolean }
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
@@ -240,38 +164,53 @@ local function show_entry(ctx)
       buf = api.nvim_create_buf(false, true)
    end
 
-   state.entry = Win.new({
-      prev_win = state.index and state.index.win or api.nvim_get_current_win(),
-      buf = buf,
-      wo = Config.options.entry.wo,
-      bo = Config.options.entry.bo,
-      keys = Config.keys.entry,
-      ft = "markdown",
-      zen = Config.zen.enabled,
-      zindex = 5,
-   })
-
-   local writer = Stream.new(buf)
-   if ctx.link then
-      Pandoc.convert({ link = ctx.link }, writer)
-   elseif entry.content then
-      Pandoc.convert({ src = entry.content() }, writer)
-   else
-      Pandoc.convert({ id = id }, writer)
+   if not ctx.preview then
+      state.entry = Win.new({
+         prev_win = state.index and state.index.win or api.nvim_get_current_win(),
+         buf = buf,
+         wo = Config.options.entry.wo,
+         bo = Config.options.entry.bo,
+         keys = Config.keys.entry,
+         ft = "markdown",
+         zen = Config.zen.enabled,
+         zindex = 5,
+      })
    end
 
-   hl_entry(buf)
-   image_attach(buf)
-   mark_read(id)
+   local function on_exit()
+      hl_entry(buf)
+      image_attach(buf)
 
-   state.urls = ut.get_urls(ut.read_file(tostring(db.dir / "data" / id)), db[id].link)
-   vim.print(state.urls)
+      if not ctx.preview then
+         mark_read(id)
+         local body = table.concat(api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+         state.urls = ut.get_urls(body, db[id].link)
+         api.nvim_buf_set_name(buf, "FeedEntry")
 
-   api.nvim_buf_set_name(buf, "FeedEntry")
+         api.nvim_exec_autocmds("User", {
+            pattern = "FeedShowEntry",
+         })
+         api.nvim_set_current_win(state.entry.win)
+      end
+   end
 
-   api.nvim_exec_autocmds("User", {
-      pattern = "FeedShowEntry",
-   })
+   vim.bo[buf].modifiable = true
+   api.nvim_buf_set_lines(buf, 0, -1, false, {})
+   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
+      local line = ut.capticalize(v) .. ": " .. Format[v](id, db)
+      api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
+   end
+
+   api.nvim_buf_set_lines(buf, -1, -1, false, { "" })
+
+   local writer = Stream.new(buf, id, body_transforms)
+   if ctx.link then
+      Pandoc.convert({ link = ctx.link, stdout = writer, on_exit = on_exit })
+   elseif entry.content then
+      Pandoc.convert({ src = entry.content(), stdout = writer, on_exit = on_exit })
+   else
+      Pandoc.convert({ id = id, stdout = writer, on_exit = on_exit })
+   end
 end
 
 M.quit = function()
@@ -294,8 +233,7 @@ M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ link = entry.link, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", {})
+      show_entry({ link = entry.link, buf = state.entry.buf, preview = true })
    else
       vim.notify("no link to fetch")
    end
@@ -304,16 +242,14 @@ end
 M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      M.preview_entry({ row = state.cur - 1, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", {})
+      show_entry({ row = state.cur - 1, buf = state.entry.buf, preview = true })
    end
 end
 
 M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      M.preview_entry({ row = state.cur + 1, buf = state.entry.buf })
-      api.nvim_exec_autocmds("BufWritePost", {})
+      show_entry({ row = state.cur + 1, buf = state.entry.buf, preview = true })
    end
 end
 
@@ -351,8 +287,6 @@ M.show_hints = function()
       maps = Config.keys.entry
    elseif ut.in_index() then
       maps = Config.keys.index
-   else
-      maps = Config.keys.index
    end
 
    local lines = {}
@@ -377,7 +311,7 @@ M.show_split = function(percentage)
    local _, id = get_entry()
    assert(id)
    local split = M.split({}, percentage or "50%")
-   M.preview_entry({ buf = split.buf, id = id, read = true })
+   show_entry({ buf = split.buf, id = id, read = true })
    ut.wo(split.win, Config.options.entry.wo)
    ut.bo(split.buf, Config.options.entry.bo)
 end
@@ -438,13 +372,14 @@ end
 M.load_opml = function(path)
    local str
    if ut.looks_like_url(path) then
-      str = Curl.get(path, {}).stdout -- FIXME:
+      str = Curl.get(path, {}).stdout
    else
       path = fs.normalize(path)
       str = ut.read_file(path)
    end
    if not str then
       vim.notify("failed to open your opml file")
+      return
    end
 
    local outlines = Opml.import(str)

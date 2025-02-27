@@ -266,15 +266,14 @@ local index_cmds = {
 
 local general_cmds = {
    "index",
-   "search",
    "update",
+   "update_feed",
    "sync",
    "sync!",
-   "update_feed",
-   "list",
+   "search",
    "grep",
+   "list",
    "web",
-   "browser",
    "load_opml",
    "export_opml",
    "log",

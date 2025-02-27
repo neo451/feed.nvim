@@ -31,7 +31,7 @@ local default = {
       order = { "date", "feed", "tags", "title" },
       winbar_right = { "query", "last_updated" },
       date = {
-         width = 10,
+         width = "#",
          color = "FeedDate",
       },
       feed = {
@@ -43,6 +43,7 @@ local default = {
          color = "FeedTags",
       },
       title = {
+         width = "#",
          color = "FeedTitle",
       },
       progress = {
@@ -71,6 +72,7 @@ local default = {
          color = "FeedTags",
       },
       title = {
+         width = "#",
          color = "FeedTitle",
       },
       progress = {
@@ -196,6 +198,11 @@ local default = {
             spell = false,
             conceallevel = 3,
             concealcursor = "nvc",
+            foldmethod = "expr",
+            foldlevel = 99,
+            foldexpr = "v:lua.vim.treesitter.foldexpr()",
+            foldtext = "",
+            fillchars = "foldopen:,foldclose:,fold: ,foldsep: ",
          },
          bo = {
             filetype = "markdown",
