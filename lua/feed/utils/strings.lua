@@ -52,18 +52,12 @@ M.truncate = function(str, len, dots, direction)
    end
 end
 
----@param buf integer
----@param linenr integer
+---@param line integer
 ---@param display_start integer
 ---@param display_end integer
 ---@return number
 ---@return number
-M.display_to_byte_range = function(buf, linenr, display_start, display_end)
-   local line = vim.api.nvim_buf_get_lines(buf, linenr - 1, linenr, false)[1]
-   if not line then
-      return 0, 0
-   end
-
+M.display_to_byte_range = function(line, display_start, display_end)
    local byte_start = 0
    local byte_end = 0
    local current_col = 0

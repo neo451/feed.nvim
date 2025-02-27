@@ -47,7 +47,6 @@
   </ul></li>
   <li><a href="#recipes" id="toc-recipes">Recipes</a></li>
   <li><a href="#lua-api" id="toc-lua-api">Lua API</a></li>
-  <li><a href="#custom-action" id="toc-custom-action">Custom Action</a></li>
   </ul>
 </nav>
 
@@ -151,7 +150,7 @@
 </tbody>
 </table>
 <h2 id="keymaps">Keymaps</h2>
-<p>Press <code>?</code> in to get keymap hints.</p>
+<p>By default, feed.nvim will not set any keymaps for you, press <code>?</code> in to see buffer-local keymaps.</p>
 <h3 id="index-buffer">Index buffer</h3>
 <table>
 <thead>
@@ -391,7 +390,7 @@
 Change the highlight of the tags section and use emojis and mini.icons for tags
 </summary>
 <div class="sourceCode" id="cb3"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span><span class="op">(</span><span class="st">&quot;feed&quot;</span><span class="op">).</span>setup<span class="op">({</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>   <span class="va">layout</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>   <span class="va">ui</span> <span class="op">=</span> <span class="op">{</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      <span class="va">tags</span> <span class="op">=</span> <span class="op">{</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="va">color</span> <span class="op">=</span> <span class="st">&quot;String&quot;</span><span class="op">,</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">format</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">,</span> <span class="va">db</span><span class="op">)</span></span>
@@ -424,7 +423,7 @@ Change the highlight of the tags section and use emojis and mini.icons for tags
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>            <span class="kw">end</span></span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>            <span class="kw">local</span> <span class="va">tags</span> <span class="op">=</span> <span class="va">vim</span><span class="op">.</span>tbl_map<span class="op">(</span><span class="va">get_icon</span><span class="op">,</span> <span class="va">db</span><span class="op">:</span>get_tags<span class="op">(</span><span class="va">id</span><span class="op">))</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>            <span class="fu">table.sort</span><span class="op">(</span><span class="va">tags</span><span class="op">)</span></span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">&quot;[&quot;</span> <span class="op">..</span> <span class="fu">table.concat</span><span class="op">(</span><span class="va">tags</span><span class="op">,</span> <span class="st">&quot;, &quot;</span><span class="op">)</span> <span class="op">..</span> <span class="st">&quot;]&quot;</span></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>         <span class="kw">end</span><span class="op">,</span></span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      <span class="op">},</span></span>
@@ -501,8 +500,6 @@ Custom colorscheme only set when viewing feeds
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
 </details>
 <h2 id="lua-api">Lua API</h2>
-<p>:TODO:</p>
-<h2 id="custom-action">Custom Action</h2>
 <p>:TODO:</p>
 </main>
 

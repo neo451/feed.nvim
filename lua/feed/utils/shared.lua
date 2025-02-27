@@ -149,31 +149,18 @@ M.is_headless = function()
    return vim.tbl_isempty(api.nvim_list_uis())
 end
 
----@param thing table | string
----@param field string | integer
----@return string
-M.sensible = function(thing, field, fallback)
-   if not thing then
-      return fallback
+M.decode = function(str)
+   if not str then
+      return nil
    end
-   if type(thing) == "table" then
-      --- TODO: handle if list
-      if vim.tbl_isempty(thing) then
-         return fallback
-      elseif type(thing[field]) == "string" then
-         return thing[field]
-      else
-         return fallback
-      end
-   elseif type(thing) == "string" then
-      if thing == "" then
-         return fallback
-      else
-         return thing
-      end
-   else
-      return fallback or ""
-   end
+   return require("feed.lib.entities").decode(str)
+end
+
+---@param str string?
+---@return string?
+M.clean = function(str)
+   str = M.decode(str)
+   return str and vim.trim(str) or nil
 end
 
 return M

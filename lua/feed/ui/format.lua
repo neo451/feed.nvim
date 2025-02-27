@@ -2,15 +2,6 @@ local M = {}
 local Config = require("feed.config")
 local ut = require("feed.utils")
 
----@param str string
----@return string
-local function cleanup(str)
-   if not str then
-      return ""
-   end
-   return vim.trim(str:gsub("\n", ""))
-end
-
 ---@param id string
 ---@param db feed.db
 ---@return string
@@ -23,8 +14,7 @@ end
 ---@param db feed.db
 ---@return string
 M.title = function(id, db)
-   local entry = db[id]
-   return cleanup(entry.title)
+   return db[id].title
 end
 
 ---@param id string
@@ -33,21 +23,15 @@ end
 M.feed = function(id, db)
    local feeds = db.feeds
    local entry = db[id]
-   local feed = feeds[entry.feed] and feeds[entry.feed].title or entry.feed
-   return cleanup(feed) -- FIX: for ttrss
+   return feeds[entry.feed] and feeds[entry.feed].title or entry.feed
 end
 
 ---@param id string
 ---@param db feed.db
 ---@return string
 M.author = function(id, db)
-   ---@type feed.entry
    local entry = db[id]
-   if entry.author then
-      return cleanup(entry.author)
-   else
-      return M.feed(id, db)
-   end
+   return entry.author and entry.author or M.feed(id, db)
 end
 
 ---@param id string
@@ -70,25 +54,28 @@ end
 ---@param layout table
 ---@param db feed.db
 ---@return string
+---@return { start: number, stop: number, color: string }[]
 M.entry = function(id, layout, db)
    local entry = db[id]
-   if not entry then
-      return ""
-   end
-
-   local c, res = 0, {}
+   local acc, res = 0, {}
+   local coords = {}
 
    for _, name in ipairs(layout.order) do
       local v = layout[name]
       local text = entry[name] or ""
       local f = v.format or M[name]
       text = f(id, db)
-      local width = v.width or #text
+      local width = type(v.width) == "number" and v.width or vim.fn.strdisplaywidth(text)
       text = ut.align(text, width, v.right_justify) .. " "
       res[#res + 1] = text
-      c = c + width
+      coords[#coords + 1] = {
+         start = acc,
+         stop = acc + width,
+         color = v.color,
+      }
+      acc = acc + width + 1
    end
-   return table.concat(res)
+   return table.concat(res), coords
 end
 
 return M

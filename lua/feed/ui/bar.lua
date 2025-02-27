@@ -16,7 +16,8 @@ local hi_pattern = "%%#%s#%s%%*"
 setmetatable(cmp, {
    __index = function(_, k)
       return function()
-         local width = layout[k].width or #k
+         local sect = layout[k]
+         local width = type(sect.width) == "number" and sect.width or #k
          local color = layout[k].color
          return hi_pattern:format(color, ut.align(ut.capticalize(k), width))
       end

@@ -36,8 +36,7 @@ end
 
 function M:update(message)
    self.count = self.count + 1
-   local msg = format_message(self.count, self.total, message)
-   backends[backend].update(self, msg)
+   backends[backend].update(self, message)
    if self.count == self.total then
       finish(self)
    end

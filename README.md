@@ -58,7 +58,7 @@
 For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 
 ```vim
-Rocks install feed.nvim
+:Rocks install feed.nvim
 ```
 
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
@@ -106,7 +106,7 @@ Use `:Feed<Enter>`, `:Feed update_feed<Enter>` to open menu and select
 
 ## Keymaps
 
-Press `?` in to get keymap hints.
+By default, feed.nvim will not set any keymaps for you, press `?` in to see buffer-local keymaps.
 
 ### Index buffer
 
@@ -290,7 +290,7 @@ requires `rg` and one of the search backends:
 
 ```lua
 require("feed").setup({
-   layout = {
+   ui = {
       tags = {
          color = "String",
          format = function(id, db)
@@ -323,7 +323,7 @@ require("feed").setup({
             end
 
             local tags = vim.tbl_map(get_icon, db:get_tags(id))
-
+            table.sort(tags)
             return "[" .. table.concat(tags, ", ") .. "]"
          end,
       },
@@ -410,10 +410,6 @@ vim.api.nvim_create_autocmd("User", {
 
 :TODO:
 
-## Custom Action
-
-:TODO:
-
 <!-- panvimdoc-ignore-start -->
 
 ## ❤️ Related Projects
@@ -423,7 +419,3 @@ vim.api.nvim_create_autocmd("User", {
 - [vnews](https://github.com/danchoi/vnews)
 - [lua-feedparser](https://github.com/slact/lua-feedparser)
 <!-- panvimdoc-ignore-start -->
-
-```
-
-```

@@ -14,12 +14,12 @@ local api = vim.api
 ---@field zen? boolean
 ---@field keys? table
 ---@field enter boolean
+---@field prev_win integer
 
 ---@class feed.win
 ---@field opts feed.win.Config
 ---@field id number
 ---@field win integer
----@field prev_win integer
 ---@field buf integer
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)

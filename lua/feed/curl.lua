@@ -57,6 +57,7 @@ end
 ---@param url string
 ---@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
 ---@param cb? any
+---@return vim.SystemCompleted
 function M.get(url, opts, cb)
    opts = opts or {}
    opts.timeout = vim.F.if_nil(opts.timeout, "10")

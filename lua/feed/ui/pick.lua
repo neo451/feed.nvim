@@ -34,7 +34,8 @@ local function feed_search()
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
          :map(function(id)
-            return format.entry(id, Config.picker, db)
+            local line = format.entry(id, Config.picker, db)
+            return line
          end)
          :totable()
       vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
@@ -46,7 +47,7 @@ local function feed_search()
          match = match,
          show = show,
          preview = function(buf, id)
-            ui.preview_entry({ buf = buf, id = id })
+            ui.show_entry({ buf = buf, id = id, preview = true })
             local win = vim.api.nvim_get_current_win()
             ut.wo(win, Config.options.entry.wo)
             ut.bo(buf, Config.options.entry.bo)
