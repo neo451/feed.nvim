@@ -16,16 +16,15 @@ local function feed_search()
    pickers
       .new(opts, {
          prompt_title = "Feeds",
-
          previewer = previewers.new_buffer_previewer({
             define_preview = function(self, entry, _)
-               vim.schedule(function()
-                  ui.preview_entry({ buf = self.state.bufnr, id = entry.value })
-                  local win, buf = self.state.winid, self.state.bufnr
-                  ut.bo(buf, config.options.entry.bo)
-                  ut.wo(win, config.options.entry.wo)
-                  vim.treesitter.start(buf, "markdown")
-               end)
+               -- vim.schedule(function()
+               ui.show_entry({ buf = self.state.bufnr, id = entry.value, preview = true })
+               local win, buf = self.state.winid, self.state.bufnr
+               ut.bo(buf, config.options.entry.bo)
+               ut.wo(win, config.options.entry.wo)
+               vim.treesitter.start(buf, "markdown")
+               -- end)
             end,
          }),
          finder = finders.new_dynamic({
@@ -37,12 +36,13 @@ local function feed_search()
                return ui.state.entries
             end,
             entry_maker = function(line)
+               local text = format.entry(line, config.picker, db)
                return {
                   value = line,
-                  text = format.entry(line, config.picker, db),
+                  text = text,
                   filename = tostring(db.dir / "data" / line),
-                  display = function(entry)
-                     return format.entry(entry.value, config.picker, db)
+                  display = function()
+                     return text
                   end,
                   ordinal = line,
                }

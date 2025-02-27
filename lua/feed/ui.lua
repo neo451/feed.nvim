@@ -82,7 +82,6 @@ end
 
 local body_transforms = {
    require("feed.utils").remove_urls,
-   -- TODO: get rid of html headers and stuff
    -- TODO: allow user
 }
 
