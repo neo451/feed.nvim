@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.10.1](https://github.com/neo451/feed.nvim/compare/v2.10.0...v2.10.1) (2025-02-28)
+
+
+### Bug Fixes
+
+* **db:** method for getting entry content ([46daf03](https://github.com/neo451/feed.nvim/commit/46daf0347c80d9df9c08b6f40812d892d4a18f8f))
+* move test data to another repo so the plugin is small ([7acfc84](https://github.com/neo451/feed.nvim/commit/7acfc841aa179bf700260e93a328ff2170b9121d))
+
 ## [2.10.0](https://github.com/neo451/feed.nvim/compare/v2.9.0...v2.10.0) (2025-02-27)
 
 
