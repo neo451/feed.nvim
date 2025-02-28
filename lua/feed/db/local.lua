@@ -119,6 +119,12 @@ function M:__newindex(id, entry)
    Path.save(self.dir / "object" / id, entry)
 end
 
+---returns the content of entry
+---@return string
+function M:get(id)
+   return ut.read_file(tostring(self.dir / "data" / id))
+end
+
 function M:update()
    rawset(self, "feeds", Path.load(self.dir / "feeds.lua"))
    rawset(self, "index", load_index(self.dir / "index"))

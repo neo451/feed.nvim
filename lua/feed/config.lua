@@ -29,7 +29,6 @@ local default = {
    ---@type table[]
    ui = {
       order = { "date", "feed", "tags", "title" },
-      winbar_right = { "query", "last_updated" },
       date = {
          width = "#",
          color = "FeedDate",

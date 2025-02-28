@@ -199,8 +199,7 @@ return {
          local id = req.params[1]
          local entry = db[id]
 
-         local path = tostring(db.dir / "data" / id)
-         local content = ut.read_file(path)
+         local content = db:get(id)
 
          content = vim.trim(ut.unescape(content:gsub("\n", "")))
 
