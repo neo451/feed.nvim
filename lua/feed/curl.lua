@@ -57,7 +57,7 @@ end
 ---@param url string
 ---@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
 ---@param cb? any
----@return vim.SystemCompleted
+---@return vim.SystemCompleted?
 function M.get(url, opts, cb)
    opts = opts or {}
    opts.timeout = vim.F.if_nil(opts.timeout, "10")
@@ -77,6 +77,7 @@ function M.get(url, opts, cb)
       opts.timeout and { "--connect-timeout", opts.timeout or "10" },
       rsshub(github(url)),
    })
+
    if opts.data then
       table.insert(cmds, "-d")
       if type(opts.data) == "table" then
@@ -94,7 +95,6 @@ function M.get(url, opts, cb)
          obj.status = headers.status
          obj.headers = headers
          local content_type = headers.content_type
-
          if not opts.api and content_type and (not content_type:find("xml") and not content_type:find("json")) then
             obj = { status = 404 }
          end
@@ -108,10 +108,11 @@ function M.get(url, opts, cb)
       or process(vim.system(cmds, { text = true }):wait())
 end
 
-local task_utils = require("coop.task-utils")
-local f_utils = require("coop.functional-utils")
-
 ---@async
-M.get_co = task_utils.cb_to_tf(f_utils.shift_parameters(M.get))
+M.get_co = function(url, opts)
+   local task_utils = require("coop.task-utils")
+   local f_utils = require("coop.functional-utils")
+   return task_utils.cb_to_tf(f_utils.shift_parameters(M.get))(url, opts)
+end
 
 return M

@@ -1,7 +1,5 @@
 local M = {}
 
--- TODO: soft deprecate this, can still use, won't be documented, lazy.lua opts remove
-
 ---@param usr_config feed.config
 M.setup = function(usr_config)
    require("feed.config").resolve(usr_config)

@@ -406,6 +406,28 @@ vim.api.nvim_create_autocmd("User", {
 
 </details>
 
+<details><summary>Show estimate reading time</summary>
+
+```lua
+require("feed").setup({
+   ui = {
+      order = { "date", "feed", "tags", "title", "reading_time" },
+      reading_time = {
+         color = "Comment",
+         format = function(id, db)
+            local cpm = 1000 -- set to whatever you like
+            local content = db:get(id):gsub("%s+", " ") -- reads the entry content
+            local chars = vim.fn.strchars(content)
+            local time = math.ceil(chars / cpm)
+            return string.format("(%s min)", time)
+         end,
+      },
+   },
+})
+```
+
+</details>
+
 ## Lua API
 
 :TODO:

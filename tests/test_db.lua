@@ -60,7 +60,7 @@ T["new"]["adds entries to db and in memory, with id as key/filename, and content
    eq(entry.time, db[key].time)
    eq(entry.link, db[key].link)
    eq(entry.title, db[key].title)
-   eq("dataaaaaaa", ut.read_file(fp))
+   eq("dataaaaaaa", db:get(key))
 end
 
 T["new"]["rm all refs in the db"] = function()
