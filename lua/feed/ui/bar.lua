@@ -1,7 +1,7 @@
 local ut = require("feed.utils")
 local db = require("feed.db")
 local config = require("feed.config")
-local state = require("feed.ui.state")
+local state = require("feed.state")
 
 local M = {}
 local cmp = {}

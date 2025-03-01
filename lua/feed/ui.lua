@@ -8,7 +8,7 @@ local Fetch = require("feed.fetch")
 local Win = require("feed.ui.window")
 local db = require("feed.db")
 local ut = require("feed.utils")
-local state = require("feed.ui.state")
+local state = require("feed.state")
 local undo_history = state.undo_history
 local redo_history = state.redo_history
 
@@ -183,7 +183,6 @@ local function show_entry(ctx)
       if not ctx.preview then
          mark_read(id)
          local body = table.concat(api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
-         state.urls = ut.get_urls(body, db[id].link)
          api.nvim_buf_set_name(buf, "FeedEntry")
 
          api.nvim_exec_autocmds("User", {
@@ -195,7 +194,7 @@ local function show_entry(ctx)
 
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {})
-   for i, v in ipairs({ "title", "author", "feed", "link", "date" }) do
+   for i, v in ipairs({ "title", "author", "feed", "link", "date", "tags" }) do
       local line = ut.capticalize(v) .. ": " .. Format[v](id, db)
       api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
    end
@@ -253,15 +252,10 @@ M.show_next = function()
 end
 
 M.show_urls = function()
-   M.select(state.urls, {
+   M.select(ut.get_urls(), {
       prompt = "urlview",
-      format_item = function(item)
-         return item[1]
-      end,
    }, function(item)
-      if item then
-         vim.ui.open(item[2])
-      end
+      return item and vim.ui.open(item)
    end)
 end
 

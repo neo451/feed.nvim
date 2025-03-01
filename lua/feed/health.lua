@@ -20,7 +20,6 @@ local plugins = {
 
 local parsers = {
    "xml",
-   "markdown",
    "html",
 }
 
