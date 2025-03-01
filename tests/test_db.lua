@@ -162,6 +162,10 @@ T["filter"]["by tag"] = function()
    })
    local res = db:filter("+read -star")
    eq({ sha("5"), sha("2") }, res)
+   res = db:filter("+read +star")
+   eq({ sha("1") }, res)
+   res = db:filter("-read -star")
+   eq({ sha("4") }, res)
 end
 
 T["filter"]["filter by date"] = function()

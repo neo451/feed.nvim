@@ -249,15 +249,20 @@ function M:filter(str)
    local iter
 
    if q.must_have then
-      local ids = {}
+      local acc = vim.deepcopy(self.tags[q.must_have[1]])
+      if not acc then
+         return {}
+      end
       for _, must in ipairs(q.must_have) do
-         for k, t in pairs(self.tags) do
-            if must == k then
-               vim.list_extend(ids, vim.tbl_keys(t))
+         if self.tags[must] then
+            for k, _ in pairs(acc) do
+               if not self.tags[must][k] then
+                  acc[k] = nil
+               end
             end
          end
       end
-      iter = vim.iter(ids):map(function(id)
+      iter = vim.iter(vim.tbl_keys(acc)):map(function(id)
          return id
       end)
    else

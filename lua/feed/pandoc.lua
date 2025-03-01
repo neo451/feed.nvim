@@ -7,11 +7,11 @@ local ut = require("feed.utils")
 ---@field id string
 ---@field from string
 ---@field to string
+---@field homeUrl string TODO:
 
 ---pandoc wrapper
 ---@param ctx any
----@param cb fun(str: string)
----@return string?
+---@return vim.SystemCompleted?
 local function convert(ctx)
    local db = require("feed.db")
    local link = ctx.link
@@ -37,15 +37,24 @@ local function convert(ctx)
       link or fp,
    }
 
-   vim.system(cmd, {
-      text = true,
-      stdin = src,
-      stdout = function(err, data)
-         if data then
-            return vim.schedule_wrap(stdout)(ut.unescape(data))
-         end
-      end,
-   }, vim.schedule_wrap(on_exit))
+   if on_exit then
+      vim.system(cmd, {
+         text = true,
+         stdin = src,
+         stdout = function(err, data)
+            if data then
+               return vim.schedule_wrap(stdout)(ut.unescape(data))
+            end
+         end,
+      }, vim.schedule_wrap(on_exit))
+   else
+      local obj = vim.system(cmd, {
+         text = true,
+         stdin = src,
+      }):wait()
+      obj.stdout = ut.unescape(obj.stdout)
+      return obj
+   end
 end
 
 return { convert = convert }

@@ -170,7 +170,7 @@ return {
       end
 
       local db = require("feed.db")
-      local state = require("feed.ui.state")
+      local state = require("feed.state")
       local Config = require("feed.config")
 
       if not state.entries then

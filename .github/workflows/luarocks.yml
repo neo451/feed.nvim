@@ -30,4 +30,3 @@ jobs:
             coop.nvim
             tree-sitter-xml
             tree-sitter-html
-            tree-sitter-markdown
