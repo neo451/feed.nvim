@@ -152,7 +152,7 @@ local order = {
 }
 
 ---@param str string
----@param t feed.type
+---@param t "rss" | "atom" | "json"
 ---@return integer
 M.parse = function(str, t)
    if str then

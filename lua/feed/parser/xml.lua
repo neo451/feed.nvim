@@ -149,7 +149,7 @@ end
 
 ---@param node TSNode
 ---@param src string
----@return string
+---@return string?
 H.CharData = function(node, src)
    local text = get_text(node, src)
    if text:find("%S") then

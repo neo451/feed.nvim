@@ -48,7 +48,7 @@ function Writer(doc, opts)
    -- Add collected references under "## Links"
    local links_blocks = {}
    if ref_counter > 0 then
-      table.insert(links_blocks, pandoc.Header(2, "Links"))
+      table.insert(links_blocks, pandoc.Strong("Links"))
       for i = 1, ref_counter do
          table.insert(links_blocks, pandoc.Para(pandoc.Str(("[%d]: %s"):format(i, refs[i]))))
       end
