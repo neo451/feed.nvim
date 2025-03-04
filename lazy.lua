@@ -4,6 +4,7 @@ return {
       "neo451/feed.nvim",
       dependencies = {
          "nvim-treesitter/nvim-treesitter",
+         main = "nvim-treesitter.configs",
          opts = function(_, opts)
             opts.ensure_installed = opts.ensure_installed or {}
             table.insert(opts.ensure_installed, "xml")

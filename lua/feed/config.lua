@@ -1,23 +1,93 @@
+---@class feed.searchOpts
+---@field backend "telescope" | "mini.pick" | "fzf-lua"
+---@field sort_order? "ascending" | "descending"
+---@field default_query? string
+
+---@class feed.progressOpts
+---@field backend "mini.notify" | "snacks" | "fidget" | "native"
+
+---@class feed.rsshubOpts
+---@field instance? string
+---@field export? string move all options here as a enum??
+
+---@class feed.section
+---@field width? integer | "#"
+---@field color? string
+---@field format? fun(id: string, db: feed.db): string
+
+---@class feed.ttrssOpts
+---@field url? string
+---@field user? string
+---@field password? string
+
+---@class feed.localOpts
+---@field dir? string
+
+---@class feed.protocolOpts
+---@field backend "local" | "ttrss"
+---@field ttrss? feed.ttrssOpts
+---@field local? feed.ttrssOpts
+
+---@class feed.dateOpts
+---@field format? { long: string, short: string }
+
+---@alias feed.layout table<string, feed.section | table<number, string>>
+
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
----@field db_dir? string
----@field date_format? string
+---@field date? feed.dateOpts
 ---@field curl_params? string[]
----@field rsshub? { instance: string, export: string } move all options here as a enum??
----@field layout? table
----@field progress? { backend: "mini.notify" | "snacks" | "fidget" | "native" }
----@field search? { backend: "telescope" | "mini.pick" | "fzf-lua", sort_order: "ascending" | "descending", default_query: string }
----@field data? { backend: "local" | "ttrss" }
+---@field rsshub? feed.rsshubOpts
+---@field ui? feed.layout
+---@field entry? feed.layout
+---@field winbar? feed.layout
+---@field picker? feed.layout
+---@field progress? feed.progressOpts
+---@field search? feed.searchOpts
+---@field protocol? feed.protocolOpts
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
+
+local formats = {}
+
+formats.date_long = function(id, db)
+   return os.date(require("feed.config").date.format.long, db[id].time)
+end
+
+formats.date_short = function(id, db)
+   return os.date(require("feed.config").date.format.short, db[id].time)
+end
+
+formats.link = function(id, db)
+   return db[id].link:sub(1, 90)
+end
+
+formats.feed = function(id, db)
+   local feed_url = db[id].feed
+   return db.feeds[feed_url] and db.feeds[feed_url].title or feed_url
+end
+
+formats.author = function(id, db)
+   local entry = db[id]
+   return entry.author and entry.author or formats.feed(id, db)
+end
+
+formats.tags = function(id, db)
+   local tags = db:get_tags(id)
+   return ("[%s]"):format(table.concat(tags, ", "))
+end
+
+formats.title = function(id, db)
+   return db[id].title
+end
 
 ---@class feed._config
 local default = {
-   ---@type string
-   db_dir = vim.fn.stdpath("data") .. "/feed",
    ---@type { long: string, short: string }
-   date_format = {
-      short = "%Y-%m-%d",
-      long = "%c",
+   date = {
+      format = {
+         short = "%Y-%m-%d",
+         long = "%c",
+      },
    },
    ---@type { instance: string, export: string }
    rsshub = {
@@ -30,29 +100,50 @@ local default = {
    ui = {
       order = { "date", "feed", "tags", "title" },
       date = {
-         width = "#",
          color = "FeedDate",
+         format = formats.date_short,
       },
       feed = {
          width = 25,
          color = "FeedTitle",
+         format = formats.feed,
       },
       tags = {
          width = 20,
          color = "FeedTags",
+         format = formats.tags,
       },
       title = {
-         width = "#",
          color = "FeedTitle",
-      },
-      progress = {
-         color = "FeedDate",
+         format = formats.title,
       },
       query = {
          color = "FeedLabel",
       },
       last_updated = {
          color = "FeedDate",
+      },
+   },
+
+   entry = {
+      order = { "title", "author", "feed", "link", "date", "tags" },
+      link = {
+         format = formats.link,
+      },
+      date = {
+         format = formats.date_long,
+      },
+      author = {
+         format = formats.author,
+      },
+      feed = {
+         format = formats.feed,
+      },
+      tags = {
+         format = formats.tags,
+      },
+      title = {
+         format = formats.title,
       },
    },
 
@@ -74,9 +165,6 @@ local default = {
          width = "#",
          color = "FeedTitle",
       },
-      progress = {
-         color = "FeedDate",
-      },
       query = {
          color = "FeedLabel",
       },
@@ -90,13 +178,16 @@ local default = {
       feed = {
          width = 15,
          color = "FeedTitle",
+         format = formats.feed,
       },
       tags = {
          width = 15,
          color = "FeedTags",
+         format = formats.tags,
       },
       title = {
          color = "FeedTitle",
+         format = formats.title,
       },
    },
 
@@ -127,6 +218,9 @@ local default = {
          url = nil,
          user = nil,
          password = nil,
+      },
+      ["local"] = {
+         dir = vim.fn.stdpath("data") .. "/feed",
       },
    },
 
@@ -239,7 +333,6 @@ end
 ---@param cfg feed.config
 local function validate(cfg)
    local path = {
-      db_dir = "string",
       colorscheme = "string",
       date_format = "string",
       rsshub = "table",
@@ -268,5 +361,7 @@ function M.resolve(config)
    M.config = vim.tbl_deep_extend("keep", config, default)
    -- validate(M.config)
 end
+
+M._default = vim.deepcopy(default)
 
 return M

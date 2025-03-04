@@ -7,11 +7,11 @@ local ut = require("feed.utils")
 ---@field id string
 ---@field from string
 ---@field to string
+---@field homeUrl string TODO:
 
 ---pandoc wrapper
 ---@param ctx any
----@param cb fun(str: string)
----@return string?
+---@return vim.SystemCompleted?
 local function convert(ctx)
    local db = require("feed.db")
    local link = ctx.link
@@ -23,7 +23,7 @@ local function convert(ctx)
    local on_exit = ctx.on_exit
 
    if not health.check_binary_installed({ name = "pandoc", min_ver = 3 }) then
-      vim.schedule_wrap(cb)({ "you need pandoc to view feeds https://pandoc.org" })
+      vim.schedule_wrap(vim.notify)("you need **pandoc** to view feeds https://pandoc.org")
       return
    end
 
@@ -37,15 +37,29 @@ local function convert(ctx)
       link or fp,
    }
 
-   vim.system(cmd, {
-      text = true,
-      stdin = src,
-      stdout = function(err, data)
-         if data then
-            return vim.schedule_wrap(stdout)(ut.unescape(data))
-         end
-      end,
-   }, vim.schedule_wrap(on_exit))
+   if vim.g.feed_debug then
+      vim.notify("pandoc cmd running: " .. table.concat(cmd, " "))
+   end
+
+   if on_exit and stdout then
+      vim.system(cmd, {
+         text = true,
+         stdin = src,
+         -- TODO: log err
+         stdout = vim.schedule_wrap(function(err, data)
+            if data then
+               return stdout(ut.unescape(data))
+            end
+         end),
+      }, vim.schedule_wrap(on_exit))
+   else
+      local obj = vim.system(cmd, {
+         text = true,
+         stdin = src,
+      }):wait()
+      obj.stdout = ut.unescape(obj.stdout)
+      return obj
+   end
 end
 
 return { convert = convert }

@@ -25,11 +25,12 @@
 local M = {}
 local xml = require("feed.parser.xml")
 local log = require("feed.lib.log")
+local ut = require("feed.utils")
 
 ---@param src string
 ---@param url string
----@return table?
-function M.parse(src, url)
+---@return feed.feed
+local function parse_src(src, url)
    if vim.startswith(vim.trim(src), "{") then
       local ast = vim.json.decode(src, { luanil = { object = true } })
       return require("feed.parser.json")(ast, url)
@@ -44,6 +45,32 @@ function M.parse(src, url)
             log.warn(url, "unknown feedtype")
          end
       end
+   end
+end
+
+local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
+local encoding_blacklist = ut.list2lookup({ "gb2312" })
+
+---process feed fetch from source
+---@param url_or_src  string
+---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
+---@return feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }
+---@async
+function M.parse(url_or_src, opts)
+   opts = opts or {}
+
+   if ut.looks_like_url(url_or_src) then
+      local Curl = require("feed.curl")
+      local response = Curl.get_co(url_or_src, opts)
+      if response and response.stdout and valid_response[response.status] then
+         local d = parse_src(response.stdout, url_or_src)
+         if d then
+            return vim.tbl_extend("keep", response, d)
+         end
+      end
+      return response
+   else
+      return parse_src(url_or_src, opts.url) -- TODO:
    end
 end
 

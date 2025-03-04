@@ -1,5 +1,3 @@
-local image_c = 0
-
 local function remove_attr(x)
    if x.attr then
       x.attr = pandoc.Attr()
@@ -8,6 +6,9 @@ local function remove_attr(x)
 end
 
 function Writer(doc, opts)
+   local ref_counter = 0
+   local refs = {}
+
    local filter = {
       Inline = remove_attr,
       Block = remove_attr,
@@ -20,12 +21,18 @@ function Writer(doc, opts)
       Figure = function(elem)
          return elem.content[1]
       end,
+      Link = function(elem)
+         ref_counter = ref_counter + 1
+         refs[ref_counter] = elem.target
+         local text = pandoc.utils.stringify(elem.content)
+         return pandoc.RawInline("markdown", "[" .. text .. "][" .. ref_counter .. "]")
+      end,
       Image = function(elem)
-         image_c = image_c + 1
-         return ("![Image %d](%s)"):format(image_c, elem.src)
+         ref_counter = ref_counter + 1
+         refs[ref_counter] = elem.src
+         return pandoc.RawInline("markdown", ("![Image %d](%s)"):format(ref_counter, elem.src)) -- for now for image rendering
       end,
       CodeBlock = function(cb)
-         -- only modify if code block has no attributes
          if cb.attr == pandoc.Attr() then
             local delimited = "```\n" .. cb.text .. "\n```"
             return pandoc.RawBlock("markdown", delimited)
@@ -35,7 +42,20 @@ function Writer(doc, opts)
          end
       end,
    }
-   return pandoc.write(doc:walk(filter), "gfm", opts)
+
+   local new_doc = doc:walk(filter)
+
+   -- Add collected references under "## Links"
+   local links_blocks = {}
+   if ref_counter > 0 then
+      table.insert(links_blocks, pandoc.Header(2, "Links"))
+      for i = 1, ref_counter do
+         table.insert(links_blocks, pandoc.Para(pandoc.Str(("[%d]: %s"):format(i, refs[i]))))
+      end
+      new_doc.blocks = new_doc.blocks .. links_blocks
+   end
+
+   return pandoc.write(new_doc, "gfm", opts)
 end
 
-Template = pandoc.template.default "gfm"
+Template = pandoc.template.default("gfm")

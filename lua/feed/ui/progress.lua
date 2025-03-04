@@ -103,11 +103,11 @@ function native:new(msg)
    vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
 end
 
-function native:update(_, msg)
+function native:update(msg)
    vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
 end
 
-function native:finsih(_, msg)
+function native:finsih(msg)
    vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
 end
 

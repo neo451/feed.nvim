@@ -19,11 +19,7 @@ local function handle_link(node, base)
       local list = ut.listify(node.link)
       for _, v in ipairs(list) do
          if v.rel == "alternate" then
-            if not ut.looks_like_url(v.href) then
-               return ut.url_resolve(base, v.href)
-            else
-               return v.href
-            end
+            return ut.url_resolve(base, v.href)
          end
       end
       return ut.url_resolve(list[1].href)
@@ -108,7 +104,7 @@ local handle_entry = function(entry, feed, base, url)
    return res
 end
 
-local function handle_atom(ast, url)
+return function(ast, url)
    local res = {}
    local feed = ast.feed
    local base = ut.url_rebase(feed, url)
@@ -125,5 +121,3 @@ local function handle_atom(ast, url)
    end
    return res
 end
-
-return handle_atom

@@ -28,7 +28,7 @@
 ![image](https://github.com/user-attachments/assets/e8f9c546-48f6-48d8-8cd6-a9b154df0625)
 
 > [!WARNING]
-> This project is young, expect breaking changes, and for now there's a nasty bug if you are on neovim stable [#125](https://github.com/neo451/feed.nvim/issues/125#issuecomment-2612966517), recommand to use nightly or wait for the coming release of 0.11
+> This project is young, expect breaking changes, and for now there's a nasty bug if you are on neovim stable [#125](https://github.com/neo451/feed.nvim/issues/125#issuecomment-2612966517), recommend to use nightly or wait for the coming release of 0.11
 >
 > other than that usage should be fun and smooth, go ahead and enjoy!
 
@@ -37,10 +37,10 @@
 - 🌲 Fast and reliable [rss](https://en.wikipedia.org/wiki/RSS)/[atom](<https://en.wikipedia.org/wiki/Atom_(web_standard)>)/[json feed](https://www.jsonfeed.org) feed parsing, powered by [tree-sitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - 📝 View entries as beautiful markdown powered by [pandoc](https://pandoc.org)
 - 🏪 Lua database with no extra dependency
-- 📚 Powerful entry searching by date, tag, feed, regex, and fulltext
+- 📚 Powerful entry searching by date, tag, feed, regex, and full text
 - 📂 OPML support to import and export all your feeds and podcasts
 - 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track _everything_
-- :octocat: Github integration to subscrbe to the new commits/release of your favorite repo/plugin
+- :octocat: Github integration to subscribe to the new commits/release of your favorite repo/plugin
 - 📶 libuv powered feed server with a web interface
 - 📡 support for popular feed sync services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
@@ -48,10 +48,22 @@
 
 ### Requirements
 
-- neovim 0.10+
+- Neovim 0.10+
 - curl
 - [pandoc](https://www.pandoc.org)
-- (optional) [rg](https://github.com/BurntSushi/ripgrep)
+- tree-sitter parser
+  - xml
+  - html
+
+### Optional Dependencies
+
+- [rg](https://github.com/BurntSushi/ripgrep)
+- For image rendering:
+    - snacks.nvim
+- For feed picker:
+    - telescope.nvim
+    - fzf-lua
+    - mini.pick
 
 ### Basic Installation
 
@@ -64,7 +76,13 @@ For [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
 For [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-{ "neo451/feed.nvim", cmd = "Feed" }
+return {
+   "neo451/feed.nvim",
+   cmd = "Feed",
+   ---@module 'feed'
+   ---@type feed.config
+   opts = {},
+}
 ```
 
 ### Initial Steps
@@ -166,8 +184,8 @@ require("feed").setup({
 
       -- three link formats:
       "https://neovim.io/news.xml", -- Regular links
-      "rsshub://rsshub://apnews/topics/apf-topnews" -- RSSHub links
-      "neovim/neovim/releases" -- GitHub links
+      "rsshub://rsshub://apnews/topics/apf-topnews", -- RSSHub links
+      "neovim/neovim/releases", -- GitHub links
    },
 })
 ```
@@ -263,7 +281,7 @@ Only show unread entries of the last six months. This is the default filter.
 
 Only show entries about Linux or Linus from the last year.
 
-- `-unread +youtube ##10`
+- `-unread +youtube #10`
 
 Only show the most recent 10 previously-read entries tagged as youtube.
 

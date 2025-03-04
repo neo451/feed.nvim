@@ -142,8 +142,8 @@ local methods = {
    getLabels = true,
    getConfig = true,
    getCounters = true, -- TODO: no idea what is this...
-   updateArticle = true,
-   setArticleLabel = true,
+   updateArticle = { aync = true },
+   setArticleLabel = { aync = true },
 }
 
 for k, v in pairs(methods) do
@@ -154,6 +154,10 @@ for k, v in pairs(methods) do
       data.op = k
       if type(v) == "string" then
          return decode_check(Curl.get(url, { data = data }), k)[v]
+      elseif type(v) == "table" and v.async then
+         return Curl.get(url, { data = data }, function(obj)
+            return decode_check(obj, k)
+         end)
       else
          return decode_check(Curl.get(url, { data = data }), k)
       end
@@ -283,6 +287,15 @@ function TT:filter(str)
    return ret
 end
 
+function TT:get_tags(id)
+   -- TODO: get remote flags??
+   return vim.tbl_keys(self.tags[id])
+end
+
+function TT:get(id)
+   return self.api:getArticle({ article_id = id })[1].content
+end
+
 function TT:tag(id, tag)
    self.tags[id][tag] = true
    if tag == "read" then
@@ -316,4 +329,4 @@ function TT:setup_sync() end
 function TT:hard_sync() end
 function TT:soft_sync() end
 
-return TT.new()
+return TT
