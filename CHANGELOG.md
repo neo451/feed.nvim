@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.11.0](https://github.com/neo451/feed.nvim/compare/v2.10.1...v2.11.0) (2025-03-04)
+
+
+### Features
+
+* **pandoc:** properly use reference style links and inline links for images ([e48af9e](https://github.com/neo451/feed.nvim/commit/e48af9e43e8bc1177ed5de513612b005ef402b53))
+* **ui:** defaults to show tags in entry ([7c5726b](https://github.com/neo451/feed.nvim/commit/7c5726bbf748f832d8fa13cdb9a36f709abcbaa5))
+
+
+### Bug Fixes
+
+* (ui): componants distinguish abort and empty string ([7c5726b](https://github.com/neo451/feed.nvim/commit/7c5726bbf748f832d8fa13cdb9a36f709abcbaa5))
+* **db:** query must_have adding results together ([f383e77](https://github.com/neo451/feed.nvim/commit/f383e7771d2fd09bb8ee2f3f9104478f7622824c))
+* **image:** bring snack.image integrations up to date ([e48af9e](https://github.com/neo451/feed.nvim/commit/e48af9e43e8bc1177ed5de513612b005ef402b53))
+* **lazy:** lazy.lua ts ensure_installed ([dac277f](https://github.com/neo451/feed.nvim/commit/dac277fec8c46b6c0bcef8be2d3376ad6b030be1))
+* **parser:** have image links for now ([dac277f](https://github.com/neo451/feed.nvim/commit/dac277fec8c46b6c0bcef8be2d3376ad6b030be1))
+* **parser:** simplify show_url impl, leverage pandoc, inspired by link.vim ([f383e77](https://github.com/neo451/feed.nvim/commit/f383e7771d2fd09bb8ee2f3f9104478f7622824c))
+
 ## [2.10.1](https://github.com/neo451/feed.nvim/compare/v2.10.0...v2.10.1) (2025-02-28)
 
 
