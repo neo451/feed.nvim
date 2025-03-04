@@ -1,9 +1,8 @@
 local MiniPick = require("mini.pick")
 local ui = require("feed.ui")
 local db = require("feed.db")
-local format = require("feed.ui.format")
-local Config = require("feed.config")
 local ut = require("feed.utils")
+local config = require("feed.config")
 
 local function feed_search()
    local lookup = {}
@@ -34,7 +33,7 @@ local function feed_search()
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
          :map(function(id)
-            local line = format.entry(id, Config.picker, db)
+            local line = ui._format_headline(id, config.picker, db)
             return line
          end)
          :totable()
@@ -49,8 +48,8 @@ local function feed_search()
          preview = function(buf, id)
             ui.show_entry({ buf = buf, id = id, preview = true })
             local win = vim.api.nvim_get_current_win()
-            ut.wo(win, Config.options.entry.wo)
-            ut.bo(buf, Config.options.entry.bo)
+            ut.wo(win, config.options.entry.wo)
+            ut.bo(buf, config.options.entry.bo)
          end,
          choose = function(id)
             vim.cmd("q")
@@ -67,7 +66,7 @@ local function feed_grep()
          show = function(buf_id, items_arr, _)
             for i, line in ipairs(items_arr) do
                local id = line:sub(1, 64)
-               vim.api.nvim_buf_set_lines(buf_id, i - 1, i, false, { format.entry(id, Config.picker, db) })
+               vim.api.nvim_buf_set_lines(buf_id, i - 1, i, false, { ui._format_headline(id, config.picker, db) })
             end
          end,
       },

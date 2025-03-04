@@ -1,8 +1,53 @@
 local M = {}
 local Win = require("feed.ui.window")
-local Config = require("feed.config")
+local config = require("feed.config")
 local ut = require("feed.utils")
 local api = vim.api
+
+---@param opts table
+---@param percentage string
+---@param lines? string[]
+---@return feed.win
+M.split = function(opts, percentage, lines)
+   lines = lines or {}
+
+   local height = math.floor(vim.o.lines * (tonumber(percentage:sub(1, -2)) / 100))
+   local width = vim.o.columns
+   local col = vim.o.columns - width
+   local row = vim.o.lines - height - vim.o.cmdheight
+
+   opts = vim.tbl_extend("force", {
+      relative = "editor",
+      style = "minimal",
+      focusable = false,
+      noautocmd = true,
+      height = height,
+      width = width,
+      col = col,
+      row = row,
+      wo = {
+         winbar = "",
+         scrolloff = 0,
+         foldenable = false,
+         statusline = "",
+         wrap = false,
+      },
+      bo = {
+         buftype = "nofile",
+         bufhidden = "wipe",
+      },
+   }, opts)
+
+   local win = Win.new(opts)
+
+   win:map("n", "q", function()
+      win:close()
+   end)
+
+   api.nvim_buf_set_lines(win.buf, 0, -1, false, lines)
+
+   return win
+end
 
 local function telescope_select(items, opts, on_choice)
    local pickers = require("telescope.pickers")
@@ -57,67 +102,30 @@ local function fzf_ui_select(items, opts, on_choice)
    require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
 end
 
-function M.select(items, opts, on_choice)
-   local backend = ut.choose_backend(Config.search.backend)
-   if backend == "fzf-lua" then
-      fzf_ui_select(items, opts, on_choice)
-   elseif backend == "pick" then
-      require("mini.pick").ui_select(items, opts, on_choice)
-   elseif backend == "telescope" then
-      telescope_select(items, opts, on_choice)
-   else
-      vim.ui.select(items, opts, on_choice)
+M.select = function(items, opts, on_choice)
+   local f = function(input)
+      if not input then
+         vim.notify("Aborted", 3)
+         return
+      end
+      on_choice(input)
    end
-end
-
----@param opts table
----@param percentage string
----@param lines? string[]
----@return feed.win
-function M.split(opts, percentage, lines)
-   lines = lines or {}
-
-   local height = math.floor(vim.o.lines * (tonumber(percentage:sub(1, -2)) / 100))
-   local width = vim.o.columns
-   local col = vim.o.columns - width
-   local row = vim.o.lines - height - vim.o.cmdheight
-
-   opts = vim.tbl_extend("force", {
-      relative = "editor",
-      style = "minimal",
-      focusable = false,
-      noautocmd = true,
-      height = height,
-      width = width,
-      col = col,
-      row = row,
-      wo = {
-         winbar = "",
-         scrolloff = 0,
-         foldenable = false,
-         statusline = "",
-         wrap = false,
-      },
-      bo = {
-         buftype = "nofile",
-         bufhidden = "wipe",
-      },
-   }, opts)
-
-   local win = Win.new(opts)
-
-   win:map("n", "q", function()
-      win:close()
-   end)
-
-   api.nvim_buf_set_lines(win.buf, 0, -1, false, lines)
-
-   return win
+   local backend = ut.choose_backend(config.search.backend)
+   if backend == "fzf-lua" then
+      fzf_ui_select(items, opts, f)
+   elseif backend == "pick" then
+      require("mini.pick").ui_select(items, opts, f)
+   elseif backend == "telescope" then
+      telescope_select(items, opts, f)
+   else
+      vim.ui.select(items, opts, f)
+   end
 end
 
 M.input = function(opts, on_confirm)
    vim.ui.input(opts, function(input)
-      if not input or vim.trim(input) == "" then
+      if not input then
+         vim.notify("Aborted", 3)
          return
       end
       on_confirm(input)

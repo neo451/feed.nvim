@@ -106,7 +106,7 @@ local function handle_entry(entry, feed, url)
    return res
 end
 
-local function handle_rss(ast, url)
+return function(ast, url)
    local res = {}
    res.version = handle_version(ast)
    local channel = ast.rss and ast.rss.channel or ast["rdf:RDF"].channel
@@ -122,5 +122,3 @@ local function handle_rss(ast, url)
    end
    return res
 end
-
-return handle_rss

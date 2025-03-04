@@ -2,8 +2,7 @@ local fzf = require("fzf-lua")
 local ui = require("feed.ui")
 local ut = require("feed.utils")
 local db = require("feed.db")
-local Format = require("feed.ui.format")
-local Config = require("feed.config")
+local config = require("feed.config")
 
 local builtin = require("fzf-lua.previewer.builtin")
 local MyPreviewer = builtin.base:extend()
@@ -19,12 +18,12 @@ function MyPreviewer:populate_preview_buf(entry_str)
    self:set_preview_buf(tmpbuf)
    local id = entry_str:sub(-64, -1)
    ui.show_entry({ buf = tmpbuf, id = id, preview = true })
-   ut.bo(tmpbuf, Config.options.entry.bo)
+   ut.bo(tmpbuf, config.options.entry.bo)
    vim.treesitter.start(tmpbuf, "markdown")
 end
 
 function MyPreviewer:gen_winopts()
-   return vim.tbl_extend("force", self.winopts, Config.options.entry.wo)
+   return vim.tbl_extend("force", self.winopts, config.options.entry.wo)
 end
 
 -- TODO: overide the default .. s
@@ -34,7 +33,7 @@ local function feed_search()
       ui.state.entries = db:filter(str)
       local ret = {}
       for i, id in ipairs(ui.state.entries) do
-         ret[i] = Format.entry(id, Config.picker, db) .. (" "):rep(100) .. id
+         ret[i] = ui._format_headline(id, config.picker, db) .. (" "):rep(100) .. id
       end
       return ret
    end, {
@@ -79,10 +78,6 @@ local function feed_grep(opts)
       return "rg --column --color=always -- " .. vim.fn.shellescape(q or "")
    end, opts)
 end
-
--- We can use our new function on any folder or
--- with any other fzf-lua options ('winopts', etc)
--- _G.live_grep()
 
 return {
    feed_search = feed_search,

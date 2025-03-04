@@ -6,7 +6,6 @@ local previewers = require("telescope.previewers")
 local db = require("feed.db")
 local ui = require("feed.ui")
 local ut = require("feed.utils")
-local format = require("feed.ui.format")
 local config = require("feed.config")
 local sorters = require("telescope.sorters")
 
@@ -36,7 +35,7 @@ local function feed_search()
                return ui.state.entries
             end,
             entry_maker = function(line)
-               local text = format.entry(line, config.picker, db)
+               local text = ui._format_headline(line, config.picker, db)
                return {
                   value = line,
                   text = text,

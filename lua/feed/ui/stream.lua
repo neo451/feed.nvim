@@ -3,10 +3,9 @@ local api = vim.api
 
 ---comment
 ---@param buf integer
----@param id string
----@param transforms function[]
 ---@return function|table
-function M.new(buf, id, transforms)
+function M.new(buf)
+   vim.bo[buf].modifiable = true
    local leftover = ""
 
    return function(data)
@@ -29,17 +28,8 @@ function M.new(buf, id, transforms)
       leftover = leftover:sub(split_idx)
 
       if #lines > 0 then
-         lines = vim.tbl_map(function(line)
-            for _, f in ipairs(transforms) do
-               line = f(line, id)
-            end
-            return line
-         end, lines)
-         vim.bo[buf].modifiable = true
          api.nvim_buf_set_lines(buf, -1, -1, false, lines)
-         vim.bo.modifiable = false
       end
-      return data
    end
 end
 

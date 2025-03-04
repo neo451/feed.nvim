@@ -172,11 +172,11 @@ M.update = {
          args,
          "--headless",
          "-c",
-         'lua require"feed.fetch".update_all()',
+         'lua require"feed.fetch".update()',
       })
       vim.system(cmds, {
          text = true,
-         stdout = function(_, data)
+         stderr = function(_, data)
             if data and vim.trim(data) ~= "" then
                prog:update(vim.trim(data))
                vim.schedule(function()

@@ -25,12 +25,17 @@ end
 ---@param fp string
 ---@param str string
 ---@param mode "w" | "a"
+---@return boolean
 M.save_file = function(fp, str, mode)
    mode = mode or "w"
    local f = io.open(fp, mode)
-   assert(f, fp)
-   f:write(str)
-   f:close()
+   if f then
+      f:write(str)
+      f:close()
+      return true
+   else
+      return false
+   end
 end
 
 ---@param path string

@@ -1,4 +1,4 @@
-*feed.txt*                For 0.11               Last change: 2025 February 27
+*feed.txt*                 For 0.11                 Last change: 2025 March 02
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*
@@ -146,8 +146,8 @@ Use `Feed update_feed` to update one feed
     
           -- three link formats:
           "https://neovim.io/news.xml", -- Regular links
-          "rsshub://rsshub://apnews/topics/apf-topnews" -- RSSHub links
-          "neovim/neovim/releases" -- GitHub links
+          "rsshub://rsshub://apnews/topics/apf-topnews", -- RSSHub links
+          "neovim/neovim/releases", -- GitHub links
        },
     })
 <
@@ -259,7 +259,7 @@ Only show unread entries of the last six months. This is the default filter.
 
 Only show entries about Linux or Linus from the last year.
 
-- `-unread +youtube ##10`
+- `-unread +youtube #10`
 
 Only show the most recent 10 previously-read entries tagged as youtube.
 
@@ -396,6 +396,26 @@ Custom colorscheme only set when viewing feeds ~
        callback = function()
           vim.cmd.colorscheme(og_color)
        end,
+    })
+<
+
+Show estimate reading time ~
+
+>lua
+    require("feed").setup({
+       ui = {
+          order = { "date", "feed", "tags", "title", "reading_time" },
+          reading_time = {
+             color = "Comment",
+             format = function(id, db)
+                local cpm = 1000 -- set to whatever you like
+                local content = db:get(id):gsub("%s+", " ") -- reads the entry content
+                local chars = vim.fn.strchars(content)
+                local time = math.ceil(chars / cpm)
+                return string.format("(%s min)", time)
+             end,
+          },
+       },
     })
 <
 

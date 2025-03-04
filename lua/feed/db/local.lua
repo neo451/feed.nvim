@@ -1,5 +1,5 @@
 local Path = require("feed.db.path")
-local Config = require("feed.config")
+local config = require("feed.config")
 local query = require("feed.db.query")
 local ut = require("feed.utils")
 local uv = vim.uv
@@ -60,7 +60,7 @@ local mem = {}
 
 ---@return feed.db
 function M.new(dir)
-   dir = Path.new(dir or Config.db_dir)
+   dir = Path.new(dir)
    local data_dir = dir / "data"
    local object_dir = dir / "object"
    local feeds_fp = dir / "feeds.lua"
@@ -202,7 +202,7 @@ end
 
 function M:sort()
    table.sort(self.index, function(a, b)
-      if Config.search.sort_order == "ascending" then
+      if config.search.sort_order == "ascending" then
          return a[2] < b[2]
       else
          return a[2] > b[2]
@@ -370,7 +370,7 @@ function M:filter(str)
 
    if q.must_have then
       table.sort(ret, function(a, b)
-         if Config.search.sort_order == "ascending" then
+         if config.search.sort_order == "ascending" then
             return self[a].time < self[b].time
          else
             return self[a].time > self[b].time
@@ -402,7 +402,7 @@ end
 ---adds missing feed from config to db, rename and tag everything
 function M:setup_sync()
    local feeds = self.feeds
-   for _, v in ipairs(Config.feeds) do
+   for _, v in ipairs(config.feeds) do
       local url = type(v) == "table" and v[1] or v
       local title = type(v) == "table" and v.name or nil
       local tags = type(v) == "table" and v.tags or nil
@@ -429,7 +429,7 @@ local function find_unlisted_feeds(self)
    local config_urls = {}
    local ret = {}
 
-   for _, v in ipairs(Config.feeds) do
+   for _, v in ipairs(config.feeds) do
       local url = type(v) == "table" and v[1] or v
       config_urls[url] = true
    end
@@ -478,4 +478,4 @@ function M:blowup()
    Path.rm(self.dir)
 end
 
-return M.new()
+return M
