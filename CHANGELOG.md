@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.12.0](https://github.com/neo451/feed.nvim/compare/v2.11.0...v2.12.0) (2025-03-04)
+
+
+### Features
+
+* a proper minimal.lua for troubleshooting ([5d2c990](https://github.com/neo451/feed.nvim/commit/5d2c99010fccbd3b5f9b7f7fc86ec90d9be5bad7))
+
+
+### Bug Fixes
+
+* get_urls pattern matching wrong ([10ebb4a](https://github.com/neo451/feed.nvim/commit/10ebb4a3dc32cbb2bcd93af1431c4111d451170f))
+* install html, markdown, markdown_inline in lazy.lua ([5d2c990](https://github.com/neo451/feed.nvim/commit/5d2c99010fccbd3b5f9b7f7fc86ec90d9be5bad7))
+* typo in progress native impl ([10ebb4a](https://github.com/neo451/feed.nvim/commit/10ebb4a3dc32cbb2bcd93af1431c4111d451170f))
+
 ## [2.11.0](https://github.com/neo451/feed.nvim/compare/v2.10.1...v2.11.0) (2025-03-04)
 
 
