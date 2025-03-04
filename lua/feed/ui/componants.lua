@@ -105,7 +105,6 @@ end
 M.select = function(items, opts, on_choice)
    local f = function(input)
       if not input then
-         vim.notify("Aborted", 3)
          return
       end
       on_choice(input)

@@ -5,7 +5,6 @@ local api = vim.api
 ---@param buf integer
 ---@return function|table
 function M.new(buf)
-   vim.bo[buf].modifiable = true
    local leftover = ""
 
    return function(data)
@@ -28,6 +27,7 @@ function M.new(buf)
       leftover = leftover:sub(split_idx)
 
       if #lines > 0 then
+         vim.bo[buf].modifiable = true
          api.nvim_buf_set_lines(buf, -1, -1, false, lines)
       end
    end

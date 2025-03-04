@@ -75,8 +75,12 @@ local function image_attach(buf)
       vim.notify("Snacks is not available")
       return
    end
-   local ok, f = pcall(Snacks.image.doc.inline, buf)
-   return ok and f and pcall(f)
+   local ok, f = pcall(Snacks.image.doc.attach, buf)
+   if vim.g.feed_debug then
+      if not ok then
+         vim.notify("image err: " .. f)
+      end
+   end
 end
 
 local function hl_entry(buf)

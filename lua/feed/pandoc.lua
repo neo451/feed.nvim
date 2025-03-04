@@ -37,10 +37,15 @@ local function convert(ctx)
       link or fp,
    }
 
+   if vim.g.feed_debug then
+      vim.notify("pandoc cmd running: " .. table.concat(cmd, " "))
+   end
+
    if on_exit and stdout then
       vim.system(cmd, {
          text = true,
          stdin = src,
+         -- TODO: log err
          stdout = vim.schedule_wrap(function(err, data)
             if data then
                return stdout(ut.unescape(data))

@@ -30,7 +30,7 @@ function Writer(doc, opts)
       Image = function(elem)
          ref_counter = ref_counter + 1
          refs[ref_counter] = elem.src
-         return pandoc.RawInline("markdown", ("![Image %d][%d]"):format(ref_counter, elem.src)) -- for now for image rendering
+         return pandoc.RawInline("markdown", ("![Image %d](%s)"):format(ref_counter, elem.src)) -- for now for image rendering
       end,
       CodeBlock = function(cb)
          if cb.attr == pandoc.Attr() then
