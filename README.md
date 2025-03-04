@@ -51,10 +51,19 @@
 - Neovim 0.10+
 - curl
 - [pandoc](https://www.pandoc.org)
-- (optional) [rg](https://github.com/BurntSushi/ripgrep)
 - tree-sitter parser
   - xml
   - html
+
+### Optional Dependencies
+
+- [rg](https://github.com/BurntSushi/ripgrep)
+- For image rendering:
+    - snacks.nvim
+- For feed picker:
+    - telescope.nvim
+    - fzf-lua
+    - mini.pick
 
 ### Basic Installation
 
@@ -80,6 +89,7 @@ return {
 
 - run `:checkhealth feed` to see your installation status
 - read tutorial below or read `:h feed.txt`
+
 <!-- panvimdoc-ignore-end -->
 
 ## Commands
