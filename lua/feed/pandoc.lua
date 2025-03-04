@@ -18,7 +18,7 @@ local function convert(ctx)
    local src = ctx.src
    local fp = ctx.id and tostring(db.dir / "data" / ctx.id) or nil
    local from = ctx.from or "html"
-   local to = ctx.to or vim.api.nvim_get_runtime_file("lua/feed/ui/pandoc_writer.lua", false)[1]
+   local to = ctx.to or vim.api.nvim_get_runtime_file("lua/feed/pandoc/gfm.lua", false)[1]
    local stdout = ctx.stdout
    local on_exit = ctx.on_exit
 

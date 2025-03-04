@@ -71,13 +71,14 @@ end
 
 ---@param buf number
 local function image_attach(buf)
-   if not Snacks then
+   local has_image, image = pcall(require, "snacks.image")
+   if not has_image then
       vim.notify("Snacks is not available")
       return
    end
-   local ok, f = pcall(Snacks.image.doc.attach, buf)
+   local attached, f = pcall(image.doc.attach, buf)
    if vim.g.feed_debug then
-      if not ok then
+      if not attached then
          vim.notify("image err: " .. f)
       end
    end
