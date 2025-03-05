@@ -2,7 +2,6 @@ local M = {}
 local URL = require("feed.lib.url")
 local vim = vim
 local ipairs, tostring = ipairs, tostring
-local ut = require("feed.utils.shared")
 
 ---@param base_url string
 ---@param url string

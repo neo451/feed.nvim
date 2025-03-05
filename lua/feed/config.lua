@@ -58,7 +58,7 @@ formats.date_short = function(id, db)
 end
 
 formats.link = function(id, db)
-   return db[id].link:sub(1, 90)
+   return db[id].link and db[id].link:sub(1, 90) or ""
 end
 
 formats.feed = function(id, db)

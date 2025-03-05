@@ -87,9 +87,9 @@ return {
 
 ### Further Steps
 
-- run `:checkhealth feed` to see your installation status
-- read tutorial below or read `:h feed.txt`
-- to troubleshoot, copy [minimal.lua](./minimal.lua) like `nvim --clean -u minimal.lua`, this avoids config/plugin conflicts
+- Run `:checkhealth feed` to see your installation status
+- Read tutorial below or read `:h feed.txt`
+- To troubleshoot without conflict from other plugins or you config, copy [minimal.lua](./minimal.lua) locally, and do `nvim --clean -u minimal.lua`
 
 <!-- panvimdoc-ignore-end -->
 
