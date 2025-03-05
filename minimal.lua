@@ -4,7 +4,6 @@ load(vim.fn.system("curl -s https://raw.githubusercontent.com/folke/lazy.nvim/ma
 local plugins = {
    {
       "neo451/feed.nvim",
-      dir = "~/Plugins/feed.nvim",
       opts = {
          feeds = {
             "https://neovim.io/news.xml",

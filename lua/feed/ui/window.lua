@@ -155,10 +155,42 @@ function M:show()
    self.augroup = vim.api.nvim_create_augroup("feed.win." .. self.id, { clear = true })
 
    -- update window size when resizing
-   vim.api.nvim_create_autocmd("VimResized", {
+   vim.api.nvim_create_autocmd({ "VimResized", "CmdwinLeave" }, {
+      group = self.augroup,
+      callback = vim.schedule_wrap(function()
+         self:update()
+      end),
+   })
+
+   vim.api.nvim_create_autocmd("Filetype", {
+      pattern = "qf",
+      callback = function()
+         local augroup_id = vim.api.nvim_create_augroup("feed_quick_close", { clear = true })
+         vim.api.nvim_create_autocmd("WinLeave", {
+            group = augroup_id,
+            callback = function()
+               self:update()
+               vim.api.nvim_del_augroup_by_id(augroup_id)
+            end,
+         })
+      end,
+   })
+
+   vim.api.nvim_create_autocmd("CmdwinEnter", {
       group = self.augroup,
       callback = function()
-         self:update()
+         local opts = self:win_opts()
+         opts.height = opts.height - vim.o.cmdwinheight
+         vim.api.nvim_win_set_config(self.win, opts)
+      end,
+   })
+
+   vim.api.nvim_create_autocmd("QuickFixCmdPre", {
+      group = self.augroup,
+      callback = function()
+         local opts = self:win_opts()
+         opts.height = opts.height - 10
+         vim.api.nvim_win_set_config(self.win, opts)
       end,
    })
 
@@ -237,10 +269,11 @@ function M:update()
       ut.wo(self.win, self.opts.wo)
       local opts = self:win_opts()
       opts.noautocmd = nil
-      opts.height = vim.o.lines - 1
+      opts.height = opts.zen and vim.o.lines or vim.o.lines - (vim.o.cmdheight + 1)
       opts.width = self.opts.zen and Config.zen.width or vim.o.columns
       opts.col = (vim.o.columns - opts.width) / 2
       vim.api.nvim_win_set_config(self.win, opts)
+      vim.api.nvim_set_current_win(self.win)
    end
 end
 

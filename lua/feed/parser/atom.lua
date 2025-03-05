@@ -31,9 +31,9 @@ end
 local function handle_title(entry, fallback)
    local function handle(v)
       if type(v) == "table" then
-         return v[1] or ""
+         return clean(v[1] or "")
       elseif type(v) == "string" then
-         return v
+         return clean(v)
       end
    end
    if vim.islist(entry.title) then

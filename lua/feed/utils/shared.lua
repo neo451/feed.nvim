@@ -126,7 +126,7 @@ end
 --- Set window-local options.
 ---@param win number
 ---@param wo vim.wo
-function M.wo(win, wo)
+M.wo = function(win, wo)
    for k, v in pairs(wo or {}) do
       api.nvim_set_option_value(k, v, { scope = "local", win = win })
    end
@@ -135,7 +135,7 @@ end
 --- Set buffer-local options.
 ---@param buf number
 ---@param bo vim.bo
-function M.bo(buf, bo)
+M.bo = function(buf, bo)
    for k, v in pairs(bo or {}) do
       api.nvim_set_option_value(k, v, { buf = buf })
    end
@@ -154,18 +154,16 @@ M.is_headless = function()
    return vim.tbl_isempty(api.nvim_list_uis())
 end
 
-M.decode = function(str)
-   if not str then
-      return nil
-   end
-   return require("feed.lib.entities").decode(str)
-end
-
+---1. replace html entities,
+---2. replace newline as space,
+---3. trims
 ---@param str string?
 ---@return string?
 M.clean = function(str)
-   str = M.decode(str)
-   return str and vim.trim(str) or nil
+   str = str and require("feed.lib.entities").decode(str)
+   str = str and string.gsub(str, "\n", " ")
+   str = str and vim.trim(str)
+   return str
 end
 
 return M
