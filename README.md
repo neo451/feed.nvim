@@ -403,7 +403,9 @@ require("feed").setup({
 <details><summary>Custom colorscheme only set when viewing feeds</summary>
 
 ```lua
+
 local og_color
+local og_background
 
 vim.api.nvim_create_autocmd("User", {
    pattern = "FeedShowIndex",
@@ -411,7 +413,11 @@ vim.api.nvim_create_autocmd("User", {
       if not og_color then
          og_color = vim.g.colors_name
       end
-      vim.cmd.colorscheme("kanagawa-lotus")
+      if not og_background then
+         og_background = vim.opt.background
+      end
+      vim.cmd.colorscheme("e-ink")
+      vim.opt.background = "light"
    end,
 })
 
@@ -419,6 +425,7 @@ vim.api.nvim_create_autocmd("User", {
    pattern = "FeedQuitIndex",
    callback = function()
       vim.cmd.colorscheme(og_color)
+      vim.opt.background = og_background
    end,
 })
 ```

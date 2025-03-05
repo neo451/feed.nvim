@@ -199,8 +199,6 @@ local function show_entry(ctx)
          zen = config.zen.enabled,
          zindex = 5,
       })
-   end
-   if not ctx.preview then
       api.nvim_buf_set_name(buf, "FeedEntry")
    end
 
@@ -242,13 +240,13 @@ M.quit = function()
    if ut.in_index() then
       state.index:close()
       state.index = nil
-      vim.api.nvim_exec_autocmds("User", {
+      api.nvim_exec_autocmds("User", {
          pattern = "FeedQuitIndex",
       })
    elseif ut.in_entry() then
       state.entry:close()
       state.entry = nil
-      vim.api.nvim_exec_autocmds("User", {
+      api.nvim_exec_autocmds("User", {
          pattern = "FeedQuitEntry",
       })
    end
@@ -268,6 +266,8 @@ M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur - 1, buf = state.entry.buf, preview = true })
+   else
+      vim.notify("First entry")
    end
 end
 
@@ -275,6 +275,8 @@ M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ row = state.cur + 1, buf = state.entry.buf, preview = true })
+   else
+      vim.notify("Last entry")
    end
 end
 
