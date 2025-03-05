@@ -1,5 +1,105 @@
 # Changelog
 
+## [2.12.0](https://github.com/neo451/feed.nvim/compare/v2.11.0...v2.12.0) (2025-03-04)
+
+
+### Features
+
+* a proper minimal.lua for troubleshooting ([5d2c990](https://github.com/neo451/feed.nvim/commit/5d2c99010fccbd3b5f9b7f7fc86ec90d9be5bad7))
+
+
+### Bug Fixes
+
+* get_urls pattern matching wrong ([10ebb4a](https://github.com/neo451/feed.nvim/commit/10ebb4a3dc32cbb2bcd93af1431c4111d451170f))
+* install html, markdown, markdown_inline in lazy.lua ([5d2c990](https://github.com/neo451/feed.nvim/commit/5d2c99010fccbd3b5f9b7f7fc86ec90d9be5bad7))
+* typo in progress native impl ([10ebb4a](https://github.com/neo451/feed.nvim/commit/10ebb4a3dc32cbb2bcd93af1431c4111d451170f))
+
+## [2.11.0](https://github.com/neo451/feed.nvim/compare/v2.10.1...v2.11.0) (2025-03-04)
+
+
+### Features
+
+* **pandoc:** properly use reference style links and inline links for images ([e48af9e](https://github.com/neo451/feed.nvim/commit/e48af9e43e8bc1177ed5de513612b005ef402b53))
+* **ui:** defaults to show tags in entry ([7c5726b](https://github.com/neo451/feed.nvim/commit/7c5726bbf748f832d8fa13cdb9a36f709abcbaa5))
+
+
+### Bug Fixes
+
+* (ui): componants distinguish abort and empty string ([7c5726b](https://github.com/neo451/feed.nvim/commit/7c5726bbf748f832d8fa13cdb9a36f709abcbaa5))
+* **db:** query must_have adding results together ([f383e77](https://github.com/neo451/feed.nvim/commit/f383e7771d2fd09bb8ee2f3f9104478f7622824c))
+* **image:** bring snack.image integrations up to date ([e48af9e](https://github.com/neo451/feed.nvim/commit/e48af9e43e8bc1177ed5de513612b005ef402b53))
+* **lazy:** lazy.lua ts ensure_installed ([dac277f](https://github.com/neo451/feed.nvim/commit/dac277fec8c46b6c0bcef8be2d3376ad6b030be1))
+* **parser:** have image links for now ([dac277f](https://github.com/neo451/feed.nvim/commit/dac277fec8c46b6c0bcef8be2d3376ad6b030be1))
+* **parser:** simplify show_url impl, leverage pandoc, inspired by link.vim ([f383e77](https://github.com/neo451/feed.nvim/commit/f383e7771d2fd09bb8ee2f3f9104478f7622824c))
+
+## [2.10.1](https://github.com/neo451/feed.nvim/compare/v2.10.0...v2.10.1) (2025-02-28)
+
+
+### Bug Fixes
+
+* **db:** method for getting entry content ([46daf03](https://github.com/neo451/feed.nvim/commit/46daf0347c80d9df9c08b6f40812d892d4a18f8f))
+* move test data to another repo so the plugin is small ([7acfc84](https://github.com/neo451/feed.nvim/commit/7acfc841aa179bf700260e93a328ff2170b9121d))
+
+## [2.10.0](https://github.com/neo451/feed.nvim/compare/v2.9.0...v2.10.0) (2025-02-27)
+
+
+### Features
+
+* **commands:** export to any file format with pandoc ([0f92af0](https://github.com/neo451/feed.nvim/commit/0f92af0dc7b9c6e5bbcafed64dff7c5051c616d4))
+* **ui:** stream shell output to buffer for less freeze when render ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+
+
+### Bug Fixes
+
+* **picker:** picker adapt to stream rendering ([f57f929](https://github.com/neo451/feed.nvim/commit/f57f9295b49be5b42ebdc5476e1e1884053fbb0b))
+* **ui:** ensure tags order ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+* **ui:** use ts fold in entries ([07fdccc](https://github.com/neo451/feed.nvim/commit/07fdccc439ed47ba553c8116fe73ab1b1e295b89))
+* **update:** child process use the current process args ([0f92af0](https://github.com/neo451/feed.nvim/commit/0f92af0dc7b9c6e5bbcafed64dff7c5051c616d4))
+
+## [2.9.0](https://github.com/neo451/feed.nvim/compare/v2.8.0...v2.9.0) (2025-02-26)
+
+
+### Features
+
+* add config field for asc/desc sort order ([e53b2ad](https://github.com/neo451/feed.nvim/commit/e53b2ad9d0f607b8e75239c5f38f23a79d0aca4d))
+
+
+### Bug Fixes
+
+* **commands:** rename server to web ([b642e64](https://github.com/neo451/feed.nvim/commit/b642e64f132f30491bd27aae6be021fa26b75b35))
+* ensure commands order, show less sub commands ([492c4ef](https://github.com/neo451/feed.nvim/commit/492c4ef30726def8aa56676cebf16cbec1c40f6f))
+* **ui:** map yank_url to Y to allow for normal yanking ([b21ed61](https://github.com/neo451/feed.nvim/commit/b21ed614519ce35c87594a58c4e70f92a9a351fe))
+* **ui:** winbar has its own config field ([b21ed61](https://github.com/neo451/feed.nvim/commit/b21ed614519ce35c87594a58c4e70f92a9a351fe))
+
+## [2.8.0](https://github.com/neo451/feed.nvim/compare/v2.7.3...v2.8.0) (2025-02-25)
+
+
+### Features
+
+* **format:** more customizable format functions ([757b1e6](https://github.com/neo451/feed.nvim/commit/757b1e60416c3f2d91786153dfffd6b26767c948))
+
+
+### Bug Fixes
+
+* seperate picker layout config ([86ea61d](https://github.com/neo451/feed.nvim/commit/86ea61dfc796421fea0311253a4bdcfc934d07ec))
+
+## [2.7.3](https://github.com/neo451/feed.nvim/compare/v2.7.2...v2.7.3) (2025-02-25)
+
+
+### Bug Fixes
+
+* **db:** keep ttrss interface up to date ([e66877c](https://github.com/neo451/feed.nvim/commit/e66877c6b366fa75308970113959af5be534e5aa))
+* **parser:** resolve links base on htmlUrl ([e66877c](https://github.com/neo451/feed.nvim/commit/e66877c6b366fa75308970113959af5be534e5aa))
+* **ui:** well format `Feed list` ([4c02423](https://github.com/neo451/feed.nvim/commit/4c02423bd7d12604357fbb0155a4aafc3ca7d001))
+
+## [2.7.2](https://github.com/neo451/feed.nvim/compare/v2.7.1...v2.7.2) (2025-02-24)
+
+
+### Bug Fixes
+
+* **db:** ensure field exist before regex matching ([2952662](https://github.com/neo451/feed.nvim/commit/29526622c1c513de98a2d50134df02e7261e34f0))
+* **ui:** refresh after every feed update ([1ceb641](https://github.com/neo451/feed.nvim/commit/1ceb641f739d7f0a75f48eb6e25f3bf8ee8571d1))
+
 ## [2.7.1](https://github.com/neo451/feed.nvim/compare/v2.7.0...v2.7.1) (2025-02-24)
 
 
