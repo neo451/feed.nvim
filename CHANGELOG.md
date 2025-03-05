@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.13.0](https://github.com/neo451/feed.nvim/compare/v2.12.0...v2.13.0) (2025-03-05)
+
+
+### Features
+
+* floating window now resizes on quickfix and cmdline-window ([660d8d6](https://github.com/neo451/feed.nvim/commit/660d8d6aa82ae57a9aae20a7061fba1f619191b6))
+
+
+### Bug Fixes
+
+* minimal.lua use the remote ([660d8d6](https://github.com/neo451/feed.nvim/commit/660d8d6aa82ae57a9aae20a7061fba1f619191b6))
+* properly remove newlines in some entry titles ([660d8d6](https://github.com/neo451/feed.nvim/commit/660d8d6aa82ae57a9aae20a7061fba1f619191b6))
+
 ## [2.12.0](https://github.com/neo451/feed.nvim/compare/v2.11.0...v2.12.0) (2025-03-04)
 
 
