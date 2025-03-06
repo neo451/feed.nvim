@@ -5,8 +5,8 @@ local pandoc = require("feed.pandoc")
 local curl = require("feed.curl")
 local opml = require("feed.opml")
 local fetch = require("feed.fetch")
-local db = require("feed.db")
 local ut = require("feed.utils")
+local db = require("feed.db")
 local state = require("feed.state")
 local undo_history = state.undo_history
 local redo_history = state.redo_history
@@ -14,6 +14,7 @@ local redo_history = state.redo_history
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
+---@class feed.ui
 local M = {
    state = state,
 }
@@ -108,7 +109,9 @@ local function hl_line(buf, line, coords, linenr)
 end
 
 ---TODO: generlize too be also user denfinable
-local format_headline = function(id, layout, _db)
+M.headline = function(id, layout, _db)
+   layout = layout or config.picker
+   _db = _db or db
    local entry = _db[id]
    local acc, res = 0, {}
    local coords = {}
@@ -128,8 +131,6 @@ local format_headline = function(id, layout, _db)
    end
    return table.concat(res), coords
 end
-
-M._format_headline = format_headline
 
 M.show_index = function()
    local cursor_pos, scroll_pos
@@ -153,7 +154,7 @@ M.show_index = function()
    api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
    for i, id in ipairs(state.entries) do
-      local line, coords = format_headline(id, config.ui, db)
+      local line, coords = M.headline(id, config.ui, db)
       api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
       hl_line(buf, line, coords, i)
    end

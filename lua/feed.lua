@@ -1,18 +1,25 @@
+---@class feed.api: feed.ui
+---@field db feed.db
+---@field parse function
 local M = {}
 
 ---@param usr_config feed.config
 M.setup = function(usr_config)
    require("feed.config").resolve(usr_config)
    require("feed.db"):setup_sync()
-
-   for k, v in pairs(require("feed.commands")) do
-      if not vim.startswith(k, "_") then
-         M[k] = v.impl
-      end
-   end
-
-   local ui = require("feed.ui")
-   M.get_entry = ui.get_entry
 end
+
+setmetatable(M, {
+   __index = function(_, k)
+      if k == "db" then
+         return require("feed.db")
+      elseif k == "parse" then
+         return require("feed.parser").parse
+      end
+      return require("feed.ui")[k]
+   end,
+})
+
+_G.Feed = M
 
 return M

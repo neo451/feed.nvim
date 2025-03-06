@@ -34,7 +34,7 @@ local function feed_search()
    local show = function(buf_id, items_arr, _)
       local lines = vim.iter(items_arr)
          :map(function(id)
-            local line = ui._format_headline(id, config.picker, db)
+            local line = ui.headline(id)
             return line
          end)
          :totable()
@@ -67,7 +67,7 @@ local function feed_grep()
          show = function(buf_id, items_arr, _)
             for i, line in ipairs(items_arr) do
                local id = line:sub(1, 64)
-               api.nvim_buf_set_lines(buf_id, i - 1, i, false, { ui._format_headline(id, config.picker, db) })
+               api.nvim_buf_set_lines(buf_id, i - 1, i, false, { ui.headline(id) })
             end
          end,
       },

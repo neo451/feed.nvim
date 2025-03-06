@@ -3,7 +3,7 @@ local Config = require("feed.config")
 local api = vim.api
 
 ---@class feed.win.Config: vim.api.keyset.win_config
----@field text? string | string[]
+---@field text? string[]
 ---@field wo? vim.wo|{} window options
 ---@field bo? vim.bo|{} buffer options
 ---@field b? table<string, any> buffer local variables
@@ -138,8 +138,7 @@ function M:show()
    end
 
    if self.opts.text then
-      local lines = type(self.opts.text) == "string" and vim.split(self.opts.text, "\n") or self.opts.text
-      api.nvim_buf_set_lines(self.buf, 0, -1, false, lines)
+      api.nvim_buf_set_lines(self.buf, 0, -1, false, self.opts.text)
    end
 
    if self.opts.b then
@@ -153,7 +152,6 @@ function M:show()
    ut.bo(self.buf, self.opts.bo)
    ut.wo(self.win, self.opts.wo)
 
-   -- FIX: handle popup windows hide self
    self.augroup = api.nvim_create_augroup("feed.win." .. self.id, { clear = true })
 
    -- update window size when resizing

@@ -57,13 +57,17 @@
 
 ### Optional Dependencies
 
-- [rg](https://github.com/BurntSushi/ripgrep)
+- For feed greping:
+  - [rg](https://github.com/BurntSushi/ripgrep)
+- For interactive feed searching:
+  - [telescope.nvim](https://github.com/folke/snacks.nvim)
+  - [fzf-lua](https://github.com/ibhagwan/fzf-lua)
+  - [mini.pick](https://github.com/echasnovski/mini.pick)
+- For markdown rendering:
+  - [render-markdown](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+  - [markview.nvim](https://github.com/OXY2DEV/markview.nvim)
 - For image rendering:
-    - snacks.nvim
-- For feed picker:
-    - telescope.nvim
-    - fzf-lua
-    - mini.pick
+  - [snacks.nvim](https://github.com/folke/snacks.nvim)
 
 ### Basic Installation
 

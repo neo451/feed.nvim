@@ -33,7 +33,7 @@ local function feed_search()
       ui.state.entries = db:filter(str)
       local ret = {}
       for i, id in ipairs(ui.state.entries) do
-         ret[i] = ui._format_headline(id, config.picker, db) .. (" "):rep(100) .. id
+         ret[i] = ui.headline(id) .. (" "):rep(100) .. id
       end
       return ret
    end, {

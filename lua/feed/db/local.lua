@@ -241,6 +241,7 @@ end
 
 ---return a list of db ids base on query
 function M:filter(str)
+   str = str or config.search.default_query
    if str == "" then
       return {}
    end

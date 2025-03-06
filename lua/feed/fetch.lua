@@ -1,7 +1,7 @@
 local parser = require("feed.parser")
 local config = require("feed.config")
-local db = require("feed.db")
 local ut = require("feed.utils")
+local db = require("feed.db")
 local M = {}
 
 local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
