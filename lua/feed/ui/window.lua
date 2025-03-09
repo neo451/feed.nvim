@@ -22,6 +22,7 @@ local api = vim.api
 ---@field id number
 ---@field win integer
 ---@field buf integer
+---@field keys table
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
@@ -59,7 +60,38 @@ function M.new(opts, enter)
    local self = setmetatable({
       opts = opts,
       id = id,
+      keys = {},
    }, M)
+
+   local done = {}
+   for key, spec in pairs(opts.keys or {}) do
+      if spec then
+         if type(spec) == "string" then
+            spec = { key, spec, desc = spec }
+         elseif type(spec) == "function" then
+            spec = { key, spec }
+         elseif type(spec) == "table" and spec[1] and not spec[2] then
+            spec = vim.deepcopy(spec) -- deepcopy just in case
+            spec[1], spec[2] = key, spec[1]
+         end
+         local lhs = M.normkey(spec[1] or "")
+         local mode = type(spec.mode) == "table" and spec.mode or { spec.mode or "n" }
+         ---@cast mode string[]
+         mode = #mode == 0 and { "n" } or mode
+         for _, m in ipairs(mode) do
+            local k = m .. ":" .. lhs
+            if done[k] then
+               vim.notify(
+                  string
+                     .format("# Duplicate key mapping for `%s` mode=%s (check case):\n```lua\n%s\n```\n```lua\n%s\n```")
+                     :format(lhs, m, vim.inspect(done[k]), vim.inspect(spec))
+               )
+            end
+            done[k] = spec
+         end
+         table.insert(self.keys, spec)
+      end
+   end
 
    if opts.show then
       self:show()
@@ -230,23 +262,88 @@ function M:show()
    self:maps()
 end
 
-function M:maps()
-   if self.opts.keys == nil then
-      return
+---@param str string
+function M.keycode(str)
+   return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local key_cache = {}
+---@param key string
+function M.normkey(key)
+   if key_cache[key] then
+      return key_cache[key]
    end
-   for rhs, lhs in pairs(self.opts.keys) do
-      local opts = {}
+   local function norm(v)
+      local l = v:lower()
+      if l == "leader" then
+         return M.normkey("<leader>")
+      elseif l == "localleader" then
+         return M.normkey("<localleader>")
+      end
+      return vim.fn.keytrans(M.keycode(("<%s>"):format(v)))
+   end
+   local orig = key
+   key = key:gsub("<lt>", "<")
+   local lower = key:lower()
+   if lower == "<leader>" then
+      key = vim.g.mapleader
+      key = vim.fn.keytrans((not key or key == "") and "\\" or key)
+   elseif lower == "<localleader>" then
+      key = vim.g.maplocalleader
+      key = vim.fn.keytrans((not key or key == "") and "\\" or key)
+   else
+      local extracted = {} ---@type string[]
+      local function extract(v)
+         v = v:sub(2, -2)
+         if v:sub(2, 2) == "-" and v:sub(1, 1):find("[aAmMcCsS]") then
+            local m = v:sub(1, 1):upper()
+            m = m == "A" and "M" or m
+            local k = v:sub(3)
+            if #k > 1 then
+               return norm(v)
+            end
+            if m == "C" then
+               k = k:upper()
+            elseif m == "S" then
+               return k:upper()
+            end
+            return ("<%s-%s>"):format(m, k)
+         end
+         return norm(v)
+      end
+      local placeholder = "_#_"
+      ---@param v string
+      key = key:gsub("(%b<>)", function(v)
+         table.insert(extracted, extract(v))
+         return placeholder
+      end)
+      key = vim.fn.keytrans(key):gsub("<lt>", "<")
+
+      -- Restore extracted %b<> sequences
+      local i = 0
+      key = key:gsub(placeholder, function()
+         i = i + 1
+         return extracted[i] or ""
+      end)
+   end
+   key_cache[orig] = key
+   key_cache[key] = key
+   return key
+end
+
+function M:maps()
+   for _, spec in pairs(self.keys or {}) do
+      local opts = vim.deepcopy(spec)
+      opts[1] = nil
+      opts[2] = nil
+      opts.mode = nil
+      ---@diagnostic disable-next-line: cast-type-mismatch
+      ---@cast opts vim.keymap.set.Opts
       opts.buffer = self.buf
       opts.nowait = true
-      if type(rhs) == "string" then
-         opts.desc = "Feed " .. rhs
-         assert(type(rhs) == "string")
-         vim.keymap.set("n", lhs, function()
-            vim.cmd.Feed(rhs)
-         end, opts)
-      elseif type(rhs) == "function" then
-         vim.keymap.set("n", lhs, rhs, opts)
-      end
+      local rhs = spec[2]
+      spec.desc = spec.desc or opts.desc
+      vim.keymap.set(spec.mode or "n", spec[1], rhs, opts)
    end
 end
 

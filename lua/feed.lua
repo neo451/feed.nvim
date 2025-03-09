@@ -6,7 +6,7 @@ local M = {}
 ---@param usr_config feed.config
 M.setup = function(usr_config)
    require("feed.config").resolve(usr_config)
-   require("feed.db"):setup_sync()
+   require("feed.db"):setup_sync(usr_config.feeds)
 end
 
 setmetatable(M, {

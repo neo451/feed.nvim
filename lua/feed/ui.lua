@@ -1,3 +1,7 @@
+---@module "feed.ui"
+---@author Zizhou Teng
+---@license GPL-3.0
+
 local Win = require("feed.ui.window")
 local Stream = require("feed.ui.stream")
 local config = require("feed.config")
@@ -172,8 +176,6 @@ M.show_index = function()
    })
 end
 
---- TODO: is preview is just valid buf?
-
 ---@param ctx? { row: integer, id: string, buf: integer, link: string, preview: boolean }
 local function show_entry(ctx)
    ctx = ctx or {}
@@ -313,10 +315,8 @@ M.show_hints = function()
    end
 
    local lines = {}
-   for k, v in pairs(maps) do
-      if type(k) == "string" then
-         lines[#lines + 1] = string.format("- `%s -> %s`", k, v)
-      end
+   for _, v in ipairs(maps) do
+      lines[#lines + 1] = string.format("- `%s -> %s`", v[1], v[2]:match("<cmd>Feed (%S+)<cr>"))
    end
 
    M.split({
@@ -540,6 +540,7 @@ M.grep = function()
    engine.feed_grep()
 end
 
+---load feed from url
 ---@param url string
 M.update_feed = function(url)
    local Coop = require("coop")
