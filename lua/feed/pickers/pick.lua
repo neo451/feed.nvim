@@ -47,7 +47,7 @@ local function feed_search()
          match = match,
          show = show,
          preview = function(buf, id)
-            ui.show_entry({ buf = buf, id = id, preview = true })
+            ui.show_entry({ buf = buf, id = id })
             local win = api.nvim_get_current_win()
             ut.wo(win, config.options.entry.wo)
             ut.bo(buf, config.options.entry.bo)

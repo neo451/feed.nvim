@@ -18,7 +18,7 @@ local function feed_search()
          prompt_title = "Feeds",
          previewer = previewers.new_buffer_previewer({
             define_preview = function(self, entry, _)
-               ui.show_entry({ buf = self.state.bufnr, id = entry.value, preview = true })
+               ui.show_entry({ buf = self.state.bufnr, id = entry.value })
                local win, buf = self.state.winid, self.state.bufnr
                ut.bo(buf, config.options.entry.bo)
                ut.wo(win, config.options.entry.wo)

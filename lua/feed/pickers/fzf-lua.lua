@@ -17,7 +17,7 @@ function MyPreviewer:populate_preview_buf(entry_str)
    local tmpbuf = self:get_tmp_buffer()
    self:set_preview_buf(tmpbuf)
    local id = entry_str:sub(-64, -1)
-   ui.show_entry({ buf = tmpbuf, id = id, preview = true })
+   ui.show_entry({ buf = tmpbuf, id = id })
    ut.bo(tmpbuf, config.options.entry.bo)
    vim.treesitter.start(tmpbuf, "markdown")
 end

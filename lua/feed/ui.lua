@@ -163,7 +163,7 @@ M.show_index = function()
       hl_line(buf, line, coords, i)
    end
 
-   api.nvim_buf_set_lines(buf, -2, -1, false, { "" })
+   api.nvim_buf_set_lines(buf, -1, -1, false, { "" })
    vim.bo[buf].modifiable = false
 
    if cursor_pos and scroll_pos then
@@ -176,7 +176,7 @@ M.show_index = function()
    })
 end
 
----@param ctx? { row: integer, id: string, buf: integer, link: string, preview: boolean }
+---@param ctx? { row: integer, id: string, buf: integer, link: string }
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
@@ -184,14 +184,16 @@ local function show_entry(ctx)
       return
    end
 
-   local buf
+   local buf, is_preview
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
       buf = ctx.buf
+      is_preview = true
    else
       buf = api.nvim_create_buf(false, true)
+      is_preview = false
    end
 
-   if not ctx.preview then
+   if not is_preview then
       state.entry = Win.new({
          prev_win = state.index and state.index.win or api.nvim_get_current_win(),
          buf = buf,
@@ -208,9 +210,9 @@ local function show_entry(ctx)
    local function on_exit()
       hl_entry(buf)
       image_attach(buf)
+      mark_read(id)
 
-      if not ctx.preview then
-         mark_read(id)
+      if not is_preview then
          api.nvim_exec_autocmds("User", {
             pattern = "FeedShowEntry",
          })
@@ -259,7 +261,7 @@ M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ link = entry.link, buf = state.entry.buf, preview = true })
+      show_entry({ link = entry.link, buf = state.entry.buf })
    else
       vim.notify("no link to fetch")
    end
@@ -268,7 +270,7 @@ end
 M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur - 1, buf = state.entry.buf, preview = true })
+      show_entry({ row = state.cur - 1, buf = state.entry.buf })
    else
       vim.notify("First entry")
    end
@@ -277,7 +279,7 @@ end
 M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur + 1, buf = state.entry.buf, preview = true })
+      show_entry({ row = state.cur + 1, buf = state.entry.buf })
    else
       vim.notify("Last entry")
    end
