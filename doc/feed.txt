@@ -1,4 +1,4 @@
-*feed.txt*                 For 0.11                 Last change: 2025 March 04
+*feed.txt*                 For 0.11                 Last change: 2025 March 10
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*
@@ -21,7 +21,6 @@ Table of Contents                                     *feed-table-of-contents*
   - Examples                                            |feed-search-examples|
   - Grep                                                    |feed-search-grep|
 5. Recipes                                                      |feed-recipes|
-6. Lua API                                                      |feed-lua-api|
 
 ==============================================================================
 1. Commands                                                    *feed-commands*
@@ -42,23 +41,23 @@ LIST OF COMMANDS                              *feed-commands-list-of-commands*
   ----------------------------------------------------------------------------------------
   name                            desc                                              bang
   ------------------------------- ------------------------------------------------- ------
-  Feed <query>                    opens a index buffer, a list view based on the    no
+  Feed [query]                    opens a index buffer, a list view based on the    no
                                   filter you passed in                              
+
+  Feed web [query, port]          opens a server on a port and opens the web        no
+                                  interface in browser                              
 
   Feed index                      opens a index buffer, a list view based on your   no
                                   default filter                                    
 
-  Feed entry                      opens a entry buffer, a markdown view of the      no
-                                  entry content                                     
-
   Feed update                     updates all feeds in the database                 no
 
-  Feed update_feed <feed_url>     update a single feed in the database              no
+  Feed update_feed [feed_url]     update a single feed in the database              no
 
   Feed sync                       sync the database with your config, removes feeds yes
                                   and entries (if bang) not present                 
 
-  Feed search <query>             opens picker to live search your database         no
+  Feed search [query]             opens picker to live search your database         no
 
   Feed grep                       opens picker to live grep your database           no
                                   (experimental)                                    
@@ -68,15 +67,12 @@ LIST OF COMMANDS                              *feed-commands-list-of-commands*
 
   Feed log                        opens a split to show log                         no
 
-  Feed load_opml <filepath/url>   import from an OPML file or url                   no
+  Feed load_opml [filepath/url]   import from an OPML file or url                   no
 
-  Feed export_opml <filepath>     export to an OPML file                            no
-
-  Feed web <port>                 opens a server on a port and opens the web        no
-                                  interface in browser                              
+  Feed export_opml [filepath]     export to an OPML file                            no
 
   Feed urlview                    opens a select UI to picker urls in entry buffer, no
-                                  to open in browser                                
+                                  <cr> to open in browser                           
   ----------------------------------------------------------------------------------------
 
 ==============================================================================
@@ -285,7 +281,8 @@ one of the search backends:
 ==============================================================================
 5. Recipes                                                      *feed-recipes*
 
-Change the highlight of the tags section and use emojis and mini.icons for tags ~
+**Change the highlight of the tags section and use emojis and mini.icons for
+tags**
 
 >lua
     require("feed").setup({
@@ -330,7 +327,7 @@ Change the highlight of the tags section and use emojis and mini.icons for tags 
     })
 <
 
-Custom function & keymap for podcast and w3m ~
+**Custom function and keymap**
 
 >lua
     local function play_podcast()
@@ -369,17 +366,19 @@ Custom function & keymap for podcast and w3m ~
     require("feed").setup({
        keys = {
           index = {
-             [play_podcast] = "p",
-             [show_in_w3m] = "w",
+             { "p", play_podcast },
+             { "w", show_in_w3m },
           },
        },
     })
 <
 
-Custom colorscheme only set when viewing feeds ~
+**Custom colorscheme only set when viewing feeds**
 
 >lua
+    
     local og_color
+    local og_background
     
     vim.api.nvim_create_autocmd("User", {
        pattern = "FeedShowIndex",
@@ -387,7 +386,11 @@ Custom colorscheme only set when viewing feeds ~
           if not og_color then
              og_color = vim.g.colors_name
           end
-          vim.cmd.colorscheme("kanagawa-lotus")
+          if not og_background then
+             og_background = vim.opt.background
+          end
+          vim.cmd.colorscheme("e-ink")
+          vim.opt.background = "light"
        end,
     })
     
@@ -395,11 +398,12 @@ Custom colorscheme only set when viewing feeds ~
        pattern = "FeedQuitIndex",
        callback = function()
           vim.cmd.colorscheme(og_color)
+          vim.opt.background = og_background
        end,
     })
 <
 
-Show estimate reading time ~
+**Show estimate reading time**
 
 >lua
     require("feed").setup({
@@ -419,11 +423,38 @@ Show estimate reading time ~
     })
 <
 
+**Custom section in snacks dashboard**
 
-==============================================================================
-6. Lua API                                                      *feed-lua-api*
-
-:TODO:
+>lua
+    local function gen_feed_sections()
+       local feed = require("feed")
+       local entries = feed.db:filter("+unread #5")
+       local sections = {
+          { section = "header" },
+          { section = "keys", gap = 1, padding = 1 },
+          { pane = 2, title = "Feeds", padding = 1 },
+       }
+    
+       for _, id in ipairs(entries) do
+          table.insert(sections, {
+             pane = 2,
+             icon = " ",
+             desc = feed.headline(id),
+             action = function()
+                feed.show_entry({ id = id })
+             end,
+          })
+       end
+       table.insert(sections, { section = "startup" })
+       return sections
+    end
+    
+    require("snacks").setup({
+       dashboard = {
+          sections = gen_feed_sections(),
+       },
+    })
+<
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 

@@ -1,5 +1,15 @@
 <div class="header-container">
-  <h3>Feeds [{{query}}]</h3>
+  <h3>Feeds</h3>
+  <input
+    class="form-control"
+    type="search"
+    name="search"
+    placeholder="{{query}}"
+    hx-post="/search"
+    hx-trigger="input changed delay:500ms, keyup[key=='Enter'] "
+    hx-target="#search-results"
+    hx-indicator=".htmx-indicator"
+  />
   {{toggle}}
 </div>
-<div class="doc-list">{{docs}}</div>
+<div class="doc-list" id="search-results">{{docs}}</div>

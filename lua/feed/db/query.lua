@@ -2,6 +2,8 @@ local date = require("feed.parser.date")
 
 local M = {}
 
+local ignorecase = vim.o.ignorecase
+
 ---@class feed.query
 ---@field after? integer #@
 ---@field before? integer #@
@@ -22,7 +24,7 @@ local function build_regex(str)
    else
       pattern = str
    end
-   if vim.o.ignorecase then
+   if ignorecase then
       pattern = pattern .. "\\c"
    else
       pattern = pattern .. "\\C"
