@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.14.0](https://github.com/neo451/feed.nvim/compare/v2.13.0...v2.14.0) (2025-03-10)
+
+
+### Features
+
+* **api:** export ui functions, parse and db ([8e7fc54](https://github.com/neo451/feed.nvim/commit/8e7fc5403a4c332205cfebfad9bb029d9c59187e))
+* **config:** give config feeds structured tag ability ([e1f6662](https://github.com/neo451/feed.nvim/commit/e1f66624d0a75aa6b0dc7b0e03fe8d05dd303908))
+* **ui:** lazy.nvim style keymap handler ([e1f6662](https://github.com/neo451/feed.nvim/commit/e1f66624d0a75aa6b0dc7b0e03fe8d05dd303908))
+* **web:** HTMX for live search in web app ([218a7b1](https://github.com/neo451/feed.nvim/commit/218a7b1b3a2e7c7b0254172052bd28fe910a54c0))
+
+
+### Bug Fixes
+
+* config search option for ignorecase ([351700d](https://github.com/neo451/feed.nvim/commit/351700dd1c1fa5dfd940cce5a9a2e6c18d203dc2))
+* **config:** config.option.ignorecase defaults to true ([8088335](https://github.com/neo451/feed.nvim/commit/80883354455e1b0c327ab8c959560bdf469ee7c2))
+* correct ui buffer management, marking next/prev as read, picker not ([c3993cb](https://github.com/neo451/feed.nvim/commit/c3993cbe0fa9f84fe4b01486901e2d860a011f6f))
+* properly removes augroup for window close ([4a22e13](https://github.com/neo451/feed.nvim/commit/4a22e132a0ea42b16111d84a870eba3b2cc75d90))
+* properly tag entry with tags, regardless of which first ([351700d](https://github.com/neo451/feed.nvim/commit/351700dd1c1fa5dfd940cce5a9a2e6c18d203dc2))
+* use function in gsub to avoid escaping issue ([1208fe2](https://github.com/neo451/feed.nvim/commit/1208fe2707b2c3cca816158e1750b09e641d8dca))
+
 ## [2.13.0](https://github.com/neo451/feed.nvim/compare/v2.12.0...v2.13.0) (2025-03-05)
 
 
