@@ -1,4 +1,5 @@
 local date = require("feed.parser.date")
+local config = require("feed.config")
 
 local M = {}
 
@@ -15,14 +16,15 @@ local M = {}
 
 ---wrapper arround vim.regex, ! is inverse, respects vim.o.ignorecase
 ---@param str string
-local function build_regex(str)
+local function build_regex(str, ignorecase)
+   ignorecase = vim.F.if_nil(ignorecase, config.search.ignorecase)
    local pattern
    if str:sub(0, 1) == "!" then
       pattern = str:sub(2)
    else
       pattern = str
    end
-   if vim.o.ignorecase then
+   if ignorecase then
       pattern = pattern .. "\\c"
    else
       pattern = pattern .. "\\C"

@@ -8,9 +8,9 @@ local M = {}
 
 M.web = {
    doc = "opens server and web interface",
-   impl = function(port)
+   impl = function(query, port)
       port = port or Config.web.port
-      require("feed.server").open(port)
+      require("feed.server").open(query, port)
       vim.ui.open("http://0.0.0.0:" .. port)
    end,
 }

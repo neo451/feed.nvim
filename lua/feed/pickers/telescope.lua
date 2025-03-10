@@ -8,6 +8,7 @@ local ui = require("feed.ui")
 local ut = require("feed.utils")
 local config = require("feed.config")
 local sorters = require("telescope.sorters")
+local api = vim.api
 
 local function feed_search()
    local opts = {}
@@ -17,13 +18,11 @@ local function feed_search()
          prompt_title = "Feeds",
          previewer = previewers.new_buffer_previewer({
             define_preview = function(self, entry, _)
-               -- vim.schedule(function()
-               ui.show_entry({ buf = self.state.bufnr, id = entry.value, preview = true })
+               ui.show_entry({ buf = self.state.bufnr, id = entry.value })
                local win, buf = self.state.winid, self.state.bufnr
                ut.bo(buf, config.options.entry.bo)
                ut.wo(win, config.options.entry.wo)
                vim.treesitter.start(buf, "markdown")
-               -- end)
             end,
          }),
          finder = finders.new_dynamic({
@@ -35,7 +34,7 @@ local function feed_search()
                return ui.state.entries
             end,
             entry_maker = function(line)
-               local text = ui._format_headline(line, config.picker, db)
+               local text = ui.headline(line)
                return {
                   value = line,
                   text = text,
@@ -66,11 +65,11 @@ local function feed_search()
       :find()
 end
 
-local ns_previewer = vim.api.nvim_create_namespace("ns_previewer")
+local ns_previewer = api.nvim_create_namespace("ns_previewer")
 
 local jump_to_line = function(obj, entry)
    local bufnr, winid = obj.buf, obj.win
-   pcall(vim.api.nvim_buf_clear_namespace, bufnr, ns_previewer, 0, -1)
+   pcall(api.nvim_buf_clear_namespace, bufnr, ns_previewer, 0, -1)
 
    if entry.lnum and entry.lnum > 0 then
       local lnum, lnend = entry.lnum - 1, (entry.lnend or entry.lnum) - 1
@@ -82,7 +81,7 @@ local jump_to_line = function(obj, entry)
 
       for i = lnum, lnend do
          pcall(
-            vim.api.nvim_buf_add_highlight,
+            api.nvim_buf_add_highlight,
             bufnr,
             ns_previewer,
             "TelescopePreviewLine",
@@ -92,8 +91,8 @@ local jump_to_line = function(obj, entry)
          )
       end
       local middle_ln = math.floor(lnum + (lnend - lnum) / 2)
-      pcall(vim.api.nvim_win_set_cursor, winid, { middle_ln + 1, 0 })
-      vim.api.nvim_buf_call(bufnr, function()
+      pcall(api.nvim_win_set_cursor, winid, { middle_ln + 1, 0 })
+      api.nvim_buf_call(bufnr, function()
          vim.cmd("norm! zz")
       end)
    end

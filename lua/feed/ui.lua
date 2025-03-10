@@ -1,3 +1,7 @@
+---@module "feed.ui"
+---@author Zizhou Teng
+---@license GPL-3.0
+
 local Win = require("feed.ui.window")
 local Stream = require("feed.ui.stream")
 local config = require("feed.config")
@@ -5,8 +9,8 @@ local pandoc = require("feed.pandoc")
 local curl = require("feed.curl")
 local opml = require("feed.opml")
 local fetch = require("feed.fetch")
-local db = require("feed.db")
 local ut = require("feed.utils")
+local db = require("feed.db")
 local state = require("feed.state")
 local undo_history = state.undo_history
 local redo_history = state.redo_history
@@ -14,6 +18,7 @@ local redo_history = state.redo_history
 local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
+---@class feed.ui
 local M = {
    state = state,
 }
@@ -108,7 +113,9 @@ local function hl_line(buf, line, coords, linenr)
 end
 
 ---TODO: generlize too be also user denfinable
-local format_headline = function(id, layout, _db)
+M.headline = function(id, layout, _db)
+   layout = layout or config.picker
+   _db = _db or db
    local entry = _db[id]
    local acc, res = 0, {}
    local coords = {}
@@ -128,8 +135,6 @@ local format_headline = function(id, layout, _db)
    end
    return table.concat(res), coords
 end
-
-M._format_headline = format_headline
 
 M.show_index = function()
    local cursor_pos, scroll_pos
@@ -153,12 +158,12 @@ M.show_index = function()
    api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
    for i, id in ipairs(state.entries) do
-      local line, coords = format_headline(id, config.ui, db)
+      local line, coords = M.headline(id, config.ui, db)
       api.nvim_buf_set_lines(buf, i - 1, i, false, { line })
       hl_line(buf, line, coords, i)
    end
 
-   api.nvim_buf_set_lines(buf, -2, -1, false, { "" })
+   api.nvim_buf_set_lines(buf, -1, -1, false, { "" })
    vim.bo[buf].modifiable = false
 
    if cursor_pos and scroll_pos then
@@ -171,9 +176,7 @@ M.show_index = function()
    })
 end
 
---- TODO: is preview is just valid buf?
-
----@param ctx? { row: integer, id: string, buf: integer, link: string, preview: boolean }
+---@param ctx? { row: integer, id: string, buf: integer, link: string }
 local function show_entry(ctx)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
@@ -181,14 +184,16 @@ local function show_entry(ctx)
       return
    end
 
-   local buf
+   local buf, is_preview
    if ctx.buf and api.nvim_buf_is_valid(ctx.buf) then
       buf = ctx.buf
+      is_preview = true
    else
       buf = api.nvim_create_buf(false, true)
+      is_preview = false
    end
 
-   if not ctx.preview then
+   if not is_preview then
       state.entry = Win.new({
          prev_win = state.index and state.index.win or api.nvim_get_current_win(),
          buf = buf,
@@ -199,17 +204,15 @@ local function show_entry(ctx)
          zen = config.zen.enabled,
          zindex = 5,
       })
-   end
-   if not ctx.preview then
       api.nvim_buf_set_name(buf, "FeedEntry")
    end
 
    local function on_exit()
       hl_entry(buf)
       image_attach(buf)
+      mark_read(id)
 
-      if not ctx.preview then
-         mark_read(id)
+      if not is_preview then
          api.nvim_exec_autocmds("User", {
             pattern = "FeedShowEntry",
          })
@@ -242,13 +245,13 @@ M.quit = function()
    if ut.in_index() then
       state.index:close()
       state.index = nil
-      vim.api.nvim_exec_autocmds("User", {
+      api.nvim_exec_autocmds("User", {
          pattern = "FeedQuitIndex",
       })
    elseif ut.in_entry() then
       state.entry:close()
       state.entry = nil
-      vim.api.nvim_exec_autocmds("User", {
+      api.nvim_exec_autocmds("User", {
          pattern = "FeedQuitEntry",
       })
    end
@@ -258,7 +261,7 @@ M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ link = entry.link, buf = state.entry.buf, preview = true })
+      show_entry({ link = entry.link, buf = state.entry.buf })
    else
       vim.notify("no link to fetch")
    end
@@ -267,14 +270,18 @@ end
 M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur - 1, buf = state.entry.buf, preview = true })
+      show_entry({ row = state.cur - 1, buf = state.entry.buf })
+   else
+      vim.notify("First entry")
    end
 end
 
 M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur + 1, buf = state.entry.buf, preview = true })
+      show_entry({ row = state.cur + 1, buf = state.entry.buf })
+   else
+      vim.notify("Last entry")
    end
 end
 
@@ -310,10 +317,8 @@ M.show_hints = function()
    end
 
    local lines = {}
-   for k, v in pairs(maps) do
-      if type(k) == "string" then
-         lines[#lines + 1] = string.format("- `%s -> %s`", k, v)
-      end
+   for _, v in ipairs(maps) do
+      lines[#lines + 1] = string.format("- `%s -> %s`", v[1], v[2]:match("<cmd>Feed (%S+)<cr>"))
    end
 
    M.split({
@@ -537,6 +542,7 @@ M.grep = function()
    engine.feed_grep()
 end
 
+---load feed from url
 ---@param url string
 M.update_feed = function(url)
    local Coop = require("coop")

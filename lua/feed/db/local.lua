@@ -197,6 +197,7 @@ function M:get_tags(id)
          ret[#ret + 1] = tag
       end
    end
+
    return ret
 end
 
@@ -241,6 +242,7 @@ end
 
 ---return a list of db ids base on query
 function M:filter(str)
+   str = str or config.search.default_query
    if str == "" then
       return {}
    end
@@ -400,26 +402,73 @@ function M:save_index()
 end
 
 ---adds missing feed from config to db, rename and tag everything
-function M:setup_sync()
+function M:setup_sync(c_feeds)
    local feeds = self.feeds
-   for _, v in ipairs(config.feeds) do
-      local url = type(v) == "table" and v[1] or v
-      local title = type(v) == "table" and v.name or nil
-      local tags = type(v) == "table" and v.tags or nil
-      if feeds[url] == nil then
-         feeds[url] = {}
-      elseif type(feeds[url]) == "table" then
-         feeds[url].title = title or feeds[url].title
-         if tags and (tags ~= feeds[url].tags) then
-            for id, entry in self:iter() do
-               if entry.feed == url then
-                  self:tag(id, tags)
+
+   local function process_entries(entries, parent_tags)
+      for key, value in pairs(entries) do
+         if type(key) == "number" then
+            local url = type(value) == "table" and value[1] or value
+            local title = type(value) == "table" and value.name or nil
+            local entry_tags = type(value) == "table" and value.tags or {}
+
+            local merged_tags = {}
+            for _, t in ipairs(parent_tags) do
+               merged_tags[t] = true
+            end
+            for _, t in ipairs(entry_tags) do
+               merged_tags[t] = true
+            end
+            merged_tags = vim.tbl_keys(merged_tags)
+            table.sort(merged_tags)
+
+            if not feeds[url] then
+               feeds[url] = {}
+            end
+
+            feeds[url].title = title or feeds[url].title
+
+            local existing_tags = {}
+            if feeds[url].tags then
+               for _, t in ipairs(feeds[url].tags) do
+                  existing_tags[t] = true
                end
             end
-            feeds[url].tags = tags or feeds[url].tags
+
+            local new_tags = {}
+            for _, t in ipairs(merged_tags) do
+               if not existing_tags[t] then
+                  table.insert(new_tags, t)
+               end
+            end
+
+            if #new_tags > 0 then
+               feeds[url].tags = feeds[url].tags or {}
+
+               vim.list_extend(feeds[url].tags, new_tags)
+               table.sort(feeds[url].tags)
+               for id, entry in self:iter() do
+                  if entry.feed == url then
+                     self:tag(id, new_tags)
+                  end
+               end
+            end
+         else
+            local tag = key
+            local new_parent_tags = {}
+            for _, t in ipairs(parent_tags) do
+               new_parent_tags[t] = true
+            end
+            new_parent_tags[tag] = true
+            new_parent_tags = vim.tbl_keys(new_parent_tags)
+            table.sort(new_parent_tags)
+            process_entries(value, new_parent_tags)
          end
       end
    end
+
+   process_entries(c_feeds, {})
+
    self:save_feeds()
 end
 

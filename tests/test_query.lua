@@ -6,11 +6,9 @@ local T = MiniTest.new_set()
 T["parse"] = MiniTest.new_set()
 
 T["regex"] = function()
-   vim.o.ignorecase = true -- vim == Vim
-   local regex_vim = M._build_regex("vim")
+   local regex_vim = M._build_regex("vim", true) -- vim == Vim
    eq(true, regex_vim:match_str("Vim") ~= nil)
-   vim.o.ignorecase = false -- vim ~= Vim
-   local regex_vim2 = M._build_regex("vim")
+   local regex_vim2 = M._build_regex("vim", false) -- vim ~= Vim
    eq(false, regex_vim2:match_str("Vim") ~= nil)
 
    local maybe_nvim = M._build_regex("^n\\=vim")

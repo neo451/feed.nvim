@@ -32,12 +32,6 @@ cmp.last_updated = function()
    return hi_pattern:format(layout["last_updated"].color, db:last_updated())
 end
 
--- cmp.progress = function()
---    local count = vim.api.nvim_buf_line_count(0) - 1
---    local cur = math.min(count, vim.api.nvim_win_get_cursor(0)[1])
---    return hi_pattern:format("FeedRead", ("[%d/%d]"):format(cur, count))
--- end
---
 ---@return string
 function M.show_winbar()
    local buf = {}

@@ -1,14 +1,17 @@
 local M = {}
 
+local fn = vim.fn
+local string, math = string, math
+
 --- from plenary.nvim
 local truncate = function(str, len, dots, direction)
-   if vim.fn.strdisplaywidth(str) <= len then
+   if fn.strdisplaywidth(str) <= len then
       return str
    end
    local start = direction > 0 and 0 or str:len()
    local current = 0
    local result = ""
-   local len_of_dots = vim.fn.strdisplaywidth(dots)
+   local len_of_dots = fn.strdisplaywidth(dots)
    local concat = function(a, b, dir)
       if dir > 0 then
          return a .. b
@@ -17,8 +20,8 @@ local truncate = function(str, len, dots, direction)
       end
    end
    while true do
-      local part = vim.fn.strcharpart(str, start, 1)
-      current = current + vim.fn.strdisplaywidth(part)
+      local part = fn.strcharpart(str, start, 1)
+      current = current + fn.strdisplaywidth(part)
       if (current + len_of_dots) > len then
          result = concat(result, dots, direction)
          break
@@ -41,14 +44,14 @@ M.truncate = function(str, len, dots, direction)
    if direction ~= 0 then
       return truncate(str, len, dots, direction)
    else
-      if vim.fn.strdisplaywidth(str) <= len then
+      if fn.strdisplaywidth(str) <= len then
          return str
       end
-      local len1 = math.floor((len + vim.fn.strdisplaywidth(dots)) / 2)
+      local len1 = math.floor((len + fn.strdisplaywidth(dots)) / 2)
       local s1 = truncate(str, len1, dots, 1)
-      local len2 = len - vim.fn.strdisplaywidth(s1) + vim.fn.strdisplaywidth(dots)
+      local len2 = len - fn.strdisplaywidth(s1) + fn.strdisplaywidth(dots)
       local s2 = truncate(str, len2, dots, -1)
-      return s1 .. s2:sub(dots:len() + 1)
+      return s1 .. string.sub(s2, dots:len() + 1)
    end
 end
 
@@ -68,7 +71,7 @@ M.display_to_byte_range = function(line, display_start, display_end)
    local found_end = false
 
    while current_byte < len and (not found_start or not found_end) do
-      local c = line:sub(current_byte + 1, current_byte + 1)
+      local c = string.sub(line, current_byte + 1, current_byte + 1)
       local cp = c:byte()
 
       local bytes = 1
@@ -85,8 +88,8 @@ M.display_to_byte_range = function(line, display_start, display_end)
       end
 
       bytes = math.min(bytes, len - current_byte)
-      local char = line:sub(current_byte + 1, current_byte + bytes)
-      local display_width = vim.fn.strdisplaywidth(char, current_col + 1)
+      local char = string.sub(line, current_byte + 1, current_byte + bytes)
+      local display_width = fn.strdisplaywidth(char, current_col + 1)
 
       if not found_start and current_col + display_width > display_start then
          byte_start = current_byte
@@ -119,7 +122,7 @@ end
 ---@param right_justify boolean
 ---@return string
 M.align = function(str, width, right_justify)
-   local str_len = vim.fn.strdisplaywidth(str)
+   local str_len = fn.strdisplaywidth(str)
    str = M.truncate(str, width)
    return right_justify and string.rep(" ", width - str_len) .. str or str .. string.rep(" ", width - str_len)
 end
@@ -130,7 +133,7 @@ M.unescape = function(str)
    return select(
       1,
       str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
-         return s:sub(2)
+         return string.sub(s, 2)
       end)
    )
 end
@@ -138,7 +141,7 @@ end
 ---@param str string
 ---@return string
 M.capticalize = function(str)
-   return str:sub(1, 1):upper() .. str:sub(2)
+   return string.sub(str, 1, 1):upper() .. string.sub(str, 2)
 end
 
 ---@param str string

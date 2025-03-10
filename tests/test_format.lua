@@ -51,7 +51,7 @@ T.format["headline"] = function()
    local id = "1"
    -- TODO:
    local expect = "2025-01-01 Neovim                    [unread]             title "
-   eq(expect, ui._format_headline(id, layout, db))
+   eq(expect, ui.headline(id, layout, db))
 end
 
 return T
