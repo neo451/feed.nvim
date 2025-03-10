@@ -17,7 +17,7 @@ local M = {}
 ---wrapper arround vim.regex, ! is inverse, respects vim.o.ignorecase
 ---@param str string
 local function build_regex(str, ignorecase)
-   ignorecase = ignorecase or config.search.ignorecase
+   ignorecase = vim.F.if_nil(ignorecase, config.search.ignorecase)
    local pattern
    if str:sub(0, 1) == "!" then
       pattern = str:sub(2)

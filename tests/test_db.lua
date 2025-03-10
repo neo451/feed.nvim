@@ -192,14 +192,14 @@ T["filter"]["filter by regex"] = function()
    simulate_db({
       { title = "Neovim is awesome" },
       { title = "neovim is lowercase" },
-      { title = "Vim is awesome" }, -- not match because ignorecase if false by default
+      { title = "Vim is awesome" }, -- match because 'config.search.ignorecase' is set to true by default
       { title = "vim is lowercase" },
       { title = "bim is not a thing" },
    })
    local res = db:filter("Neo vim")
-   eq({ sha("4"), sha("2"), sha("1") }, res)
+   eq({ sha("4"), sha("3"), sha("2"), sha("1") }, res)
    local res2 = db:filter("!Neo !vim")
-   eq({ sha("5"), sha("3") }, res2)
+   eq({ sha("5") }, res2)
 end
 
 T["filter"]["filter by feed"] = function()
