@@ -60,8 +60,9 @@ function Router:render(name, context, on_rendered)
    local template = self.templates[name]
    for k, v in pairs(context or {}) do
       local ok
-      local pattern = "{{" .. k .. "}}"
-      ok, template = pcall(string.gsub, template, pattern, v)
+      ok, template = pcall(string.gsub, template, "{{" .. k .. "}}", function()
+         return v
+      end)
       if not ok then
          error("Error rendering template: " .. k .. v)
       end

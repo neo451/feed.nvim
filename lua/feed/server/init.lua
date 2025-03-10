@@ -28,7 +28,7 @@ end
 
 local M = {}
 M.open = function(query, port)
-   state.query = query
+   state.query = query or state.query
    local templates = vim.api.nvim_get_runtime_file("templates/*.html", true)
 
    for _, f in ipairs(templates) do
@@ -84,10 +84,10 @@ M.open = function(query, port)
    end)
 
    router:post("/search", function(req, _)
-      local query = req.body:match("search=(.*)")
-      query = vim.uri_decode(query)
-      state.query = query
-      state.entries = db:filter(query)
+      local q = req.body:match("search=(.*)")
+      q = vim.uri_decode(q)
+      state.query = q
+      state.entries = db:filter(q)
       return render_entries()
    end)
 
