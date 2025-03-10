@@ -197,6 +197,7 @@ function M:get_tags(id)
          ret[#ret + 1] = tag
       end
    end
+
    return ret
 end
 
@@ -443,9 +444,8 @@ function M:setup_sync(c_feeds)
 
             if #new_tags > 0 then
                feeds[url].tags = feeds[url].tags or {}
-               for _, t in ipairs(new_tags) do
-                  table.insert(feeds[url].tags, t)
-               end
+
+               vim.list_extend(feeds[url].tags, new_tags)
                table.sort(feeds[url].tags)
                for id, entry in self:iter() do
                   if entry.feed == url then

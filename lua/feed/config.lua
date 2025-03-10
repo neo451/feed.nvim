@@ -1,6 +1,7 @@
 ---@class feed.searchOpts
 ---@field backend "telescope" | "mini.pick" | "fzf-lua"
 ---@field sort_order? "ascending" | "descending"
+---@field ignorecase? boolean
 ---@field default_query? string
 
 ---@class feed.progressOpts
@@ -191,11 +192,10 @@ local default = {
       },
    },
 
-   -- TODO: layout for winbar
-
    search = {
       default_query = "@2-weeks-ago +unread ",
       sort_order = "descending",
+      ignorecase = true,
       backend = {
          "mini.pick",
          "telescope",

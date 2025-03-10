@@ -13,7 +13,4 @@ deps/mini.nvim:
 	git clone --filter=blob:none https://github.com/echasnovski/mini.nvim $@
 
 gen_doc:
-	./panvimdoc.sh --project-name feed --input-file README.md --vim-version 0.11 --shift-heading-level-by -1 --toc true 
-
-gen_site:
-	pandoc --katex --from markdown+tex_math_single_backslash --to html5+smart --template="./scripts/template.html5" --css="./theme.css" --css="./skylighting-solarized-theme.css" --toc --wrap=none --metadata title="feed.nvim" README.md --lua-filter=scripts/include-files.lua --lua-filter=scripts/skip-blocks.lua -t html -o docs/index.html
+	./panvimdoc.sh --project-name feed --input-file doc.md --vim-version 0.11 --shift-heading-level-by -1 --toc true 

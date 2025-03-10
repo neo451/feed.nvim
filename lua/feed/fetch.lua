@@ -13,11 +13,13 @@ local encoding_blacklist = ut.list2lookup({ "gb2312" })
 ---@async
 function M.update_feed(url, opts)
    local feeds = db.feeds
-   local last_modified, etag
+   local last_modified, etag, tags
    if feeds[url] and not opts.force then
       last_modified = feeds[url].last_modified
       etag = feeds[url].etag
    end
+
+   tags = feeds[url] and feeds[url].tags
 
    local d = parser.parse(url, { last_modified = last_modified, etag = etag, timeout = 10, cmds = config.curl_params })
    if not d then
@@ -38,6 +40,9 @@ function M.update_feed(url, opts)
       local fp = tostring(db.dir / "data" / id)
       db[id] = entry
       ut.save_file(fp, content)
+      if tags then
+         db:tag(id, tags)
+      end
    end
 
    feeds[url] = feeds[url] or {}
@@ -50,7 +55,9 @@ function M.update_feed(url, opts)
 
    feed.last_modified = d.last_modified
    feed.etag = d.etag
+   -- db:setup_sync()
    db:save_feeds()
+
    return true -- TODO: maybe return a status: "ok" | "err" | "moved" ?
 end
 
