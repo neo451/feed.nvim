@@ -59,9 +59,10 @@
 - For feed greping:
   - [rg](https://github.com/BurntSushi/ripgrep)
 - For interactive feed searching:
-  - [telescope.nvim](https://github.com/folke/snacks.nvim)
-  - [fzf-lua](https://github.com/ibhagwan/fzf-lua)
+  - [snacks.picker](https://github.com/folke/snacks.nvim)
   - [mini.pick](https://github.com/echasnovski/mini.pick)
+  - [fzf-lua](https://github.com/ibhagwan/fzf-lua)
+  - [telescope.nvim](https://github.com/folke/snacks.nvim)
 - For markdown rendering:
   - [render-markdown](https://github.com/MeanderingProgrammer/render-markdown.nvim)
   - [markview.nvim](https://github.com/OXY2DEV/markview.nvim)

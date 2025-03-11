@@ -210,15 +210,15 @@ local function show_entry(ctx)
    local function on_exit()
       hl_entry(buf)
       image_attach(buf)
-      mark_read(id)
 
       if not is_preview then
+         mark_read(id)
          api.nvim_exec_autocmds("User", {
             pattern = "FeedShowEntry",
          })
          api.nvim_set_current_win(state.entry.win)
+         vim.bo[buf].modifiable = false
       end
-      vim.bo[buf].modifiable = false
    end
 
    vim.bo[buf].modifiable = true
@@ -286,7 +286,9 @@ M.show_next = function()
 end
 
 M.show_urls = function()
-   M.select(ut.get_urls(), {
+   local entry = get_entry()
+   assert(entry)
+   M.select(ut.get_urls(entry.link), {
       prompt = "urlview",
    }, function(item)
       return item and vim.ui.open(item)
