@@ -41,8 +41,8 @@
 - 📂 OPML support to import and export all your feeds and podcasts
 - 🧡 [RSShub](https://github.com/DIYgod/RSSHub) integration to discover and track _everything_
 - :octocat: Github integration to subscribe to the new commits/release of your favorite repo/plugin
-- 📡 support for popular feed sync services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 - 📶 HTMX + libuv powered minimal web interface
+- [ ] **WIP** 📡 support for popular feed sync services like [Tiny Tiny RSS](https://tt-rss.org/) and [Fresh RSS](https://github.com/FreshRSS/FreshRSS)
 
 ## 🚀 Installation
 
