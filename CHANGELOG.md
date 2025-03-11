@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.15.0](https://github.com/neo451/feed.nvim/compare/v2.14.0...v2.15.0) (2025-03-11)
+
+
+### Features
+
+* support snacks.picker ([70b2006](https://github.com/neo451/feed.nvim/commit/70b20060e769005a9a09a78fae18c774c816ba74))
+* support snacks.picker ([fff976f](https://github.com/neo451/feed.nvim/commit/fff976fce33b47cc062a76e857950aaf2e1753e9))
+
 ## [2.14.0](https://github.com/neo451/feed.nvim/compare/v2.13.0...v2.14.0) (2025-03-10)
 
 
