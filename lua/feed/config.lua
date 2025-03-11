@@ -1,5 +1,5 @@
 ---@class feed.searchOpts
----@field backend "telescope" | "mini.pick" | "fzf-lua"
+---@field backend "telescope" | "mini.pick" | "fzf-lua" | "snacks.pick"
 ---@field sort_order? "ascending" | "descending"
 ---@field ignorecase? boolean
 ---@field default_query? string
@@ -197,6 +197,7 @@ local default = {
       sort_order = "descending",
       ignorecase = true,
       backend = {
+         "snacks.picker",
          "mini.pick",
          "telescope",
          "fzf-lua",

@@ -79,7 +79,6 @@ end
 ---@return string?
 M.choose_backend = function(choices)
    local alias = {
-      ["mini.pick"] = "pick",
       ["mini.notify"] = "mini",
    }
    if type(choices) == "string" then
