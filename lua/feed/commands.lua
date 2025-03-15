@@ -11,7 +11,9 @@ M.web = {
    impl = function(query, port)
       port = port or Config.web.port
       require("feed.server").open(query, port)
-      vim.ui.open("http://0.0.0.0:" .. port)
+      if Config.web.open_browser then
+         vim.ui.open("http://0.0.0.0:" .. port)
+      end
    end,
 }
 
@@ -174,19 +176,36 @@ M.update = {
          "-c",
          'lua require"feed.fetch".update()',
       })
+      local update = function(line)
+         if vim.trim(line) ~= "" then
+            prog:update(vim.trim(line))
+         end
+      end
+      local buffer = ""
       vim.system(cmds, {
          text = true,
          stderr = function(_, data)
-            if data and vim.trim(data) ~= "" then
-               prog:update(vim.trim(data))
-               vim.schedule(function()
-                  if ut.in_index() then
-                     ui.refresh()
+            if data then
+               buffer = buffer .. data -- Accumulate incoming data
+               local lines = vim.split(buffer, "\n") -- Split into lines
+               if #lines > 1 then
+                  for i = 1, #lines - 1 do
+                     update(lines[i])
                   end
-               end)
+                  buffer = lines[#lines] -- Store remaining partial line
+               end
             end
          end,
-      })
+      }, function()
+         -- Process any remaining data when stream closes
+         if buffer ~= "" then
+            update(buffer)
+            buffer = ""
+         end
+         vim.defer_fn(function()
+            prog:finish()
+         end, 2000)
+      end)
    end,
 }
 

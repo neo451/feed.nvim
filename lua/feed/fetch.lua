@@ -81,11 +81,11 @@ function M.update()
          local ok = M.update_feed(url, { force = false })
          local name = ut.url2name(url, feeds)
          c = c + 1
-         print(string.format("[%s/%s]", c, n), name, ok and "success" or "failed")
+         print(string.format("[%s/%s]", c, n), name, ok and config.progress.ok or config.progress.err)
+         print("\n")
          if c == n then
             os.exit()
          end
-         print("\n")
       end)
    end
 end

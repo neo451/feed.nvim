@@ -1,10 +1,9 @@
-local ut = require("feed.utils")
-local backend = ut.choose_backend(require("feed.config").progress.backend) or "native"
-
+local config = require("feed.config")
 local _, MiniNotify = pcall(require, "mini.notify")
-
-local function format_message(idx, total, message)
-   return ("[%d/%d] %s"):format(idx, total, message)
+local _, SnacksNotifier = pcall(require, "snacks.notify")
+local SnacksNotify
+if SnacksNotifier then
+   SnacksNotify = SnacksNotifier.notify
 end
 
 ---@class feed.progress
@@ -12,38 +11,47 @@ end
 ---@field count integer
 ---@field t integer
 ---@field update fun(self: feed.progress, message: string)
+---@field finish function
+---@field new function
+---@field backend feed.progress
 local M = {}
 M.__index = M
 
-local backends = {
-   winbar = {},
-}
+local backends = setmetatable({}, {
+   __index = function()
+      return {
+         new = function() end,
+         update = function() end,
+         finish = function() end,
+      }
+   end,
+})
 
 function M.new(total)
    local ret = {}
-   local starting_message = "Start fetching.."
-   backends[backend].new(ret, starting_message)
    ret.total = total
    ret.count = 0
    ret.t = os.time()
+   ret.backend = backends[config.progress.backend]
+   ret.backend:new()
+   ret.__index = ret
+   setmetatable(ret.backend, ret)
    return setmetatable(ret, M)
 end
 
-local function finish(self)
+function M:finish()
    local msg = ("Fetched update in %ds"):format(os.time() - self.t)
-   backends[backend].finish(self, msg)
+   self.backend:finish(msg)
+   vim.g.feed_progress = msg
+   vim.defer_fn(function()
+      vim.g.feed_progress = nil
+   end, 2000)
 end
 
-function M:update(message)
+function M:update(msg)
+   vim.g.feed_progress = msg
    self.count = self.count + 1
-   backends[backend].update(self, message)
-   if self.count == self.total then
-      finish(self)
-   end
-end
-
-function M.extend(name, class)
-   backends[name] = class
+   self.backend:update(msg)
 end
 
 local fidget = {}
@@ -69,51 +77,37 @@ end
 
 local mini = {}
 
-function mini:new(msg)
-   self.id = MiniNotify.add(msg, "INFO", "Title")
-end
+function mini:new() end
 
 function mini:update(msg)
-   pcall(MiniNotify.update, self.id, { msg = msg })
+   if not self.id then
+      self.id = MiniNotify.add(msg, "INFO", "Title")
+   else
+      MiniNotify.update(self.id, { msg = msg })
+   end
 end
 
 function mini:finish(msg)
    MiniNotify.remove(self.id)
+   self.id = nil
    local opts = { INFO = { duration = 1000 } }
    MiniNotify.make_notify(opts)(msg)
 end
 
 local snacks = {}
 
-function snacks:new(msg)
-   Snacks.notifier.notify(msg, "info", { id = "feed" })
-end
+function snacks:new() end
 
 function snacks:update(msg)
-   Snacks.notifier.notify(msg, "info", { id = "feed" })
+   SnacksNotify(msg, { id = "feed" })
 end
 
 function snacks:finish(msg)
-   Snacks.notifier.notify(msg, "info", { id = "feed" })
+   SnacksNotify(msg, { id = "feed" })
 end
 
-local native = {}
-
-function native:new(msg)
-   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
-end
-
-function native:update(msg)
-   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
-end
-
-function native:finish(msg)
-   vim.schedule_wrap(vim.notify)(msg, 2, { id = "feed" })
-end
-
-M.extend("fidget", fidget)
-M.extend("mini", mini)
-M.extend("snacks", snacks)
-M.extend("native", native)
+backends.fidget = fidget
+backends.snacks = snacks
+backends.mini = mini
 
 return M

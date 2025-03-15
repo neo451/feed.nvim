@@ -1,6 +1,6 @@
 local ut = require("feed.utils")
 local Config = require("feed.config")
-local api = vim.api
+local api, uv = vim.api, vim.uv
 
 ---@class feed.win.Config: vim.api.keyset.win_config
 ---@field text? string[]
@@ -183,6 +183,23 @@ function M:show()
 
    ut.bo(self.buf, self.opts.bo)
    ut.wo(self.win, self.opts.wo)
+
+   if self.opts.wo.winbar then
+      local timer = uv.new_timer()
+      local bar = self.opts.wo.winbar
+      assert(timer)
+      timer:start(
+         0,
+         100,
+         vim.schedule_wrap(function()
+            if not self:valid() then
+               timer:stop()
+               return
+            end
+            ut.wo(self.win, { winbar = bar })
+         end)
+      )
+   end
 
    self.augroup = api.nvim_create_augroup("feed.win." .. self.id, { clear = true })
 

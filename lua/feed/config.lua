@@ -5,7 +5,9 @@
 ---@field default_query? string
 
 ---@class feed.progressOpts
----@field backend "mini.notify" | "snacks" | "fidget" | "native"
+---@field backend? "bar" | "mini.notify" | "snacks" | "fidget"
+---@field ok? string icon/string for success
+---@field err? string icon/string for error
 
 ---@class feed.rsshubOpts
 ---@field instance? string
@@ -30,6 +32,7 @@
 ---@field local? feed.ttrssOpts
 
 ---@class feed.dateOpts
+---@field locale? string
 ---@field format? { long: string, short: string }
 
 ---@alias feed.layout table<string, feed.section | table<number, string>>
@@ -47,11 +50,20 @@
 ---@field search? feed.searchOpts
 ---@field protocol? feed.protocolOpts
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
+---@field keys? { index: feed.key[], entry: feed.key[] }
+
+---@alias feed.key table<string | number, string>
 
 local formats = {}
 
+---@type feed.config
+local default
+
 formats.date_long = function(id, db)
-   return os.date(require("feed.config").date.format.long, db[id].time)
+   os.setlocale(default.date.locale, "time")
+   local ret = os.date(require("feed.config").date.format.long, db[id].time)
+   os.setlocale("C", "time")
+   return ret
 end
 
 formats.date_short = function(id, db)
@@ -81,23 +93,32 @@ formats.title = function(id, db)
    return db[id].title
 end
 
----@class feed._config
-local default = {
-   ---@type { long: string, short: string }
+default = {
+   web = {
+      port = 9876,
+      open_browser = true,
+   },
+
+   zen = {
+      enabled = true,
+      width = 90,
+   },
+
    date = {
+      locale = "C",
       format = {
          short = "%Y-%m-%d",
          long = "%c",
       },
    },
-   ---@type { instance: string, export: string }
+
    rsshub = {
       instance = "https://rsshub.app",
       export = "https://rsshub.app",
    },
-   ---@type string[]
+
    curl_params = {},
-   ---@type table[]
+
    ui = {
       order = { "date", "feed", "tags", "title" },
       date = {
@@ -149,7 +170,7 @@ local default = {
    },
 
    winbar = {
-      order = { "date", "feed", "tags", "title", "%=%<", "query", "last_updated" },
+      order = { "date", "feed", "tags", "title", "%=%<", "progress", "query", "last_updated" },
       date = {
          width = 10,
          color = "FeedDate",
@@ -166,12 +187,30 @@ local default = {
          width = "#",
          color = "FeedTitle",
       },
+      progress = {
+         color = "FeedProgress",
+         format = function()
+            return vim.g.feed_progress or ""
+         end,
+      },
       query = {
          color = "FeedLabel",
+         format = function()
+            return vim.trim(require("feed.ui").state.query)
+         end,
       },
       last_updated = {
          color = "FeedDate",
+         format = function()
+            return require("feed.db"):last_updated()
+         end,
       },
+   },
+
+   progress = {
+      backend = nil,
+      ok = "ok",
+      err = "err",
    },
 
    picker = {
@@ -204,15 +243,6 @@ local default = {
       },
    },
 
-   progress = {
-      backend = {
-         "fidget",
-         "mini.notify",
-         "snacks",
-         "native",
-      },
-   },
-
    protocol = {
       backend = "local",
       ttrss = {
@@ -225,7 +255,6 @@ local default = {
       },
    },
 
-   ---@type feed.feed[]
    feeds = {},
 
    keys = {
@@ -259,8 +288,8 @@ local default = {
          { "r", "<cmd>Feed urlview<cr>" },
       },
    },
+
    options = {
-      ---@type { wo: table, bo: table }
       index = {
          wo = {
             signcolumn = "no",
@@ -280,7 +309,6 @@ local default = {
          },
       },
 
-      ---@type { wo: table, bo: table }
       entry = {
          wo = {
             signcolumn = "no",
@@ -305,13 +333,6 @@ local default = {
             modifiable = false,
          },
       },
-   },
-   web = {
-      port = 9876,
-   },
-   zen = {
-      enabled = true,
-      width = 90,
    },
 }
 
