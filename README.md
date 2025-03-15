@@ -92,8 +92,8 @@ return {
 ### Further Steps
 
 - Run `:checkhealth feed` to see your installation status
+- Read [documentation](https://neo451.github.io/feed.nvim-docs) or `:h feed.txt`
 - To troubleshoot without conflict from other plugins or you config, copy [minimal.lua](./minimal.lua) locally, and run `nvim --clean -u minimal.lua`
-- Read tutorial at [documentation](https://neo451.github.io/feed.nvim-docs) or read `:h feed.txt`
 
 ## ❤️ Related Projects
 

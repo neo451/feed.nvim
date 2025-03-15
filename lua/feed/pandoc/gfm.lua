@@ -28,6 +28,9 @@ function Writer(doc, opts)
          return pandoc.RawInline("markdown", "[" .. text .. "][" .. ref_counter .. "]")
       end,
       Image = function(elem)
+         if elem.src:find("data:image/svg%+xml") then
+            return pandoc.RawInline("markdown", "![svg](" .. elem.src .. ")")
+         end
          ref_counter = ref_counter + 1
          refs[ref_counter] = elem.src
          return pandoc.RawInline("markdown", ("![Image %d](%s)"):format(ref_counter, elem.src)) -- for now for image rendering
@@ -50,7 +53,7 @@ function Writer(doc, opts)
    if ref_counter > 0 then
       table.insert(links_blocks, pandoc.Strong("Links"))
       for i = 1, ref_counter do
-         table.insert(links_blocks, pandoc.Para(pandoc.Str(("[%d]: %s"):format(i, refs[i]))))
+         table.insert(links_blocks, pandoc.Para(pandoc.Str(("[%d] %s"):format(i, refs[i]))))
       end
       new_doc.blocks = new_doc.blocks .. links_blocks
    end
