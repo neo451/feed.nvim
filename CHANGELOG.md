@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.16.0](https://github.com/neo451/feed.nvim/compare/v2.15.0...v2.16.0) (2025-03-16)
+
+
+### Features
+
+* **bar:** allow specify bar components ([9aab404](https://github.com/neo451/feed.nvim/commit/9aab404e76ea479f6fec4a152c29d92fc27a4036))
+* **bar:** use existing lualine highlight for winbar ([9aab404](https://github.com/neo451/feed.nvim/commit/9aab404e76ea479f6fec4a152c29d92fc27a4036))
+* **date:** allow passing in locale to format dates ([9aab404](https://github.com/neo451/feed.nvim/commit/9aab404e76ea479f6fec4a152c29d92fc27a4036))
+* **progress:** allow progress in winbar and statusline ([9aab404](https://github.com/neo451/feed.nvim/commit/9aab404e76ea479f6fec4a152c29d92fc27a4036))
+
+
+### Bug Fixes
+
+* **bar:** ensure update has complete lines ([9aab404](https://github.com/neo451/feed.nvim/commit/9aab404e76ea479f6fec4a152c29d92fc27a4036))
+* **parser:** not show svg in links ([eddfca8](https://github.com/neo451/feed.nvim/commit/eddfca823cb35a827e8ee60dc832abbf9e3873a3))
+* **web:** remove double-width colon ([eddfca8](https://github.com/neo451/feed.nvim/commit/eddfca823cb35a827e8ee60dc832abbf9e3873a3))
+
 ## [2.15.0](https://github.com/neo451/feed.nvim/compare/v2.14.0...v2.15.0) (2025-03-11)
 
 
