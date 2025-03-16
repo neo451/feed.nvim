@@ -23,6 +23,35 @@ local M = {
    state = state,
 }
 
+local index_defaults = {
+   wo = config.options.index.wo,
+   bo = config.options.index.bo,
+   keys = config.keys.index,
+}
+
+local index_presets = {
+   full = function()
+      return {
+         zindex = 3,
+      }
+   end,
+}
+
+local entry_presets = {
+   full = function(buf)
+      return {
+         prev_win = state.index and state.index.win or api.nvim_get_current_win(),
+         buf = buf,
+         wo = config.options.entry.wo,
+         bo = config.options.entry.bo,
+         keys = config.keys.entry,
+         ft = "markdown",
+         zen = config.zen.enabled,
+         zindex = 5,
+      }
+   end,
+}
+
 M = vim.tbl_extend("keep", M, require("feed.ui.componants"))
 M = vim.tbl_extend("keep", M, require("feed.ui.bar"))
 
@@ -124,7 +153,7 @@ M.headline = function(id, layout, _db)
       local v = layout[name]
       local text = v.format(id, _db) or entry[name]
       local width = type(v.width) == "number" and v.width or vim.fn.strdisplaywidth(text)
-      text = ut.align(text, width, v.right_justify) .. " "
+      text = ut.align(text, width + 1, v.right_justify)
       res[#res + 1] = text
       coords[#coords + 1] = {
          start = acc,
@@ -136,22 +165,19 @@ M.headline = function(id, layout, _db)
    return table.concat(res), coords
 end
 
-M.show_index = function()
+M.show_index = function(win_opts)
+   win_opts = win_opts or index_presets.full()
+   win_opts = vim.tbl_extend("keep", index_defaults, win_opts)
+   win_opts.wo.winbar = M.show_winbar()
    local cursor_pos, scroll_pos
    if state.index then
       cursor_pos = api.nvim_win_get_cursor(state.index.win)
       scroll_pos = fn.line("w0")
    else
-      state.index = Win.new({
-         wo = config.options.index.wo,
-         bo = config.options.index.bo,
-         keys = config.keys.index,
-         zindex = 3,
-      })
+      state.index = Win.new(win_opts)
    end
 
    local buf, win = state.index.buf, state.index.win
-   vim.wo[win].winbar = M.show_winbar()
    api.nvim_buf_set_name(buf, "FeedIndex")
    state.entries = state.entries or db:filter(state.query)
    vim.bo[buf].modifiable = true
@@ -177,7 +203,8 @@ M.show_index = function()
 end
 
 ---@param ctx? { row: integer, id: string, buf: integer, link: string }
-local function show_entry(ctx)
+---@param win_opts? feed.win.Config
+local function show_entry(ctx, win_opts)
    ctx = ctx or {}
    local entry, id = get_entry(ctx)
    if not entry or not id then
@@ -194,16 +221,7 @@ local function show_entry(ctx)
    end
 
    if not is_preview then
-      state.entry = Win.new({
-         prev_win = state.index and state.index.win or api.nvim_get_current_win(),
-         buf = buf,
-         wo = config.options.entry.wo,
-         bo = config.options.entry.bo,
-         keys = config.keys.entry,
-         ft = "markdown",
-         zen = config.zen.enabled,
-         zindex = 5,
-      })
+      state.entry = Win.new(win_opts or entry_presets.full(buf))
       api.nvim_buf_set_name(buf, "FeedEntry")
    end
 
@@ -270,7 +288,10 @@ end
 M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur - 1, buf = state.entry.buf })
+      local _, id = get_entry({ row = state.cur - 1 })
+      assert(id)
+      show_entry({ id = id, buf = state.entry.buf })
+      mark_read(id)
    else
       vim.notify("First entry")
    end
@@ -279,7 +300,10 @@ end
 M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
-      show_entry({ row = state.cur + 1, buf = state.entry.buf })
+      local _, id = get_entry({ row = state.cur + 1 })
+      assert(id)
+      show_entry({ id = id, buf = state.entry.buf })
+      mark_read(id)
    else
       vim.notify("Last entry")
    end
@@ -429,7 +453,6 @@ M.export_opml = function(fp)
    end
 end
 
---- FIXME
 M.dot = function()
    vim.notify("No operation defined for dot")
 end

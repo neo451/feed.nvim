@@ -1,48 +1,80 @@
 local ut = require("feed.utils")
-local db = require("feed.db")
-local config = require("feed.config")
-local state = require("feed.state")
+local layout = require("feed.config").winbar
+local concat, format = table.concat, string.format
+local align = ut.align
 
 local M = {}
-local cmp = {}
-
-function _G._feed_bar_component(name)
-   return cmp[name]()
-end
-
-local layout = config.winbar
 local hi_pattern = "%%#%s#%s%%*"
 
-setmetatable(cmp, {
-   __index = function(_, k)
-      return function()
-         local sect = layout[k]
-         local width = type(sect.width) == "number" and sect.width or #k
-         local color = layout[k].color
-         return hi_pattern:format(color, ut.align(ut.capticalize(k), width))
-      end
-   end,
-})
+local map = {
+   lualine = {
+      "lualine_a_normal",
+      "lualine_b_normal",
+      "lualine_c_normal",
+   },
+}
 
-cmp.query = function()
-   return hi_pattern:format(layout["query"].color, vim.trim(state.query))
+local has_line = pcall(require, "lualine")
+
+if has_line then
+   for i = 1, 3 do
+      local k = layout.order[i]
+      ---@diagnostic disable-next-line: need-check-nil
+      local section = layout[k]
+      if section then
+         if pcall(require, "lualine") then
+            local color = map.lualine[i]
+            section.color = color
+         end
+      end
+   end
+
+   for i = #layout.order, #layout.order - 2, -1 do
+      local name = layout.order[i]
+      ---@diagnostic disable-next-line: need-check-nil
+      local section = layout[name]
+      if section then
+         if pcall(require, "lualine") then
+            local color = map.lualine[#layout.order + 1 - i]
+            section.color = color
+         end
+      end
+   end
 end
 
-cmp.last_updated = function()
-   return hi_pattern:format(layout["last_updated"].color, db:last_updated())
+---@param name string
+---@return string
+function _G._feed_bar_component(name)
+   local sect = layout[name]
+   local width = type(sect.width) == "number" and sect.width or #name
+   local color = layout[name].color
+   local text
+   if layout[name].format then
+      text = layout[name].format()
+      if text ~= "" then
+         text = " " .. text .. " "
+      end
+   else
+      text = align(name:upper(), width + 1)
+   end
+   return format(hi_pattern, color, text)
 end
 
 ---@return string
 function M.show_winbar()
    local buf = {}
    for _, name in ipairs(layout.order) do
+      local text
       if not layout[name] then
-         buf[#buf + 1] = name
+         if name:find("%%") then
+            text = name
+         end
       else
-         buf[#buf + 1] = "%{%v:lua._feed_bar_component('" .. name .. "')%}"
+         text = "%{%v:lua._feed_bar_component('" .. name .. "')%}"
       end
+      buf[#buf + 1] = text
    end
-   return table.concat(buf, " ")
+   return concat(buf, "")
 end
 
 return M

@@ -34,9 +34,9 @@ M.get_urls = function(cur_link)
    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
    local res = { cur_link }
    for _, line in ipairs(lines) do
-      if line:match("^%[%d+%]:%s*") then
-         local url = line:match("%[%d+%]:%s*(%S+)")
-         res[#res + 1] = url
+      if line:match("^%[%d+%] %s*") then
+         local url = line:match("%[%d+%] %s*(%S+)")
+         table.insert(res, url)
       end
    end
    return res

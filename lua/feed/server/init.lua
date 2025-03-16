@@ -24,8 +24,6 @@ if vim.g.feed_debug then
    end)
 end
 
--- TODO: get system dark mode
-
 local M = {}
 M.open = function(query, port)
    state.query = query or state.query
