@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.17.0](https://github.com/neo451/feed.nvim/compare/v2.16.0...v2.17.0) (2025-03-20)
+
+
+### Features
+
+* add support for customizing link format ([a9d6a73](https://github.com/neo451/feed.nvim/commit/a9d6a73841268569c327ccd5d6bec88386a1f4ea))
+* add support for sub-reddit ([a9d6a73](https://github.com/neo451/feed.nvim/commit/a9d6a73841268569c327ccd5d6bec88386a1f4ea))
+
+
+### Bug Fixes
+
+* whatever key in config is the internal ref ([079d337](https://github.com/neo451/feed.nvim/commit/079d337d6d424710ac8543a1818cb9863210c752))
+
 ## [2.16.0](https://github.com/neo451/feed.nvim/compare/v2.15.0...v2.16.0) (2025-03-16)
 
 
