@@ -4,6 +4,7 @@ local vim = vim
 local api, fn = vim.api, vim.fn
 local ipairs, pcall, dofile, type = ipairs, pcall, dofile, type
 local io = io
+local log = require("feed.lib.log")
 
 M.listify = function(t)
    if type(t) ~= "table" then
@@ -17,8 +18,11 @@ M.load_file = function(fp)
    if ok and res then
       return res
    else
-      vim.notify(fp .. " not loaded")
-      return {}
+      if vim.g.feed_debug then
+         log.info(fp .. " not loaded")
+         vim.notify(fp .. " not loaded")
+      end
+      return nil
    end
 end
 

@@ -21,6 +21,7 @@
 ---@field author? string
 ---@field content? string -> ""
 ---@field tags? table<string, boolean>
+---@field id? string reference in the db, only exists if entry is produced by get_entry, else not stored in the object
 
 local M = {}
 local xml = require("feed.parser.xml")
@@ -52,26 +53,24 @@ local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
 local encoding_blacklist = ut.list2lookup({ "gb2312" })
 
 ---process feed fetch from source
----@param url_or_src  string
+---@param url  string
 ---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
 ---@return feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }
 ---@async
-function M.parse(url_or_src, opts)
+function M.parse(url, opts)
    opts = opts or {}
+   local Curl = require("feed.curl")
+   local response = Curl.get_co(ut.extend_import_url(url), opts)
 
-   if ut.looks_like_url(url_or_src) then
-      local Curl = require("feed.curl")
-      local response = Curl.get_co(url_or_src, opts)
-      if response and response.stdout and valid_response[response.status] then
-         local d = parse_src(response.stdout, url_or_src)
-         if d then
-            return vim.tbl_extend("keep", response, d)
-         end
+   if response and response.stdout and valid_response[response.status] then
+      local d = parse_src(response.stdout, url)
+      if d then
+         return vim.tbl_extend("keep", response, d)
       end
-      return response
-   else
-      return parse_src(url_or_src, opts.url) -- TODO:
    end
+   return response
 end
+
+M.parse_src = parse_src
 
 return M

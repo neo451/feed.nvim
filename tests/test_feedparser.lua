@@ -256,7 +256,7 @@ T["sample-feeds.com"] = MiniTest.new_set({
 })
 
 local function check(filename, checks, debug)
-   local f = M.parse(readfile(filename), { url = "http://placehoder.feed" })
+   local f = M.parse_src(readfile(filename), "http://placehoder.feed")
    assert(f)
    if debug then
       vim.print(f)

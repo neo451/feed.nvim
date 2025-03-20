@@ -55,7 +55,6 @@ function M.update_feed(url, opts)
 
    feed.last_modified = d.last_modified
    feed.etag = d.etag
-   -- db:setup_sync()
    db:save_feeds()
 
    return true -- TODO: maybe return a status: "ok" | "err" | "moved" ?

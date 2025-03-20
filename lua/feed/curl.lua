@@ -1,11 +1,7 @@
+local M = {}
 ---@diagnostic disable: inject-field
 local ut = require("feed.utils")
 local log = require("feed.lib.log")
-
-local github = require("feed.integrations.github")
-local rsshub = require("feed.integrations.rsshub")
-
-local M = {}
 local read_file = ut.read_file
 
 local function parse(data)
@@ -65,6 +61,7 @@ function M.get(url, opts, cb)
    local req_header = build_header(vim.tbl_extend("keep", {
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
+      user_agent = "feed.nvim/2.0",
    }, opts.headers or {}))
    local dump_fp = vim.fn.tempname()
    local cmds = vim.tbl_flatten({
@@ -75,7 +72,7 @@ function M.get(url, opts, cb)
       dump_fp,
       opts.cmds,
       opts.timeout and { "--connect-timeout", opts.timeout or "10" },
-      rsshub(github(url)),
+      url,
    })
 
    if opts.data then

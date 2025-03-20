@@ -52,7 +52,7 @@
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
 ---@field keys? { index: feed.key[], entry: feed.key[] }
 
----@alias feed.key table<string | number, string>
+---@alias feed.key table<string | number, string | function>
 
 local formats = {}
 
@@ -332,6 +332,47 @@ default = {
             undolevels = -1,
             modifiable = false,
          },
+      },
+   },
+
+   url_formats = {
+      {
+         pattern = "^r/%S+",
+         import = function(url)
+            return "https://www.reddit.com/" .. url .. ".rss"
+         end,
+      },
+      {
+         pattern = "^g?i?t?h?u?b?:?/?/?[%a%d][%a%d%-]*/[%a%d][%w%-_.]*",
+         import = function(url)
+            local user, repo
+            if url:find("github.com") and not url:find("news.txt") then
+               user, repo = url:match("github.com/([^/]+)/([^/]+)")
+            elseif url:find("^github:/") then
+               user, repo = url:match("github://([^/]+)/([^/]+)")
+            else
+               user, repo = url:match("^([^/]+)/([^/]+)")
+            end
+            if not user or not repo then
+               return url
+            end
+            local feedtype = "commits"
+            if url:find("releases") then
+               feedtype = "releases"
+            end
+            return ("https://github.com/%s/%s/%s.atom"):format(user, repo, feedtype)
+         end,
+      },
+      {
+         pattern = "^rsshub://",
+         import = function(url)
+            local instance = require("feed.config").rsshub.instance
+            return url:gsub("rsshub:/", instance) .. "?format=json?mode=fulltext"
+         end,
+         export = function(url)
+            local instance = require("feed.config").rsshub.export
+            return url:gsub("rsshub:/", instance)
+         end,
       },
    },
 }

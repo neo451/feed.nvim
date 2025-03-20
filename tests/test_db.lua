@@ -75,7 +75,7 @@ T["new"]["rm all refs in the db"] = function()
    db[id] = entry
    db:tag(id, { "star", "read" })
    db:rm(id)
-   eq({}, db[id]) -- TODO: ?
+   eq(nil, db[id])
    eq(nil, db.tags["star"][id])
    eq(nil, db.tags["read"][id])
    eq(0, vim.fn.filereadable(tostring(db.dir / "data" / id)))

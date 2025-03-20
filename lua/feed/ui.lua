@@ -59,7 +59,10 @@ local ns = api.nvim_create_namespace("feed_index")
 local ns_read = api.nvim_create_namespace("feed_index_read")
 local ns_entry = api.nvim_create_namespace("feed_entry")
 
----get entry base on current context, and update current_index
+---get entry entry that makes sense:
+---1. if passed in an specific id, just gets the entry from db
+---2. if in an index buffer, gets the displayed entry under cursor
+---3. if in an entry buffer, gets current entry
 ---@return feed.entry?
 ---@return string?
 local function get_entry(ctx)
@@ -88,7 +91,9 @@ local function get_entry(ctx)
       error("no context to show entry")
    end
    if id then
-      return db[id], id
+      local entry = vim.deepcopy(db[id])
+      entry.id = id
+      return entry, id
    end
 end
 
@@ -344,7 +349,11 @@ M.show_hints = function()
 
    local lines = {}
    for _, v in ipairs(maps) do
-      lines[#lines + 1] = string.format("- `%s -> %s`", v[1], v[2]:match("<cmd>Feed (%S+)<cr>"))
+      if type(v[2]) == "string" then
+         lines[#lines + 1] = string.format("- `%s -> %s`", v[1], v[2]:match("<cmd>Feed (%S+)<cr>"))
+      else
+         -- TODO:
+      end
    end
 
    M.split({

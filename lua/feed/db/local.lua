@@ -21,6 +21,8 @@ local uv = vim.uv
 ---@field blowup fun(db: feed.db)
 ---@field update fun(db: feed.db)
 ---@field last_updated fun(db: feed.db): string
+---@field get fun(db: feed.db, id: string): string
+---@field get_path fun(db: feed.db, id: string): string
 local M = {}
 
 ---@param fp feed.path
@@ -123,6 +125,13 @@ end
 ---@return string
 function M:get(id)
    return ut.read_file(tostring(self.dir / "data" / id))
+end
+
+---return the filepath to the content of entry
+---@param id string
+---@return string
+function M:get_path(id)
+   return tostring(self.dir / "data" / id)
 end
 
 function M:update()
