@@ -21,10 +21,7 @@ function M.update_feed(url, opts)
 
    tags = feeds[url] and feeds[url].tags
 
-   local d = parser.parse(
-      ut.extend_import_url(url),
-      { last_modified = last_modified, etag = etag, timeout = 10, cmds = config.curl_params }
-   )
+   local d = parser.parse(url, { last_modified = last_modified, etag = etag, timeout = 10, cmds = config.curl_params })
    if not d then
       return false
    end
