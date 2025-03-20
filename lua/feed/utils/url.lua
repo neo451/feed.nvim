@@ -46,4 +46,29 @@ M.looks_like_url = function(str)
    return vim.startswith(str, "http")
 end
 
+M.extend_import_url = function(url)
+   local config = require("feed.config")
+   if not M.looks_like_url(url) then
+      for _, extension in ipairs(config.url_formats) do
+         if url:find(extension.pattern) then
+            return extension.import(url)
+         end
+      end
+   end
+   return url
+end
+
+M.extend_export_url = function(url)
+   local config = require("feed.config")
+   if not M.looks_like_url(url) then
+      for _, extension in ipairs(config.url_formats) do
+         if url:find(extension.pattern) then
+            local f = extension.export or extension.import
+            return f(url)
+         end
+      end
+   end
+   return url
+end
+
 return M

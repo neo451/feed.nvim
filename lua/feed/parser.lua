@@ -21,6 +21,7 @@
 ---@field author? string
 ---@field content? string -> ""
 ---@field tags? table<string, boolean>
+---@field id? string reference in the db, only exists if entry is produced by get_entry, else not stored in the object
 
 local M = {}
 local xml = require("feed.parser.xml")

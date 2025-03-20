@@ -179,6 +179,11 @@ M.update = {
       local update = function(line)
          if vim.trim(line) ~= "" then
             prog:update(vim.trim(line))
+            vim.schedule(function()
+               if ut.in_index() then
+                  ui.refresh()
+               end
+            end)
          end
       end
       local buffer = ""
@@ -197,7 +202,6 @@ M.update = {
             end
          end,
       }, function()
-         -- Process any remaining data when stream closes
          if buffer ~= "" then
             update(buffer)
             buffer = ""

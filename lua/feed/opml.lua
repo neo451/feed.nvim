@@ -66,7 +66,7 @@ function M.export(feeds)
             text = feed.description or feed.title,
             title = feed.title,
             htmlUrl = feed.htmlUrl,
-            xmlUrl = require("feed.integrations.rsshub")(xmlUrl, require("feed.config").rsshub.export),
+            xmlUrl = ut.extend_export_url(xmlUrl),
             type = "rss",
          })
       end
