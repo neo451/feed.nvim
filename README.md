@@ -28,9 +28,7 @@
 ![image](https://github.com/user-attachments/assets/e8f9c546-48f6-48d8-8cd6-a9b154df0625)
 
 > [!WARNING]
-> This project is young, expect breaking changes, and for now there's a nasty bug if you are on neovim stable [#125](https://github.com/neo451/feed.nvim/issues/125#issuecomment-2612966517), recommend to use nightly or wait for the coming release of 0.11
->
-> other than that usage should be fun and smooth, go ahead and enjoy!
+> This project is young, expect breaking changes
 
 ## 🌟 Features
 
@@ -48,8 +46,8 @@
 
 ### Requirements
 
-- Neovim 0.10+
-- curl
+- Neovim 0.11
+- [curl](https://curl.se/download.html)
 - [pandoc](https://www.pandoc.org)
 - tree-sitter-xml
 - tree-sitter-html

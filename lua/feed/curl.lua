@@ -70,6 +70,8 @@ function M.get(url, opts, cb)
       "-sSL",
       "-D",
       dump_fp,
+      "-A",
+      "feed.nvim 2.0 (by /u/neoneo451)",
       opts.cmds,
       opts.timeout and { "--connect-timeout", opts.timeout or "10" },
       url,
