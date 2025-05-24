@@ -29,13 +29,14 @@ end
 
 --- Returns all URLs in markdown buffer, if any.
 ---@param cur_link string
+---@param lines? string[]
 ---@return string[][]
-M.get_urls = function(cur_link)
-   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+M.get_urls = function(cur_link, lines)
+   lines = lines or vim.api.nvim_buf_get_lines(0, 0, -1, false)
    local res = { cur_link }
    for _, line in ipairs(lines) do
-      if line:match("^%[%d+%] %s*") then
-         local url = line:match("%[%d+%] %s*(%S+)")
+      if line:match("^%[%^%d+%]%s*") then
+         local url = line:match("%[%^%d+%] %s*<(%S+)>")
          table.insert(res, url)
       end
    end

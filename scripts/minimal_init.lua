@@ -6,8 +6,8 @@ if #vim.api.nvim_list_uis() == 0 then
    -- Add 'mini.nvim' to 'runtimepath' to be able to use 'mini.test'
    -- Assumed that 'mini.nvim' is stored in 'deps/mini.nvim'
    vim.opt.rtp:append("deps/mini.nvim")
-   vim.opt.rtp:append("~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-xml/*/")
-   vim.opt.rtp:append("~/.luarocks/lib/luarocks/rocks-5.1/tree-sitter-html/*/")
+   vim.opt.rtp:append("~/.luarocks/lib/luarocks/rocks-5.2/tree-sitter-xml/*/")
+   vim.opt.rtp:append("~/.luarocks/lib/luarocks/rocks-5.2/tree-sitter-html/*/")
 
    vim.treesitter.language.add("xml", {
       path = vim.api.nvim_get_runtime_file("parser/xml.so", false)[1],
