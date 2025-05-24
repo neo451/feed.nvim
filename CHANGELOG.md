@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.18.0](https://github.com/neo451/feed.nvim/compare/v2.17.0...v2.18.0) (2025-05-24)
+
+
+### Features
+
+* bump minimal version to 0.11 ([c6c035e](https://github.com/neo451/feed.nvim/commit/c6c035e46b43561f3364a3cb4c632e304057e874))
+* bump minimal version to 0.11 ([97f9d3c](https://github.com/neo451/feed.nvim/commit/97f9d3c13fcfcc26f94aa86624f81232e35ad584))
+* make links correct markdown syntax with [^1] and &lt;auto_link&gt; ([b3b875b](https://github.com/neo451/feed.nvim/commit/b3b875b7f9b9d34c0df93b7be9b24a11503ed296))
+* make links correct markdown syntax with [^1] and &lt;auto_link&gt; ([1fe6e43](https://github.com/neo451/feed.nvim/commit/1fe6e432f4d678b40b18b8488c7747c89ecdb831))
+
+
+### Bug Fixes
+
+* add user-agent info for reddit feeds ([97f9d3c](https://github.com/neo451/feed.nvim/commit/97f9d3c13fcfcc26f94aa86624f81232e35ad584))
+* current luarocks version ([3df36ce](https://github.com/neo451/feed.nvim/commit/3df36ce04d6adfcb881c896707b603431bdeb04b))
+
 ## [2.17.0](https://github.com/neo451/feed.nvim/compare/v2.16.0...v2.17.0) (2025-03-20)
 
 
