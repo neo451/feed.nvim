@@ -71,7 +71,10 @@ formats.date_short = function(id, db)
 end
 
 formats.link = function(id, db)
-   return db[id].link and db[id].link:sub(1, 90) or ""
+   local utils = require("feed.utils")
+   local link = db[id].link and db[id].link or ""
+   link = utils.truncate(link, 90)
+   return "<" .. link .. ">"
 end
 
 formats.feed = function(id, db)
