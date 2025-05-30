@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.18.1](https://github.com/neo451/feed.nvim/compare/v2.18.0...v2.18.1) (2025-05-30)
+
+
+### Bug Fixes
+
+* **parser:** handles rdf feeds ([82aa402](https://github.com/neo451/feed.nvim/commit/82aa402fe689e3e4e7da7a5b6fb2598e807b79ab))
+
 ## [2.18.0](https://github.com/neo451/feed.nvim/compare/v2.17.0...v2.18.0) (2025-05-24)
 
 
