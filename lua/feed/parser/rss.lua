@@ -115,10 +115,14 @@ return function(ast, url)
    res.author = handle_author(channel)
    res.desc = handle_description(channel)
    res.entries = {}
-   if channel.item then
-      for _, v in ipairs(ut.listify(channel.item)) do
-         res.entries[#res.entries + 1] = handle_entry(v, res, url)
-      end
+   local item_node
+   if res.version == "rss10" or res.version == "rss090" then
+      item_node = ast["rdf:RDF"].item
+   elseif channel.item then
+      item_node = channel.item
+   end
+   for _, v in ipairs(ut.listify(item_node or {})) do
+      res.entries[#res.entries + 1] = handle_entry(v, res, url)
    end
    return res
 end

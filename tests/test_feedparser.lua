@@ -63,6 +63,15 @@ T["rss"] = MiniTest.new_set({
          { version = "rss10" },
       },
       {
+         "rdf2.xml",
+         {
+            version = "rss10",
+            [1] = {
+               title = "ELDEN RING NIGHTREIGN Released",
+            },
+         },
+      },
+      {
          "rdf/rss090_item_title.xml",
          { version = "rss090" },
       },
