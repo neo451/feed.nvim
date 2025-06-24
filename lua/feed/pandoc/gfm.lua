@@ -24,6 +24,13 @@ function Writer(doc, opts)
       Link = function(elem)
          ref_counter = ref_counter + 1
          refs[ref_counter] = elem.target
+
+         -- Checks if extension is an image and treats it as such if it is
+         local extension = elem.target:match("^.+%.(.+)$")
+         if extension == "jpg" or extension == "jpeg" or extension == "png" or extension == "webm" then
+            return pandoc.RawInline("markdown", ("![Image %d](%s)"):format(ref_counter, elem.target)) -- added for image rendering
+         end
+
          local text = pandoc.utils.stringify(elem.content)
          return pandoc.RawInline("markdown", "[" .. text .. "][^" .. ref_counter .. "]")
       end,
