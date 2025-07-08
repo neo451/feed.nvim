@@ -25,20 +25,20 @@ local M = {
 
 local keys = {
    index = {
-      { "q",      "<cmd>Feed quit<cr>" },
-      { "?",      "<cmd>Feed hints<cr>" },
-      { ".",      "<cmd>Feed dot<cr>" },
-      { "u",      "<cmd>Feed undo<cr>" },
-      { "<C-r>",  "<cmd>Feed redo<cr>" },
+      { "q", "<cmd>Feed quit<cr>" },
+      { "?", "<cmd>Feed hints<cr>" },
+      { ".", "<cmd>Feed dot<cr>" },
+      { "u", "<cmd>Feed undo<cr>" },
+      { "<C-r>", "<cmd>Feed redo<cr>" },
       { "<M-CR>", "<cmd>Feed split<cr>" },
-      { "b",      "<cmd>Feed browser<cr>" },
-      { "r",      "<cmd>Feed refresh<cr>" },
-      { "R",      "<cmd>Feed update<cr>" },
-      { "/",      "<cmd>Feed search<cr>" },
-      { "Y",      "<cmd>Feed yank_url<cr>" },
-      { "-",      "<cmd>Feed untag<cr>" },
-      { "+",      "<cmd>Feed tag<cr>" },
-      { "<cr>",   "<cmd>Feed entry<cr>" },
+      { "b", "<cmd>Feed browser<cr>" },
+      { "r", "<cmd>Feed refresh<cr>" },
+      { "R", "<cmd>Feed update<cr>" },
+      { "/", "<cmd>Feed search<cr>" },
+      { "Y", "<cmd>Feed yank_url<cr>" },
+      { "-", "<cmd>Feed untag<cr>" },
+      { "+", "<cmd>Feed tag<cr>" },
+      { "<cr>", "<cmd>Feed entry<cr>" },
    },
    entry = {
       { "q", "<cmd>Feed quit<cr>" },
@@ -72,6 +72,7 @@ local index_presets = {
 local entry_presets = {
    full = function(buf)
       return {
+         kind = "replace",
          prev_win = state.index and state.index.win or api.nvim_get_current_win(),
          buf = buf,
          wo = config.options.entry.wo,
@@ -206,6 +207,7 @@ M.show_index = function(win_opts)
    win_opts = win_opts or index_presets.full()
    win_opts = vim.tbl_extend("keep", index_defaults, win_opts)
    win_opts.wo.winbar = M.show_winbar()
+   win_opts.kind = "replace"
    local cursor_pos, scroll_pos
    if state.index then
       cursor_pos = api.nvim_win_get_cursor(state.index.win)
@@ -298,8 +300,7 @@ end
 
 M.quit = function()
    if ut.in_index() then
-      state.index:close()
-      state.index = nil
+      state.index:hide()
       api.nvim_exec_autocmds("User", {
          pattern = "FeedQuitIndex",
       })
