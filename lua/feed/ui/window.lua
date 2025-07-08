@@ -16,12 +16,14 @@ local api, uv = vim.api, vim.uv
 ---@field enter boolean
 ---@field prev_win integer
 ---@field is_backdrop boolean
+---@field kind "float" | "tab" | "replace"
 
 ---@class feed.win
 ---@field opts feed.win.Config
 ---@field id number
 ---@field win integer
 ---@field buf integer
+---@field prev_buf integer
 ---@field keys table
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)
@@ -38,6 +40,7 @@ function M.new(opts, enter)
    local width = opts.zen and Config.zen.width or vim.o.columns
    local height = opts.zen and vim.o.lines or vim.o.lines - (vim.o.cmdheight + 1)
    opts = vim.tbl_deep_extend("force", {
+      kind = "float",
       relative = "editor",
       height = height,
       width = width,
@@ -154,7 +157,18 @@ function M:show()
       end
    end
 
-   self.win = api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
+   local kind = self.opts.kind
+
+   if kind == "float" then
+      self.win = api.nvim_open_win(self.buf, self.opts.enter, self:win_opts())
+   elseif kind == "tab" then
+      vim.cmd("tab sb " .. self.buf)
+      self.win = api.nvim_get_current_win()
+   elseif kind == "replace" then
+      self.prev_buf = api.nvim_get_current_buf()
+      api.nvim_set_current_buf(self.buf)
+      self.win = api.nvim_get_current_win()
+   end
 
    ut.bo(self.buf, self.opts.bo)
    ut.wo(self.win, self.opts.wo)
@@ -221,42 +235,10 @@ function M:show()
          api.nvim_win_set_config(self.win, opts)
       end,
    })
-
-   -- swap buffers when opening a new buffer in the same window
-   api.nvim_create_autocmd("BufWinEnter", {
-      group = self.augroup,
-      callback = function()
-         -- window closes, so delete the autocmd
-         if not self:win_valid() then
-            return true
-         end
-
-         local buf = api.nvim_win_get_buf(self.win)
-
-         -- same buffer
-         if buf == self.buf then
-            return
-         end
-
-         -- another buffer was opened in this window
-         -- find another window to swap with
-         for _, win in ipairs(api.nvim_list_wins()) do
-            if win ~= self.win and vim.bo[api.nvim_win_get_buf(win)].buftype == "" then
-               vim.schedule(function()
-                  api.nvim_win_set_buf(self.win, self.buf)
-                  api.nvim_win_set_buf(win, buf)
-                  api.nvim_set_current_win(win)
-                  vim.cmd.stopinsert()
-               end)
-               return
-            end
-         end
-      end,
-   })
 end
 
 function M:update()
-   if self:valid() then
+   if self:valid() and self.opts.kind == "float" then
       ut.bo(self.buf, self.opts.bo)
       ut.wo(self.win, self.opts.wo)
       local opts = self:win_opts()
@@ -272,6 +254,14 @@ function M:update()
 end
 
 function M:close()
+   if self.opts.kind == "replace" then
+      api.nvim_buf_delete(self.buf, { force = true })
+      if self.prev_buf then
+         api.nvim_win_set_buf(self.win, self.prev_buf)
+      end
+      return
+   end
+
    local close = function(win, buf)
       if win and api.nvim_win_is_valid(win) then
          api.nvim_win_close(win, true)
@@ -295,6 +285,40 @@ function M:close()
    api.nvim_del_augroup_by_id(self.augroup)
    if self.backdrop then
       self.backdrop:close()
+   end
+end
+
+---@param fn fun(...): any
+---@param ...any
+---@return boolean|any
+local function try(fn, ...)
+   local ok, result = pcall(fn, ...)
+   if not ok then
+      require("neogit.logger").error(result)
+      return false
+   else
+      return result or true
+   end
+end
+
+--- Safely close a window
+---@param winid integer
+---@param force boolean
+local function safe_win_close(winid, force)
+   local success = try(vim.api.nvim_win_close, winid, force)
+   if not success then
+      pcall(vim.cmd, "b#")
+   end
+end
+
+function M:hide()
+   if self.opts.kind == "replace" then
+      if self.prev_buf and api.nvim_buf_is_loaded(self.prev_buf) then
+         api.nvim_set_current_buf(self.prev_buf)
+         self.prev_buf = nil
+      end
+   else
+      safe_win_close(self.win, true)
    end
 end
 
