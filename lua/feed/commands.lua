@@ -191,7 +191,7 @@ M.update = {
          text = true,
          stderr = function(_, data)
             if data then
-               buffer = buffer .. data -- Accumulate incoming data
+               buffer = buffer .. data               -- Accumulate incoming data
                local lines = vim.split(buffer, "\n") -- Split into lines
                if #lines > 1 then
                   for i = 1, #lines - 1 do

@@ -6,6 +6,10 @@ local ipairs, pcall, dofile, type = ipairs, pcall, dofile, type
 local io = io
 local log = require("feed.lib.log")
 
+M.tbl_flatten = function(t)
+   return vim.iter(t):flatten():totable()
+end
+
 M.listify = function(t)
    if type(t) ~= "table" then
       return { t }
@@ -100,17 +104,17 @@ end
 ---@return string[]
 M.feedlist = function(feeds, all)
    return vim.iter(feeds)
-      :filter(function(_, v)
-         if all then
-            return true
-         else
-            return type(v) == "table"
-         end
-      end)
-      :fold({}, function(acc, k)
-         table.insert(acc, k)
-         return acc
-      end)
+       :filter(function(_, v)
+          if all then
+             return true
+          else
+             return type(v) == "table"
+          end
+       end)
+       :fold({}, function(acc, k)
+          table.insert(acc, k)
+          return acc
+       end)
 end
 
 ---@param url string
@@ -221,10 +225,10 @@ M.dark_mode = function()
 
          -- binfmt not being provided for windows executables
          if
-            not (
-               uv.fs_stat("/proc/sys/fs/binfmt_misc/WSLInterop")
-               or uv.fs_stat("/proc/sys/fs/binfmt_misc/WSLInterop-late")
-            )
+             not (
+                uv.fs_stat("/proc/sys/fs/binfmt_misc/WSLInterop")
+                or uv.fs_stat("/proc/sys/fs/binfmt_misc/WSLInterop-late")
+             )
          then
             error(
                "auto-dark-mode.nvim: Your WSL configuration doesn't enable `interop`. Please see https://learn.microsoft.com/en-us/windows/wsl/wsl-config#interop-settings."
@@ -283,7 +287,7 @@ M.dark_mode = function()
          -- 2: light
          if string.match(stdout, "uint32 1") ~= nil then
             return "dark"
-         -- else
+            -- else
          elseif string.match(stdout, "uint32 2") ~= nil then
             return "light"
          else

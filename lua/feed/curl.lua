@@ -114,10 +114,6 @@ function M.get(url, opts, cb)
          end,
       })
    end
-
-   -- TODO: Curl.get just return the vim.system obj, call :wait to sync
-   -- return cb and vim.system(cmds, { text = true }, cb and process or nil)
-   --    or process(vim.system(cmds, { text = true }):wait())
 end
 
 ---@async
