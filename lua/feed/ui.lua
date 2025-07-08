@@ -23,10 +23,42 @@ local M = {
    state = state,
 }
 
+local keys = {
+   index = {
+      { "q",      "<cmd>Feed quit<cr>" },
+      { "?",      "<cmd>Feed hints<cr>" },
+      { ".",      "<cmd>Feed dot<cr>" },
+      { "u",      "<cmd>Feed undo<cr>" },
+      { "<C-r>",  "<cmd>Feed redo<cr>" },
+      { "<M-CR>", "<cmd>Feed split<cr>" },
+      { "b",      "<cmd>Feed browser<cr>" },
+      { "r",      "<cmd>Feed refresh<cr>" },
+      { "R",      "<cmd>Feed update<cr>" },
+      { "/",      "<cmd>Feed search<cr>" },
+      { "Y",      "<cmd>Feed yank_url<cr>" },
+      { "-",      "<cmd>Feed untag<cr>" },
+      { "+",      "<cmd>Feed tag<cr>" },
+      { "<cr>",   "<cmd>Feed entry<cr>" },
+   },
+   entry = {
+      { "q", "<cmd>Feed quit<cr>" },
+      { "?", "<cmd>Feed hints<cr>" },
+      { "Y", "<cmd>Feed yank_url<cr>" },
+      { "b", "<cmd>Feed browser<cr>" },
+      { "}", "<cmd>Feed next<cr>" },
+      { "{", "<cmd>Feed prev<cr>" },
+      { "/", "<cmd>Feed search<cr>" },
+      { "-", "<cmd>Feed untag<cr>" },
+      { "+", "<cmd>Feed tag<cr>" },
+      { "f", "<cmd>Feed full<cr>" },
+      { "r", "<cmd>Feed urlview<cr>" },
+   },
+}
+
 local index_defaults = {
    wo = config.options.index.wo,
    bo = config.options.index.bo,
-   keys = config.keys.index,
+   keys = keys.index,
 }
 
 local index_presets = {
@@ -44,7 +76,7 @@ local entry_presets = {
          buf = buf,
          wo = config.options.entry.wo,
          bo = config.options.entry.bo,
-         keys = config.keys.entry,
+         keys = keys.entry,
          ft = "markdown",
          zen = config.zen.enabled,
          zindex = 5,
@@ -339,9 +371,9 @@ end
 M.show_hints = function()
    local maps
    if ut.in_entry() then
-      maps = config.keys.entry
+      maps = keys.entry
    elseif ut.in_index() then
-      maps = config.keys.index
+      maps = keys.index
    end
 
    local lines = {}

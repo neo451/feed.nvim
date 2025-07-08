@@ -50,9 +50,6 @@
 ---@field search? feed.searchOpts
 ---@field protocol? feed.protocolOpts
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
----@field keys? { index: feed.key[], entry: feed.key[] }
-
----@alias feed.key table<string | number, string | function>
 
 local formats = {}
 
@@ -260,38 +257,6 @@ default = {
 
    feeds = {},
 
-   keys = {
-      index = {
-         { "q", "<cmd>Feed quit<cr>" },
-         { "?", "<cmd>Feed hints<cr>" },
-         { ".", "<cmd>Feed dot<cr>" },
-         { "u", "<cmd>Feed undo<cr>" },
-         { "<C-r>", "<cmd>Feed redo<cr>" },
-         { "<M-CR>", "<cmd>Feed split<cr>" },
-         { "b", "<cmd>Feed browser<cr>" },
-         { "r", "<cmd>Feed refresh<cr>" },
-         { "R", "<cmd>Feed update<cr>" },
-         { "/", "<cmd>Feed search<cr>" },
-         { "Y", "<cmd>Feed yank_url<cr>" },
-         { "-", "<cmd>Feed untag<cr>" },
-         { "+", "<cmd>Feed tag<cr>" },
-         { "<cr>", "<cmd>Feed entry<cr>" },
-      },
-      entry = {
-         { "q", "<cmd>Feed quit<cr>" },
-         { "?", "<cmd>Feed hints<cr>" },
-         { "Y", "<cmd>Feed yank_url<cr>" },
-         { "b", "<cmd>Feed browser<cr>" },
-         { "}", "<cmd>Feed next<cr>" },
-         { "{", "<cmd>Feed prev<cr>" },
-         { "/", "<cmd>Feed search<cr>" },
-         { "-", "<cmd>Feed untag<cr>" },
-         { "+", "<cmd>Feed tag<cr>" },
-         { "f", "<cmd>Feed full<cr>" },
-         { "r", "<cmd>Feed urlview<cr>" },
-      },
-   },
-
    options = {
       index = {
          wo = {
@@ -392,6 +357,8 @@ setmetatable(M, {
    end,
 })
 
+-- TODO:
+
 -- local function pval(name, val, validator, message)
 --    return pcall(vim.validate, name, val, validator, message)
 -- end
@@ -424,15 +391,7 @@ setmetatable(M, {
 ---@param config feed.config
 function M.resolve(config)
    config = config or {}
-   config.keys = config.keys or {}
-   local index_keys, entry_keys = config.keys.index, config.keys.entry
-
-   config.keys.index, config.keys.entry = nil, nil
-
    M.config = vim.tbl_deep_extend("keep", config, default)
-
-   vim.list_extend(M.config.keys.index, index_keys or {})
-   vim.list_extend(M.config.keys.entry, entry_keys or {})
    -- validate(M.config)
 end
 
