@@ -64,7 +64,7 @@ function M.get(url, opts, cb)
       user_agent = "feed.nvim/2.0",
    }, opts.headers or {}))
    local dump_fp = vim.fn.tempname()
-   local cmds = vim.tbl_flatten({
+   local cmds = ut.tbl_flatten({
       "curl",
       req_header,
       "-sSL",
@@ -104,7 +104,7 @@ function M.get(url, opts, cb)
    end
 
    return cb and vim.system(cmds, { text = true }, cb and process or nil)
-      or process(vim.system(cmds, { text = true }):wait())
+       or process(vim.system(cmds, { text = true }):wait())
 end
 
 ---@async
