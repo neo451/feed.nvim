@@ -37,4 +37,8 @@ jobs:
         run:
           export VIMRUNTIME="/home/runner/nvim-stable/runtime"
 
+          echo VIMRUNTIME
+          
+          ls VIMRUNTIME
+
           make types
