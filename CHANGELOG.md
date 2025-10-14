@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.19.0](https://github.com/neo451/feed.nvim/compare/v2.18.1...v2.19.0) (2025-10-14)
+
+
+### Features
+
+* proper type check in Makefile ([9aad189](https://github.com/neo451/feed.nvim/commit/9aad189dee3ccd8f3190de3fb5847f7257558c2b))
+* proper type check in Makefile ([63d3093](https://github.com/neo451/feed.nvim/commit/63d3093127197776e63d57e23b68e87d9ff1eb72))
+
+
+### Bug Fixes
+
+* fix:  ([2597184](https://github.com/neo451/feed.nvim/commit/25971845d044fa62540a66bf7daefcdd41bf2497))
+* fix:  ([89b5a7e](https://github.com/neo451/feed.nvim/commit/89b5a7e6abf8044a67fd9150d1c6b407cd7b0335))
+* fix:  ([50932e3](https://github.com/neo451/feed.nvim/commit/50932e38d76d3b5f67240d3d6e7de9246468971b))
+* add workflow ([153ddb4](https://github.com/neo451/feed.nvim/commit/153ddb4673bb6df98388fccec1f496570b3ba264))
+* curl ([f631644](https://github.com/neo451/feed.nvim/commit/f63164486a9e5b390cd803b7568b4f196581a6fd))
+* export var ([e4dbaef](https://github.com/neo451/feed.nvim/commit/e4dbaef1dbc85f5bcb7d80f1bc07006fe4dac725))
+* nl ([c0946cb](https://github.com/neo451/feed.nvim/commit/c0946cb8ba44eb26cec6da5c907aad364f89ae3a))
+* setup neovim ([75acf7e](https://github.com/neo451/feed.nvim/commit/75acf7e920b309834af8280c974c974181cd1c05))
+* test ([969b8b4](https://github.com/neo451/feed.nvim/commit/969b8b4158aa30034a81536afa4512ea369ee118))
+* type workflow ([43762e0](https://github.com/neo451/feed.nvim/commit/43762e0f768d37adefaa732568c1bf0e6735b2a9))
+
 ## [2.18.1](https://github.com/neo451/feed.nvim/compare/v2.18.0...v2.18.1) (2025-05-30)
 
 
