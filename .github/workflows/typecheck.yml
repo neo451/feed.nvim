@@ -30,6 +30,8 @@ jobs:
       - name: Setup neovim
         shell: bash
         run: |
+          mkdir -p _neovim
+          curl -sL ${{ matrix.nvim_url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIMRUNTIME="${PWD}/_neovim/share/nvim/runtime"
 
