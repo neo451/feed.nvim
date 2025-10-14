@@ -22,7 +22,5 @@ deps/nvim-treesitter:
 gen_doc:
 	./panvimdoc.sh --project-name feed --input-file doc.md --vim-version 0.11 --shift-heading-level-by -1 --toc true 
 
-types:
-	
 types: ## Type check with lua-ls
 	lua-language-server --configpath "$(LUARC)" --check lua/feed/

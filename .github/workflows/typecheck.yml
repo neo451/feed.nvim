@@ -1,0 +1,32 @@
+name: Run type check
+
+on:
+  push:
+    branches-ignore: [sync, stable]
+    paths: ["colors/**", "lua/**", "tests/**"]
+  pull_request:
+    branches-ignore: [sync, stable]
+    paths: ["colors/**", "lua/**", "tests/**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Run tests
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install lua-language-server
+        if: matrix.task.name == 'Types'
+        uses: jdx/mise-action@v2
+        with:
+          tool_versions: |
+            lua-language-server 3.15.0
+
+      - name: Run tests
+        run: make types
