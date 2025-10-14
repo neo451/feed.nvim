@@ -27,6 +27,7 @@ jobs:
           neovim: true
           version: ${{ matrix.neovim_version }}
 
+
       - name: Install lua-language-server
         uses: jdx/mise-action@v2
         with:
@@ -35,11 +36,6 @@ jobs:
 
       - name: Run tests
         run:
-          export VIMRUNTIME="/home/runner/nvim-stable/runtime"
-
-          echo $VIMRUNTIME
-          
-          ls /home/runner/nvim-stable/lib
-          ls /home/runner/nvim-stable/share
+          export VIMRUNTIME="/home/runner/nvim-stable/share/nvim/runtime"
 
           make types
