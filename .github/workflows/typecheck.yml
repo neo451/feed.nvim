@@ -22,7 +22,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install lua-language-server
-        if: matrix.task.name == 'Types'
         uses: jdx/mise-action@v2
         with:
           tool_versions: |
