@@ -21,6 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim_version }}
+
       - name: Install lua-language-server
         uses: jdx/mise-action@v2
         with:
