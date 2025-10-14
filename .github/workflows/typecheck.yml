@@ -36,4 +36,5 @@ jobs:
       - name: Run tests
         run:
           export VIMRUNTIME="/home/runner/nvim-stable/runtime"
+
           make types
