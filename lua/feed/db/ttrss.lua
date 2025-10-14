@@ -112,7 +112,7 @@ local Config = require("feed.config")
 api.__index = api
 
 ---@param obj table? -- TODO: properly type
-local function decode_check(obj, method) --- TODO: assert decode gets the method
+local function decode_check(obj, _) --- TODO: assert decode gets the method
    assert(obj, "no response")
    assert(obj.code == 0, "curl err")
    assert(obj.status == 200, "server did not return 200")

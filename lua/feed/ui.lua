@@ -52,7 +52,7 @@ local entry_presets = {
    end,
 }
 
-M = vim.tbl_extend("keep", M, require("feed.ui.componants"))
+M = vim.tbl_extend("keep", M, require("feed.ui.components"))
 M = vim.tbl_extend("keep", M, require("feed.ui.bar"))
 
 local ns = api.nvim_create_namespace("feed_index")
@@ -63,8 +63,8 @@ local ns_entry = api.nvim_create_namespace("feed_entry")
 ---1. if passed in an specific id, just gets the entry from db
 ---2. if in an index buffer, gets the displayed entry under cursor
 ---3. if in an entry buffer, gets current entry
----@return feed.entry?
----@return string?
+---@return feed.entry
+---@return string
 local function get_entry(ctx)
    ctx = ctx or {}
    local id
@@ -87,13 +87,13 @@ local function get_entry(ctx)
       id = state.entries[state.cur]
    elseif ut.in_entry() then
       id = state.entries[state.cur]
-   else
-      error("no context to show entry")
    end
    if id then
       local entry = vim.deepcopy(db[id])
       entry.id = id
       return entry, id
+   else
+      error("no context to show entry")
    end
 end
 
@@ -294,7 +294,6 @@ M.show_prev = function()
    if state.cur > 1 then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       local _, id = get_entry({ row = state.cur - 1 })
-      assert(id)
       show_entry({ id = id, buf = state.entry.buf })
       mark_read(id)
    else
@@ -306,7 +305,6 @@ M.show_next = function()
    if state.cur < #state.entries then
       api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       local _, id = get_entry({ row = state.cur + 1 })
-      assert(id)
       show_entry({ id = id, buf = state.entry.buf })
       mark_read(id)
    else
@@ -316,7 +314,6 @@ end
 
 M.show_urls = function()
    local entry = get_entry()
-   assert(entry)
    M.select(ut.get_urls(entry.link), {
       prompt = "urlview",
    }, function(item)
@@ -351,8 +348,7 @@ M.show_hints = function()
    for _, v in ipairs(maps) do
       if type(v[2]) == "string" then
          lines[#lines + 1] = string.format("- `%s -> %s`", v[1], v[2]:match("<cmd>Feed (%S+)<cr>"))
-      else
-         -- TODO:
+         -- TODO: else
       end
    end
 
@@ -369,7 +365,6 @@ end
 ---@param percentage any
 M.show_split = function(percentage)
    local _, id = get_entry()
-   assert(id)
    local split = M.split({}, percentage or "50%")
    show_entry({ buf = split.buf, id = id, read = true })
    ut.wo(split.win, config.options.entry.wo)

@@ -1,0 +1,6 @@
+std = "selene/globals"
+exclude = ["lua/feed/lib/*.lua", "*.spec.lua"]
+
+[lints]
+mixed_table = "allow"
+global_usage = "allow"

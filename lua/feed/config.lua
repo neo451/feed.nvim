@@ -392,33 +392,33 @@ setmetatable(M, {
    end,
 })
 
-local function pval(name, val, validator, message)
-   return pcall(vim.validate, name, val, validator, message)
-end
-
----@param cfg feed.config
-local function validate(cfg)
-   local path = {
-      colorscheme = "string",
-      date_format = "string",
-      rsshub = "table",
-      curl_params = "table",
-      options = "table",
-      layout = "table",
-      search = "table",
-      progress = "table",
-      data = "table",
-      feeds = "table",
-      keys = "table",
-      icons = "table",
-   }
-   for k, v in pairs(path) do
-      local ok, err = pval(k, cfg[k], v)
-      if not ok then
-         vim.notify("failed to validate feed.nvim config at config." .. err)
-      end
-   end
-end
+-- local function pval(name, val, validator, message)
+--    return pcall(vim.validate, name, val, validator, message)
+-- end
+--
+-- ---@param cfg feed.config
+-- local function validate(cfg)
+--    local path = {
+--       colorscheme = "string",
+--       date_format = "string",
+--       rsshub = "table",
+--       curl_params = "table",
+--       options = "table",
+--       layout = "table",
+--       search = "table",
+--       progress = "table",
+--       data = "table",
+--       feeds = "table",
+--       keys = "table",
+--       icons = "table",
+--    }
+--    for k, v in pairs(path) do
+--       local ok, err = pval(k, cfg[k], v)
+--       if not ok then
+--          vim.notify("failed to validate feed.nvim config at config." .. err)
+--       end
+--    end
+-- end
 
 --- Merge the user configuration with the default values.
 ---@param config feed.config

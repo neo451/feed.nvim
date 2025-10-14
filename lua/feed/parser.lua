@@ -50,7 +50,7 @@ local function parse_src(src, url)
 end
 
 local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
-local encoding_blacklist = ut.list2lookup({ "gb2312" })
+-- local encoding_blacklist = ut.list2lookup({ "gb2312" })
 
 ---process feed fetch from source
 ---@param url  string

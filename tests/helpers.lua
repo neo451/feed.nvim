@@ -16,9 +16,9 @@ function M.is_url(v)
    assert(looks_like_url(v))
 end
 
-local src = [[
-Expect:      not bozo and feed['title'] == 'Example Atom'
-]]
+-- local src = [[
+-- Expect:      not bozo and feed['title'] == 'Example Atom'
+-- ]]
 local src2 = [[
 Expect:      not bozo and entries[0]['author_detail']['email'] == 'me@example.com'
 ]]
@@ -28,7 +28,8 @@ function M.extract_test(str)
    if case:sub(1, 4) == "feed" then
       local k, v = case:match("feed%['(%w+)'%] == '(.+)'")
       return { [k] = v }
-   elseif case:sub(1, 7) == "entries" then
+      -- TODO:
+      -- elseif case:sub(1, 7) == "entries" then
       -- local k, v = case:match "entries%[0%]%['(%w+)'%] == '(.+)'"
       -- print(k, v)
       -- return { [k] = v }

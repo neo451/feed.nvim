@@ -46,7 +46,7 @@ local function convert(ctx)
          text = true,
          stdin = src,
          -- TODO: log err
-         stdout = vim.schedule_wrap(function(err, data)
+         stdout = vim.schedule_wrap(function(_, data)
             if data then
                return stdout(ut.unescape(data))
             end

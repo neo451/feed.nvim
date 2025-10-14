@@ -9,7 +9,8 @@ local save_file = ut.save_file
 local read_file = ut.read_file
 local load_file = ut.load_file
 
-local sep = package.config:sub(1, 1)
+-- selene: allow(unused_variable)
+local sep = string.sub(package.config, 1, 1)
 
 ---@param path string | string[]
 ---@return table

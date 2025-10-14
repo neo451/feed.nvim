@@ -1,0 +1,18 @@
+[selene]
+base = "lua52" # TODO: work arround because we use package.config for now
+name = "globals"
+
+[vim]
+any = true
+
+[bit]
+any = true
+
+[jit]
+any = true
+
+[Obsidian]
+any = true
+
+[MiniTest]
+any = true

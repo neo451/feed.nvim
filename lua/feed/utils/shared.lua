@@ -274,9 +274,8 @@ M.dark_mode = function()
    -- Parses the query response for each system, returning the current appearance,
    -- or `nil` if it can't be resolved.
    ---@param stdout string
-   ---@param stderr string
    ---@return "dark" | "light"?
-   local function parse_query_response(stdout, stderr)
+   local function parse_query_response(stdout)
       if state.system == "Linux" then
          -- https://github.com/flatpak/xdg-desktop-portal/blob/c0f0eb103effdcf3701a1bf53f12fe953fbf0b75/data/org.freedesktop.impl.portal.Settings.xml#L32-L46
          -- 0: no preference
@@ -303,7 +302,7 @@ M.dark_mode = function()
 
    local obj = vim.system(state.query_command, {}):wait()
 
-   return parse_query_response(obj.stdout, obj.stderr)
+   return parse_query_response(obj.stdout)
 end
 
 return M

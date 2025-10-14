@@ -100,7 +100,7 @@ T["iter"]["iterates by time"] = function()
    for _, v in db:iter(true) do
       table.insert(res, v.time)
    end
-   assert(res[1] > res[2])
+   eq(res[1] > res[2], true)
 end
 
 T["tag"]["tag/untag"] = function()

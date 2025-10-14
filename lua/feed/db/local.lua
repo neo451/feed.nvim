@@ -50,7 +50,7 @@ local function load_index(fp)
       return {}
    end
    local f = io.open(fp, "r")
-   assert(f)
+   assert(f, "failed to open file")
    for line in f:lines() do
       local time, id = line:match("(%d+)%s(%S+)")
       res[#res + 1] = { id, tonumber(time) }

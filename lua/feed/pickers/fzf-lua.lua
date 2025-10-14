@@ -62,7 +62,6 @@ local function feed_grep(opts)
    -- see preview overview for more info on previewers
    opts.previewer = "builtin"
    opts.fn_transform = function(x)
-      local id = x:sub(10, 10 + 63)
       return fzf_lua.make_entry.file(x, opts)
    end
    opts.cwd = tostring(db.dir / "data")

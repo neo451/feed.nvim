@@ -57,7 +57,7 @@ M.open = function(query, port)
 
       local feedUrl = entry.feed
       local feed = db.feeds[feedUrl]
-      assert(feed)
+      assert(feed, "failed to retrive feed") -- TODO: reflect in page?
       local feed_string
 
       if feed then

@@ -82,9 +82,13 @@ function M.new(opts, enter)
             local k = m .. ":" .. lhs
             if done[k] then
                vim.notify(
-                  string
-                     .format("# Duplicate key mapping for `%s` mode=%s (check case):\n```lua\n%s\n```\n```lua\n%s\n```")
-                     :format(lhs, m, vim.inspect(done[k]), vim.inspect(spec))
+                  string.format(
+                     "# Duplicate key mapping for `%s` mode=%s (check case):\n```lua\n%s\n```\n```lua\n%s\n```",
+                     lhs,
+                     m,
+                     vim.inspect(done[k]),
+                     vim.inspect(spec)
+                  )
                )
             end
             done[k] = spec
@@ -187,7 +191,7 @@ function M:show()
    if self.opts.wo.winbar then
       local timer = uv.new_timer()
       local bar = self.opts.wo.winbar
-      assert(timer)
+      assert(timer, "failed to spawn timer")
       timer:start(
          0,
          100,

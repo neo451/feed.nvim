@@ -12,7 +12,7 @@ T["import"]["simple opml"] = function()
 <opml version="1.0"><head><title>%s</title></head><body>
 <outline text="hello" title="hello" type="rss" xmlUrl="http" htmlUrl="https"/>
 </body></opml>]])
-   assert(opml)
+   assert(opml, "")
    eq(opml.http.title, "hello")
    eq(opml.http.tags, nil)
 end
@@ -20,17 +20,17 @@ end
 T["import"]["real big opml"] = function()
    local str = readfile("opml_cn.xml")
    local feeds = M.import(str)
-   assert(feeds)
+   assert(feeds, "")
    local str2 = M.export(feeds)
    local feeds2 = M.import(str2)
-   assert(feeds2)
+   assert(feeds2, "")
    eq(feeds, feeds2)
 end
 
 T["import"]["nested opml"] = function()
    local str = readfile("opml_web.xml")
    local feeds = M.import(str)
-   assert(feeds)
+   assert(feeds, "")
    eq({ "test_nested", "frontend" }, feeds["http://gruntjs.com/rss"].tags)
 end
 
@@ -41,7 +41,7 @@ T["export"]["export imported opml"] = function()
 <outline text="hello2" title="hello" type="rss" xmlUrl="http2" htmlUrl="https"/>
 </body></opml>]]
    local feeds = M.import(str)
-   assert(feeds)
+   assert(feeds, "")
    local str2 = M.export(feeds)
    local feeds2 = M.import(str2)
    eq(feeds, feeds2)

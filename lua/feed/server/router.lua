@@ -1,5 +1,4 @@
 local uv = vim.uv
-local entities = require("feed.lib.entities")
 
 ---@class feed.router
 ---@field routes { GET: table, POST: table, PUT: table, DELETE: table }
@@ -124,15 +123,15 @@ local response = {
 
 function Router:listen(port)
    local handle = uv.new_tcp()
-   assert(handle)
-   assert(handle:bind("0.0.0.0", port))
+   assert(handle, "failed to spawn tcp handle")
+   assert(handle:bind("0.0.0.0", port), "failed to bind to port")
    self.handle = handle
    handle:listen(128, function(err)
       local client = uv.new_tcp()
-      assert(client)
+      assert(client, "failed to spawn client")
       handle:accept(client)
 
-      client:read_start(function(err, chunk)
+      client:read_start(function(_, chunk)
          if err then
             client:close()
          end

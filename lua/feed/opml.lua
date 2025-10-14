@@ -46,11 +46,11 @@ end
 ---@param t table
 ---@return string
 local function format_outline(t)
-   local acc = vim.iter(t):fold({}, function(acc, k, v)
+   local res = vim.iter(t):fold({}, function(acc, k, v)
       insert(acc, format('%s="%s"', k, v))
       return acc
    end)
-   return format("<outline %s/>", concat(acc, " "))
+   return format("<outline %s/>", concat(res, " "))
 end
 
 ---@param feeds feed.opml
@@ -60,7 +60,7 @@ function M.export(feeds)
 <opml version="1.0"><head><title>%s</title></head><body>
 %s
 </body></opml>]]
-   local acc = vim.iter(spairs(feeds)):fold({}, function(acc, xmlUrl, feed)
+   local res = vim.iter(spairs(feeds)):fold({}, function(acc, xmlUrl, feed)
       if type(feed) == "table" then
          acc[#acc + 1] = format_outline({
             text = feed.description or feed.title,
@@ -72,7 +72,7 @@ function M.export(feeds)
       end
       return acc
    end)
-   return format(root, "feed.nvim export", concat(acc, "\n"))
+   return format(root, "feed.nvim export", concat(res, "\n"))
 end
 
 return M

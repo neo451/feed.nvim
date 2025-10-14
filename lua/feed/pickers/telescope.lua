@@ -74,10 +74,10 @@ local jump_to_line = function(obj, entry)
    if entry.lnum and entry.lnum > 0 then
       local lnum, lnend = entry.lnum - 1, (entry.lnend or entry.lnum) - 1
 
-      local col, colend = 0, -1
-      if entry.col and entry.colend then
-         col, colend = entry.col - 1, entry.colend - 1
-      end
+      -- local col, colend = 0, -1
+      -- if entry.col and entry.colend then
+      --    col, colend = entry.col - 1, entry.colend - 1
+      -- end
 
       -- TODO: use vim.hl.range
 

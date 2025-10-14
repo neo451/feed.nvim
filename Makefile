@@ -24,3 +24,8 @@ gen_doc:
 
 types: ## Type check with lua-ls
 	lua-language-server --configpath "$(LUARC)" --check lua/feed/
+
+.PHONY: lint
+lint: ## Lint the code with selene and typos
+	selene --config selene/config.toml lua/ tests/
+	# typos lua
