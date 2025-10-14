@@ -21,12 +21,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # - name: Setup neovim
+      #   uses: rhysd/action-setup-vim@v1
+      #   with:
+      #     neovim: true
+      #     version: ${{ matrix.neovim_version }}
+      #
       - name: Setup neovim
-        uses: rhysd/action-setup-vim@v1
-        with:
-          neovim: true
-          version: ${{ matrix.neovim_version }}
+        shell: bash
+        run: |
+          export PATH="${PWD}/_neovim/bin:${PATH}"
+          export VIMRUNTIME="${PWD}/_neovim/share/nvim/runtime"
 
+          nvim --version
 
       - name: Install lua-language-server
         uses: jdx/mise-action@v2
@@ -36,8 +43,4 @@ jobs:
 
       - name: Run tests
         run:
-          export VIMRUNTIME="/home/runner/nvim-stable/share/nvim/runtime"
-
-          ls $VIMRUNTIME
-
           make types
