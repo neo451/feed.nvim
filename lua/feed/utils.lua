@@ -5,4 +5,8 @@ M = vim.tbl_extend("keep", M, require("feed.utils.url"))
 M = vim.tbl_extend("keep", M, require("feed.utils.treesitter"))
 M = vim.tbl_extend("keep", M, require("feed.utils.strings"))
 
+M.tbl_flatten = function(t)
+   return vim.iter(t):flatten():totable()
+end
+
 return M

@@ -30,7 +30,7 @@ local ut = require("feed.utils")
 
 ---@param src string
 ---@param url string
----@return feed.feed
+---@return feed.feed?
 local function parse_src(src, url)
    if vim.startswith(vim.trim(src), "{") then
       local ast = vim.json.decode(src, { luanil = { object = true } })

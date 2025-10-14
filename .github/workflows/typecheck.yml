@@ -1,0 +1,42 @@
+# name: Run type check
+#
+# on:
+#   push:
+#     branches-ignore: [sync, stable]
+#     paths: ["colors/**", "lua/**", "tests/**"]
+#   pull_request:
+#     branches-ignore: [sync, stable]
+#     paths: ["colors/**", "lua/**", "tests/**"]
+#
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+#   cancel-in-progress: true
+#
+# jobs:
+#   build:
+#     name: Run tests
+#     timeout-minutes: 15
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Setup neovim
+#         shell: bash
+#         run: |
+#           mkdir -p _neovim
+#           curl -sL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
+#           export PATH="${PWD}/_neovim/bin:${PATH}"
+#           export VIMRUNTIME="${PWD}/_neovim/share/nvim/runtime"
+#
+#           nvim --version
+#
+#       - name: Install lua-language-server
+#         uses: jdx/mise-action@v2
+#         with:
+#           tool_versions: |
+#             lua-language-server 3.15.0
+#
+#       - name: Run tests
+#         run:
+#           make types

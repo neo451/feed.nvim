@@ -53,7 +53,7 @@ end
 ---@param url string
 ---@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
 ---@param cb? any
----@return vim.SystemCompleted?
+---@return vim.SystemObj
 function M.get(url, opts, cb)
    opts = opts or {}
    opts.timeout = vim.F.if_nil(opts.timeout, "10")
@@ -64,7 +64,7 @@ function M.get(url, opts, cb)
       user_agent = "feed.nvim/2.0",
    }, opts.headers or {}))
    local dump_fp = vim.fn.tempname()
-   local cmds = vim.tbl_flatten({
+   local cmds = ut.tbl_flatten({
       "curl",
       req_header,
       "-sSL",
@@ -103,8 +103,21 @@ function M.get(url, opts, cb)
       return cb and cb(obj) or obj
    end
 
-   return cb and vim.system(cmds, { text = true }, cb and process or nil)
-      or process(vim.system(cmds, { text = true }):wait())
+   if cb then
+      return vim.system(cmds, { text = true }, cb and process or nil)
+   else
+      return setmetatable({}, {
+         __index = function(_, k)
+            if k == "wait" then
+               return process(vim.system(cmds, { text = true }):wait())
+            end
+         end,
+      })
+   end
+
+   -- TODO: Curl.get just return the vim.system obj, call :wait to sync
+   -- return cb and vim.system(cmds, { text = true }, cb and process or nil)
+   --    or process(vim.system(cmds, { text = true }):wait())
 end
 
 ---@async

@@ -1,5 +1,5 @@
 ---@class feed.searchOpts
----@field backend "telescope" | "mini.pick" | "fzf-lua" | "snacks.pick"
+---@field backend "telescope" | "mini.pick" | "fzf-lua" | "snacks.pick" | table -- TODO: not nice
 ---@field sort_order? "ascending" | "descending"
 ---@field ignorecase? boolean
 ---@field default_query? string

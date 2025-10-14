@@ -79,17 +79,19 @@ local jump_to_line = function(obj, entry)
          col, colend = entry.col - 1, entry.colend - 1
       end
 
-      for i = lnum, lnend do
-         pcall(
-            api.nvim_buf_add_highlight,
-            bufnr,
-            ns_previewer,
-            "TelescopePreviewLine",
-            i,
-            i == lnum and col or 0,
-            i == lnend and colend or -1
-         )
-      end
+      -- TODO: use vim.hl.range
+
+      -- for i = lnum, lnend do
+      --    pcall(
+      --       api.nvim_buf_add_highlight,
+      --       bufnr,
+      --       ns_previewer,
+      --       "TelescopePreviewLine",
+      --       i,
+      --       i == lnum and col or 0,
+      --       i == lnend and colend or -1
+      --    )
+      -- end
       local middle_ln = math.floor(lnum + (lnend - lnum) / 2)
       pcall(api.nvim_win_set_cursor, winid, { middle_ln + 1, 0 })
       api.nvim_buf_call(bufnr, function()

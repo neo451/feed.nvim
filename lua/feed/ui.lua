@@ -432,7 +432,7 @@ end
 M.load_opml = function(path)
    local str
    if ut.looks_like_url(path) then
-      str = curl.get(path, {}).stdout
+      str = curl.get(path, {}):wait().stdout
    else
       path = fs.normalize(path)
       str = ut.read_file(path)
