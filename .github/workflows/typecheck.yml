@@ -39,6 +39,7 @@ jobs:
 
           echo $VIMRUNTIME
           
-          ls /home/runner/nvim-stable/
+          ls /home/runner/nvim-stable/lib
+          ls /home/runner/nvim-stable/share
 
           make types
