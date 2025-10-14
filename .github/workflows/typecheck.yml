@@ -39,6 +39,6 @@ jobs:
 
           echo $VIMRUNTIME
           
-          ls $VIMRUNTIME
+          ls /home/runner/nvim-stable/
 
           make types
