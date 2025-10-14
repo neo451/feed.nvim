@@ -211,6 +211,9 @@ function M:show()
       end),
    })
 
+   --- TODO: lua-ls bug?
+   ---
+   ---@diagnostic disable-next-line: param-type-mismatch
    api.nvim_create_autocmd("Filetype", {
       pattern = "qf",
       group = self.augroup,

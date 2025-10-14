@@ -432,6 +432,7 @@ function M:setup_sync(c_feeds)
             table.sort(merged_tags)
 
             if not feeds[url] then
+               ---@diagnostic disable-next-line: missing-fields
                feeds[url] = {}
             end
 

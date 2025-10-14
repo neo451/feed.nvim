@@ -13,7 +13,8 @@ M.url_resolve = function(base_url, url)
    if not url then
       return base_url
    end
-   return tostring(URL.resolve(base_url, url))
+   ---@diagnostic disable-next-line: param-type-mismatch
+   return tostring(URL.resolve(base_url, url)) -- TODO: fix func sig
 end
 
 ---@param el table

@@ -169,7 +169,7 @@ M.update = {
       local args = vim.v.argv
       table.remove(args, 1)
       table.remove(args, 1)
-      local cmds = vim.tbl_flatten({
+      local cmds = ut.tbl_flatten({
          "nvim",
          args,
          "--headless",
@@ -251,9 +251,14 @@ M.export = {
    doc = "use pandoc to convert entry to any format",
    impl = function(to, fp)
       local entry, id = ui.get_entry()
-      require("feed.pandoc").convert({ id = id, to = to }, function(res)
-         ut.save_file(vim.fs.joinpath(fp, entry.title .. "." .. to), res)
-      end)
+      assert(entry, "no valid entry")
+      require("feed.pandoc").convert({
+         id = id,
+         to = to,
+         stdout = function(res)
+            ut.save_file(vim.fs.joinpath(fp, entry.title .. "." .. to), res)
+         end,
+      })
    end,
 }
 

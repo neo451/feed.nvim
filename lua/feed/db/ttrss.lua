@@ -104,13 +104,14 @@
 ---@field getCounters fun(self: ttrssApi): table
 ---@field setArticleLabel fun(self: ttrssApi, param: { article_ids: string, label_id: integer, assign: boolean })
 ---@field updateArticle fun(self: ttrssApi, param: { article_ids: string, mode: integer, field: integer, data: string })
+
 local api = {}
 local Curl = require("feed.curl")
 local Config = require("feed.config")
 
 api.__index = api
 
----@param obj vim.SystemCompleted?
+---@param obj table? -- TODO: properly type
 local function decode_check(obj, method) --- TODO: assert decode gets the method
    assert(obj, "no response")
    assert(obj.code == 0, "curl err")
@@ -153,13 +154,13 @@ for k, v in pairs(methods) do
       data.sid = self.sid
       data.op = k
       if type(v) == "string" then
-         return decode_check(Curl.get(url, { data = data }), k)[v]
+         return decode_check(Curl.get(url, { data = data }):wait(), k)[v]
       elseif type(v) == "table" and v.async then
          return Curl.get(url, { data = data }, function(obj)
             return decode_check(obj, k)
          end)
       else
-         return decode_check(Curl.get(url, { data = data }), k)
+         return decode_check(Curl.get(url, { data = data }):wait(), k)
       end
    end
 end
