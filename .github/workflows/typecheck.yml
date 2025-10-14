@@ -21,17 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Setup neovim
-      #   uses: rhysd/action-setup-vim@v1
-      #   with:
-      #     neovim: true
-      #     version: ${{ matrix.neovim_version }}
-      #
       - name: Setup neovim
         shell: bash
         run: |
           mkdir -p _neovim
-          curl -sL ${{ matrix.nvim_url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
+          curl -sL https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIMRUNTIME="${PWD}/_neovim/share/nvim/runtime"
 
