@@ -28,7 +28,6 @@ local api, uv = vim.api, vim.uv
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
----@field map fun(feed.win: self, mode: string, lhs: string, rhs: string | function)
 local M = {}
 M.__index = M
 local id = 0

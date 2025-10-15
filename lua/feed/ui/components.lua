@@ -40,9 +40,9 @@ M.split = function(opts, percentage, lines)
 
    local win = Win.new(opts)
 
-   win:map("n", "q", function()
+   vim.keymap.set("n", "q", function()
       win:close()
-   end)
+   end, { buffer = win.buf })
 
    api.nvim_buf_set_lines(win.buf, 0, -1, false, lines)
 
