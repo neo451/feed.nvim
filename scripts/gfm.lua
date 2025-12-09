@@ -5,6 +5,32 @@ local function remove_attr(x)
    end
 end
 
+local COMMON_LANGS = {
+   bash = "bash",
+   sh = "bash",
+   zsh = "bash",
+   python = "python",
+   py = "python",
+   javascript = "javascript",
+   js = "javascript",
+   typescript = "typescript",
+   ts = "typescript",
+   lua = "lua",
+   c = "c",
+   cpp = "cpp",
+   ["c++"] = "cpp",
+   java = "java",
+   go = "go",
+   rust = "rust",
+   rs = "rust",
+   html = "html",
+   xml = "xml",
+   json = "json",
+   yaml = "yaml",
+   toml = "toml",
+   sql = "sql",
+}
+
 function Writer(doc, opts)
    local ref_counter = 0
    local refs = {}
@@ -43,11 +69,71 @@ function Writer(doc, opts)
          return pandoc.RawInline("markdown", ("![Image %d](%s)"):format(ref_counter, elem.src)) -- for now for image rendering
       end,
       CodeBlock = function(cb)
-         if cb.attr == pandoc.Attr() then
-            local delimited = "```\n" .. cb.text .. "\n```"
+         -- helper: normalize a candidate language name
+
+         local function normalize(c)
+            if not c then
+               return nil
+            end
+            c = c:lower()
+
+            -- match language-foo
+            local m = c:match("^language%-(.+)")
+            if m then
+               c = m
+            end
+
+            -- match hljs language-foo
+            local h = c:match("^hljs%-(.+)")
+            if h then
+               c = h
+            end
+
+            -- strip unsafe chars
+            c = c:gsub("[^%w%+%-]", "")
+
+            -- direct match
+            if COMMON_LANGS[c] then
+               return COMMON_LANGS[c]
+            end
+
+            return nil
+         end
+
+         local lang = nil
+
+         -- 1) check classes if present (most common)
+         if cb.attr and cb.attr.classes then
+            for _, c in ipairs(cb.attr.classes) do
+               local candidate = normalize(c)
+               if candidate then
+                  lang = candidate
+                  break
+               end
+            end
+         end
+
+         -- 2) check key/value attributes like lang= or language=
+         if not lang and cb.attr and cb.attr.attributes then
+            -- cb.attr.attributes is a table of key -> value in many pandoc lua versions
+            for k, v in pairs(cb.attr.attributes) do
+               if k:lower() == "lang" or k:lower() == "language" then
+                  lang = v
+                  break
+               end
+            end
+         end
+
+         -- 3) fallback: use first class if it exists (less strict)
+         if not lang and cb.attr and cb.attr.classes and cb.attr.classes[1] then
+            lang = cb.attr.classes[1]
+         end
+         -- Build fenced codeblock markdown
+         if lang and lang ~= "" then
+            local delimited = "```" .. lang .. "\n" .. cb.text .. "\n```"
             return pandoc.RawBlock("markdown", delimited)
-         elseif cb.attr.classes[1] ~= nil then
-            local delimited = "```" .. cb.attr.classes[1] .. "\n" .. cb.text .. "\n```"
+         else
+            local delimited = "```\n" .. cb.text .. "\n```"
             return pandoc.RawBlock("markdown", delimited)
          end
       end,
