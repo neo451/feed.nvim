@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.1](https://github.com/neo451/feed.nvim/compare/v2.19.0...v2.19.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* remove sanitize that cause newline issues, better codeblocks ([2dbeb0d](https://github.com/neo451/feed.nvim/commit/2dbeb0d72a34833207184ee4603c099d5cf4724b))
+
 ## [2.19.0](https://github.com/neo451/feed.nvim/compare/v2.18.1...v2.19.0) (2025-10-14)
 
 
