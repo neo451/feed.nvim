@@ -183,7 +183,4 @@ local parse = vim.F.nil_wrap(function(src, url)
    return #collected == 2 and collected[2] or collected[1]
 end)
 
-return {
-   parse = parse,
-   sanitize = sanitize,
-}
+return { parse = parse }
