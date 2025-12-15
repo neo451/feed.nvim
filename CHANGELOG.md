@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.2](https://github.com/neo451/feed.nvim/compare/v2.19.1...v2.19.2) (2025-12-15)
+
+
+### Bug Fixes
+
+* missing type ([d32e5a2](https://github.com/neo451/feed.nvim/commit/d32e5a2de7288829b7ff631fab2992957579d732))
+
 ## [2.19.1](https://github.com/neo451/feed.nvim/compare/v2.19.0...v2.19.1) (2025-12-09)
 
 
