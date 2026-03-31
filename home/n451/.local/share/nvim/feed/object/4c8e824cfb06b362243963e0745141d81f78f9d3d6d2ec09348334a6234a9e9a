@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/goodbye-twitter-reddit.html",
+  time = 1692824707,
+  title = "So Long, Twitter and Reddit"
+}

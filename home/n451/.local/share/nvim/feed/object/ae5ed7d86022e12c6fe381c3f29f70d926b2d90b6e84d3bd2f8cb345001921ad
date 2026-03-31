@@ -1,0 +1,6 @@
+return {
+  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
+  link = "https://dotfyle.com/this-week-in-neovim/74?utm_source=twin-rss",
+  time = 1718731707,
+  title = "mini.diff for hunk management, mini-git for git management, and mini.nvim version release, Neovim used on WWDC, neorg-telescope"
+}

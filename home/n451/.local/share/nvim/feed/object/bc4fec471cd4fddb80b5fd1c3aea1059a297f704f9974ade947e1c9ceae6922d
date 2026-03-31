@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-01-28-desktop-v1.8.3/",
+  time = 1738022400,
+  title = "Obsidian 1.8.3 Desktop (Early access)"
+}

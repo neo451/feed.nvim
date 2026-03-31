@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/zig-programming-language-blurs-line-compile-time-run-time.html",
+  time = 1485764399,
+  title = "Zig Programming Language Blurs the Line Between Compile-Time and Run-Time"
+}

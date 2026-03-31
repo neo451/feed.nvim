@@ -1,0 +1,6 @@
+return {
+  feed = "https://neovim.io/news.xml",
+  link = "https://neovim.io/news/2014/07/",
+  time = 1404428400,
+  title = "Newsletter #2 - Perchance to Dream"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "/u/shmerl",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s86esl/what_is_the_correct_way_to_read_the_list_of/",
+  time = 1774908376,
+  title = "What is the correct way to read the list of configured vim.lsp.config-s?"
+}

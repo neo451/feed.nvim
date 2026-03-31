@@ -1,0 +1,7 @@
+return {
+  author = "/u/Pansther_",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s7f384/minesweepernvim/",
+  time = 1774836170,
+  title = "minesweeper.nvim"
+}

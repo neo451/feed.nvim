@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2026-03-18-desktop-v1.12.6/",
+  time = 1773792000,
+  title = "Obsidian 1.12.6 Desktop (Early access)"
+}

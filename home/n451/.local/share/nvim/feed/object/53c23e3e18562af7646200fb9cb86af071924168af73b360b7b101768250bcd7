@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/website-zine/",
+  time = 1727650800,
+  title = "The Zig Website Has Been Re-engineered"
+}

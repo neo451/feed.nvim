@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/fosdem-2021/",
+  time = 1607126400,
+  title = "Zig at FOSDEM 2021: CfP is Open!"
+}

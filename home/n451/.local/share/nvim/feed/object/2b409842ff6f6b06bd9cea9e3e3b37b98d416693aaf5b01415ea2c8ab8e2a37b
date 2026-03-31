@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296229/morning-mobilization",
+  time = 1774969104,
+  title = "Morning Mobilization"
+}

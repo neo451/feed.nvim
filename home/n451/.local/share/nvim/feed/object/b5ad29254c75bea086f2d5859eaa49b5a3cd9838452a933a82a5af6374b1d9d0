@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/In-Zig-Whats-a-Writer/",
+  time = 1738022400,
+  title = "In Zig, What's a Writer?"
+}

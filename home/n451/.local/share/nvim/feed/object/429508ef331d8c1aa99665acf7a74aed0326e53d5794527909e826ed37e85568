@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/hover-api/",
+  time = 1418083200,
+  title = "(Ab)using the Hover API"
+}

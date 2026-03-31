@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/c5f2152f-3aa8-4dce-bc8d-c4e5fc607a6f/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=c5f2152f-3aa8-4dce-bc8d-c4e5fc607a6f&amp;feed=dHoohVNH",
+  time = 1635390000,
+  title = "Mike Sweeney and Jessie Gaskell"
+}

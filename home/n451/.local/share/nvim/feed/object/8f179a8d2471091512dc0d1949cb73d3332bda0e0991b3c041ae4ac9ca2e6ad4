@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-09-25-desktop-v1.9.14/",
+  time = 1758754800,
+  title = "Obsidian 1.9.14 Desktop (Early access)"
+}

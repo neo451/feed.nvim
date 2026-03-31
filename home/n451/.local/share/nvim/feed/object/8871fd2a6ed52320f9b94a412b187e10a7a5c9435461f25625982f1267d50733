@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-11-11-desktop-v0.13.1/",
+  time = 1636588800,
+  title = "Obsidian 0.13.1 Desktop (Early access)"
+}

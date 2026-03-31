@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2022-02-18-desktop-v0.13.26/",
+  time = 1645142400,
+  title = "Obsidian 0.13.26 Desktop (Early access)"
+}

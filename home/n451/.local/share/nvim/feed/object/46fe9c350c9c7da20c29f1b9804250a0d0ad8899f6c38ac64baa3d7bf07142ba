@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/why-donating-to-musl-libc-project.html",
+  time = 1561403706,
+  title = "Why I'm donating $150/month (10% of my income) to the musl libc project"
+}

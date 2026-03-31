@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Basic-Awareness-In-Addition-To-Deep-Understanding/",
+  time = 1735171200,
+  title = "Basic Awareness in Addition to Deep Understanding"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2020-08-31-desktop-v0.8.10/",
+  time = 1598828400,
+  title = "Obsidian 0.8.10 Desktop (Early access)"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/a7cd75f9-8b23-4a68-a6aa-f57385676a29/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=a7cd75f9-8b23-4a68-a6aa-f57385676a29&amp;feed=dHoohVNH",
+  time = 1721012700,
+  title = "James Corden"
+}

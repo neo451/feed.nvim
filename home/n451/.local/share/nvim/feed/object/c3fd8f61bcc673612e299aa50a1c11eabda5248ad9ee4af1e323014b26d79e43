@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2024-09-24-desktop-v1.7.3/",
+  time = 1727132400,
+  title = "Obsidian 1.7.3 Desktop (Early access)"
+}

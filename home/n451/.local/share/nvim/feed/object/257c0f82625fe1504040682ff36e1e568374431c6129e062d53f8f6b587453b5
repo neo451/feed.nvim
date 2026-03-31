@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Is-Zigs-New-Io-Unsafe/",
+  time = 1758322800,
+  title = "Is Zig's New Writer Unsafe?"
+}

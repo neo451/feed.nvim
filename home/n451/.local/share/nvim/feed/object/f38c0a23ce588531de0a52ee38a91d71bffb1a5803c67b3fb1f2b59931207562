@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-11-18-desktop-v1.10.4/",
+  time = 1763424000,
+  title = "Obsidian 1.10.4 Desktop (Early access)"
+}

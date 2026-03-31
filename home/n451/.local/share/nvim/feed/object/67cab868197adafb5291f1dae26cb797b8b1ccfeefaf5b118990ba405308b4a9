@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Sorting-Strings-in-Zig/",
+  time = 1734566400,
+  title = "Sorting Strings in Zig"
+}

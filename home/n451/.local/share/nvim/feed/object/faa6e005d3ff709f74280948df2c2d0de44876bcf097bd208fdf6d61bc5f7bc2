@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/u4_engine/",
+  time = 1707696000,
+  title = "Ultima IV rewrite using Terminal Graphics"
+}

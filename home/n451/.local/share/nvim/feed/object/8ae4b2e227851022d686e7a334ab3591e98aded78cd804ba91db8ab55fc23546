@@ -1,0 +1,6 @@
+return {
+  feed = "https://pawelgrzybek.com/feed.xml",
+  link = "https://pawelgrzybek.com/deploy-hugo-site-to-cloudflare-workers/",
+  time = 1771286400,
+  title = "Deploy Hugo site to Cloudflare Workers"
+}

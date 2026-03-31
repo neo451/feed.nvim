@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/releasing-x84-2.0/",
+  time = 1422144000,
+  title = "Releasing x/84 v2.0"
+}

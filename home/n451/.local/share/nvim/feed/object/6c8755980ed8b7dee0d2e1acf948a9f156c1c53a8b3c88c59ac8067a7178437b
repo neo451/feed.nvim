@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/b0381c54-dd74-4251-855b-9d43c1d0654b/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=b0381c54-dd74-4251-855b-9d43c1d0654b&amp;feed=dHoohVNH",
+  time = 1767589500,
+  title = "D'Arcy Carden Returns"
+}

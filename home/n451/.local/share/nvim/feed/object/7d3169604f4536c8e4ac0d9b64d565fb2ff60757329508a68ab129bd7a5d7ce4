@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/announcing-donor-bounties/",
+  time = 1705968000,
+  title = "Donor Bounties: A New Kind of Feature Bounty"
+}

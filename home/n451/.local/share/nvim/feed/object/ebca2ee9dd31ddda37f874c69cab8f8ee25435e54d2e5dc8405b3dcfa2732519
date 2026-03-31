@@ -1,0 +1,7 @@
+return {
+  author = "/u/Thesk790",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s7hliu/error_with_neovim_and_tree_sitter/",
+  time = 1774844102,
+  title = "Error with Neovim and Tree Sitter"
+}

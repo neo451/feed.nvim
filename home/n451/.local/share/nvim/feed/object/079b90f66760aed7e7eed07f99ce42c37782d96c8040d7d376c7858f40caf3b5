@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-08-26-desktop-v1.9.12/",
+  time = 1756162800,
+  title = "Obsidian 1.9.12 Desktop (Public)"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "/u/AutoModerator",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s8f6xw/weekly_101_questions_thread/",
+  time = 1774933240,
+  title = "Weekly 101 Questions Thread"
+}

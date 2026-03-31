@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Im-Too-Dumb-For-Zigs-New-IO-Interface/",
+  time = 1755817200,
+  title = "I'm too dumb for Zig's new IO interface"
+}

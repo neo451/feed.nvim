@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/pillagers-7drts-game-dev-journal.html",
+  time = 1374570593,
+  title = "Pillagers! 7dRTS Game Development Journal"
+}

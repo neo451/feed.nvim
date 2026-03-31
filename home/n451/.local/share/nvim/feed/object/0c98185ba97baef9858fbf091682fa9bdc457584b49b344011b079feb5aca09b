@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Everything-Is-A-u8-array/",
+  time = 1757199600,
+  title = "Everything is a []u8"
+}

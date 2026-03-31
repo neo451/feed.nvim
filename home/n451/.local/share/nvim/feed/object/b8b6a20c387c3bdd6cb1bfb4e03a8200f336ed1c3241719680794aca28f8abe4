@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/first-outage/",
+  time = 1757286000,
+  title = "The First ziglang.org Outage"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2024-07-09-mobile-v1.6.6/",
+  time = 1720479600,
+  title = "Obsidian 1.6.6 Mobile (Early access)"
+}

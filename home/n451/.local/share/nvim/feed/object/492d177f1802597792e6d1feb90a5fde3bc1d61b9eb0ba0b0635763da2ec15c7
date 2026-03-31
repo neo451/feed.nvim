@@ -1,0 +1,7 @@
+return {
+  author = "Comedy Central",
+  feed = "https://feeds.megaphone.fm/BVLLC2163264914",
+  link = "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/mgln.ai/e/433/claritaspod.com/measure/traffic.megaphone.fm/CBS1985787220.mp3?updated=1728520372",
+  time = 1728541800,
+  title = "Election 2024: How Secure is Your Vote?"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Using-SIMD-to-Tell-if-the-High-Bit-is-Set/",
+  time = 1737417600,
+  title = "Using SIMD to Tell if the High Bit is Set"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://feeds.feedburner.com/ruanyifeng",
+  link = "http://www.ruanyifeng.com/blog/2026/03/weekly-issue-387.html",
+  time = 1772770854,
+  title = "科技爱好者周刊（第 387 期）：你是领先的"
+}

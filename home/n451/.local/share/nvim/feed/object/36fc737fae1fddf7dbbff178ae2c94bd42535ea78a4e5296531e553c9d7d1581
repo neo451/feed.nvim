@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/84c42ed0-5445-4344-8f5a-b6a3ae31bf3b/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=84c42ed0-5445-4344-8f5a-b6a3ae31bf3b&amp;feed=dHoohVNH",
+  time = 1727319900,
+  title = "I’m a Very Normal Person with Very Normal Hobbies"
+}

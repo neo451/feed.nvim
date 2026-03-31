@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2022-08-31-desktop-v0.16.1/",
+  time = 1661900400,
+  title = "Obsidian 0.16.1 Desktop (Public)"
+}

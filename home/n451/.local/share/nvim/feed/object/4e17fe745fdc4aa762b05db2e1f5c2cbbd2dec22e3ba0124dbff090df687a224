@@ -1,0 +1,6 @@
+return {
+  feed = "https://neovim.io/news.xml",
+  link = "https://neovim.io/news/2020/04/",
+  time = 1586818800,
+  title = "Newsletter #9 - Three's company"
+}

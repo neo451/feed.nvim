@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/openzfs-bug-ported-zig.html",
+  time = 1752514288,
+  title = "OpenZFS Bug Ported to Zig"
+}

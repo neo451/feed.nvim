@@ -1,0 +1,6 @@
+return {
+  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
+  link = "https://dotfyle.com/this-week-in-neovim/75?utm_source=twin-rss",
+  time = 1720538504,
+  title = "lazy.nvim v11 supports luarocks and pkg.json, VimConf 2024 speaker applications open, tiny-inline-diagnostic.nvim, nvim-rip-substitute, nvim-lsp-endhints"
+}

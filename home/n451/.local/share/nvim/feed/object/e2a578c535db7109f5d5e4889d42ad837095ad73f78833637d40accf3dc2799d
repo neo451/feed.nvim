@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296245/super-meat-boy-3d-released",
+  time = 1774969152,
+  title = "Super Meat Boy 3D Released"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Switching-On-Strings-In-Zig/",
+  time = 1739404800,
+  title = "Switching on Strings in Zig"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://feeds.feedburner.com/ruanyifeng",
+  link = "http://www.ruanyifeng.com/blog/2026/03/weekly-issue-390.html",
+  time = 1774590552,
+  title = "科技爱好者周刊（第 390 期）：没有语料，大模型就是智障"
+}

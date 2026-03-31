@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-04-10-mobile-v1.8.10/",
+  time = 1744239600,
+  title = "Obsidian 1.8.10 Mobile (Early access)"
+}

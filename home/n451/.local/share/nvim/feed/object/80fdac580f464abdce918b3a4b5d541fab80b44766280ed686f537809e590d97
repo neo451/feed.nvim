@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/do-not-use-bodyparser-with-express-js.html",
+  time = 1378503427,
+  title = "Do Not Use bodyParser with Express.js"
+}

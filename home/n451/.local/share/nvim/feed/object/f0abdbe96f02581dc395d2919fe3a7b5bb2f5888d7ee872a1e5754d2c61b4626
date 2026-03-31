@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296175/demos-and-freebies",
+  time = 1774795985,
+  title = "Demos and Freebies"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/website-i18n-redesign/",
+  time = 1610490453,
+  title = "Website Redesigned with Community-Sourced Translations"
+}

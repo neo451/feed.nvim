@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-06-27-mobile-v1.9.4/",
+  time = 1750978800,
+  title = "Obsidian 1.9.4 Mobile (Early access)"
+}

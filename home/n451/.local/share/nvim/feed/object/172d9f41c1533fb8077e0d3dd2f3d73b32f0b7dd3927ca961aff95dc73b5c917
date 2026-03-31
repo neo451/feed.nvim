@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html",
+  time = 1585060787,
+  title = "`zig cc`: a Powerful Drop-In Replacement for GCC/Clang"
+}

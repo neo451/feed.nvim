@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2023-05-19-desktop-v1.3.2/",
+  time = 1684450800,
+  title = "Obsidian 1.3.2 Desktop (Early access)"
+}

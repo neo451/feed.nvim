@@ -1,0 +1,7 @@
+return {
+  author = "/u/Shock9616",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s7ummm/how_did_people_manage_plugin_dependencies_before/",
+  time = 1774882725,
+  title = "How did people manage plugin dependencies before Lazy?"
+}

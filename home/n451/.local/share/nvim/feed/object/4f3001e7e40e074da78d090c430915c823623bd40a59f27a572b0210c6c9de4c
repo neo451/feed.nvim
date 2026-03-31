@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2020-11-26-desktop-v0.9.19/",
+  time = 1606348800,
+  title = "Obsidian 0.9.19 Desktop (Early access)"
+}

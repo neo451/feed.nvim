@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/7ba270a9-98fc-41d8-b406-989ccbac960b/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=7ba270a9-98fc-41d8-b406-989ccbac960b&amp;feed=dHoohVNH",
+  time = 1592794800,
+  title = "Summer S’mores with Conan and the Chill Chums 2"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Zigs-New-Writer/",
+  time = 1752706800,
+  title = "Zig's new Writer"
+}

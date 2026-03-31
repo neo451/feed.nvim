@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2023-10-13-desktop-v1.4.16/",
+  time = 1697151600,
+  title = "Obsidian 1.4.16 Desktop (Public)"
+}

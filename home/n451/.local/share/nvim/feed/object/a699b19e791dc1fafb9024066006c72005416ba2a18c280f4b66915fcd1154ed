@@ -1,0 +1,7 @@
+return {
+  author = "Comedy Central",
+  feed = "https://feeds.megaphone.fm/BVLLC2163264914",
+  link = "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/mgln.ai/e/433/claritaspod.com/measure/traffic.megaphone.fm/CBS3236186987.mp3?updated=1741042706",
+  time = 1740645000,
+  title = "Libertarian Says What? with Nick Gillespie"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "/u/Karstensson",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s7sydd/setup_folds_in_nvim_012/",
+  time = 1774879130,
+  title = "Setup folds in nvim 0.12"
+}

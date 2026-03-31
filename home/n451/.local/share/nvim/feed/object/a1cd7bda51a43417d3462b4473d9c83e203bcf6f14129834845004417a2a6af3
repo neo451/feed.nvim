@@ -1,0 +1,6 @@
+return {
+  feed = "https://pawelgrzybek.com/feed.xml",
+  link = "https://pawelgrzybek.com/my-defaults-2026/",
+  time = 1772582400,
+  title = "My defaults 2026"
+}

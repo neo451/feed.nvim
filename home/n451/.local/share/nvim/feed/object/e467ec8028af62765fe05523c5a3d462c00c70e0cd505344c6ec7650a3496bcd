@@ -1,0 +1,6 @@
+return {
+  feed = "https://neovim.io/news.xml",
+  link = "https://neovim.io/news/2020/10/",
+  time = 1603843200,
+  title = "Newsletter #10 - Neovim v0.4.4"
+}

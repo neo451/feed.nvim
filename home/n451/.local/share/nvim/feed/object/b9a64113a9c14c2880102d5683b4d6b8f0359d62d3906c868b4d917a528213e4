@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296220/eidos-montreal-layoffs",
+  time = 1774912619,
+  title = "Eidos Montréal Layoffs"
+}

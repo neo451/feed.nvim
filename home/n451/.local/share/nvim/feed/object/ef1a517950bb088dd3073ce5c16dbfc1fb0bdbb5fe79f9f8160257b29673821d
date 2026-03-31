@@ -1,0 +1,7 @@
+return {
+  author = "/u/shmerl",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s781n7/how_to_display_lsp_status_in_the_status_line/",
+  time = 1774817227,
+  title = "How to display LSP status in the status line?"
+}

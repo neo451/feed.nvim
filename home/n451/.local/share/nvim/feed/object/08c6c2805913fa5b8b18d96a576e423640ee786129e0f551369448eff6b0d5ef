@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296219/epic-games-store-spring-sale",
+  time = 1774912616,
+  title = "Epic Games Store Spring Sale"
+}

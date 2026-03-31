@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/intro-to-zig.html",
+  time = 1454947655,
+  title = "Introduction to the Zig Programming Language"
+}

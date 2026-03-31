@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/weekof_2014_dec_01/",
+  time = 1417910400,
+  title = "Week of Dec 01, 2014"
+}

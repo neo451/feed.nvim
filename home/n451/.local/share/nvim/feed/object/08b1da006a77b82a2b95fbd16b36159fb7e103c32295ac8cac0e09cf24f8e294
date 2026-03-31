@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-06-30-desktop-v0.12.9/",
+  time = 1625007600,
+  title = "Obsidian 0.12.9 Desktop (Early access)"
+}

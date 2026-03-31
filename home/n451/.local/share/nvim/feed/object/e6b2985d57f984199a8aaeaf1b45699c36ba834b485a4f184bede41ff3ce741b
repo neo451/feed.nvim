@@ -1,0 +1,7 @@
+return {
+  author = "/u/Pretend-Elevator874",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s7x8r5/how_to_handle_the_need_for_multiple_terminals_in/",
+  time = 1774888145,
+  title = "How to handle the need for multiple terminals in neovim?"
+}

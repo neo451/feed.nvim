@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296164/hardware-reviews",
+  time = 1774795952,
+  title = "Hardware Reviews"
+}

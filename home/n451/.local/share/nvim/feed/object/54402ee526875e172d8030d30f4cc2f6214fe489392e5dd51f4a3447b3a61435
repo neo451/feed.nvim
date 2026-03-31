@@ -1,0 +1,6 @@
+return {
+  feed = "https://neovim.io/news.xml",
+  link = "https://neovim.io/doc/user/channel/",
+  time = -62135596725,
+  title = "Channel"
+}

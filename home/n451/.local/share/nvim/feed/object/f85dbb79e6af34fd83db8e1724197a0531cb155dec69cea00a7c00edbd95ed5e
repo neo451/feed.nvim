@@ -1,0 +1,6 @@
+return {
+  feed = "https://pawelgrzybek.com/feed.xml",
+  link = "https://pawelgrzybek.com/svg-favicons-that-respect-theme-preference/",
+  time = 1773446400,
+  title = "SVG favicons that respect theme preference"
+}

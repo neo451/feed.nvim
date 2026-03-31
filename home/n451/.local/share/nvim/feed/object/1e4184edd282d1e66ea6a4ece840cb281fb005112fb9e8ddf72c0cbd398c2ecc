@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296209/evening-interviews",
+  time = 1774912586,
+  title = "Evening Interviews"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/zig-stack-traces-kernel-panic-bare-bones-os.html",
+  time = 1543946567,
+  title = "Using Zig to Provide Stack Traces on Kernel Panic for a Bare Bones Operating System"
+}

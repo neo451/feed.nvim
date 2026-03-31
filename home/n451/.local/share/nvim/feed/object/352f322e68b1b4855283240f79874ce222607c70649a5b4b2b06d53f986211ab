@@ -1,0 +1,6 @@
+return {
+  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
+  link = "https://dotfyle.com/this-week-in-neovim/72?utm_source=twin-rss",
+  time = 1717428872,
+  title = "Neovim v0.10.0 release, builtin autocompletion, faster LuaLS setup with lazydev.nvim, grug-far.nvim, tiny-devicons-auto-colors.nvim"
+}

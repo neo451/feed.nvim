@@ -1,0 +1,7 @@
+return {
+  author = "/u/chapeupreto",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s84zwu/neovim_012_release_with_the_core_team/",
+  time = 1774904932,
+  title = "Neovim 0.12 Release with the Core Team"
+}

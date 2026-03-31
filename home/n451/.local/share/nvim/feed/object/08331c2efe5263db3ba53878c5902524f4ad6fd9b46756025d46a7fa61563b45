@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-02-01-desktop-v0.10.12/",
+  time = 1612137600,
+  title = "Obsidian 0.10.12 Desktop (Early access)"
+}

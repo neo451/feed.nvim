@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296154/saturday-esports-and-competitions",
+  time = 1774715543,
+  title = "Saturday Esports and Competitions"
+}

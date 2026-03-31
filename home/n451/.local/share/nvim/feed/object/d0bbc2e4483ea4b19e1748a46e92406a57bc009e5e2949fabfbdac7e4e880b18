@@ -1,0 +1,6 @@
+return {
+  feed = "https://pawelgrzybek.com/feed.xml",
+  link = "https://pawelgrzybek.com/no-temp-variables-needed-for-pointers-in-go-1-26/",
+  time = 1771804800,
+  title = "No temp variables needed for pointers in Go 1.26"
+}

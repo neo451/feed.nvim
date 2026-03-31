@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/300k-from-mitchellh/",
+  time = 1727737200,
+  title = "300k USD Donation Pledged by Mitchell Hashimoto"
+}

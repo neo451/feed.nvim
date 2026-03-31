@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2020-06-13-desktop-v0.7.2/",
+  time = 1592002800,
+  title = "Obsidian 0.7.2 Desktop (Early access)"
+}

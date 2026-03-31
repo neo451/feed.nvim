@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296159/business-and-finance",
+  time = 1774715558,
+  title = "Business and Finance"
+}

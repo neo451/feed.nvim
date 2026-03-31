@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/welcome-matthew-lugg/",
+  time = 1707766586,
+  title = "Matthew Lugg Joins the Core Zig Team"
+}

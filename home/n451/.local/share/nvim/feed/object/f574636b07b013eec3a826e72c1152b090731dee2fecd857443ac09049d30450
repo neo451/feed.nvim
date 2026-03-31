@@ -1,0 +1,6 @@
+return {
+  feed = "https://neovim.io/news.xml",
+  link = "https://neovim.io/news/2019/03/",
+  time = 1552780800,
+  title = "Google Summer of Code 2019"
+}

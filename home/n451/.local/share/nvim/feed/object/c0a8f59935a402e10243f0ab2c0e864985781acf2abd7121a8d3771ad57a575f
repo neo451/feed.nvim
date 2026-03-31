@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/joyent-provisioning/",
+  time = 1418083200,
+  title = "Joyent Provisioning from Custom Image"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "/u/FreddieKiroh",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s755q3/candela_plugin_for_log_analysis/",
+  time = 1774810501,
+  title = "Candela: plugin for Log Analysis"
+}

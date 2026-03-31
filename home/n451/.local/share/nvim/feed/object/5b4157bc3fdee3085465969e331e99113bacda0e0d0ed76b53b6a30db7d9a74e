@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296237/game-crossovers-and-collaborations",
+  time = 1774969128,
+  title = "Game Crossovers and Collaborations"
+}

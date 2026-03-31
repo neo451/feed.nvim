@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/swig-email-templates.html",
+  time = 1359547200,
+  title = "Rapid Development Email Templates with Node.js"
+}

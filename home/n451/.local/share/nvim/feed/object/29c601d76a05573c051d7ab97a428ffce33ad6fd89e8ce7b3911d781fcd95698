@@ -1,0 +1,6 @@
+return {
+  feed = "https://feeds.feedburner.com/ruanyifeng",
+  link = "http://www.ruanyifeng.com/blog/2026/03/kimi-cursor.html",
+  time = 1774117151,
+  title = '套壳中国大模型撑起500亿美元估值？扒一扒 Cursor 的"套壳"疑云'
+}

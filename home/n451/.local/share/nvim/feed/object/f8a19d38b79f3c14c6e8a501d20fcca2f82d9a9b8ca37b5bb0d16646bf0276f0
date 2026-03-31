@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2025-03-05-desktop-v1.8.9/",
+  time = 1741132800,
+  title = "Obsidian 1.8.9 Desktop (Public)"
+}

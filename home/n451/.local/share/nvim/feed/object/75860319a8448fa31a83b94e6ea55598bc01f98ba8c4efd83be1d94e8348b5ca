@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/announcing-community-mirrors/",
+  time = 1751238000,
+  title = "Community Mirrors: A Better Way To Download Zig"
+}

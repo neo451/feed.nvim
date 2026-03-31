@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/GetOrPut-With-String-Keys/",
+  time = 1740614400,
+  title = "GetOrPut With String Keys"
+}

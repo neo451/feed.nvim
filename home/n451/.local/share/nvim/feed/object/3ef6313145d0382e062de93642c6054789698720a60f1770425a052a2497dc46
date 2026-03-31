@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-11-08-mobile-v1.0.5/",
+  time = 1636329600,
+  title = "Obsidian 1.0.5 Mobile (Public)"
+}

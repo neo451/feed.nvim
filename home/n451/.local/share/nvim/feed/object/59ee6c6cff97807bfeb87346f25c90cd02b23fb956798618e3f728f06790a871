@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2024-02-13-desktop-v1.5.5/",
+  time = 1707782400,
+  title = "Obsidian 1.5.5 Desktop (Early access)"
+}

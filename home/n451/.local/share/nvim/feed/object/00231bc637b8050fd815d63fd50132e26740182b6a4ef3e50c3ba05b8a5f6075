@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/unsafe-zig-safer-than-unsafe-rust.html",
+  time = 1516825056,
+  title = "Unsafe Zig is Safer Than Unsafe Rust"
+}

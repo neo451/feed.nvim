@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296191/game-history-and-preservation",
+  time = 1774885564,
+  title = "Game History and Preservation"
+}

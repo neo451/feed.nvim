@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2020-06-01-desktop-v0.6.6/",
+  time = 1590966000,
+  title = "Obsidian 0.6.6 Desktop (Public)"
+}

@@ -1,0 +1,7 @@
+return {
+  author = "Comedy Central",
+  feed = "https://feeds.megaphone.fm/BVLLC2163264914",
+  link = "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/mgln.ai/e/433/claritaspod.com/measure/traffic.megaphone.fm/CBS9396125286.mp3?updated=1743652637",
+  time = 1743661800,
+  title = "Who Is Government? Storytime with Michael Lewis"
+}

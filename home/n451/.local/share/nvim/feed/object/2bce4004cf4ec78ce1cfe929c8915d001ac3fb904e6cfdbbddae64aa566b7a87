@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/laptop-review-bonobo-extreme.html",
+  time = 1402611914,
+  title = "Laptop Review - Bonobo Extreme"
+}

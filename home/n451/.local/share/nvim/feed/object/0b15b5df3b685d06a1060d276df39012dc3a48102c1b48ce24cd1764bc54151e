@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/zig-january-2018-in-review.html",
+  time = 1518332090,
+  title = "Zig: January 2018 in Review"
+}

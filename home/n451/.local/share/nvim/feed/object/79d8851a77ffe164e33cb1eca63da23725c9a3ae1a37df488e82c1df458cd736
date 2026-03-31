@@ -1,0 +1,7 @@
+return {
+  author = "/u/ankushbhagat",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s847xj/multicursor_coming_officially_to_013_version/",
+  time = 1774903128,
+  title = "Multicursor coming officially to 0.13 version"
+}

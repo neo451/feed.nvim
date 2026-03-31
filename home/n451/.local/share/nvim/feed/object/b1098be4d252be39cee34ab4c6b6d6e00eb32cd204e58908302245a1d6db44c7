@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-04-20-mobile-v0.0.17/",
+  time = 1618873200,
+  title = "Obsidian 0.0.17 Mobile (Early access)"
+}

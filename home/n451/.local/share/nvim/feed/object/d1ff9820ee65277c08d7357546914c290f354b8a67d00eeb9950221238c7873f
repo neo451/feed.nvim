@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2024-03-19-mobile-v1.5.11/",
+  time = 1710806400,
+  title = "Obsidian 1.5.11 Mobile (Public)"
+}

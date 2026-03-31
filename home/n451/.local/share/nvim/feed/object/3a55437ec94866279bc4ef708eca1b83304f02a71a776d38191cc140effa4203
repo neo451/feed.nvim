@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/0.11.0-postponed-again/",
+  time = 1689730038,
+  title = "The Upcoming Release Postponed Two More Weeks and Lacks Async Functions"
+}

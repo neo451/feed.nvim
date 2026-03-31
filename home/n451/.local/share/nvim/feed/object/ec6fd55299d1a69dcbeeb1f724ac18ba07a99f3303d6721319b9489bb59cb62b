@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2022-06-15-desktop-v0.15.1/",
+  time = 1655247600,
+  title = "Obsidian 0.15.1 Desktop (Early access)"
+}

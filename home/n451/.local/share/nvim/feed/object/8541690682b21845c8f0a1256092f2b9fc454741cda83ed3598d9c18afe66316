@@ -1,0 +1,6 @@
+return {
+  feed = "https://pawelgrzybek.com/feed.xml",
+  link = "https://pawelgrzybek.com/top-picks-2026-march/",
+  time = 1774911600,
+  title = "Top picks — 2026 March"
+}

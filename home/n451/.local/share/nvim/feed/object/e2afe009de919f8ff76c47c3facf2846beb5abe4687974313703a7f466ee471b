@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/pyweek-success.html",
+  time = 1312714800,
+  title = "How to be Successful at PyWeek"
+}

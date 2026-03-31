@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Using-Generics-To-Inject-Stubs-When-Testing/",
+  time = 1738886400,
+  title = "Using Generics to Inject Stubs when Testing"
+}

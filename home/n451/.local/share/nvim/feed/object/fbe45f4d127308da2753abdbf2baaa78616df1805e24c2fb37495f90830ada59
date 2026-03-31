@@ -1,0 +1,6 @@
+return {
+  feed = "https://ziglang.org/news/index.xml",
+  link = "https://ziglang.org/news/welcome-jacob-young/",
+  time = 1690838588,
+  title = "Jacob Young Joins the Core Zig Team"
+}

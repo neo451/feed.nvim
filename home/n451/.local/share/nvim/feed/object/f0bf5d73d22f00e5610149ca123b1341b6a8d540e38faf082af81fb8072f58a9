@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2021-04-04-desktop-v0.11.13/",
+  time = 1617490800,
+  title = "Obsidian 0.11.13 Desktop (Public)"
+}

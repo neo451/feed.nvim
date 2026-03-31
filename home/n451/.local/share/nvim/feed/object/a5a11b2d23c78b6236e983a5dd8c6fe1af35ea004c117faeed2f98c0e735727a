@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/renting-is-for-suckers.html",
+  time = 1753380254,
+  title = "Renting is for Suckers"
+}

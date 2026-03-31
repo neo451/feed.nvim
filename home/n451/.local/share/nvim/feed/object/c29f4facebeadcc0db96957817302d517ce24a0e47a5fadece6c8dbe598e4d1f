@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/troubleshooting-zig-regression-apitrace.html",
+  time = 1484695558,
+  title = "Troubleshooting a Zig Regression with apitrace"
+}

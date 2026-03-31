@@ -1,0 +1,6 @@
+return {
+  feed = "https://andrewkelley.me/rss.xml",
+  link = "https://andrewkelley.me/post/js-private-methods.html",
+  time = 1374024054,
+  title = "Private Methods in JavaScript"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Comptime-as-Configuration/",
+  time = 1736467200,
+  title = "Comptime as Configuration"
+}

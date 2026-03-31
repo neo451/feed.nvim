@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296217/hozy-released",
+  time = 1774912610,
+  title = "Hozy Released"
+}

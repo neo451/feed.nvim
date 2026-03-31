@@ -1,0 +1,7 @@
+return {
+  author = "/u/Wonderful-Plastic316",
+  feed = "r/neovim",
+  link = "https://www.reddit.com/r/neovim/comments/1s8cbye/the_feature_im_missing_the_most_after_migrating/",
+  time = 1774924235,
+  title = "The feature I'm missing the most after migrating from lazy.nvim to vim.pack"
+}

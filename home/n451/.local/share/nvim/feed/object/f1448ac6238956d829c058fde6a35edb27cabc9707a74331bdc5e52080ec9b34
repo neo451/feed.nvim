@@ -1,0 +1,7 @@
+return {
+  author = "Team Coco & Earwolf",
+  feed = "https://feeds.simplecast.com/dHoohVNH",
+  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/b8c54680-a34c-4733-ae5a-762adbb9bdfc/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=b8c54680-a34c-4733-ae5a-762adbb9bdfc&amp;feed=dHoohVNH",
+  time = 1652842800,
+  title = "Live With Bill Hader At The Wiltern Theater"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.openmymind.net/atom.xml",
+  link = "https://www.openmymind.net/Gluing-JSON/",
+  time = 1733702400,
+  title = "Gluing JSON"
+}

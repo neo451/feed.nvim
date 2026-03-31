@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2023-02-27-publish/",
+  time = 1677456000,
+  title = "Obsidian 2023.02.27 Publish (Public)"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2023-02-22-desktop-v1.1/",
+  time = 1677024000,
+  title = "Obsidian 1.1.15 Desktop (Public)"
+}

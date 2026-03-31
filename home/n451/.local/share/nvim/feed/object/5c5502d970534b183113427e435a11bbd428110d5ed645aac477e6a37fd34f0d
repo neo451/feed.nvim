@@ -1,0 +1,7 @@
+return {
+  author = "Blue",
+  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
+  link = "https://www.bluesnews.com/s/296224/morning-legal-briefs",
+  time = 1774969089,
+  title = "Morning Legal Briefs"
+}

@@ -1,0 +1,6 @@
+return {
+  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
+  link = "https://dotfyle.com/this-week-in-neovim/80?utm_source=twin-rss",
+  time = 1736186242,
+  title = "25 most popular plugins published during the end of 2024, YouTube playlists for Neovim conf and VimConf 2024"
+}

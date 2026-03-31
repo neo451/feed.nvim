@@ -1,0 +1,6 @@
+return {
+  feed = "https://obsidian.md/changelog.xml",
+  link = "https://obsidian.md/changelog/2020-09-24-desktop-v0.9.1/",
+  time = 1600902000,
+  title = "Obsidian 0.9.1 Desktop (Public)"
+}

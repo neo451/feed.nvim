@@ -1,0 +1,6 @@
+return {
+  feed = "https://www.jeffquast.com/index.xml",
+  link = "https://www.jeffquast.com/post/hamurabi_bas/",
+  time = 1709596800,
+  title = "HAMURABI.BAS and its dystopian lessons"
+}
