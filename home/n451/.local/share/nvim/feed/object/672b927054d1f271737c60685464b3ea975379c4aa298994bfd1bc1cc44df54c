@@ -1,6 +1,0 @@
-return {
-  feed = "https://pawelgrzybek.com/feed.xml",
-  link = "https://pawelgrzybek.com/book-review-tools-of-titans-by-tim-ferriss/",
-  time = 1772755200,
-  title = 'Book review: "Tools of Titans" by Tim Ferriss'
-}

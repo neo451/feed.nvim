@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2021-03-22-mobile-v0.0.13/",
-  time = 1616371200,
-  title = "Obsidian 0.0.13 Mobile (Early access)"
-}

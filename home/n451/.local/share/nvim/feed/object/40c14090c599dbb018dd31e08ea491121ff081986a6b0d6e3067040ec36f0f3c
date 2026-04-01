@@ -1,7 +1,0 @@
-return {
-  author = "Comedy Central",
-  feed = "https://feeds.megaphone.fm/BVLLC2163264914",
-  link = "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/mgln.ai/e/433/claritaspod.com/measure/traffic.megaphone.fm/QCD1836828362.mp3?updated=1763002294",
-  time = 1763022600,
-  title = "From FTC to NYC with Lina Khan"
-}

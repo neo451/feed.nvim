@@ -2,7 +2,7 @@
 <h1 align="center"> 📻 feed.nvim </h1>
 <p align="center">
   <a href="https://github.com/neovim/neovim">
-    <img alt="Static Badge" src="https://img.shields.io/badge/Neovim%200.10.0+-green.svg?style=for-the-badge&logo=neovim">
+    <img alt="Static Badge" src="https://img.shields.io/badge/Neovim%200.12.0+-green.svg?style=for-the-badge&logo=neovim">
   </a>
   <a href="https://www.lua.org">
     <img alt="Static Badge" src="https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua">
@@ -46,7 +46,7 @@
 
 ### Requirements
 
-- Neovim 0.11
+- Neovim 0.12
 - [curl](https://curl.se/download.html)
 - [pandoc](https://www.pandoc.org)
 - tree-sitter-xml

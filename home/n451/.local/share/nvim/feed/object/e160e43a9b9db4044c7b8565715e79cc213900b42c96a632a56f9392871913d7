@@ -1,7 +1,0 @@
-return {
-  author = "Team Coco & Earwolf",
-  feed = "https://feeds.simplecast.com/dHoohVNH",
-  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/ba6d4bd3-d358-4783-b543-6da337f7fe71/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=ba6d4bd3-d358-4783-b543-6da337f7fe71&amp;feed=dHoohVNH",
-  time = 1761797100,
-  title = "The Tallest Thing in Marrakesh"
-}

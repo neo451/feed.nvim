@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/spot-the-fail.html",
-  time = 1373489240,
-  title = "Spot the Fail"
-}

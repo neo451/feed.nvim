@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2025-02-25-mobile-v1.8.8/",
-  time = 1740441600,
-  title = "Obsidian 1.8.8 Mobile (Early access)"
-}

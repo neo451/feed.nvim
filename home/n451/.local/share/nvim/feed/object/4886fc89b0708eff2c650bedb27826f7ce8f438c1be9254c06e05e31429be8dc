@@ -1,7 +1,0 @@
-return {
-  author = "Zizhou Teng",
-  feed = "https://neo451.github.io/blog/index.xml",
-  link = "https://neo451.github.io/blog/posts/in-process-lsp-guide/",
-  time = 1764201600,
-  title = "A guide to building in-process LSP in neovim: Part 1"
-}

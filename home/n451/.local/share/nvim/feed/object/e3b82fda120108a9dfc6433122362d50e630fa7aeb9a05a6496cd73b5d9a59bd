@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Zig-Dot-Star-Syntax/",
-  time = 1741305600,
-  title = "Zig's dot star syntax (value.*)"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://feeds.feedburner.com/ruanyifeng",
-  link = "http://www.ruanyifeng.com/blog/2026/03/arkclaw.html",
-  time = 1773331266,
-  title = '零安装的"云养虾"：ArkClaw 使用指南'
-}

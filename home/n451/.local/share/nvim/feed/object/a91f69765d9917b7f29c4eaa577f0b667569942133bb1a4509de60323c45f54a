@@ -1,7 +1,0 @@
-return {
-  author = "Team Coco & Earwolf",
-  feed = "https://feeds.simplecast.com/dHoohVNH",
-  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/a78102d8-eecf-4254-b709-5305b37f3489/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=a78102d8-eecf-4254-b709-5305b37f3489&amp;feed=dHoohVNH",
-  time = 1660791600,
-  title = "The Motorcycle Diaries"
-}

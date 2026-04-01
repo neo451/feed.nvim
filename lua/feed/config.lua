@@ -5,7 +5,7 @@
 ---@field default_query? string
 
 ---@class feed.progressOpts
----@field backend? "bar" | "mini.notify" | "snacks" | "fidget"
+---@field backend? "bar" | "mini.notify" | "snacks" | "fidget" DEPRECATED: ignored on Neovim 0.12+
 ---@field ok? string icon/string for success
 ---@field err? string icon/string for error
 
@@ -426,6 +426,15 @@ function M.resolve(config)
    config = config or {}
    config.keys = config.keys or {}
    local index_keys, entry_keys = config.keys.index, config.keys.entry
+
+   if config.progress and config.progress.backend ~= nil then
+      vim.notify(
+         "The 'progress.backend' option is deprecated and will be ignored. Update progress will be shown in the winbar and via `:h progress-message` on Neovim 0.12+.",
+         vim.log.levels.WARN,
+         { title = "feed.nvim" }
+      )
+      config.progress.backend = nil
+   end
 
    config.keys.index, config.keys.entry = nil, nil
 

@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/78?utm_source=twin-rss",
-  time = 1727024149,
-  title = "NeovimConf speaker applications, render-markdown.nvim, telescope-frecency.nvim, smart-open.nvim, avante.nvim"
-}

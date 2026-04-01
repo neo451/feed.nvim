@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/zig-new-async-io-text-version.html",
-  time = 1761763473,
-  title = "Zig's New Async I/O (Text Version)"
-}

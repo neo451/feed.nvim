@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/jamulator.html",
-  time = 1370591280,
-  title = "Statically Recompiling NES Games into Native Executables with LLVM and Go"
-}

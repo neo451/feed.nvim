@@ -1,7 +1,0 @@
-return {
-  author = "/u/jrop2",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s6j99r/v0117/",
-  time = 1774747677,
-  title = "v0.11.7"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296205/evening-audio-files",
-  time = 1774912574,
-  title = "Evening Audio Files"
-}

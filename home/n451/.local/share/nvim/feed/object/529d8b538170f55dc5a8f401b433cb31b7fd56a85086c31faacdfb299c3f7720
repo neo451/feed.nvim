@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296194/roadmaps-and-plans",
-  time = 1774885573,
-  title = "Roadmaps and Plans"
-}

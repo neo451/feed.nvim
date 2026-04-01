@@ -1,7 +1,0 @@
-return {
-  author = "/u/Cannon72001",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s6dzm5/claudepreviewnvim_now_supports_opencode_as_a/",
-  time = 1774736864,
-  title = "claude-preview.nvim now supports OpenCode as a backend"
-}

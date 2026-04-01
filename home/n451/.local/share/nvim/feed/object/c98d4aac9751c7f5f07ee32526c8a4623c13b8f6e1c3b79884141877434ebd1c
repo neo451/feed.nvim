@@ -1,7 +1,0 @@
-return {
-  author = "/u/BrodoSaggins",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s8k03b/how_to_use_packadd_for_plugins_that_require_a/",
-  time = 1774950504,
-  title = "How to use `:packadd` for plugins that require a setup function?"
-}

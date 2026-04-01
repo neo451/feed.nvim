@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Peeking-Behind-Interfaces-by-Creating-a-Dummy-std-Random/",
-  time = 1736899200,
-  title = "Peeking Behind Zig Interfaces by Creating a Dummy std.Random Implementation"
-}

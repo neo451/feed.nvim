@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296176/marvel-maximum-collection-released",
-  time = 1774795988,
-  title = "MARVEL MaXimum Collection Released"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/0.14.0-delayed/",
-  time = 1739557233,
-  title = "Good News! 0.14.0 Delayed"
-}

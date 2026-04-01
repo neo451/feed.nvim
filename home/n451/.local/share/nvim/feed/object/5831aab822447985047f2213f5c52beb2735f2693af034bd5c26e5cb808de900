@@ -1,7 +1,0 @@
-return {
-  author = "Team Coco & Earwolf",
-  feed = "https://feeds.simplecast.com/dHoohVNH",
-  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/b603bd06-034e-4495-9acc-3e4b77da4006/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=b603bd06-034e-4495-9acc-3e4b77da4006&amp;feed=dHoohVNH",
-  time = 1667448000,
-  title = "Inaction Figure"
-}

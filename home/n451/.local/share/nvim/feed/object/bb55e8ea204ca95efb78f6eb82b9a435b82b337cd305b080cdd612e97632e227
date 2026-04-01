@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/not-a-js-developer.html",
-  time = 1376490553,
-  title = 'I am not a "JavaScript Developer".'
-}

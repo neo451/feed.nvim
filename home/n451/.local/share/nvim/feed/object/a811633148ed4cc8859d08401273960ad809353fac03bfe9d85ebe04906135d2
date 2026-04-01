@@ -1,7 +1,0 @@
-return {
-  author = "Team Coco & Earwolf",
-  feed = "https://feeds.simplecast.com/dHoohVNH",
-  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/833b9754-326a-4cf1-8ff3-f65c9b1de247/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=833b9754-326a-4cf1-8ff3-f65c9b1de247&amp;feed=dHoohVNH",
-  time = 1725246300,
-  title = "Don Cheadle"
-}

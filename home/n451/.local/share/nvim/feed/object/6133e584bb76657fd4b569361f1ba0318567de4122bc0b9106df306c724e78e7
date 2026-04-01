@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/71?utm_source=twin-rss",
-  time = 1715679434,
-  title = "Markdown viewing in Neovim, hints for motions, nvim-tree floating window preview, LaTeX snippets, telescope-switch.nvim, mason-bridge.nvim"
-}

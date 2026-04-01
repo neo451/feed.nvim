@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296232/morning-esports-and-competitions",
-  time = 1774969113,
-  title = "Morning Esports and Competitions"
-}

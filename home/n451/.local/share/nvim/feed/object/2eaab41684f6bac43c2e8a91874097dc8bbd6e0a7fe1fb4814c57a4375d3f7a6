@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Zigs-bitCast/",
-  time = 1735862400,
-  title = "Zig's @bitCast"
-}

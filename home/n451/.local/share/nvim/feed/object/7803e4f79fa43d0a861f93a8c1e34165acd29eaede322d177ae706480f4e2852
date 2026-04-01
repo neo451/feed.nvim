@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/financials-update/",
-  time = 1643587200,
-  title = "Updated Public Financial Information"
-}

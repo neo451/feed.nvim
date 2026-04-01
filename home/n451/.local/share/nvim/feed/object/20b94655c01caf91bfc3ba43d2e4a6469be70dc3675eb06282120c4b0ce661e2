@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2021-06-07-desktop-v0.12.5/",
-  time = 1623020400,
-  title = "Obsidian 0.12.5 Desktop (Public)"
-}

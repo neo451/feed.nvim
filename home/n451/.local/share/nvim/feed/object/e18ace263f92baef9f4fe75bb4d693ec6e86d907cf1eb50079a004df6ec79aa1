@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/js-callback-organization.html",
-  time = 1376710874,
-  title = "JavaScript Callbacks are Pretty Okay"
-}

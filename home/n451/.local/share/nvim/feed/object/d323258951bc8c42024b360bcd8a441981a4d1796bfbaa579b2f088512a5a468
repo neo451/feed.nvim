@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/why-we-cant-have-nice-software.html",
-  time = 1707088281,
-  title = "Why We Can't Have Nice Software"
-}

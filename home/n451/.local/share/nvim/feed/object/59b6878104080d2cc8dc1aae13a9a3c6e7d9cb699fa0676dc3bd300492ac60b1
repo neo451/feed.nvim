@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2024-03-05-publish/",
-  time = 1709596800,
-  title = "Obsidian 2024.03.05 Publish (Public)"
-}

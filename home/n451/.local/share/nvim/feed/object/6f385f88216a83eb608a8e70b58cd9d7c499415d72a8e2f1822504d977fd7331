@@ -1,6 +1,0 @@
-return {
-  feed = "https://pawelgrzybek.com/feed.xml",
-  link = "https://pawelgrzybek.com/from-1password-to-apple-passwords/",
-  time = 1772409600,
-  title = "From 1Password to Apple Passwords"
-}

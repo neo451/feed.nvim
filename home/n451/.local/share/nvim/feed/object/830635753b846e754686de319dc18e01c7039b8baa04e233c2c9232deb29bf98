@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/terminal_1/",
-  time = 1445904000,
-  title = "Automation and pty(4)"
-}

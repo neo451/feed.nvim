@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/open-letter-everyone-butted-heads.html",
-  time = 1756443148,
-  title = "An Open Letter to Everyone I've Butted Heads With"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/what-to-expect-from-release-month/",
-  time = 1737078411,
-  title = "What to Expect from Release Month"
-}

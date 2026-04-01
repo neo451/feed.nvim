@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/zig-new-cli-progress-bar-explained.html",
-  time = 1717036058,
-  title = "Zig's New CLI Progress Bar Explained"
-}

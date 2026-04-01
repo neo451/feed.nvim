@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/jakub-konka-hired-full-time/",
-  time = 1617653100,
-  title = "Jakub Konka Hired Full Time"
-}

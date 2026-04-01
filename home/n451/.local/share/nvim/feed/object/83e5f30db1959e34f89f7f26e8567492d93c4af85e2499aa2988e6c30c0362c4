@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/7drts-game-reviews.html",
-  time = 1375174472,
-  title = "7dRTS Game Reviews"
-}

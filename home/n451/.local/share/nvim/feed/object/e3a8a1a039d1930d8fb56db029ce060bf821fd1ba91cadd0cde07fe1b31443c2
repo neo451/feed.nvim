@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296167/sunday-metaverse",
-  time = 1774795961,
-  title = "Sunday Metaverse"
-}

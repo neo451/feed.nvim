@@ -11,7 +11,6 @@ local plugins = {
       },
    },
    { "folke/snacks.nvim", lazy = false },
-   { "j-hui/fidget.nvim", lazy = true },
    {
       "MeanderingProgrammer/render-markdown.nvim",
       dependencies = { "echasnovski/mini.icons" },

@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Allocator-resize/",
-  time = 1743033600,
-  title = "Allocator.resize"
-}

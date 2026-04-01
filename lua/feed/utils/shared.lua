@@ -82,15 +82,12 @@ end
 ---@param choices table | string
 ---@return string?
 M.choose_backend = function(choices)
-   local alias = {
-      ["mini.notify"] = "mini",
-   }
    if type(choices) == "string" then
-      return alias[choices] or choices
+      return choices
    end
    for _, v in ipairs(choices) do
       if pcall(require, v) then
-         return alias[v] and alias[v] or v
+         return v
       end
    end
 end

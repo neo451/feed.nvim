@@ -1,7 +1,0 @@
-return {
-  author = "Team Coco & Earwolf",
-  feed = "https://feeds.simplecast.com/dHoohVNH",
-  link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/measure/stitcher.simplecastaudio.com/c945bd13-c7f3-4f22-95b5-4bf98e12b21f/episodes/a8355f62-b5b8-44e7-932b-05ca5e1cee19/audio/128/default.mp3?aid=rss_feed&amp;awCollectionId=c945bd13-c7f3-4f22-95b5-4bf98e12b21f&amp;awEpisodeId=a8355f62-b5b8-44e7-932b-05ca5e1cee19&amp;feed=dHoohVNH",
-  time = 1699506300,
-  title = "Old Sharp-Ass"
-}

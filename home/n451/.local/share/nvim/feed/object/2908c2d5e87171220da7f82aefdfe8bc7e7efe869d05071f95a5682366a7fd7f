@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/using_tox_with_ci/",
-  time = 1481241600,
-  title = "On using tox in CI environments"
-}

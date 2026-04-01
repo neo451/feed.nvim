@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/jmt.html",
-  time = 1312455600,
-  title = "John Muir Trail from the Perspective of Andrew Kelley"
-}

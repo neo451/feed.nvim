@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/string-matching-comptime-perfect-hashing-zig.html",
-  time = 1537023993,
-  title = "String Matching based on Compile Time Perfect Hashing in Zig"
-}

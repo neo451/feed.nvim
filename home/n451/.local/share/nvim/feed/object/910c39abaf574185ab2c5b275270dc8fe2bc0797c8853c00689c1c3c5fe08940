@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/73?utm_source=twin-rss",
-  time = 1717915620,
-  title = "Neovim builtin completion code example, window animations prototype, fzf multiline support, telescope-heading.nvim, cmp-beancount"
-}

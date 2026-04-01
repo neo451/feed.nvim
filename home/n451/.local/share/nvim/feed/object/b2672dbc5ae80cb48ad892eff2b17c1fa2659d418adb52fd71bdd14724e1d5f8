@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296147/borderlands-4-mad-ellie-and-the-vault-of-the-damned-released",
-  time = 1774655386,
-  title = "Borderlands 4: Mad Ellie and the Vault of the Damned Released"
-}

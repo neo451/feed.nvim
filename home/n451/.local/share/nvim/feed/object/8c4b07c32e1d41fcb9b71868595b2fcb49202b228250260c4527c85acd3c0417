@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/migrate-to-self-hosting/",
-  time = 1726170765,
-  title = "Migrating from AWS to Self-Hosting"
-}

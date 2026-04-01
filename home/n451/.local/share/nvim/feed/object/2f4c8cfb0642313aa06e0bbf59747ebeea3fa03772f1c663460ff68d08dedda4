@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/2025-financials/",
-  time = 1756767600,
-  title = "2025 Financial Report and Fundraiser"
-}

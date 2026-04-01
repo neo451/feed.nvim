@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Zigs-New-LinkedList-API/",
-  time = 1744239600,
-  title = "Zig's new LinkedList API (it's time to learn @fieldParentPtr)"
-}

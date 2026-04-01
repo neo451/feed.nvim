@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296146/mega-man-star-force-legacy-collection-released",
-  time = 1774655383,
-  title = "Mega Man Star Force Legacy Collection Released"
-}

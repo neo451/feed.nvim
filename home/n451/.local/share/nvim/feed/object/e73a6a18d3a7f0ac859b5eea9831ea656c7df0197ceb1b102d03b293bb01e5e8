@@ -1,7 +1,0 @@
-return {
-  author = "/u/simon_ximon",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s71cnb/acarionvim_a_port_of_the_clean_highcontrast_doom/",
-  time = 1774801928,
-  title = "Acario.nvim: A port of the clean, high-contrast Doom Emacs theme"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2020-04-02-desktop-v0.0.2/",
-  time = 1585782000,
-  title = "Obsidian 0.0.2 Desktop (Public)"
-}

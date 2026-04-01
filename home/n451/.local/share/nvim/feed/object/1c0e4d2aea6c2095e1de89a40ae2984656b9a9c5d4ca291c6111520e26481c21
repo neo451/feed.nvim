@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/doc/user/news-0.11/",
-  time = -62135596725,
-  title = "News-0.11"
-}

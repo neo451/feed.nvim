@@ -11,12 +11,21 @@ function M.new(total)
    ret.total = total
    ret.count = 0
    ret.t = os.time()
+   ret.progress = {
+      kind = "progress",
+      status = "running",
+      percent = 0,
+      title = "feed.nvim update",
+      source = "feed.nvim",
+   }
    return setmetatable(ret, M)
 end
 
 function M:finish()
    local msg = ("Fetched update in %ds"):format(os.time() - self.t)
    vim.g.feed_progress = msg
+   self.progress.status = "success"
+   self.progress.percent = 100
    vim.schedule(function()
       vim.api.nvim_echo({ { msg } }, true, self.progress)
    end)
@@ -29,19 +38,12 @@ function M:update(msg)
    vim.g.feed_progress = msg
    self.count = self.count + 1
 
-   local progress = {
-      kind = "progress",
-      status = "running",
-      percent = math.floor(self.count / self.total * 100),
-      title = "feed.nvim update",
-      source = "feed.nvim",
-   }
+   self.progress.status = "running"
+   self.progress.percent = math.floor(self.count / self.total * 100)
 
    vim.schedule(function()
-      progress.id = vim.api.nvim_echo({ { msg } }, true, progress)
+      self.progress.id = vim.api.nvim_echo({ { msg } }, true, self.progress)
    end)
-
-   self.progress = progress
 
    if self.count == self.total then
       self:finish()

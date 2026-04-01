@@ -1,6 +1,0 @@
-return {
-  feed = "https://feeds.feedburner.com/ruanyifeng",
-  link = "http://www.ruanyifeng.com/blog/2026/03/weekly-issue-388.html",
-  time = 1773388756,
-  title = "科技爱好者周刊（第 388 期）：测试是新的护城河"
-}

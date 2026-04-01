@@ -1,7 +1,0 @@
-return {
-  author = "Comedy Central",
-  feed = "https://feeds.megaphone.fm/BVLLC2163264914",
-  link = "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/mgln.ai/e/433/claritaspod.com/measure/traffic.megaphone.fm/CBS3548641375.mp3?updated=1727917410",
-  time = 1727937000,
-  title = "How Algorithms, Money, & Bureaucracy Distance us from Democracy"
-}

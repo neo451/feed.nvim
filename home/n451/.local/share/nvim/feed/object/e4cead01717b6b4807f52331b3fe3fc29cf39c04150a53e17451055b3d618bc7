@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/77?utm_source=twin-rss",
-  time = 1722957879,
-  title = "Neovim the most admired editor, live preview markdown with markview.nvim, simple session management with persistance.nvim, control your music player with music-controls.nvim"
-}

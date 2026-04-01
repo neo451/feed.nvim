@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296216/bloodletter-early-access",
-  time = 1774912607,
-  title = "BLOODLETTER Early Access"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://obsidian.md/changelog.xml",
-  link = "https://obsidian.md/changelog/2022-05-24-desktop-v0.14.13/",
-  time = 1653346800,
-  title = "Obsidian 0.14.13 Desktop (Early access)"
-}

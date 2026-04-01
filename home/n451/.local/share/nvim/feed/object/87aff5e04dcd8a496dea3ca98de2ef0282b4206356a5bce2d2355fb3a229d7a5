@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/x84-at-university-of-hawaii/",
-  time = 1418083200,
-  title = "x84 at University of Hawaiʻi"
-}

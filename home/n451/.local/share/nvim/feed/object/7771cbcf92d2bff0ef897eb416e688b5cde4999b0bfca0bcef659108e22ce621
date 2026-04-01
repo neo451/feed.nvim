@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/migrating-from-github-to-codeberg/",
-  time = 1764115200,
-  title = "Migrating from GitHub to Codeberg"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/Comparing-Strings-as-Integers-with-bitCast/",
-  time = 1740009600,
-  title = "Comparing Strings as Integers with @bitCast"
-}

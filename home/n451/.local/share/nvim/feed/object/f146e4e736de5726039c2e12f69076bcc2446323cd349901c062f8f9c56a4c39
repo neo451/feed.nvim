@@ -1,7 +1,0 @@
-return {
-  author = "Zizhou Teng",
-  feed = "https://neo451.github.io/blog/index.xml",
-  link = "https://neo451.github.io/blog/posts/welcome/",
-  time = 1763856000,
-  title = "Welcome To My Blog"
-}

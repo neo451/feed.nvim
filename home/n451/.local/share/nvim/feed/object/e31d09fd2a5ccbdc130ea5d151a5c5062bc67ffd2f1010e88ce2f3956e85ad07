@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/announcing-zig-software-foundation/",
-  time = 1594422000,
-  title = "Announcing the Zig Software Foundation"
-}

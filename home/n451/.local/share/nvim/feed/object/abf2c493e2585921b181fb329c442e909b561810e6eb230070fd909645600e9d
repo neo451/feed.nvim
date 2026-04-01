@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/redis-renamed-to-redict.html",
-  time = 1711139523,
-  title = "Redis Renamed to Redict"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/weekof_2015_feb_04/",
-  time = 1423008000,
-  title = "Week of Feb 04, 2015"
-}

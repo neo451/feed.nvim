@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/news/2022/04/",
-  time = 1650927600,
-  title = "Neovim News #12 - What's New In Neovim 0.7"
-}

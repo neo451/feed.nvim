@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296199/planetforge-protocol-announced",
-  time = 1774885588,
-  title = "PlanetForge Protocol Announced"
-}

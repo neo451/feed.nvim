@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/news/2023/08/",
-  time = 1691535600,
-  title = "Vim Boss"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "/u/pawelgrzybek",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s8y8kn/neovim_012_comes_with_undotree_builtin/",
-  time = 1774983427,
-  title = "Neovim 0.12 comes with undotree built-in"
-}

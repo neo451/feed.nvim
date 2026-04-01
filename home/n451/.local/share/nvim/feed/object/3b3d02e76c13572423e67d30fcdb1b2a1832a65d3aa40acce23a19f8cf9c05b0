@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/state-of-terminal-emulation-2025/",
-  time = 1762041600,
-  title = "State of Terminal Emulators in 2025: The Errant Champions"
-}

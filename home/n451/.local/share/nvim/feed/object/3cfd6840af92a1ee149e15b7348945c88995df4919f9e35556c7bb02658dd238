@@ -1,7 +1,0 @@
-return {
-  author = "/u/AutoModerator",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1ru0g4p/monthly_dotfile_review_thread/",
-  time = 1773536433,
-  title = "Monthly Dotfile Review Thread"
-}

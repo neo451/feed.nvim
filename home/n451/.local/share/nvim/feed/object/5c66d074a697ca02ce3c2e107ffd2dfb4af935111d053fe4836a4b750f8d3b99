@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/news/2022/12/",
-  time = 1672444800,
-  title = "What Neovim shipped in 2022"
-}

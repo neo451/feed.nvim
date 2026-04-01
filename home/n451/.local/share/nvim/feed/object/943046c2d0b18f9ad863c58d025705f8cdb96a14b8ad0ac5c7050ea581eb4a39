@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/news/2015/04/",
-  time = 1428015600,
-  title = "Newsletter #5 - Out of the Box"
-}

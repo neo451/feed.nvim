@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/first-donor-bounty/",
-  time = 1705971600,
-  title = "Donor Bounty: Labeled Switch Continue Syntax"
-}

@@ -1,4 +1,4 @@
-*feed.txt*                 For 0.11                 Last change: 2025 March 20
+*feed.txt*                 For 0.11                 Last change: 2026 April 01
 
 ==============================================================================
 Table of Contents                                     *feed-table-of-contents*

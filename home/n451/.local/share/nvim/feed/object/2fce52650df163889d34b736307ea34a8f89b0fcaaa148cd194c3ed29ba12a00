@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/lemming-pyweek-12.html",
-  time = 1301742000,
-  title = "Lemming - PyWeek #12 Game Development Journal"
-}

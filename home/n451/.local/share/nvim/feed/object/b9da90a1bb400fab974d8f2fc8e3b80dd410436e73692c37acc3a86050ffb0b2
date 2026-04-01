@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/zig-already-more-knowable-than-c.html",
-  time = 1487047799,
-  title = "Zig: Already More Knowable Than C"
-}

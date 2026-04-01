@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/second-donor-bounty/",
-  time = 1739404800,
-  title = "Donor Bounty: Add Support for '-x' In Zig's macOS Linker"
-}

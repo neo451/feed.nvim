@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/statement-regarding-zen-programming-language/",
-  time = 1600038000,
-  title = "Zigソフトウェア財団とZenプログラミング言語に関する声明"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296238/game-history-and-preservation",
-  time = 1774969131,
-  title = "Game History and Preservation"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296234/virtual-reality-check",
-  time = 1774969119,
-  title = "Virtual Reality Check"
-}

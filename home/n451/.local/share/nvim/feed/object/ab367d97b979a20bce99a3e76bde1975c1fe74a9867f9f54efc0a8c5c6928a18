@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.openmymind.net/atom.xml",
-  link = "https://www.openmymind.net/ArenaAllocator-free-and-Nested-Arenas/",
-  time = 1741996800,
-  title = "ArenaAllocator.free and Nested Arenas"
-}

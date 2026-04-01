@@ -1,6 +1,0 @@
-return {
-  feed = "https://feeds.feedburner.com/ruanyifeng",
-  link = "http://www.ruanyifeng.com/blog/2026/03/weekly-issue-389.html",
-  time = 1773993556,
-  title = "科技爱好者周刊（第 389 期）：未来如何招聘程序员"
-}

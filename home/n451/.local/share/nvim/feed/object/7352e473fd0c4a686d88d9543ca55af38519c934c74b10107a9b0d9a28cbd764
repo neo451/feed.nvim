@@ -1,6 +1,0 @@
-return {
-  feed = "https://neovim.io/news.xml",
-  link = "https://neovim.io/news/2017/12/",
-  time = 1513382400,
-  title = "Newsletter #8 - Open up the Windows"
-}

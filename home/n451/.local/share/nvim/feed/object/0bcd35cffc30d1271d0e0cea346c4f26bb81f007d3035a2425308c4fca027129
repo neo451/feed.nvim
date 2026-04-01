@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/full-time-zig.html",
-  time = 1528377630,
-  title = "I Quit My Cushy Job at OkCupid to Live on Donations to Zig"
-}

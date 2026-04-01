@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296162/pubg-blindspot-closing-monday",
-  time = 1774715567,
-  title = "PUBG: BLINDSPOT Closing Monday"
-}

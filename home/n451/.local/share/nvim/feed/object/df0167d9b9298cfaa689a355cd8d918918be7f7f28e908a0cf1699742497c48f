@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296244/nvidia-dlss-4-5-beta",
-  time = 1774969149,
-  title = "NVIDIA DLSS 4.5 Beta"
-}

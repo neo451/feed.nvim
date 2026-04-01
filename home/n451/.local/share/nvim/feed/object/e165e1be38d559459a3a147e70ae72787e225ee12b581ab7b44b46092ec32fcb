@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/raspberry-pi-music-player-server.html",
-  time = 1403222288,
-  title = "Turn Your Raspberry Pi into a Music Player Server"
-}

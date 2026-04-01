@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/zig-december-2017-in-review.html",
-  time = 1514964191,
-  title = "Zig: December 2017 in Review"
-}

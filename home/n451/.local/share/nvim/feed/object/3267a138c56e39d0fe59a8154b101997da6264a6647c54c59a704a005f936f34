@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/79?utm_source=twin-rss",
-  time = 1728414997,
-  title = "Official Supermaven code completion in Neovim, Beautiful menu UI for Neovim, NvChad UI collection, reactive UI development"
-}

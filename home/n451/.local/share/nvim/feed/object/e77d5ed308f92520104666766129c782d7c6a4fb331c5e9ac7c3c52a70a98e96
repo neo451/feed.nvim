@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/goodbye-cpp/",
-  time = 1670443980,
-  title = "Goodbye to the C++ Implementation of Zig"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "/u/barrettruth",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s6y8o1/vimdoclanguageserver_lsp_formatting_diagnostics/",
-  time = 1774794826,
-  title = "vimdoc-language-server: LSP (formatting, diagnostics) for help files"
-}

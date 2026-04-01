@@ -1,6 +1,0 @@
-return {
-  feed = "https://ziglang.org/news/index.xml",
-  link = "https://ziglang.org/news/zig-0.7.1/",
-  time = 1607817600,
-  title = "Zig 0.7.1 Released: 69 Bugs Fixed"
-}

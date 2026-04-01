@@ -1,7 +1,0 @@
-return {
-  author = "/u/forvirringssirkel",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s7yfhe/user_command_for_updating_all_the_packages_vimpack/",
-  time = 1774890596,
-  title = "User command for updating ALL the packages (vim.pack)"
-}

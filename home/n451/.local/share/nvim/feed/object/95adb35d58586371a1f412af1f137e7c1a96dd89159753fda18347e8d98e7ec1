@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/a-better-way-to-implement-bit-fields.html",
-  time = 1487292233,
-  title = "A Better Way to Implement Bit Fields"
-}

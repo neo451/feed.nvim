@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296226/ai-yi-yi",
-  time = 1774969095,
-  title = "AI Yi-Yi!"
-}

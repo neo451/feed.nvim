@@ -1,6 +1,0 @@
-return {
-  feed = "https://pawelgrzybek.com/feed.xml",
-  link = "https://pawelgrzybek.com/more-invoker-commands-and-more-reasons-not-to-use-javascript-please/",
-  time = 1769472000,
-  title = "More invoker commands, and more reasons not to use JavaScript please"
-}

@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/the-techno-optimist-manifesto.html",
-  time = 1697570091,
-  title = "The Techno-Optimist Manifesto"
-}

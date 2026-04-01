@@ -1,6 +1,0 @@
-return {
-  feed = "https://andrewkelley.me/rss.xml",
-  link = "https://andrewkelley.me/post/quest-build-ultimate-music-player.html",
-  time = 1398184744,
-  title = "My Quest to Build the Ultimate Music Player"
-}

@@ -1,7 +1,0 @@
-return {
-  author = "Blue",
-  feed = "https://www.bluesnews.com/news/news_1_0.rdf",
-  link = "https://www.bluesnews.com/s/296177/out-of-the-blue",
-  time = 1774882680,
-  title = "Out of the Blue"
-}

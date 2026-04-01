@@ -1,7 +1,0 @@
-return {
-  author = "/u/BrodoSaggins",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s7u665/syntax_highlighting_not_behaving_as_expected/",
-  time = 1774881744,
-  title = "Syntax highlighting not behaving as expected"
-}

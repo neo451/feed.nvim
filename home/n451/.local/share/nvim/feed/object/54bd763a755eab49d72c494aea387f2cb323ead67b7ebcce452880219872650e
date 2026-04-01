@@ -1,7 +1,0 @@
-return {
-  author = "/u/rainux",
-  feed = "r/neovim",
-  link = "https://www.reddit.com/r/neovim/comments/1s7k5zm/veil_a_new_minimal_macos_gui_client_with_metal/",
-  time = 1774853375,
-  title = "Veil — a new minimal macOS GUI client with Metal rendering"
-}

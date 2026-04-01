@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/tox-and-prospector/",
-  time = 1418083200,
-  title = "Integrating tox and prospector for Static Analysis"
-}

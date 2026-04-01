@@ -1,6 +1,0 @@
-return {
-  feed = "https://dotfyle.com/this-week-in-neovim/rss.xml",
-  link = "https://dotfyle.com/this-week-in-neovim/76?utm_source=twin-rss",
-  time = 1721760685,
-  title = "Neovim configuration without plugins, color picker in Neovim, AI completion source for cmp, chezmoi for Neovim, whichkey.nvim release"
-}

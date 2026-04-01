@@ -1,6 +1,0 @@
-return {
-  feed = "https://www.jeffquast.com/index.xml",
-  link = "https://www.jeffquast.com/post/ucs-detect-test-results/",
-  time = 1702512000,
-  title = "Terminal Emulators Battle Royale – Unicode Edition!"
-}
