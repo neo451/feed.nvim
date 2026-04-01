@@ -206,9 +206,11 @@ M.update = {
             update(buffer)
             buffer = ""
          end
-         vim.defer_fn(function()
-            prog:finish()
-         end, 2000)
+         if prog.count < prog.total then
+            vim.defer_fn(function()
+               prog:finish()
+            end, 2000)
+         end
       end)
    end,
 }

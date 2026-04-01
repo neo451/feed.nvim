@@ -1,4 +1,5 @@
 local date = require("feed.parser.date")
+local Path = require("feed.db.path")
 local ut = require("feed.utils")
 local eq = MiniTest.expect.equality
 local sha = vim.fn.sha256
@@ -45,6 +46,13 @@ T["new"]["prepares all db files"] = function()
       eq(1, vim.fn.filereadable(tostring(dir / "tags.lua")))
       eq(1, vim.fn.filereadable(tostring(dir / "index")))
    end, 1)
+end
+
+T["new"]["keeps absolute paths absolute"] = function()
+   local expected = vim.fs.normalize("~/.feed.nvim.test/")
+   eq(expected, tostring(db.dir))
+   eq(expected, tostring(Path.new(expected)))
+   eq(vim.fs.joinpath(expected, "data"), tostring(db.dir / "data"))
 end
 
 T["new"]["adds entries to db and in memory, with id as key/filename, and content seperately stored"] = function()

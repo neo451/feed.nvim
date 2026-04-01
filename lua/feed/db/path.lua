@@ -1,6 +1,7 @@
 ---@class feed.path
 ---@field save fun(self: feed.path, content: string)
 ---@field load fun(self: feed.path): table
+---@field absolute boolean
 
 local Path = {}
 local uv = vim.uv
@@ -12,22 +13,35 @@ local load_file = ut.load_file
 -- selene: allow(unused_variable)
 local sep = string.sub(package.config, 1, 1)
 
----@param path string | string[]
+---@param path string | string[] | feed.path
 ---@return table
 Path.new = function(path)
+   if getmetatable(path) and getmetatable(path).__index == Path then
+      return path
+   end
+
+   local absolute = false
    if type(path) == "string" then
       path = vim.fs.normalize(path)
+      absolute = vim.startswith(path, sep)
       path = vim.split(path, sep)
+      if absolute and path[1] == "" then
+         table.remove(path, 1)
+      end
    end
-   return setmetatable({ path = path }, {
+   return setmetatable({ path = path, absolute = absolute }, {
       __index = Path,
       __tostring = function(self)
-         return vim.fs.joinpath(unpack(self.path))
+         local joined = vim.fs.joinpath(unpack(self.path))
+         if self.absolute then
+            return sep .. joined
+         end
+         return joined
       end,
       __div = function(self, other)
-         local p = vim.deepcopy(self.path)
-         table.insert(p, other)
-         return Path(p)
+          local p = vim.deepcopy(self.path)
+          table.insert(p, other)
+          return setmetatable({ path = p, absolute = self.absolute }, getmetatable(self))
       end,
    })
 end
