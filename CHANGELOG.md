@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.0.0](https://github.com/neo451/feed.nvim/compare/v2.19.2...v3.0.0) (2026-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* use progress_message and fix path handling
+
+### Features
+
+* use progress_message and fix path handling ([dd087fe](https://github.com/neo451/feed.nvim/commit/dd087fe70b8eb56f5dab7adfc10bb5f8ecc8c400))
+
+
+### Bug Fixes
+
+* download test data ([0299628](https://github.com/neo451/feed.nvim/commit/0299628cd78670198ec2a9faa9cc04767d17e6b7))
+* progress_message ([5a38349](https://github.com/neo451/feed.nvim/commit/5a3834998e7c0fb75ccd94fa717e5bb0f6953521))
+* use vim.pack, nvim-treesitter.install in CI ([59385b1](https://github.com/neo451/feed.nvim/commit/59385b1b0a34e104800b385d5320de800d4772e7))
+
 ## [2.19.2](https://github.com/neo451/feed.nvim/compare/v2.19.1...v2.19.2) (2025-12-15)
 
 
