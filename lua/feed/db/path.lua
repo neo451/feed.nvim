@@ -1,4 +1,5 @@
 ---@class feed.path
+---@field path string
 ---@field save fun(self: feed.path, content: string)
 ---@field load fun(self: feed.path): table
 
@@ -9,25 +10,16 @@ local save_file = ut.save_file
 local read_file = ut.read_file
 local load_file = ut.load_file
 
--- selene: allow(unused_variable)
-local sep = string.sub(package.config, 1, 1)
-
----@param path string | string[]
----@return table
+---@param path string
+---@return feed.path
 Path.new = function(path)
-   if type(path) == "string" then
-      path = vim.fs.normalize(path)
-      path = vim.split(path, sep)
-   end
-   return setmetatable({ path = path }, {
+   return setmetatable({ path = vim.fs.normalize(path) }, {
       __index = Path,
       __tostring = function(self)
-         return vim.fs.joinpath(unpack(self.path))
+         return self.path
       end,
       __div = function(self, other)
-         local p = vim.deepcopy(self.path)
-         table.insert(p, other)
-         return Path(p)
+         return Path(vim.fs.joinpath(self.path, other))
       end,
    })
 end
