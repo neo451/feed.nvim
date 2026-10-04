@@ -1,7 +1,3 @@
----@module "feed.ui"
----@author Zizhou Teng
----@license GPL-3.0
-
 local Win = require("feed.ui.window")
 local Stream = require("feed.ui.stream")
 local config = require("feed.config")
@@ -283,7 +279,6 @@ end
 M.show_full = function()
    local entry = get_entry()
    if entry and entry.link then
-      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       show_entry({ link = entry.link, buf = state.entry.buf })
    else
       vim.notify("no link to fetch")
@@ -292,7 +287,6 @@ end
 
 M.show_prev = function()
    if state.cur > 1 then
-      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       local _, id = get_entry({ row = state.cur - 1 })
       show_entry({ id = id, buf = state.entry.buf })
       mark_read(id)
@@ -303,7 +297,6 @@ end
 
 M.show_next = function()
    if state.cur < #state.entries then
-      api.nvim_exec_autocmds("ExitPre", { buffer = state.entry.buf })
       local _, id = get_entry({ row = state.cur + 1 })
       show_entry({ id = id, buf = state.entry.buf })
       mark_read(id)
