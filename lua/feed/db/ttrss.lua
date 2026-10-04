@@ -156,7 +156,8 @@ for k, v in pairs(methods) do
       if type(v) == "string" then
          return decode_check(Curl.get(url, { data = data }):wait(), k)[v]
       elseif type(v) == "table" and v.async then
-         return Curl.get(url, { data = data }, function(obj)
+         return Curl.get(url, { data = data }, function(err, obj)
+            assert(not err, err)
             return decode_check(obj, k)
          end)
       else
@@ -188,9 +189,9 @@ end
 --    param = param or {}
 --    param.sid = self.sid
 --    param.op = "unsubscribeFeed"
---    Curl.get_co(url, {
+--    Curl.get(url, {
 --       data = param
---    })
+--    }, function() end)
 --    vim.notify("unsubscribed!")
 -- end
 

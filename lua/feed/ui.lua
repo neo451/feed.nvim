@@ -574,16 +574,12 @@ end
 ---load feed from url
 ---@param url string
 M.update_feed = function(url)
-   local Coop = require("coop")
-   local copcall = require("coop.coroutine-utils").copcall
-
    if not url or not ut.looks_like_url(url) then
       return
    end
-   Coop.spawn(function()
-      local ok, res = copcall(fetch.update_feed, url, { force = true })
-      if not ok then
-         vim.notify(ut.url2name(url, db.feeds) .. (ok and " success" or " failed") .. ": " .. res)
+   return fetch.update_feed(url, { force = true }, function(err)
+      if err then
+         vim.notify(ut.url2name(url, db.feeds) .. " failed: " .. tostring(err), vim.log.levels.ERROR)
       end
    end)
 end

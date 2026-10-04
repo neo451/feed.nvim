@@ -165,6 +165,10 @@ M.update = {
    doc = "update all feeds",
    impl = function()
       local n = #ut.feedlist(db.feeds, false)
+      if n == 0 then
+         vim.notify("No feeds configured", vim.log.levels.WARN, { title = "feed.nvim" })
+         return
+      end
       local prog = require("feed.ui.progress").new(n)
       local args = vim.v.argv
       table.remove(args, 1)
@@ -177,14 +181,16 @@ M.update = {
          'lua require"feed.fetch".update()',
       })
       local update = function(line)
-         if vim.trim(line) ~= "" then
-            prog:update(vim.trim(line))
-            vim.schedule(function()
-               if ut.in_index() then
-                  ui.refresh()
-               end
-            end)
+         line = vim.trim(line)
+         if not line:match("^%[%d+/%d+%]") then
+            return
          end
+         prog:update(line)
+         vim.schedule(function()
+            if ut.in_index() then
+               ui.refresh()
+            end
+         end)
       end
       local buffer = ""
       vim.system(cmds, {
