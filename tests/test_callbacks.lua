@@ -20,12 +20,12 @@ local T = MiniTest.new_set({
    },
 })
 
-local function mock_system(response)
+local function mock_system(response, headers)
    vim.system = function(cmd, _, on_exit)
       for i, arg in ipairs(cmd) do
          if arg == "-D" then
             local file = assert(io.open(cmd[i + 1], "w"))
-            file:write("HTTP/1.1 200 OK\r\ncontent-type: application/xml\r\n\r\n")
+            file:write(headers or "HTTP/1.1 200 OK\r\ncontent-type: application/xml\r\n\r\n")
             file:close()
             break
          end
@@ -70,6 +70,24 @@ T["curl uses error-first callbacks"] = function()
    eq(200, response.status)
 end
 
+T["curl uses headers from the final redirect response"] = function()
+   mock_system(
+      { code = 0, stdout = "body" },
+      "HTTP/1.1 301 Moved Permanently\r\n"
+         .. "location: /new-feed\r\n"
+         .. "content-type: text/plain\r\n\r\n"
+         .. "HTTP/2 200\r\n"
+         .. "content-type: application/rss+xml\r\n"
+         .. 'etag: "final"\r\n\r\n'
+   )
+
+   local response = Curl.get("https://example.com/feed", {}):wait()
+   eq(200, response.status)
+   eq("application/rss+xml", response.headers.content_type)
+   eq('"final"', response.etag)
+   eq("https://example.com/feed", response.href)
+end
+
 T["parser returns the request handle and response"] = function()
    local handle = {}
    local response = { status = 304 }
@@ -104,6 +122,20 @@ T["parser propagates request errors"] = function()
    end)
 
    eq("request failed", callback_err)
+end
+
+T["parser explains invalid feed responses"] = function()
+   Curl.get = function(_, _, cb)
+      cb(nil, { code = 0, status = 200, stdout = "<html></html>" })
+      return {}
+   end
+
+   local callback_err
+   parser.parse("https://example.com/feed", {}, function(err)
+      callback_err = err
+   end)
+
+   eq("failed to parse feed: unsupported XML feed type", callback_err)
 end
 
 T["update waits for every feed regardless of completion order"] = function()
