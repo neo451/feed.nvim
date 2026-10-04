@@ -131,7 +131,12 @@ function M.update(on_complete)
 
          completed = completed + 1
          local name = ut.url2name(feed_url, feeds)
-         print(string.format("[%s/%s]", completed, total), name, updated and config.progress.ok or config.progress.err)
+         local status = updated and config.progress.ok or config.progress.err
+         if err then
+            local detail = tostring(err):match("[^\r\n]+")
+            status = status .. ": " .. detail
+         end
+         print(string.format("[%s/%s]", completed, total), name, status)
          print("\n")
          if completed == total then
             finish()

@@ -27,7 +27,12 @@ local function parse_header(fp, url)
       local sects = vim.split(data, "\r\n\r\n")
       local headers = {}
       for _, sect in ipairs(sects) do
-         headers = vim.tbl_extend("keep", headers, parse(sect))
+         local parsed = parse(sect)
+         -- `curl -L` dumps one block per redirect (and proxies may add a
+         -- CONNECT block). The body belongs to the final HTTP response.
+         if parsed.status then
+            headers = parsed
+         end
       end
       return headers
    else
@@ -86,7 +91,7 @@ function M.get(url, opts, cb)
    end
    local process = function(obj)
       if obj.code == 0 then
-         local headers = parse_header(dump_fp, url)
+         local headers = parse_header(dump_fp, url) or {}
          obj.href = headers.location or url
          obj.etag = headers.etag
          obj.last_modified = headers.last_modified
@@ -94,9 +99,10 @@ function M.get(url, opts, cb)
          obj.headers = headers
          local content_type = headers.content_type
          if not opts.api and content_type and (not content_type:find("xml") and not content_type:find("json")) then
-            obj = { status = 404 }
+            obj.error = ("unexpected content type %q"):format(content_type)
          end
       else
+         vim.uv.fs_unlink(dump_fp)
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
       return obj
@@ -108,10 +114,14 @@ function M.get(url, opts, cb)
          { text = true },
          vim.schedule_wrap(function(obj)
             local ok, result = xpcall(process, debug.traceback, obj)
-            if ok then
-               cb(nil, result)
-            else
+            if not ok then
                cb(result, nil)
+            elseif result.code ~= 0 then
+               local detail = vim.trim(result.stderr or "")
+               local err = ("curl failed with exit code %d"):format(result.code)
+               cb(detail == "" and err or (err .. ": " .. detail), nil)
+            else
+               cb(nil, result)
             end
          end)
       )

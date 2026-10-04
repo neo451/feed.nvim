@@ -31,20 +31,22 @@ local ut = require("feed.utils")
 ---@param src string
 ---@param url string
 ---@return feed.feed?
+---@return string?
 local function parse_src(src, url)
    if vim.startswith(vim.trim(src), "{") then
       local ast = vim.json.decode(src, { luanil = { object = true } })
       return require("feed.parser.json")(ast, url)
    else
       local ast = xml.parse(src, url)
-      if ast then
-         if ast["rss"] or ast["rdf:RDF"] then
-            return require("feed.parser.rss")(ast, url)
-         elseif ast["feed"] then
-            return require("feed.parser.atom")(ast, url)
-         else
-            log.warn(url, "unknown feedtype")
-         end
+      if not ast then
+         return nil, "invalid XML"
+      elseif ast["rss"] or ast["rdf:RDF"] then
+         return require("feed.parser.rss")(ast, url)
+      elseif ast["feed"] then
+         return require("feed.parser.atom")(ast, url)
+      else
+         log.warn(url, "unknown feed type")
+         return nil, "unsupported XML feed type"
       end
    end
 end
@@ -77,20 +79,34 @@ function M.parse(url, opts, cb)
             return
          end
 
-         local parsed, result = xpcall(function()
-            if response and response.stdout and valid_response[response.status] then
-               local d = parse_src(response.stdout, url)
-               if d then
-                  return vim.tbl_extend("keep", response, d)
-               end
+         local parsed, result, parse_err = xpcall(function()
+            if not response then
+               return nil, "request returned no response"
+            elseif not response.status then
+               return nil, "request returned no HTTP status"
+            elseif not valid_response[response.status] then
+               return nil, ("request failed with HTTP status %d"):format(response.status)
+            elseif response.status == 304 then
+               return response
+            elseif response.error then
+               return nil, response.error
+            elseif not response.stdout or vim.trim(response.stdout) == "" then
+               return nil, "feed response was empty"
             end
-            return response
+
+            local d, reason = parse_src(response.stdout, url)
+            if not d then
+               return nil, "failed to parse feed: " .. (reason or "unknown format")
+            end
+            return vim.tbl_extend("keep", response, d)
          end, debug.traceback)
 
-         if parsed then
-            finish(nil, result)
-         else
+         if not parsed then
             finish(result, nil)
+         elseif not result then
+            finish(parse_err, nil)
+         else
+            finish(nil, result)
          end
       end)
    end, debug.traceback)

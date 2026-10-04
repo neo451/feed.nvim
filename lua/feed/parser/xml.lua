@@ -1,4 +1,3 @@
-local lpeg = vim.lpeg
 local log = require("feed.lib.log")
 local ut = require("feed.utils")
 
@@ -86,8 +85,18 @@ end
 ---@return string
 H.CharRef = function(node, src)
    local text = get_text(node, src)
-   local num = text and tonumber(text:sub(3, -2)) or nil
-   return num and string.char(num) or ""
+   local value = text and text:match("^&#[xX]([%da-fA-F]+);$")
+   local num = value and tonumber(value, 16)
+   if not num then
+      value = text and text:match("^&#(%d+);$")
+      num = value and tonumber(value, 10)
+   end
+   if not num then
+      return text or ""
+   end
+
+   local ok, char = pcall(vim.fn.nr2char, num)
+   return ok and char or text
 end
 
 ---@param node TSNode
@@ -173,14 +182,21 @@ local parse = vim.F.nil_wrap(function(src, url)
    if root:has_error() then
       log.warn(url, "treesitter err")
    end
-   local collected = {}
+   local declaration
+   local document
    for node in root:iter_children() do
-      collected[#collected + 1] = H[node:type()](node, src)
+      local node_type = node:type()
+      if node_type == "prolog" then
+         declaration = H.prolog(node, src)
+      elseif node_type == "element" then
+         document = H.element(node, src)
+         break
+      end
    end
-   if collected[1].encoding then
-      collected[2].encoding = collected[1].encoding
+   if document and declaration and declaration.encoding then
+      document.encoding = declaration.encoding
    end
-   return #collected == 2 and collected[2] or collected[1]
+   return document
 end)
 
 return { parse = parse }
