@@ -207,6 +207,16 @@ function M:show()
 
    self.augroup = api.nvim_create_augroup("feed.win." .. self.id, { clear = true })
 
+   -- Commands such as `:quit` can close the window without going through
+   -- `M:close()`. Clean up the buffer and any backdrop in that case.
+   api.nvim_create_autocmd("WinClosed", {
+      group = self.augroup,
+      pattern = tostring(self.win),
+      callback = function()
+         self:close()
+      end,
+   })
+
    -- update window size when resizing
    api.nvim_create_autocmd({ "VimResized", "CmdwinLeave" }, {
       group = self.augroup,
