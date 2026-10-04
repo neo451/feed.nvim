@@ -49,6 +49,9 @@
 - Neovim 0.12
 - [curl](https://curl.se/download.html)
 - [pandoc](https://www.pandoc.org)
+- `tar`
+- [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/crates/cli) 0.26.1 or later
+- A C compiler
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) with the `xml`, `html`, `markdown`, and `markdown_inline` parsers
 
 ### Optional Dependencies
