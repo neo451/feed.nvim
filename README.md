@@ -49,8 +49,7 @@
 - Neovim 0.12
 - [curl](https://curl.se/download.html)
 - [pandoc](https://www.pandoc.org)
-- tree-sitter-xml
-- tree-sitter-html
+- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) with the `xml`, `html`, `markdown`, and `markdown_inline` parsers
 
 ### Optional Dependencies
 
@@ -81,6 +80,16 @@ For [lazy.nvim](https://github.com/folke/lazy.nvim):
 return {
    "neo451/feed.nvim",
    cmd = "Feed",
+   dependencies = {
+      {
+         "nvim-treesitter/nvim-treesitter",
+         lazy = false,
+         build = ":TSUpdate",
+         config = function()
+            require("nvim-treesitter").install({ "xml", "html", "markdown", "markdown_inline" })
+         end,
+      },
+   },
    ---@module 'feed'
    ---@type feed.config
    opts = {},

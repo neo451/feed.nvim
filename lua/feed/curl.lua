@@ -52,7 +52,7 @@ end
 
 ---@param url string
 ---@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
----@param cb? any
+---@param cb? fun(err: any?, response: vim.SystemCompleted?)
 ---@return vim.SystemObj
 function M.get(url, opts, cb)
    opts = opts or {}
@@ -85,7 +85,6 @@ function M.get(url, opts, cb)
       table.insert(cmds, opts.data)
    end
    local process = function(obj)
-      cb = cb and vim.schedule_wrap(cb)
       if obj.code == 0 then
          local headers = parse_header(dump_fp, url)
          obj.href = headers.location or url
@@ -100,31 +99,29 @@ function M.get(url, opts, cb)
       else
          log.warn("[feed.nvim]:", url, obj.stderr)
       end
-      return cb and cb(obj) or obj
+      return obj
    end
 
    if cb then
-      return vim.system(cmds, { text = true }, cb and process or nil)
-   else
-      return setmetatable({}, {
-         __index = function(_, k)
-            if k == "wait" then
-               return process(vim.system(cmds, { text = true }):wait())
+      return vim.system(
+         cmds,
+         { text = true },
+         vim.schedule_wrap(function(obj)
+            local ok, result = xpcall(process, debug.traceback, obj)
+            if ok then
+               cb(nil, result)
+            else
+               cb(result, nil)
             end
-         end,
-      })
+         end)
+      )
    end
 
-   -- TODO: Curl.get just return the vim.system obj, call :wait to sync
-   -- return cb and vim.system(cmds, { text = true }, cb and process or nil)
-   --    or process(vim.system(cmds, { text = true }):wait())
-end
-
----@async
-M.get_co = function(url, opts)
-   local task_utils = require("coop.task-utils")
-   local f_utils = require("coop.functional-utils")
-   return task_utils.cb_to_tf(f_utils.shift_parameters(M.get))(url, opts)
+   return {
+      wait = function(_, timeout)
+         return process(vim.system(cmds, { text = true }):wait(timeout))
+      end,
+   }
 end
 
 return M

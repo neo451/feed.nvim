@@ -52,23 +52,53 @@ end
 local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
 -- local encoding_blacklist = ut.list2lookup({ "gb2312" })
 
----process feed fetch from source
----@param url  string
+---Process a feed fetched from a URL.
+---@param url string
 ---@param opts? { etag?: string, last_modified?: string, timeout?: integer }
----@return feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }
----@async
-function M.parse(url, opts)
+---@param cb fun(err: any?, result: feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }?)
+---@return vim.SystemObj
+function M.parse(url, opts, cb)
    opts = opts or {}
-   local Curl = require("feed.curl")
-   local response = Curl.get_co(ut.extend_import_url(url), opts)
-
-   if response and response.stdout and valid_response[response.status] then
-      local d = parse_src(response.stdout, url)
-      if d then
-         return vim.tbl_extend("keep", response, d)
+   assert(type(cb) == "function", "feed.parse requires a callback")
+   local called = false
+   local finish = function(err, result)
+      if called then
+         return
       end
+      called = true
+      cb(err, result)
    end
-   return response
+
+   local Curl = require("feed.curl")
+   local ok, handle = xpcall(function()
+      return Curl.get(ut.extend_import_url(url), opts, function(err, response)
+         if err then
+            finish(err, nil)
+            return
+         end
+
+         local parsed, result = xpcall(function()
+            if response and response.stdout and valid_response[response.status] then
+               local d = parse_src(response.stdout, url)
+               if d then
+                  return vim.tbl_extend("keep", response, d)
+               end
+            end
+            return response
+         end, debug.traceback)
+
+         if parsed then
+            finish(nil, result)
+         else
+            finish(result, nil)
+         end
+      end)
+   end, debug.traceback)
+
+   if ok then
+      return handle
+   end
+   finish(handle, nil)
 end
 
 M.parse_src = parse_src

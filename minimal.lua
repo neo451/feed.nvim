@@ -4,6 +4,16 @@ load(vim.fn.system("curl -s https://raw.githubusercontent.com/folke/lazy.nvim/ma
 local plugins = {
    {
       "neo451/feed.nvim",
+      dependencies = {
+         {
+            "nvim-treesitter/nvim-treesitter",
+            lazy = false,
+            build = ":TSUpdate",
+            config = function()
+               require("nvim-treesitter").install({ "xml", "html", "markdown", "markdown_inline" })
+            end,
+         },
+      },
       opts = {
          feeds = {
             "https://neovim.io/news.xml",
