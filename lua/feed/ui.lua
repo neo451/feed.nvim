@@ -119,22 +119,6 @@ local function image_attach(buf)
    end
 end
 
-local function hl_entry(buf)
-   if not api.nvim_buf_is_valid(buf) then
-      return
-   end
-   for i, t in ipairs({
-      { 7, "FeedTitle" },
-      { 8, "FeedAuthor" },
-      { 6, "FeedFeed" },
-      { 6, "FeedLink" },
-      { 6, "FeedDate" },
-   }) do
-      local j, hi = t[1], t[2]
-      hl.range(buf, ns_entry, hi, { i - 1, j }, { i - 1, 200 })
-   end
-end
-
 local function hl_line(buf, line, coords, linenr)
    for _, coord in ipairs(coords) do
       local byte_start, byte_end = ut.display_to_byte_range(line, coord.start, coord.stop)
@@ -227,7 +211,6 @@ local function show_entry(ctx, win_opts)
    end
 
    local function on_exit()
-      hl_entry(buf)
       image_attach(buf)
 
       if not is_preview then
@@ -242,10 +225,16 @@ local function show_entry(ctx, win_opts)
 
    vim.bo[buf].modifiable = true
    api.nvim_buf_set_lines(buf, 0, -1, false, {})
+   api.nvim_buf_clear_namespace(buf, ns_entry, 0, -1)
    local layout = config.entry
    for linenr, k in ipairs(layout.order) do
-      local line = string.format("%s: %s", ut.capticalize(k), layout[k].format(id, db) or "")
+      local section = layout[k]
+      local prefix = ut.capticalize(k) .. ": "
+      local line = prefix .. (section.format(id, db) or "")
       api.nvim_buf_set_lines(buf, linenr - 1, linenr, false, { line })
+      if section.color then
+         hl.range(buf, ns_entry, section.color, { linenr - 1, #prefix }, { linenr - 1, -1 })
+      end
    end
 
    api.nvim_buf_set_lines(buf, -1, -1, false, { "" })
