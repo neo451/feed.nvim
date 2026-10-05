@@ -1,9 +1,9 @@
 local log = require("feed.lib.log")
-local ut = require("feed.utils")
+local ts = require("feed.treesitter")
 
-local get_text = ut.get_text
-local get_root = ut.get_root
-local tree_contains = ut.tree_contains
+local get_text = ts.get_text
+local get_root = ts.get_root
+local tree_contains = ts.tree_contains
 
 local ENTITIES = {
    ["&lt;"] = "<",
@@ -104,7 +104,7 @@ end
 ---@return string
 H.EntityRef = function(node, src)
    local entity = get_text(node, src)
-   return ENTITIES[entity]
+   return ENTITIES[entity] or entity
 end
 
 ---@param node TSNode
@@ -124,7 +124,10 @@ H.content = function(node, src)
    end
    for child in node:iter_children() do
       local T = child:type()
-      ret[#ret + 1] = H[T](child, src)
+      local handler = H[T]
+      if handler then
+         ret[#ret + 1] = handler(child, src)
+      end
    end
    if not tree_contains(node, "element") then
       return { table.concat(ret) }
@@ -177,7 +180,7 @@ end
 ---@param url string
 ---@return table?
 local parse = vim.F.nil_wrap(function(src, url)
-   ut.assert_parser("xml")
+   ts.assert_parser("xml")
    local root = get_root(src, "xml")
    if root:has_error() then
       log.warn(url, "treesitter err")

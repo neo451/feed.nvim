@@ -119,7 +119,7 @@ end
 --- from plenary.nvim
 ---@param str string
 ---@param width integer
----@param right_justify boolean
+---@param right_justify? boolean
 ---@return string
 M.align = function(str, width, right_justify)
    local str_len = fn.strdisplaywidth(str)
@@ -130,12 +130,10 @@ end
 ---@param str string
 ---@return string
 M.unescape = function(str)
-   return select(
-      1,
-      str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
-         return string.sub(s, 2)
-      end)
-   )
+   local unescaped = str:gsub("(\\%*", "*"):gsub("(\\[%[%]`%-!|#<>_()$.])", function(s)
+      return string.sub(s, 2)
+   end)
+   return unescaped
 end
 
 ---@param str string
@@ -146,7 +144,7 @@ end
 
 ---@param str string
 ---@param sep string
----@return Iter
+---@return vim.Iter<string, unknown>
 M.split = function(str, sep)
    return vim.iter(vim.split(str, sep))
       :map(function(v)

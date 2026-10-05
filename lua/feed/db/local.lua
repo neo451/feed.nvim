@@ -2,6 +2,7 @@ local Path = require("feed.db.path")
 local config = require("feed.config")
 local query = require("feed.db.query")
 local ut = require("feed.utils")
+local strings = require("feed.strings")
 local uv = vim.uv
 
 ---@class feed.db
@@ -159,7 +160,7 @@ function M:tag(id, tag)
    end
    if type(tag) == "string" then
       if tag:find(",") then
-         for t in ut.split(tag, ",") do
+         for t in strings.split(tag, ",") do
             tag_one(t)
          end
       else
@@ -179,7 +180,7 @@ function M:untag(id, tag)
    end
    if type(tag) == "string" then
       if tag:find(",") then
-         for t in ut.split(tag, ",") do
+         for t in strings.split(tag, ",") do
             untag_one(t)
          end
       else

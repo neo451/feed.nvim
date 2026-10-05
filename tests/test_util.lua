@@ -1,4 +1,4 @@
-local util = require("feed.utils")
+local url = require("feed.url")
 
 local eq = MiniTest.expect.equality
 
@@ -12,7 +12,7 @@ T["get_urls"] = function()
 [^2] <https://www.reddit.com/user/jlombera>
 
 [^3] <https://www.reddit.com/r/neovim/comments/1ku3d78/nonremote_neovim_plugins_written_in_c/>]]
-   local urls = util.get_urls(nil, vim.split(src, "\n"))
+   local urls = url.get_urls(nil, vim.split(src, "\n"))
    eq({
       "https://neovim.io/doc/user/api.html",
       "https://www.reddit.com/user/jlombera",

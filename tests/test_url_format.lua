@@ -1,6 +1,6 @@
 local eq = MiniTest.expect.equality
-local import = require("feed.utils").extend_import_url
-local export = require("feed.utils").extend_export_url
+local import = require("feed.url").extend_import_url
+local export = require("feed.url").extend_export_url
 
 local T = MiniTest.new_set()
 

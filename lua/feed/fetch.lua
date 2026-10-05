@@ -48,7 +48,7 @@ function M.update_feed(url, opts, cb)
             end
             if d.status == 301 or d.status == 308 then
                feeds[url] = false
-               url = ut.url_resolve(url, d.href)
+               url = require("feed.url").url_resolve(url, d.href)
             elseif not valid_response[d.status] or encoding_blacklist[d.encoding] then
                feeds[url] = nil
                return false

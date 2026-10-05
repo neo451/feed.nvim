@@ -26,7 +26,7 @@ function MyPreviewer:gen_winopts()
    return vim.tbl_extend("force", self.winopts, config.options.entry.wo)
 end
 
--- TODO: overide the default .. s
+-- TODO: override the default settings
 
 local function feed_search()
    fzf.fzf_live(function(str)
@@ -68,7 +68,7 @@ local function feed_grep(opts)
    -- we only need 'fn_preprocess' in order to display 'git_icons'
    -- it runs once before the actual command to get modified files
    -- 'make_entry.file' uses 'opts.diff_files' to detect modified files
-   -- will probaly make this more straight forward in the future
+   -- This will probably become more straightforward in the future.
    opts.fn_preprocess = function(o)
       opts.diff_files = fzf_lua.make_entry.preprocess(o).diff_files
       return opts

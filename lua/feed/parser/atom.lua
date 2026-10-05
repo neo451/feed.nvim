@@ -1,7 +1,8 @@
 local date = require("feed.parser.date")
 local resolve = require("feed.parser.html").resolve
 local ut = require("feed.utils")
-local clean = ut.clean
+local url_util = require("feed.url")
+local clean = ut.feed_field_cleanup
 
 local function handle_version(node)
    if node.version == "1.0" or not node.version then
@@ -14,15 +15,16 @@ end
 ---@return string?
 local function handle_link(node, base)
    local T = type(node.link)
-   base = ut.url_rebase(node, base)
+   base = url_util.url_rebase(node, base)
    if T == "table" then
       local list = ut.listify(node.link)
       for _, v in ipairs(list) do
          if v.rel == "alternate" then
-            return ut.url_resolve(base, v.href)
+            return url_util.url_resolve(base, v.href)
          end
       end
-      return ut.url_resolve(list[1].href)
+      local first = list[1]
+      return first and url_util.url_resolve(first.href)
    elseif T == "string" then
       return node.link
    end
@@ -94,7 +96,7 @@ end
 ---@return table
 local handle_entry = function(entry, feed, base, url)
    local res = {}
-   local entry_base = ut.url_rebase(entry, base)
+   local entry_base = url_util.url_rebase(entry, base)
    res.link = handle_link(entry, entry_base)
    res.time = handle_date(entry)
    res.title = handle_title(entry, "no title")
@@ -107,7 +109,7 @@ end
 return function(ast, url)
    local res = {}
    local feed = ast.feed
-   local base = ut.url_rebase(feed, url)
+   local base = url_util.url_rebase(feed, url)
    res.version = handle_version(feed)
    res.link = handle_link(feed, base)
    res.desc = handle_description(feed)

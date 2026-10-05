@@ -16,10 +16,10 @@
 ---@class feed.entry
 ---@field feed string url to the feed
 ---@field link string url to the entry
----@field time integer -> os.time
----@field title string -> "no title"
+---@field time integer Unix timestamp from os.time
+---@field title string Defaults to "no title"
 ---@field author? string
----@field content? string -> ""
+---@field content? string Defaults to an empty string
 ---@field tags? table<string, boolean>
 ---@field id? string reference in the db, only exists if entry is produced by get_entry, else not stored in the object
 
@@ -27,6 +27,7 @@ local M = {}
 local xml = require("feed.parser.xml")
 local log = require("feed.lib.log")
 local ut = require("feed.utils")
+local url_util = require("feed.url")
 
 ---@param src string
 ---@param url string
@@ -73,7 +74,7 @@ function M.parse(url, opts, cb)
 
    local Curl = require("feed.curl")
    local ok, handle = xpcall(function()
-      return Curl.get(ut.extend_import_url(url), opts, function(err, response)
+      return Curl.get(url_util.extend_import_url(url), opts, function(err, response)
          if err then
             finish(err, nil)
             return

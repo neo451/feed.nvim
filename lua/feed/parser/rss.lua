@@ -1,7 +1,8 @@
 local date = require("feed.parser.date")
 local ut = require("feed.utils")
-local clean = ut.clean
+local clean = ut.feed_field_cleanup
 local resolve = require("feed.parser.html").resolve
+local url_util = require("feed.url")
 
 local function handle_version(ast)
    local version
@@ -35,16 +36,16 @@ local function handle_link(node, base) -- TODO: base and rebase modified for rss
    end
    if node.link then
       if node.link and node.link["href"] then -- TODO:???
-         return ut.url_resolve(base, node.link["href"])
+         return url_util.url_resolve(base, node.link["href"])
       end
       if type(node.link[1]) == "string" then
-         return ut.url_resolve(base, node.link[1])
+         return url_util.url_resolve(base, node.link[1])
       end
       for _, v in ipairs(node.link) do
          if v.rel == "alternate" then
-            return ut.url_resolve(base, v.href)
+            return url_util.url_resolve(base, v.href)
          elseif v.rel == "self" then
-            return ut.url_resolve(base, v.href)
+            return url_util.url_resolve(base, v.href)
          end
       end
    end

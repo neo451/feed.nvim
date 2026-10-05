@@ -1,6 +1,6 @@
 local date = require("feed.parser.date")
 local ut = require("feed.utils")
-local clean = ut.clean
+local clean = ut.feed_field_cleanup
 local resolve = require("feed.parser.html").resolve
 
 local function handle_title(node, fallback)

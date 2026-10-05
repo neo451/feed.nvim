@@ -95,7 +95,7 @@
 
 ---@class ttrssApi
 ---@field getHeadlines fun(self: ttrssApi, param: ttrss.headlineParams): ttrss.headline[]
----@field getFeeds fun(self: ttrssApi, param: { cat_id: integer, unread_only: boolean, limit: integer, offset: integer, inclued_nested: boolean }): ttrss.feed[]
+---@field getFeeds fun(self: ttrssApi, param: { cat_id: integer, unread_only: boolean, limit: integer, offset: integer, include_nested: boolean }): ttrss.feed[]
 ---@field getArticle fun(self: ttrssApi, param: { article_id: string | integer }): ttrss.article[]
 ---@field getUnread fun(self: ttrssApi): integer
 ---@field getVersion fun(self: ttrssApi): string
@@ -143,8 +143,8 @@ local methods = {
    getLabels = true,
    getConfig = true,
    getCounters = true, -- TODO: no idea what is this...
-   updateArticle = { aync = true },
-   setArticleLabel = { aync = true },
+   updateArticle = { async = true },
+   setArticleLabel = { async = true },
 }
 
 for k, v in pairs(methods) do

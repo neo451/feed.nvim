@@ -55,7 +55,7 @@ T["new"]["keeps absolute paths absolute"] = function()
    eq(vim.fs.joinpath(expected, "data"), tostring(db.dir / "data"))
 end
 
-T["new"]["adds entries to db and in memory, with id as key/filename, and content seperately stored"] = function()
+T["new"]["adds entries to db and in memory, with id as key/filename, and content separately stored"] = function()
    local entry = {
       link = "https://example.com",
       title = "zig",
@@ -126,7 +126,7 @@ T["tag"]["tag/untag"] = function()
    eq(nil, db.tags.star[id])
 end
 
-T["tag"]["tag comma seperated string or a list of tags"] = function()
+T["tag"]["tag comma separated string or a list of tags"] = function()
    local entry = { time = 1, title = "zig" }
    local id = sha(entry.link)
    db[id] = entry

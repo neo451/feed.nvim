@@ -1,7 +1,7 @@
-local ut = require("feed.utils")
+local strings = require("feed.strings")
 local layout = require("feed.config").winbar
 local concat, format = table.concat, string.format
-local align = ut.align
+local align = strings.align
 
 local M = {}
 local hi_pattern = "%%#%s#%s%%*"
@@ -47,6 +47,7 @@ end
 function _G._feed_bar_component(name)
    local sect = layout[name]
    local width = type(sect.width) == "number" and sect.width or #name
+   ---@cast width integer
    local color = layout[name].color
    local text
    if layout[name].format then

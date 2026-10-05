@@ -127,7 +127,7 @@ T["url resolover"] = MiniTest.new_set({
       {
          "url_atom.xml",
          {
-            link = "http://placehoder.feed/index.html",
+            link = "http://placeholder.feed/index.html",
             [1] = {
                link = "http://example.org/archives/000001.html",
             },
@@ -205,7 +205,7 @@ T["sample-feeds.com"] = MiniTest.new_set({
       --             link = "https://www.youtube.com/channel/UCpXBGqwsBkpvcYjsJBQ7LEQ",
       --             [1] = {
       --                title = "The Aurora Grows | Critical Role | Campaign 3, Episode 49",
-      --                linke = "https://www.youtube.com/watch?v=0_NVdZp8haA",
+      --                link = "https://www.youtube.com/watch?v=0_NVdZp8haA",
       --                content = [[
       -- This episode is sponsored by Thorum. Enjoy 20% off your Thorum ring with code Criticalrole at https://Thorum.com
       --
@@ -265,7 +265,7 @@ T["sample-feeds.com"] = MiniTest.new_set({
 })
 
 local function check(filename, checks, debug)
-   local f = M.parse_src(readfile(filename), "http://placehoder.feed")
+   local f = M.parse_src(readfile(filename), "http://placeholder.feed")
    assert(f, "")
    if debug then
       vim.print(f)

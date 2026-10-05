@@ -14,7 +14,7 @@ local M = {}
 ---@field re? vim.regex[]
 ---@field not_re? vim.regex[] ##
 
----wrapper arround vim.regex, ! is inverse, respects vim.o.ignorecase
+---Wrapper around vim.regex; ! is inverse and respects vim.o.ignorecase.
 ---@param str string
 local function build_regex(str, ignorecase)
    ignorecase = vim.F.if_nil(ignorecase, config.search.ignorecase)

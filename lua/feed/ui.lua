@@ -6,6 +6,8 @@ local curl = require("feed.curl")
 local opml = require("feed.opml")
 local fetch = require("feed.fetch")
 local ut = require("feed.utils")
+local strings = require("feed.strings")
+local url_util = require("feed.url")
 local db = require("feed.db")
 local state = require("feed.state")
 local undo_history = state.undo_history
@@ -121,12 +123,12 @@ end
 
 local function hl_line(buf, line, coords, linenr)
    for _, coord in ipairs(coords) do
-      local byte_start, byte_end = ut.display_to_byte_range(line, coord.start, coord.stop)
+      local byte_start, byte_end = strings.display_to_byte_range(line, coord.start, coord.stop)
       hl.range(buf, ns, coord.color, { linenr - 1, byte_start }, { linenr - 1, byte_end })
    end
 end
 
----TODO: generlize too be also user denfinable
+---TODO: Generalize this so it can be user-defined.
 M.headline = function(id, layout, _db)
    layout = layout or config.picker
    _db = _db or db
@@ -138,7 +140,7 @@ M.headline = function(id, layout, _db)
       local v = layout[name]
       local text = v.format(id, _db) or entry[name]
       local width = type(v.width) == "number" and v.width or vim.fn.strdisplaywidth(text)
-      text = ut.align(text, width + 1, v.right_justify)
+      text = strings.align(text, width + 1, v.right_justify)
       res[#res + 1] = text
       coords[#coords + 1] = {
          start = acc,
@@ -229,7 +231,7 @@ local function show_entry(ctx, win_opts)
    local layout = config.entry
    for linenr, k in ipairs(layout.order) do
       local section = layout[k]
-      local prefix = ut.capticalize(k) .. ": "
+      local prefix = strings.capticalize(k) .. ": "
       local line = prefix .. (section.format(id, db) or "")
       api.nvim_buf_set_lines(buf, linenr - 1, linenr, false, { line })
       if section.color then
@@ -296,7 +298,7 @@ end
 
 M.show_urls = function()
    local entry = get_entry()
-   M.select(ut.get_urls(entry.link), {
+   M.select(url_util.get_urls(entry.link), {
       prompt = "urlview",
    }, function(item)
       return item and vim.ui.open(item)
@@ -408,7 +410,7 @@ end
 
 M.load_opml = function(path)
    local str
-   if ut.looks_like_url(path) then
+   if url_util.looks_like_url(path) then
       str = curl.get(path, {}):wait().stdout
    else
       path = fs.normalize(path)
@@ -556,7 +558,7 @@ end
 ---load feed from url
 ---@param url string
 M.update_feed = function(url)
-   if not url or not ut.looks_like_url(url) then
+   if not url or not url_util.looks_like_url(url) then
       return
    end
    return fetch.update_feed(url, { force = true }, function(err)

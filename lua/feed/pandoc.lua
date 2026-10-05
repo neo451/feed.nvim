@@ -1,5 +1,5 @@
 local health = require("feed.health")
-local ut = require("feed.utils")
+local strings = require("feed.strings")
 
 ---@class pandoc_args
 ---@field link string
@@ -48,7 +48,7 @@ local function convert(ctx)
          -- TODO: log err
          stdout = vim.schedule_wrap(function(_, data)
             if data then
-               return stdout(ut.unescape(data))
+               return stdout(strings.unescape(data))
             end
          end),
       }, vim.schedule_wrap(on_exit))
@@ -57,7 +57,7 @@ local function convert(ctx)
          text = true,
          stdin = src,
       }):wait()
-      obj.stdout = ut.unescape(obj.stdout)
+      obj.stdout = obj.stdout and strings.unescape(obj.stdout)
       return obj
    end
 end
