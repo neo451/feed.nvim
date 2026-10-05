@@ -71,9 +71,7 @@ formats.date_short = function(id, db)
 end
 
 formats.link = function(id, db)
-   local utils = require("feed.utils")
    local link = db[id].link and db[id].link or ""
-   link = utils.truncate(link, 90)
    return "<" .. link .. ">"
 end
 
@@ -153,21 +151,27 @@ default = {
    entry = {
       order = { "title", "author", "feed", "link", "date", "tags" },
       link = {
+         color = "FeedLink",
          format = formats.link,
       },
       date = {
+         color = "FeedDate",
          format = formats.date_long,
       },
       author = {
+         color = "FeedAuthor",
          format = formats.author,
       },
       feed = {
+         color = "FeedFeed",
          format = formats.feed,
       },
       tags = {
+         color = "FeedTags",
          format = formats.tags,
       },
       title = {
+         color = "FeedTitle",
          format = formats.title,
       },
    },
