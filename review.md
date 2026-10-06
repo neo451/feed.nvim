@@ -1,33 +1,5 @@
 ## Real potential bugs
 
-### 1A — High-confidence, localized fixes
-
-1. Split windows can close with a nil previous window
-   lua/feed/ui/window.lua:434
-   nvim_set_current_win(self.opts.prev_win) receives nil for windows created by
-   M.split.
-
-2. Entry content may be either a string or function
-   lua/feed/ui.lua:255
-   Code always invokes entry.content().
-
-3. Missing database entry is dereferenced
-   lua/feed/ui.lua:96, lua/feed/server/init.lua:58-75
-   Stale IDs can cause nil dereferences instead of a clean error/404.
-
-4. Malformed index lines are not handled
-   lua/feed/db/local.lua:58
-   Failed pattern matching produces invalid IDs/timestamps.
-
-5. Empty TTRSS article responses are indexed directly
-   lua/feed/db/ttrss.lua:290,303
-
-6. Failed --version commands may have nil stdout
-   lua/feed/health.lua:58
-
-7. Invalid split percentages crash
-   lua/feed/ui/components.lua:15
-
 ### 1B — Error-path and data-integrity bugs
 
 - Redirect resolution can return nil and overwrite url: lua/feed/fetch.lua:51
@@ -111,5 +83,3 @@ Suggested implementation order
 1. Mini picker passes two return values as buffer lines
    lua/feed/pickers/mini/pick.lua:72
    { ui.headline(id) } captures both headline and coordinate table.
-
-
