@@ -3,7 +3,7 @@
 ---@field parse function
 local M = {}
 
----@param usr_config feed.config
+---@param usr_config feed.userConfig
 M.setup = function(usr_config)
    require("feed.config").resolve(usr_config)
    require("feed.db"):setup_sync(usr_config.feeds)

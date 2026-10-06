@@ -58,18 +58,18 @@
 ---@field limit? integer limits the amount of returned articles (see below)
 ---@field skip? integer skip this amount of feeds first
 ---@field filter? string unused
----@field is_cat? boolean - requested feed_id is a category
----@field show_excerpt? boolean - include article excerpt in the output
----@field show_content? boolean - include full article text in the output
----@field view_mode? string = all_articles, unread, adaptive, marked, updated)
----@field include_attachments? boolean - include article attachments (e.g. enclosures) requires version:1.5.3
----@field since_id? integer - only return articles with id greater than since_id requires version:1.5.6
----@field include_nested? boolean - include articles from child categories requires version:1.6.0
----@field order_by? string - override default sort order requires version:1.7.6
----@field sanitize? boolean - sanitize content or not requires version:1.8 (default: true)
----@field force_update? boolean - try to update feed before showing headlines requires version:1.14 (api 9) (default: false)
----@field has_sandbox? boolean - indicate support for sandboxing of iframe elements (default: false)
----@field include_header? boolean - adds status information when returning headlines, instead of array(articles) return value changes to array(header, array(articles)) (api 12)
+---@field is_cat? boolean # requested feed_id is a category
+---@field show_excerpt? boolean # include article excerpt in the output
+---@field show_content? boolean # include full article text in the output
+---@field view_mode? string # all_articles, unread, adaptive, marked, updated
+---@field include_attachments? boolean # include article attachments (e.g. enclosures), requires version 1.5.3
+---@field since_id? integer # only return articles with id greater than since_id, requires version 1.5.6
+---@field include_nested? boolean # include articles from child categories, requires version 1.6.0
+---@field order_by? string # override default sort order, requires version 1.7.6
+---@field sanitize? boolean # sanitize content or not, requires version 1.8
+---@field force_update? boolean # try to update feed before showing headlines, requires API 9
+---@field has_sandbox? boolean # indicate support for sandboxing of iframe elements
+---@field include_header? boolean # add status information when returning headlines, requires API 12
 ---Limit:
 --
 -- Before API level 6 maximum amount of returned headlines is capped at 60, API 6 and above sets it to 200.
@@ -95,7 +95,7 @@
 
 ---@class ttrssApi
 ---@field getHeadlines fun(self: ttrssApi, param: ttrss.headlineParams): ttrss.headline[]
----@field getFeeds fun(self: ttrssApi, param: { cat_id: integer, unread_only: boolean, limit: integer, offset: integer, include_nested: boolean }): ttrss.feed[]
+---@field getFeeds fun(self: ttrssApi, param?: { cat_id?: integer, unread_only?: boolean, limit?: integer, offset?: integer, include_nested?: boolean }): ttrss.feed[]
 ---@field getArticle fun(self: ttrssApi, param: { article_id: string | integer }): ttrss.article[]
 ---@field getUnread fun(self: ttrssApi): integer
 ---@field getVersion fun(self: ttrssApi): string
@@ -103,7 +103,7 @@
 ---@field getConfig fun(self: ttrssApi): table
 ---@field getCounters fun(self: ttrssApi): table
 ---@field setArticleLabel fun(self: ttrssApi, param: { article_ids: string, label_id: integer, assign: boolean })
----@field updateArticle fun(self: ttrssApi, param: { article_ids: string, mode: integer, field: integer, data: string })
+---@field updateArticle fun(self: ttrssApi, param: { article_ids: string|integer, mode: integer, field: integer, data?: string })
 
 local api = {}
 local Curl = require("feed.curl")
@@ -149,7 +149,7 @@ local methods = {
 
 for k, v in pairs(methods) do
    api[k] = function(self, data)
-      local url = require("feed.config").protocol.ttrss.url
+      local url = assert(require("feed.config").protocol.ttrss.url, "TTRSS URL is not configured")
       data = data or {}
       data.sid = self.sid
       data.op = k
@@ -195,10 +195,27 @@ end
 --    vim.notify("unsubscribed!")
 -- end
 
+---@class feed.ttrssDb: feed.db
+---@field api ttrssApi
+---@field feeds table<integer, { id: integer, url: string, title: string }>
+---@field tags table<string|integer, table<string, boolean>>
+---@field last integer
 local TT = {}
 TT.__index = TT
 
 local query = require("feed.db.query")
+
+---@param self feed.ttrssDb
+---@param id string | integer
+---@return string
+local function article_content(self, id)
+   local articles = self.api:getArticle({ article_id = id })
+   local article = articles and articles[1]
+   if not article or not article.content then
+      error(("TTRSS article %s was not found"):format(id), 0)
+   end
+   return article.content
+end
 
 ---@return feed.db
 function TT.new()
@@ -282,7 +299,7 @@ function TT:filter(str)
          feed = v.feed_title,
          tags = {},
          content = function()
-            return self.api:getArticle({ article_id = v.id })[1].content
+            return article_content(self, v.id)
          end,
       }
    end
@@ -295,7 +312,7 @@ function TT:get_tags(id)
 end
 
 function TT:get(id)
-   return self.api:getArticle({ article_id = id })[1].content
+   return article_content(self, id)
 end
 
 function TT:tag(id, tag)

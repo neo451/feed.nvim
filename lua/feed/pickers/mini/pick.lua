@@ -1,3 +1,5 @@
+---@diagnostic disable: unresolved-require
+---@type any
 local MiniPick = require("mini.pick")
 local ui = require("feed.ui")
 local db = require("feed.db")
@@ -67,7 +69,8 @@ local function feed_grep()
          show = function(buf_id, items_arr, _)
             for i, line in ipairs(items_arr) do
                local id = line:sub(1, 64)
-               api.nvim_buf_set_lines(buf_id, i - 1, i, false, { ui.headline(id) })
+               local headline = ui.headline(id)
+               api.nvim_buf_set_lines(buf_id, i - 1, i, false, { headline })
             end
          end,
       },

@@ -6,13 +6,14 @@ local strings = require("feed.strings")
 local uv = vim.uv
 
 ---@class feed.db
+---@operator index(string): feed.entry?
 ---@field dir feed.path
 ---@field feeds feed.opml
----@field index table
+---@field index [string, integer][]
 ---@field tags table<string, table<string, boolean>>
 ---@field add fun(db: feed.db, entry: feed.entry, tags: string[]?)
 ---@field rm fun(db: feed.db, id: string)
----@field iter fun(db: feed.db, sort: boolean?): Iter
+---@field iter fun(db: feed.db, sort: boolean?): any
 ---@field filter fun(db: feed.db, query: string) : string[]
 ---@field save_feeds fun(db: feed.db)
 ---@field save_index fun(db: feed.db)
@@ -23,6 +24,7 @@ local uv = vim.uv
 ---@field update fun(db: feed.db)
 ---@field last_updated fun(db: feed.db): string
 ---@field get fun(db: feed.db, id: string): string
+---@field get_tags fun(db: feed.db, id: string): string[]
 ---@field get_path fun(db: feed.db, id: string): string
 local M = {}
 
@@ -53,8 +55,13 @@ local function load_index(fp)
    local f = io.open(fp, "r")
    assert(f, "failed to open file")
    for line in f:lines() do
-      local time, id = line:match("(%d+)%s(%S+)")
-      res[#res + 1] = { id, tonumber(time) }
+      if type(line) == "string" then
+         local time, id = line:match("^(%d+)%s+(%S+)%s*$")
+         local timestamp = time and tonumber(time)
+         if id and timestamp then
+            res[#res + 1] = { id, timestamp }
+         end
+      end
    end
    return res
 end
@@ -150,7 +157,6 @@ end
 
 function M:last_updated()
    local date_str = os.date("%c", vim.fn.getftime(tostring(self.dir / "feeds.lua")))
-   ---@cast date_str -osdate
    return date_str
 end
 
@@ -353,25 +359,33 @@ function M:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         local feed_url = self[id].feed
-         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
-         if q.feed:match_str(feed_url) or (feed_name and q.feed:match_str(feed_name)) then
-            return true
-         else
+         local entry = self[id]
+         local feed_url = entry and entry.feed
+         if not feed_url then
             return false
          end
+         local feed = self.feeds[feed_url]
+         local feed_name = feed and feed.title
+         if q.feed:match_str(feed_url) then
+            return true
+         end
+         if feed_name and q.feed:match_str(feed_name) then
+            return true
+         end
+         return false
       end)
    end
 
    if q.not_feed then
       iter = iter:filter(function(id)
-         local feed_url = self[id].feed
-         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
-         if q.not_feed:match_str(feed_url) or (feed_name and q.not_feed:match_str(feed_name)) then
+         local entry = self[id]
+         local feed_url = entry and entry.feed
+         if not feed_url then
             return false
-         else
-            return true
          end
+         local feed = self.feeds[feed_url]
+         local feed_name = feed and feed.title
+         return not (q.not_feed:match_str(feed_url) or (feed_name and q.not_feed:match_str(feed_name)))
       end)
    end
 

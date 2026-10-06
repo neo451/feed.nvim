@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch, undefined-field, assign-type-mismatch
 local M = {}
 
 ---@param n integer
@@ -151,7 +152,7 @@ local order = {
    W3CDTF,
 }
 
----@param str string
+---@param str? string
 ---@param t "rss" | "atom" | "json"
 ---@return integer
 M.parse = function(str, t)

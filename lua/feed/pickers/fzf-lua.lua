@@ -1,3 +1,5 @@
+---@diagnostic disable: unresolved-require
+---@type any
 local fzf = require("fzf-lua")
 local ui = require("feed.ui")
 local ut = require("feed.utils")
@@ -51,6 +53,7 @@ local function feed_search()
 end
 
 local function feed_grep(opts)
+   ---@type any
    local fzf_lua = require("fzf-lua")
    opts = opts or {}
    opts.prompt = "> "

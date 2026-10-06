@@ -180,6 +180,7 @@ M.update = {
          "-c",
          'lua require"feed.fetch".update()',
       })
+      ---@cast cmds string[]
       local update = function(line)
          line = vim.trim(line)
          if not line:match("^%[%d+/%d+%]") then
@@ -259,7 +260,6 @@ M.export = {
    doc = "use pandoc to convert entry to any format",
    impl = function(to, fp)
       local entry, id = ui.get_entry()
-      assert(entry, "no valid entry")
       require("feed.pandoc").convert({
          id = id,
          to = to,
@@ -327,9 +327,11 @@ end
 
 function M._load_command(args)
    local cmd = args[1]
+   ---@diagnostic disable-next-line: unnecessary-if
    if M[cmd] then
       table.remove(args, 1)
       local item = M[cmd]
+      ---@cast item { impl: function }
       item.impl(unpack(args))
    else
       ui.refresh(table.concat(args, " "))
@@ -348,6 +350,7 @@ function M._menu()
          return
       end
       local item = M[choice]
+      ---@cast item { impl: function }
       item.impl()
    end)
 end

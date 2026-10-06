@@ -8,11 +8,14 @@ local router = Router.new()
 
 local render_entries = function()
    local acc = {}
-   for _, id in ipairs(state.entries) do
-      acc[#acc + 1] = router:render("headline", {
-         id = id,
-         title = db[id].title,
-      })
+   for _, id in ipairs(state.entries or {}) do
+      local entry = db[id]
+      if type(entry) == "table" then
+         acc[#acc + 1] = router:render("headline", {
+            id = id,
+            title = entry.title,
+         })
+      end
    end
    return table.concat(acc)
 end
@@ -48,20 +51,21 @@ M.open = function(query, port)
    router:get("/entry/(%S+)", function(req, res)
       local id = req.params[1]
       local entry = db[id]
+      if not entry then
+         return res:status(404):send("Non-exist Entry")
+      end
 
-      local content = db:get(id)
-
-      if not content then
+      local content_ok, content = pcall(db.get, db, id)
+      if not content_ok or type(content) ~= "string" then
          return res:status(404):send("Non-exist Entry")
       end
 
       local feedUrl = entry.feed
       local feed = db.feeds[feedUrl]
-      assert(feed, "failed to retrieve feed") -- TODO: reflect in page?
       local feed_string
 
       if feed then
-         feed_string = ([[<a href="%s">%s</a>]]):format(feed.htmlUrl, feed.title)
+         feed_string = ([[<a href="%s">%s</a>]]):format(feed.htmlUrl or feedUrl, feed.title or feedUrl)
       else
          feed_string = feedUrl
       end
@@ -82,8 +86,7 @@ M.open = function(query, port)
    end)
 
    router:post("/search", function(req, _)
-      local q = req.body:match("search=(.*)")
-      q = vim.uri_decode(q)
+      local q = vim.uri_decode((req.body or ""):match("search=([^&]*)") or "") or ""
       state.query = q
       state.entries = db:filter(q)
       return render_entries()

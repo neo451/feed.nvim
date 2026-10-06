@@ -63,6 +63,30 @@ T["entry metadata highlights follow the configured layout"] = function()
    eq({ { 0, 7, "FeedTitle" } }, highlights())
 end
 
+T["entry content strings are passed to pandoc"] = function()
+   config.config = vim.deepcopy(config._default)
+   config.config.entry = { order = {} }
+
+   local content = "already rendered content"
+   rawset(db, id, { content = content })
+   local converted
+   pandoc.convert = function(opts)
+      converted = opts
+   end
+   buf = vim.api.nvim_create_buf(false, true)
+
+   ui.show_entry({ buf = buf, id = id })
+
+   eq(content, converted.src)
+end
+
+T["invalid split percentages use a safe default"] = function()
+   local ok, split = pcall(ui.split, {}, "not-a-percentage")
+
+   eq(true, ok)
+   split:close()
+end
+
 T["entry links are not truncated"] = function()
    config.config = vim.deepcopy(config._default)
    config.config.entry = {
@@ -70,7 +94,8 @@ T["entry links are not truncated"] = function()
       link = config._default.entry.link,
    }
 
-   local link = "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/media/episode/owen-wilson.mp3"
+   local link =
+      "https://pdrl.fm/f3efd0/dts.podtrac.com/redirect.mp3/arttrk.com/p/ST44R/claritaspod.com/media/episode/owen-wilson.mp3"
    rawset(db, id, { link = link })
    pandoc.convert = function() end
    buf = vim.api.nvim_create_buf(false, true)
