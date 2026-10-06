@@ -55,15 +55,20 @@ local check_binary_installed = function(package)
    end
    if found then
       local results = vim.system({ binary, "--version" }):wait()
+      if not results.stdout then
+         warn(binary .. " found, but its version could not be determined")
+         return false
+      end
       local version = vim.version.parse(results.stdout)
-      if version then
-         if version.major < package.min_ver then
-            warn(binary .. " found: but version is too old", "Please install " .. package.min_ver .. ".xx")
-            return false
-         else
-            ok(binary .. " " .. version.major .. "." .. version.minor .. " found")
-            return true
-         end
+      if not version then
+         warn(binary .. " found, but its version could not be determined")
+         return false
+      elseif version.major < package.min_ver then
+         warn(binary .. " found: but version is too old", "Please install " .. package.min_ver .. ".xx")
+         return false
+      else
+         ok(binary .. " " .. version.major .. "." .. version.minor .. " found")
+         return true
       end
    else
       warn(binary .. " not found", "Please install " .. binary .. " " .. package.min_ver .. ".xx")

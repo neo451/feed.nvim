@@ -431,7 +431,10 @@ function M:close()
       if buf and api.nvim_buf_is_valid(buf) then
          api.nvim_buf_delete(buf, { force = true })
       end
-      api.nvim_set_current_win(self.opts.prev_win)
+      local prev_win = self.opts.prev_win
+      if prev_win and api.nvim_win_is_valid(prev_win) then
+         api.nvim_set_current_win(prev_win)
+      end
    end
    ---@type function
    local try_close

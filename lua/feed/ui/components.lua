@@ -6,13 +6,16 @@ local ut = require("feed.utils")
 local api = vim.api
 
 ---@param opts table
----@param percentage string
+---@param percentage? string
 ---@param lines? string[]
 ---@return feed.win
 M.split = function(opts, percentage, lines)
    lines = lines or {}
 
-   local height = math.floor(vim.o.lines * (tonumber(percentage:sub(1, -2)) / 100))
+   local percent = tonumber((percentage or "50%"):match("^(%d+)%%$")) or 50
+   percent = math.min(percent, 100)
+   local max_height = math.max(1, vim.o.lines - vim.o.cmdheight)
+   local height = math.min(max_height, math.max(1, math.floor(vim.o.lines * percent / 100)))
    local width = vim.o.columns
    local col = vim.o.columns - width
    local row = vim.o.lines - height - vim.o.cmdheight

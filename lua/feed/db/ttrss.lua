@@ -149,7 +149,7 @@ local methods = {
 
 for k, v in pairs(methods) do
    api[k] = function(self, data)
-      local url = require("feed.config").protocol.ttrss.url
+      local url = assert(require("feed.config").protocol.ttrss.url, "TTRSS URL is not configured")
       data = data or {}
       data.sid = self.sid
       data.op = k
@@ -204,6 +204,18 @@ local TT = {}
 TT.__index = TT
 
 local query = require("feed.db.query")
+
+---@param self feed.ttrssDb
+---@param id string | integer
+---@return string
+local function article_content(self, id)
+   local articles = self.api:getArticle({ article_id = id })
+   local article = articles and articles[1]
+   if not article or not article.content then
+      error(("TTRSS article %s was not found"):format(id), 0)
+   end
+   return article.content
+end
 
 ---@return feed.db
 function TT.new()
@@ -287,7 +299,7 @@ function TT:filter(str)
          feed = v.feed_title,
          tags = {},
          content = function()
-            return self.api:getArticle({ article_id = v.id })[1].content
+            return article_content(self, v.id)
          end,
       }
    end
@@ -300,7 +312,7 @@ function TT:get_tags(id)
 end
 
 function TT:get(id)
-   return self.api:getArticle({ article_id = id })[1].content
+   return article_content(self, id)
 end
 
 function TT:tag(id, tag)

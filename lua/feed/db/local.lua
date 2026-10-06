@@ -55,8 +55,13 @@ local function load_index(fp)
    local f = io.open(fp, "r")
    assert(f, "failed to open file")
    for line in f:lines() do
-      local time, id = line:match("(%d+)%s(%S+)")
-      res[#res + 1] = { id, tonumber(time) }
+      if type(line) == "string" then
+         local time, id = line:match("^(%d+)%s+(%S+)%s*$")
+         local timestamp = time and tonumber(time)
+         if id and timestamp then
+            res[#res + 1] = { id, timestamp }
+         end
+      end
    end
    return res
 end
@@ -354,25 +359,33 @@ function M:filter(str)
 
    if q.feed then
       iter = iter:filter(function(id)
-         local feed_url = self[id].feed
-         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
-         if q.feed:match_str(feed_url) or (feed_name and q.feed:match_str(feed_name)) then
-            return true
-         else
+         local entry = self[id]
+         local feed_url = entry and entry.feed
+         if not feed_url then
             return false
          end
+         local feed = self.feeds[feed_url]
+         local feed_name = feed and feed.title
+         if q.feed:match_str(feed_url) then
+            return true
+         end
+         if feed_name and q.feed:match_str(feed_name) then
+            return true
+         end
+         return false
       end)
    end
 
    if q.not_feed then
       iter = iter:filter(function(id)
-         local feed_url = self[id].feed
-         local feed_name = self.feeds[feed_url] and self.feeds[feed_url].title
-         if q.not_feed:match_str(feed_url) or (feed_name and q.not_feed:match_str(feed_name)) then
+         local entry = self[id]
+         local feed_url = entry and entry.feed
+         if not feed_url then
             return false
-         else
-            return true
          end
+         local feed = self.feeds[feed_url]
+         local feed_name = feed and feed.title
+         return not (q.not_feed:match_str(feed_url) or (feed_name and q.not_feed:match_str(feed_name)))
       end)
    end
 

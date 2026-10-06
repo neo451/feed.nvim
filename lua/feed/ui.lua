@@ -91,13 +91,19 @@ local function get_entry(ctx)
    elseif ut.in_entry() then
       id = state.entries[state.cur]
    end
-   if id then
-      local entry = vim.deepcopy(db[id])
-      entry.id = id
-      return entry, id
-   else
+   if not id then
       error("no context to show entry")
    end
+
+   local stored = db[id]
+   if type(stored) ~= "table" then
+      error(("entry %s was not found"):format(id))
+   end
+   ---@cast stored feed.entry
+   local entry = vim.deepcopy(stored)
+   ---@cast entry feed.entry
+   entry.id = id
+   return entry, id
 end
 
 ---Mark entry in db with read tag, if index rendered then grey out the entry
@@ -252,7 +258,11 @@ local function show_entry(ctx, win_opts)
    if ctx.link then
       pandoc.convert({ link = ctx.link, stdout = writer, on_exit = on_exit })
    elseif entry.content then
-      pandoc.convert({ src = entry.content(), stdout = writer, on_exit = on_exit })
+      local content = entry.content
+      if type(content) == "function" then
+         content = content()
+      end
+      pandoc.convert({ src = content, stdout = writer, on_exit = on_exit })
    else
       pandoc.convert({ id = id, stdout = writer, on_exit = on_exit })
    end

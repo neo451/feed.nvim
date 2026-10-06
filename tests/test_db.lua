@@ -48,6 +48,14 @@ T["new"]["prepares all db files"] = function()
    end, 1)
 end
 
+T["new"]["ignores malformed index lines"] = function()
+   ut.save_file(tostring(db.dir / "index"), "not an index line\n123 valid-id\n456\n")
+
+   local loaded = db.new(tostring(db.dir))
+
+   eq({ { "valid-id", 123 } }, loaded.index)
+end
+
 T["new"]["keeps absolute paths absolute"] = function()
    local expected = vim.fs.normalize("~/.feed.nvim.test/")
    eq(expected, tostring(db.dir))
@@ -218,6 +226,12 @@ T["filter"]["filter by feed"] = function()
    })
    local res = db:filter("=vim")
    eq(2, #res)
+end
+
+T["filter"]["ignores stale index entries"] = function()
+   ut.save_file(tostring(db.dir / "index"), "1 stale-id\n")
+
+   eq({}, db:filter("=feed"))
 end
 
 return T
