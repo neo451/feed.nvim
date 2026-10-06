@@ -28,7 +28,7 @@ T["parse"]["splits query into parts"] = function()
    eq("userdata", type(query.not_feed))
 end
 
-T["parse"]["allows imcomplete query for live searching"] = function()
+T["parse"]["allows incomplete query for live searching"] = function()
    eq({}, M.parse_query("@6"))
 end
 

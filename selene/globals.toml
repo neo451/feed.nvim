@@ -1,5 +1,5 @@
 [selene]
-base = "lua52" # TODO: work arround because we use package.config for now
+base = "lua52" # TODO: Revisit when the legacy package.config compatibility code is removed.
 name = "globals"
 
 [vim]
@@ -9,9 +9,6 @@ any = true
 any = true
 
 [jit]
-any = true
-
-[Obsidian]
 any = true
 
 [MiniTest]

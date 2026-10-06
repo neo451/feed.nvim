@@ -3,8 +3,10 @@ local URL = require("feed.lib.url")
 local vim = vim
 local ipairs, tostring = ipairs, tostring
 
----@param base_url string
----@param url string
+---@overload fun(base_url: string, url: string): string
+---@overload fun(base_url: string): string
+---@param base_url? string
+---@param url? string
 ---@return string?
 M.url_resolve = function(base_url, url)
    if not base_url then
@@ -29,12 +31,15 @@ M.url_rebase = function(el, base_uri)
 end
 
 --- Returns all URLs in markdown buffer, if any.
----@param cur_link string
+---@param cur_link? string
 ---@param lines? string[]
----@return string[][]
+---@return string[]
 M.get_urls = function(cur_link, lines)
    lines = lines or vim.api.nvim_buf_get_lines(0, 0, -1, false)
-   local res = { cur_link }
+   local res = {}
+   if cur_link then
+      res[1] = cur_link
+   end
    for _, line in ipairs(lines) do
       if line:match("^%[%^%d+%]%s*") then
          local url = line:match("%[%^%d+%] %s*<(%S+)>")
@@ -44,14 +49,19 @@ M.get_urls = function(cur_link, lines)
    return res
 end
 
+---@param str string
+---@return boolean
 M.looks_like_url = function(str)
    return vim.startswith(str, "http")
 end
 
+---@param url string
+---@return string
 M.extend_import_url = function(url)
+   ---@type feed.config
    local config = require("feed.config")
    if not M.looks_like_url(url) then
-      for _, extension in ipairs(config.url_formats) do
+      for _, extension in ipairs(config.url_formats or {}) do
          if url:find(extension.pattern) then
             return extension.import(url)
          end
@@ -60,10 +70,13 @@ M.extend_import_url = function(url)
    return url
 end
 
+---@param url string
+---@return string
 M.extend_export_url = function(url)
+   ---@type feed.config
    local config = require("feed.config")
    if not M.looks_like_url(url) then
-      for _, extension in ipairs(config.url_formats) do
+      for _, extension in ipairs(config.url_formats or {}) do
          if url:find(extension.pattern) then
             local f = extension.export or extension.import
             return f(url)

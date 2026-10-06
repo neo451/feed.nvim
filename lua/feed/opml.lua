@@ -1,5 +1,6 @@
 local M = {}
 local ut = require("feed.utils")
+local url = require("feed.url")
 local xml = require("feed.parser.xml")
 
 local format, concat, insert = string.format, table.concat, table.insert
@@ -66,7 +67,7 @@ function M.export(feeds)
             text = feed.description or feed.title,
             title = feed.title,
             htmlUrl = feed.htmlUrl,
-            xmlUrl = ut.extend_export_url(xmlUrl),
+            xmlUrl = url.extend_export_url(xmlUrl),
             type = "rss",
          })
       end

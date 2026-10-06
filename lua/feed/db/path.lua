@@ -39,9 +39,9 @@ Path.new = function(path)
          return joined
       end,
       __div = function(self, other)
-          local p = vim.deepcopy(self.path)
-          table.insert(p, other)
-          return setmetatable({ path = p, absolute = self.absolute }, getmetatable(self))
+         local p = vim.deepcopy(self.path)
+         table.insert(p, other)
+         return setmetatable({ path = p, absolute = self.absolute }, getmetatable(self))
       end,
    })
 end
@@ -92,7 +92,7 @@ Path.load = function(self)
    return load_file(tostring(self))
 end
 
----@return table
+---@return string
 Path.read = function(self)
    return read_file(tostring(self))
 end

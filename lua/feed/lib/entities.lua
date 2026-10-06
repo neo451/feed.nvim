@@ -2287,13 +2287,13 @@ local htmlEntities_table = {
 function htmlEntities.filter(input, table)
    if not input then
       if error_msg_htmlEntities then
-         error "htmlEntities[filter] >> ERROR: input is value nil"
+         error("htmlEntities[filter] >> ERROR: input is value nil")
       end
       return false
    end
    if not table then
       if error_msg_htmlEntities then
-         error "htmlEntities[filter] >> ERROR: table is value nil"
+         error("htmlEntities[filter] >> ERROR: table is value nil")
       end
       return false
    end
@@ -2307,7 +2307,7 @@ end
 function htmlEntities.ASCII_HEX(input)
    if not input then
       if error_msg_htmlEntities then
-         error "htmlEntities[ASCII_HEX] >> ERROR: input is value nil"
+         error("htmlEntities[ASCII_HEX] >> ERROR: input is value nil")
       end
       return false
    end
@@ -2340,7 +2340,7 @@ end
 function htmlEntities.ASCII_DEC(input)
    if not input then
       if error_msg_htmlEntities then
-         error "htmlEntities[ASCII_DEC] >> ERROR: input is value nil"
+         error("htmlEntities[ASCII_DEC] >> ERROR: input is value nil")
       end
       return false
    end
@@ -2370,7 +2370,7 @@ end
 function htmlEntities.encode(input)
    if not input then
       if error_msg_htmlEntities then
-         error "htmlEntities[encode] >> ERROR: input is value nil"
+         error("htmlEntities[encode] >> ERROR: input is value nil")
       end
       return false
    end

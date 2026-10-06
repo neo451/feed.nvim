@@ -1,6 +1,6 @@
 local M = {}
 
-local looks_like_url = require("feed.utils").looks_like_url
+local looks_like_url = require("feed.url").looks_like_url
 
 local dir = vim.uv.cwd()
 local data_dir = dir .. "/data"

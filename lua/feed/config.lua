@@ -37,6 +37,11 @@
 
 ---@alias feed.layout table<string, feed.section | table<number, string>>
 
+---@class feed.urlFormat
+---@field pattern string
+---@field import fun(url: string): string
+---@field export? fun(url: string): string
+
 ---@class feed.config
 ---@field feeds? string | { name: string, tags: table }
 ---@field date? feed.dateOpts
@@ -49,6 +54,7 @@
 ---@field progress? feed.progressOpts
 ---@field search? feed.searchOpts
 ---@field protocol? feed.protocolOpts
+---@field url_formats? feed.urlFormat[]
 ---@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
 ---@field keys? { index: feed.key[], entry: feed.key[] }
 
