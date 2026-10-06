@@ -1,3 +1,5 @@
+---@diagnostic disable: unresolved-require
+---@type any
 local MiniPick = require("mini.pick")
 local ui = require("feed.ui")
 local db = require("feed.db")

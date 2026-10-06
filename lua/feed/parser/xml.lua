@@ -185,7 +185,9 @@ local parse = vim.F.nil_wrap(function(src, url)
    if root:has_error() then
       log.warn(url, "treesitter err")
    end
+   ---@type table?
    local declaration
+   ---@type table?
    local document
    for node in root:iter_children() do
       local node_type = node:type()

@@ -1,5 +1,27 @@
 local M = {}
 ---@diagnostic disable: inject-field
+
+---@class feed.curl.Opts
+---@field headers? table<string, string>
+---@field data? string|table
+---@field etag? string
+---@field last_modified? string
+---@field timeout? string|integer
+---@field cmds? string[]
+---@field api? boolean
+
+---@class feed.curl.Response: vim.SystemCompleted
+---@field href? string
+---@field etag? string
+---@field last_modified? string
+---@field status? integer
+---@field headers? table<string, string>
+---@field error? string
+
+---@class feed.curl.WaitHandle
+---@field wait fun(self: feed.curl.WaitHandle, timeout?: integer): feed.curl.Response
+
+---@alias feed.curl.Handle vim.SystemObj|feed.curl.WaitHandle
 local ut = require("feed.utils")
 local log = require("feed.lib.log")
 local read_file = ut.read_file
@@ -56,13 +78,13 @@ local function build_header(t)
 end
 
 ---@param url string
----@param opts { headers: table, data: string | table, etag: string, last_modified: string, timeout: string, cmds: table }
----@param cb? fun(err: any?, response: vim.SystemCompleted?)
----@return vim.SystemObj
+---@param opts? feed.curl.Opts
+---@param cb? fun(err: any?, response: feed.curl.Response?)
+---@return feed.curl.Handle
 function M.get(url, opts, cb)
    opts = opts or {}
-   opts.timeout = vim.F.if_nil(opts.timeout, "10")
-   opts.api = vim.F.if_nil(opts.api, false)
+   opts.timeout = opts.timeout or "10"
+   opts.api = opts.api or false
    local req_header = build_header(vim.tbl_extend("keep", {
       is_none_match = opts.etag,
       if_modified_since = opts.last_modified,
@@ -81,6 +103,7 @@ function M.get(url, opts, cb)
       opts.timeout and { "--connect-timeout", opts.timeout or "10" },
       url,
    })
+   ---@cast cmds string[]
 
    if opts.data then
       table.insert(cmds, "-d")
@@ -98,6 +121,7 @@ function M.get(url, opts, cb)
          obj.status = headers.status
          obj.headers = headers
          local content_type = headers.content_type
+         ---@diagnostic disable-next-line: unnecessary-if
          if not opts.api and content_type and (not content_type:find("xml") and not content_type:find("json")) then
             obj.error = ("unexpected content type %q"):format(content_type)
          end

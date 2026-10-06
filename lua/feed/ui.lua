@@ -17,6 +17,10 @@ local hl = vim.hl or vim.highlight
 local api, fn, fs = vim.api, vim.fn, vim.fs
 
 ---@class feed.ui
+---@field input fun(opts: table, on_confirm: function)
+---@field select fun(items: table, opts: table, on_choice: function)
+---@field split fun(opts: table, percentage: string, lines?: string[]): feed.win
+---@field show_winbar fun(): string
 local M = {
    state = state,
 }
@@ -63,6 +67,7 @@ local ns_entry = api.nvim_create_namespace("feed_entry")
 ---3. if in an entry buffer, gets current entry
 ---@return feed.entry
 ---@return string
+---@param ctx? { row?: integer, id?: string, buf?: integer, link?: string, read?: boolean }
 local function get_entry(ctx)
    ctx = ctx or {}
    local id
@@ -140,6 +145,7 @@ M.headline = function(id, layout, _db)
       local v = layout[name]
       local text = v.format(id, _db) or entry[name]
       local width = type(v.width) == "number" and v.width or vim.fn.strdisplaywidth(text)
+      ---@cast width integer
       text = strings.align(text, width + 1, v.right_justify)
       res[#res + 1] = text
       coords[#coords + 1] = {
@@ -189,7 +195,7 @@ M.show_index = function(win_opts)
    })
 end
 
----@param ctx? { row: integer, id: string, buf: integer, link: string }
+---@param ctx? { row?: integer, id?: string, buf?: integer, link?: string, read?: boolean }
 ---@param win_opts? feed.win.Config
 local function show_entry(ctx, win_opts)
    ctx = ctx or {}
@@ -206,6 +212,7 @@ local function show_entry(ctx, win_opts)
       buf = api.nvim_create_buf(false, true)
       is_preview = false
    end
+   ---@cast buf integer
 
    if not is_preview then
       state.entry = Win.new(win_opts or entry_presets.full(buf))
@@ -527,7 +534,7 @@ end
 
 ---In Index: prompt for input and refresh
 ---Everywhere else: openk search backend
----@param q string
+---@param q? string
 M.search = function(q)
    local backend = ut.choose_backend(config.search.backend)
    if q then

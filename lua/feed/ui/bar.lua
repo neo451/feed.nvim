@@ -33,6 +33,7 @@ if has_line then
       local name = layout.order[i]
       ---@diagnostic disable-next-line: need-check-nil
       local section = layout[name]
+      ---@diagnostic disable-next-line: unnecessary-if
       if section then
          if pcall(require, "lualine") then
             local color = map.lualine[#layout.order + 1 - i]

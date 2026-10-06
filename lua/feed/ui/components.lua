@@ -1,3 +1,4 @@
+---@diagnostic disable: unresolved-require
 local M = {}
 local Win = require("feed.ui.window")
 local config = require("feed.config")
@@ -85,11 +86,14 @@ end
 local function fzf_ui_select(items, opts, on_choice)
    local prompt = " " .. opts.prompt .. " "
    opts.prompt = "> "
+   ---@type any
    local ui_select = require("fzf-lua.providers.ui_select")
    if ui_select.is_registered() then
       ui_select.deregister()
    end
-   require("fzf-lua").register_ui_select(function(_, i)
+   ---@type any
+   local fzf = require("fzf-lua")
+   fzf.register_ui_select(function(_, i)
       local min_h, max_h = 0.15, 0.70
       local h = (#i + 4) / vim.o.lines
       if h < min_h then
@@ -99,7 +103,7 @@ local function fzf_ui_select(items, opts, on_choice)
       end
       return { winopts = { height = h, width = 0.60, row = 0.40, title = prompt, title_pos = "center" } }
    end)
-   require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
+   ui_select.ui_select(items, opts, on_choice)
 end
 
 M.select = function(items, opts, on_choice)
@@ -113,7 +117,9 @@ M.select = function(items, opts, on_choice)
    if backend == "fzf-lua" then
       fzf_ui_select(items, opts, f)
    elseif backend == "pick" then
-      require("mini.pick").ui_select(items, opts, f)
+      ---@type any
+      local mini_pick = require("mini.pick")
+      mini_pick.ui_select(items, opts, f)
    elseif backend == "telescope" then
       telescope_select(items, opts, f)
    else

@@ -1,22 +1,29 @@
+---@alias feed.searchBackend "telescope" | "mini.pick" | "fzf-lua" | "snacks.picker"
+
 ---@class feed.searchOpts
----@field backend "telescope" | "mini.pick" | "fzf-lua" | "snacks.pick" | table -- TODO: not nice
----@field sort_order? "ascending" | "descending"
----@field ignorecase? boolean
----@field default_query? string
+---@field backend feed.searchBackend | feed.searchBackend[]
+---@field sort_order "ascending" | "descending"
+---@field ignorecase boolean
+---@field default_query string
 
 ---@class feed.progressOpts
 ---@field backend? "bar" | "mini.notify" | "snacks" | "fidget" DEPRECATED: ignored on Neovim 0.12+
----@field ok? string icon/string for success
----@field err? string icon/string for error
+---@field ok string icon/string for success
+---@field err string icon/string for error
 
 ---@class feed.rsshubOpts
----@field instance? string
----@field export? string move all options here as a enum??
+---@field instance string
+---@field export string move all options here as a enum??
 
 ---@class feed.section
 ---@field width? integer | "#"
 ---@field color? string
----@field format? fun(id: string, db: feed.db): string
+---@field right_justify? boolean
+---@field format? function
+
+---@class feed.layout
+---@field order string[]
+---@field [string] feed.section | string[]
 
 ---@class feed.ttrssOpts
 ---@field url? string
@@ -24,41 +31,69 @@
 ---@field password? string
 
 ---@class feed.localOpts
----@field dir? string
+---@field dir string
 
 ---@class feed.protocolOpts
 ---@field backend "local" | "ttrss"
----@field ttrss? feed.ttrssOpts
----@field local? feed.ttrssOpts
+---@field ttrss feed.ttrssOpts
+---@field local feed.localOpts
 
 ---@class feed.dateOpts
----@field locale? string
----@field format? { long: string, short: string }
-
----@alias feed.layout table<string, feed.section | table<number, string>>
+---@field locale string
+---@field format { long: string, short: string }
 
 ---@class feed.urlFormat
 ---@field pattern string
 ---@field import fun(url: string): string
 ---@field export? fun(url: string): string
 
+---@class feed.feedSpec
+---@field [1] string
+---@field name? string
+---@field tags? string[]
+
 ---@class feed.config
----@field feeds? string | { name: string, tags: table }
----@field date? feed.dateOpts
+---@field web { port: integer, open_browser: boolean }
+---@field zen { enabled: boolean, width: integer }
+---@field feeds table
+---@field date feed.dateOpts
+---@field curl_params string[]
+---@field rsshub feed.rsshubOpts
+---@field ui feed.layout
+---@field entry feed.layout
+---@field winbar feed.layout
+---@field picker feed.layout
+---@field progress feed.progressOpts
+---@field search feed.searchOpts
+---@field protocol feed.protocolOpts
+---@field url_formats feed.urlFormat[]
+---@field options { entry: { wo: table<string, any>, bo: table<string, any> }, index: { wo: table<string, any>, bo: table<string, any> } }
+---@field keys { index: feed.key[], entry: feed.key[] }
+
+---@class feed.userConfig
+---@field web? { port?: integer, open_browser?: boolean }
+---@field zen? { enabled?: boolean, width?: integer }
+---@field feeds? table
+---@field date? table
 ---@field curl_params? string[]
----@field rsshub? feed.rsshubOpts
----@field ui? feed.layout
----@field entry? feed.layout
----@field winbar? feed.layout
----@field picker? feed.layout
----@field progress? feed.progressOpts
----@field search? feed.searchOpts
----@field protocol? feed.protocolOpts
+---@field rsshub? table
+---@field ui? table
+---@field entry? table
+---@field winbar? table
+---@field picker? table
+---@field progress? table
+---@field search? table
+---@field protocol? table
 ---@field url_formats? feed.urlFormat[]
----@field options? { entry: { wo: vim.wo|{}, bo: vim.bo|{} }, index: { wo: vim.wo|{}, bo: vim.bo|{} } }
----@field keys? { index: feed.key[], entry: feed.key[] }
+---@field options? table
+---@field keys? { index?: feed.key[], entry?: feed.key[] }
 
 ---@alias feed.key table<string | number, string | function>
+
+---@class feed.configModule: feed.config
+---@field config? feed.config
+---@field _default feed.config
+---@field resolve fun(config?: feed.userConfig)
 
 local formats = {}
 
@@ -380,16 +415,18 @@ default = {
          pattern = "^rsshub://",
          import = function(url)
             local instance = require("feed.config").rsshub.instance
-            return url:gsub("rsshub:/", instance) .. "?format=json?mode=fulltext"
+            return (url:gsub("rsshub:/", instance)) .. "?format=json?mode=fulltext"
          end,
          export = function(url)
             local instance = require("feed.config").rsshub.export
-            return url:gsub("rsshub:/", instance)
+            return (url:gsub("rsshub:/", instance))
          end,
       },
    },
 }
 
+---@type feed.configModule
+---@diagnostic disable-next-line: missing-fields
 local M = {}
 
 setmetatable(M, {
@@ -431,7 +468,7 @@ setmetatable(M, {
 -- end
 
 --- Merge the user configuration with the default values.
----@param config feed.config
+---@param config? feed.userConfig
 function M.resolve(config)
    config = config or {}
    config.keys = config.keys or {}

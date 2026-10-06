@@ -1,9 +1,18 @@
----@alias feed.opml table<string, feed.feed | boolean>
+---@alias feed.opml table<string, feed.feedMetadata|false>
 ---@alias feed.version "rss20" | "rss091" | "rss092" | "rss" | "atom10" | "atom03" | "json1"
+
+---@class feed.feedMetadata
+---@field htmlUrl? string
+---@field title? string
+---@field desc? string
+---@field tags? string[]
+---@field last_modified? string
+---@field etag? string
+---@field version? feed.version
 
 ---@class feed.feed
 ---@field link string
----@field htmlUrl string
+---@field htmlUrl? string
 ---@field title string
 ---@field entries feed.entry[]
 ---@field desc? string
@@ -19,7 +28,7 @@
 ---@field time integer Unix timestamp from os.time
 ---@field title string Defaults to "no title"
 ---@field author? string
----@field content? string Defaults to an empty string
+---@field content? string|fun(): string Defaults to an empty string
 ---@field tags? table<string, boolean>
 ---@field id? string reference in the db, only exists if entry is produced by get_entry, else not stored in the object
 
@@ -57,9 +66,9 @@ local valid_response = ut.list2lookup({ 200, 301, 302, 303, 304, 307, 308 })
 
 ---Process a feed fetched from a URL.
 ---@param url string
----@param opts? { etag?: string, last_modified?: string, timeout?: integer }
----@param cb fun(err: any?, result: feed.feed | vim.SystemCompleted | { href: string, status: integer, encoding: string }?)
----@return vim.SystemObj
+---@param opts? feed.curl.Opts
+---@param cb fun(err: any?, result: feed.feed|feed.curl.Response?)
+---@return feed.curl.Handle?
 function M.parse(url, opts, cb)
    opts = opts or {}
    assert(type(cb) == "function", "feed.parse requires a callback")

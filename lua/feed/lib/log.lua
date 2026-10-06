@@ -38,11 +38,30 @@ local default_config = {
 }
 
 -- {{{ NO NEED TO CHANGE
+---@class feed.log
+---@field trace fun(...: any)
+---@field debug fun(...: any)
+---@field info fun(...: any)
+---@field warn fun(...: any)
+---@field error fun(...: any)
+---@field fatal fun(...: any)
+---@field fmt_trace fun(...: any)
+---@field fmt_debug fun(...: any)
+---@field fmt_info fun(...: any)
+---@field fmt_warn fun(...: any)
+---@field fmt_error fun(...: any)
+---@field fmt_fatal fun(...: any)
+---@field new fun(config: table, standalone?: boolean)
+---@type feed.log
+---@diagnostic disable-next-line: missing-fields
 local log = {}
 
 local unpack = unpack or table.unpack
 
+---@param config table
+---@param standalone? boolean
 log.new = function(config, standalone)
+   ---@diagnostic disable-next-line: assign-type-mismatch
    config = vim.tbl_deep_extend("force", default_config, config)
 
    local outfile = string.format("%s/%s.log", vim.api.nvim_call_function("stdpath", { "data" }), config.plugin)
@@ -92,6 +111,7 @@ log.new = function(config, standalone)
 
       local msg = message_maker(...)
       local info = debug.getinfo(2, "Sl")
+      ---@cast info -nil
       local lineinfo = info.short_src .. ":" .. info.currentline
 
       -- Output to console

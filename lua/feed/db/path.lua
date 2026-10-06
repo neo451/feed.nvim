@@ -1,7 +1,13 @@
 ---@class feed.path
----@field save fun(self: feed.path, content: string)
----@field load fun(self: feed.path): table
+---@field path string[]
 ---@field absolute boolean
+---@field save fun(self: feed.path, content: table|string)
+---@field append fun(self: feed.path, line: string)
+---@field load fun(self: feed.path): any
+---@field read fun(self: feed.path): string
+---@field mkdir fun(self: feed.path)
+---@field rm fun(self: feed.path)
+---@operator div(string): feed.path
 
 local Path = {}
 local uv = vim.uv
@@ -14,9 +20,10 @@ local load_file = ut.load_file
 local sep = string.sub(package.config, 1, 1)
 
 ---@param path string | string[] | feed.path
----@return table
+---@return feed.path
 Path.new = function(path)
    if getmetatable(path) and getmetatable(path).__index == Path then
+      ---@cast path feed.path
       return path
    end
 
@@ -58,6 +65,7 @@ local function rmdir(dir)
    return uv.fs_rmdir(dir)
 end
 
+---@param self feed.path
 Path.rm = function(self)
    local fp = tostring(self)
    if vim.fs.rm then
@@ -71,6 +79,7 @@ Path.rm = function(self)
    end
 end
 
+---@param self feed.path
 ---@param content table | string
 Path.save = function(self, content)
    local fp = tostring(self)
@@ -81,22 +90,26 @@ Path.save = function(self, content)
    end
 end
 
+---@param self feed.path
 ---@param line string
 Path.append = function(self, line)
    local fp = tostring(self)
    save_file(fp, line, "a")
 end
 
----@return table
+---@param self feed.path
+---@return any
 Path.load = function(self)
    return load_file(tostring(self))
 end
 
+---@param self feed.path
 ---@return string
 Path.read = function(self)
    return read_file(tostring(self))
 end
 
+---@param self feed.path
 Path.mkdir = function(self)
    vim.fn.mkdir(tostring(self), "p")
 end

@@ -1,8 +1,12 @@
+---@diagnostic disable: unresolved-require
 local ui = require("feed.ui")
+
+---@type any
+local snacks_picker = require("snacks.picker")
 local db = require("feed.db")
 
 local function grep()
-   require("snacks.picker").grep({
+   snacks_picker.grep({
       dirs = {
          tostring(require("feed.db").dir / "data"),
       },
@@ -10,7 +14,7 @@ local function grep()
 end
 
 local function search()
-   require("snacks.picker").pick("feeds", {
+   snacks_picker.pick("feeds", {
       live = true,
       format = function(item)
          local id = item.value

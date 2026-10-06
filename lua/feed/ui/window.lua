@@ -4,8 +4,8 @@ local api, uv = vim.api, vim.uv
 
 ---@class feed.win.Config: vim.api.keyset.win_config
 ---@field text? string[]
----@field wo? vim.wo|{} window options
----@field bo? vim.bo|{} buffer options
+---@field wo? table<string, any> window options
+---@field bo? table<string, any> buffer options
 ---@field b? table<string, any> buffer local variables
 ---@field w? table<string, any> window local variables
 ---@field ft? string
@@ -13,16 +13,26 @@ local api, uv = vim.api, vim.uv
 ---@field win? integer
 ---@field zen? boolean
 ---@field keys? table
+---@field enter? boolean
+---@field prev_win? integer
+---@field is_backdrop? boolean
+---@field show? boolean
+
+---@class feed.win.ResolvedConfig: feed.win.Config
 ---@field enter boolean
----@field prev_win integer
----@field is_backdrop boolean
+---@field show boolean
+---@field zindex integer
+---@field wo table<string, any>
+---@field bo table<string, any>
 
 ---@class feed.win
----@field opts feed.win.Config
+---@field opts feed.win.ResolvedConfig
 ---@field id number
 ---@field win integer
 ---@field buf integer
 ---@field keys table
+---@field backdrop? feed.win
+---@field augroup integer
 ---@field open fun(feed.win: self)
 ---@field close fun(feed.win: self)
 ---@field valid fun(feed.win: self): boolean
@@ -33,7 +43,7 @@ local id = 0
 
 ---@param opts feed.win.Config | {}
 ---@param enter? boolean
----@return table
+---@return feed.win
 function M.new(opts, enter)
    local width = opts.zen and Config.zen.width or vim.o.columns
    local height = opts.zen and vim.o.lines or vim.o.lines - (vim.o.cmdheight + 1)
@@ -51,6 +61,7 @@ function M.new(opts, enter)
       w = {},
       b = {},
    }, opts)
+   ---@cast opts feed.win.ResolvedConfig
 
    opts.show = vim.F.if_nil(opts.show, true)
    opts.enter = vim.F.if_nil(enter, true)
@@ -373,6 +384,7 @@ function M:maps()
       opts.mode = nil
       ---@diagnostic disable-next-line: cast-type-mismatch
       ---@cast opts vim.keymap.set.Opts
+      ---@diagnostic disable-next-line: inject-field
       opts.buffer = self.buf
       opts.nowait = true
       local rhs = spec[2]
@@ -421,6 +433,7 @@ function M:close()
       end
       api.nvim_set_current_win(self.opts.prev_win)
    end
+   ---@type function
    local try_close
    try_close = function()
       local ok, err = pcall(close, self.win, self.buf)

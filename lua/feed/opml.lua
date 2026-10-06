@@ -39,6 +39,7 @@ function M.import(src)
       end
    end
    if ast then
+      ---@cast ast any
       handle(ast.opml.body)
       return ret
    end

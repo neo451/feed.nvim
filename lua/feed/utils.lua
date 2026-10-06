@@ -31,7 +31,7 @@ M.list2lookup = function(list)
 end
 
 ---@generic T
----@param t T[][]
+---@param t (T | T[] | nil)[]
 ---@return T[]
 M.tbl_flatten = function(t)
    return vim.iter(t):flatten():totable()
@@ -55,7 +55,7 @@ end
 
 ---@param fp string
 ---@param str string
----@param mode "w" | "a"
+---@param mode? "w" | "a"
 ---@return boolean
 M.save_file = function(fp, str, mode)
    mode = mode or "w"
@@ -134,7 +134,7 @@ end
 
 --- Set window-local options.
 ---@param win integer
----@param wo vim.wo
+---@param wo? table<string, any>
 M.wo = function(win, wo)
    ---@type vim.api.keyset.option
    local opts = { scope = "local", win = win }
@@ -146,7 +146,7 @@ end
 
 --- Set buffer-local options.
 ---@param buf integer
----@param bo vim.bo
+---@param bo? table<string, any>
 M.bo = function(buf, bo)
    ---@type vim.api.keyset.option
    local opts = { buf = buf }

@@ -4,6 +4,7 @@
 -- @module net.url
 -- @alias	M
 
+---@diagnostic disable: unnecessary-if, undefined-field
 local M = {}
 M.version = "1.1.0"
 
@@ -90,9 +91,13 @@ M.services = {
 }
 
 local function decode(str)
-   return (str:gsub("%%(%x%x)", function(c)
-      return string.char(tonumber(c, 16))
-   end))
+   return (
+      str:gsub("%%(%x%x)", function(c)
+         local byte = tonumber(c, 16)
+         ---@cast byte integer
+         return string.char(byte)
+      end)
+   )
 end
 
 local function encode(str, legal)

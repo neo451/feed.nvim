@@ -12,7 +12,7 @@ local encoding_blacklist = ut.list2lookup({ "gb2312" })
 ---@param url string
 ---@param opts { force: boolean }
 ---@param cb fun(err: any?, updated: boolean)
----@return vim.SystemObj
+---@return feed.curl.Handle?
 function M.update_feed(url, opts, cb)
    assert(type(cb) == "function", "feed.fetch.update_feed requires a callback")
    local called = false
