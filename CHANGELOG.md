@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.0.0](https://github.com/neo451/feed.nvim/compare/v2.19.2...v3.0.0) (2026-10-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* use progress_message and fix path handling
+
+### Features
+
+* use progress_message and fix path handling ([dd087fe](https://github.com/neo451/feed.nvim/commit/dd087fe70b8eb56f5dab7adfc10bb5f8ecc8c400))
+
+
+### Bug Fixes
+
+* bugs surfaced by typecheck ([66473c5](https://github.com/neo451/feed.nvim/commit/66473c5b8abded20b93bd997814dee838bbd02b0))
+* download test data ([0299628](https://github.com/neo451/feed.nvim/commit/0299628cd78670198ec2a9faa9cc04767d17e6b7))
+* no fixed highlight table and url truncation ([93c02ba](https://github.com/neo451/feed.nvim/commit/93c02bad72e616654e775f926a04c99d2eb265e6))
+* no fixed highlight table and url truncation ([09055f5](https://github.com/neo451/feed.nvim/commit/09055f54caab4be30e20334e2eb8ed17525dbba8))
+* **parser:** handle redirected and Unicode feeds ([936f23d](https://github.com/neo451/feed.nvim/commit/936f23d572d3e71eed2c2d5da3ff946d5918948d))
+* **parser:** handle redirected and Unicode feeds ([c703777](https://github.com/neo451/feed.nvim/commit/c703777273e4b2e438ae9774439927a610a2fcd4))
+* progress_message ([5a38349](https://github.com/neo451/feed.nvim/commit/5a3834998e7c0fb75ccd94fa717e5bb0f6953521))
+* proper makefile checks and utils refactor ([4fd7cd9](https://github.com/neo451/feed.nvim/commit/4fd7cd97afda139d41275179b013e406eb00f0a8))
+* proper makefile checks and utils refactor ([c128969](https://github.com/neo451/feed.nvim/commit/c12896911622c22a7f0e899cdc60cead0d43e770))
+* remove coop and update runtime compatibility ([5dcfb94](https://github.com/neo451/feed.nvim/commit/5dcfb94859b9164c87abd33acd226d211e99c0b8))
+* remove Coop and update runtime compatibility ([ffcf72e](https://github.com/neo451/feed.nvim/commit/ffcf72efae0c39321a4bb37b5302bf25ee1e5652))
+* type warnings and bugs caught by emmylua_check ([4d46287](https://github.com/neo451/feed.nvim/commit/4d462877da4393510c6771da91c6bdfd0513f455))
+* **types:** more types ([59a7422](https://github.com/neo451/feed.nvim/commit/59a7422ebe36147234feca5b929c255c34074a11))
+* **ui:** clean up backdrop on direct window close ([3d552aa](https://github.com/neo451/feed.nvim/commit/3d552aa0e2278d0311ed759e5fd826841ffad77a))
+* **ui:** clean up backdrop on direct window close ([108bf8a](https://github.com/neo451/feed.nvim/commit/108bf8a992fb91f41987bf70f27b4a4f3dc0fea6))
+* **ui:** remove explicit exit pre autocmd for image refresh ([d31adf8](https://github.com/neo451/feed.nvim/commit/d31adf8a406dc6aa67e4dec22c623dc0d160f5e8))
+* **ui:** remove explicit exit pre autocmd for image refresh ([ae57afa](https://github.com/neo451/feed.nvim/commit/ae57afad599028ce011fa374e6c7a93da50cd186))
+* use vim.pack, nvim-treesitter.install in CI ([59385b1](https://github.com/neo451/feed.nvim/commit/59385b1b0a34e104800b385d5320de800d4772e7))
+
 ## [2.19.2](https://github.com/neo451/feed.nvim/compare/v2.19.1...v2.19.2) (2025-12-15)
 
 
